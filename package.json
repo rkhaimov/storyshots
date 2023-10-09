@@ -4,5 +4,15 @@
   "description": "Visual regression provider",
   "main": "index.js",
   "repository": "https://github.com/rkhaimov/storyshots.git",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.38.1",
+    "@types/node": "^20.8.3"
+  },
+  "scripts": {
+    "test": "playwright test --project=chromium",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:codegen": "playwright codegen"
+  }
 }
