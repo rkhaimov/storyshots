@@ -11,7 +11,7 @@
   },
   "scripts": {
     "test": "playwright test --project=chromium",
-    "test:ui": "playwright test --ui",
+    "test:ui": "node --inspect-brk D:\\storyshots\\node_modules\\playwright\\lib\\cli.js test --ui --ui-host 127.0.0.1 --ui-port 9008",
     "test:debug": "playwright test --debug",
     "test:codegen": "playwright codegen"
   }
