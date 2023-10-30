@@ -5,14 +5,23 @@
   "main": "index.js",
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
-  "devDependencies": {
-    "@playwright/test": "^1.38.1",
-    "@types/node": "^20.8.3"
-  },
   "scripts": {
-    "test": "playwright test --project=chromium",
-    "test:ui": "node --inspect-brk D:\\storyshots\\node_modules\\playwright\\lib\\cli.js test --ui --ui-host 127.0.0.1 --ui-port 9008",
-    "test:debug": "playwright test --debug",
-    "test:codegen": "playwright codegen"
+    "storybook": "node --inspect-brk ./node_modules/@storybook/cli/bin/index.js dev -p 6006"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.2.2"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "7.5.2",
+    "@storybook/addon-interactions": "7.5.2",
+    "@storybook/addon-links": "7.5.2",
+    "@storybook/addon-onboarding": "1.0.8",
+    "@storybook/blocks": "7.5.2",
+    "@storybook/react": "7.5.2",
+    "@storybook/react-webpack5": "7.5.2",
+    "@storybook/testing-library": "0.2.2",
+    "storybook": "7.5.2"
   }
 }

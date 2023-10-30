@@ -1,3 +1,0 @@
-D:\storyshots\node_modules\playwright-core\lib\server\trace\viewer\traceViewer.js
-
-D:\playwright\packages\trace-viewer\src\ui\uiModeView.tsx
