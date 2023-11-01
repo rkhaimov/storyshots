@@ -1,0 +1,14 @@
+Storybook imports ts configurations via https://github.com/egoist/esbuild-register
+Manager build file:///D:/storyshots/node_modules/@storybook/builder-manager/dist/index.js
+Files are compiled using https://esbuild.github.io/getting-started/#build-scripts
+Preview build file:///D:/storyshots/node_modules/@storybook/builder-webpack5/dist/index.js
+Template at D:\storyshots\node_modules\@storybook\builder-webpack5\templates\preview.ejs
+Stories generated on index.json route at file:///D:/storyshots/node_modules/@storybook/core-server/dist/index.js
+    They are selected using glob matcher https://github.com/storybookjs/storybook/blob/aadef511b3ceaeae939e7d5998350e9481e6dbf0/code/lib/core-server/src/utils/StoryIndexGenerator.ts#L133
+    Then, ast content of each file is parsed using https://github.com/storybookjs/storybook/blob/aadef511b3ceaeae939e7d5998350e9481e6dbf0/code/lib/csf-tools/src/CsfFile.ts#L138
+    After these steps, stories json file is generated and sent back to the client
+importFn imports csf stories as separate chunks
+
+Content is dynamically built using VirtualModulesPlugin (entry.js contains generated entry)
+Why hot reload works in that way?
+
