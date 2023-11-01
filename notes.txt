@@ -8,7 +8,36 @@ Stories generated on index.json route at file:///D:/storyshots/node_modules/@sto
     Then, ast content of each file is parsed using https://github.com/storybookjs/storybook/blob/aadef511b3ceaeae939e7d5998350e9481e6dbf0/code/lib/csf-tools/src/CsfFile.ts#L138
     After these steps, stories json file is generated and sent back to the client
 importFn imports csf stories as separate chunks
+Story then is rendered inside an iframe https://github.com/storybookjs/storybook/blob/34cf7f81aac0e9a4dfd1cb567a13168c32581edf/code/renderers/react/src/render.tsx#L57
+For React specifically https://github.com/storybookjs/storybook/blob/next/code/lib/react-dom-shim/src/react-18.tsx#L26
 
-Content is dynamically built using VirtualModulesPlugin (entry.js contains generated entry)
-Why hot reload works in that way?
+Hypothesis:
+There are two artefacts - manager and preview. Manager is a constant (prebuilt) artefact that manages preview.
+Preview is a dynamic iframe that is built by webpack.
 
+Proofs:
+Managers template is here D:\storyshots\node_modules\@storybook\builder-manager\templates\template.ejs
+Manager index.html is built here https://github.com/storybookjs/storybook/blob/ac9880fb07abcb00c4694b3c020ec34e56448bf4/code/builders/builder-manager/src/index.ts#L130
+Preview template is here D:\storyshots\node_modules\@storybook\builder-webpack5\templates\preview.ejs
+Preview config is built here https://github.com/storybookjs/storybook/blob/efcda42eb051db1f2afd7321983eb4ffb3d47291/code/builders/builder-webpack5/src/preview/iframe-webpack.config.ts#L78
+Manager entry point is located here https://github.com/storybookjs/storybook/blob/c4ad73c534e9f9083b003d5047e337cf379f177f/code/ui/manager/src/runtime.ts#L82
+
+Manager and Preview are communicating using window post message mechanism
+IFrame rendering is here https://github.com/storybookjs/storybook/blob/c4ad73c534e9f9083b003d5047e337cf379f177f/code/ui/manager/src/components/preview/iframe.tsx#L30
+Preview webpack config is here https://github.com/storybookjs/storybook/blob/efcda42eb051db1f2afd7321983eb4ffb3d47291/code/builders/builder-webpack5/src/preview/iframe-webpack.config.ts#L78
+How iframe is routed https://github.com/storybookjs/storybook/blob/1911db35ec9723aa67f1532c41a044ba6ef7862e/code/builders/builder-webpack5/src/index.ts#L175
+
+What happens when story is clicked:
+ Navigate https://github.com/storybookjs/storybook/blob/1911db35ec9723aa67f1532c41a044ba6ef7862e/code/lib/manager-api/src/modules/stories.ts#L402
+ Provide storyId from path https://github.com/storybookjs/storybook/blob/1911db35ec9723aa67f1532c41a044ba6ef7862e/code/ui/manager/src/index.tsx#L41C6-L41C15
+ https://github.com/storybookjs/storybook/blob/1911db35ec9723aa67f1532c41a044ba6ef7862e/code/lib/router/src/router.tsx#L80
+
+How routing in iframe is handled?
+
+What to do next:
+
+1. Create super concrete solution using react and typescript dependencies
+2. Separate stories API from concrete stories, again in most concrete way possible
+3. Each story is an iframe isolated with all its dependencies (it should be possible to render on full screen). How conflicts will be managed tho?
+
+ФИО обязательно?
