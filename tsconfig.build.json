@@ -1,16 +1,18 @@
 {
+  "include": [
+    "./scripts/dev.ts"
+  ],
   "compilerOptions": {
-    "target": "ES2015",
-    "module": "ESNext",
+    "target": "ES5",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
+    "outDir": "./temp/compiled",
     "types": [
       "./src/reusables/ambient-types.d.ts"
     ]

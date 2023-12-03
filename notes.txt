@@ -1,0 +1,26 @@
+ui https://playwright.dev/docs/test-ui-mode
+finder https://github.com/antonmedv/finder
+
+* reimpl menu
+    * display selected story and group
+    * add replay
+    * add process loader
+* impl screenshots
+    * screenshots view
+    * save in baseline
+    * compare and diff preview
+    * update in baseline
+* bulk indications (failed shots, failed actions)
+* bulk actions
+* commands communication
+* fix browser connection
+* advance actions on forms
+* test routing capabilities
+* add config for server
+* add extensions
+* add config extensions
+* impl actions and screenshots queue
+
+FUTURE
+* handle actions exceptions
+* show actions preview?

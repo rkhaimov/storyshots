@@ -1,0 +1,24 @@
+{
+  "Decrement": [
+    {
+      "method": "log",
+      "args": [
+        "INCREMENT"
+      ]
+    },
+    {
+      "method": "log",
+      "args": [
+        "DECREMENT"
+      ]
+    }
+  ],
+  "Increment": [
+    {
+      "method": "log",
+      "args": [
+        "INCREMENT"
+      ]
+    }
+  ]
+}
