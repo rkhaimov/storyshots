@@ -1,5 +1,6 @@
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import path from 'path';
 
 const config: webpack.Configuration = {
@@ -53,6 +54,7 @@ const config: webpack.Configuration = {
   plugins: [
     new HtmlWebpackPlugin(),
     new webpack.DefinePlugin({ 'process.env': { NODE_ENV: '"development"' } }),
+    new ForkTsCheckerWebpackPlugin({ async: true }),
   ],
 };
 
