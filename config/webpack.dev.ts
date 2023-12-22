@@ -1,9 +1,25 @@
-import webpack from 'webpack';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
+/// <reference types="webpack-dev-server" />
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
+import webpack from 'webpack';
+import { setup } from '../src/server';
 
 const config: webpack.Configuration = {
+  devServer: {
+    setupMiddlewares: (middlewares, server) => {
+      setup(server.app!, 9000).subscribe();
+
+      return middlewares;
+    },
+    open: {
+      target: ['http://localhost:8080'],
+      app: {
+        name: 'chrome',
+        arguments: ['--remote-debugging-port=9000'],
+      },
+    },
+  },
   mode: 'development',
   bail: false,
   devtool: 'cheap-module-source-map',
