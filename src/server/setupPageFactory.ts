@@ -2,6 +2,7 @@ import { Application } from 'express-serve-static-core';
 import puppeteer, { Browser, Page } from 'puppeteer';
 import { exhaustMap, Observable, switchMap } from 'rxjs';
 
+// TODO: Implement basic ws channel
 export function setupPageFactory(app: Application): Observable<Page> {
   const setup$ = new Observable<void>((subscriber) => {
     app.get('/api/storyshots/setup', async (_, response) => {
