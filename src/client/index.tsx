@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Layout, Menu, theme } from 'antd';
 import { createGlobalStyle } from 'styled-components';
@@ -12,13 +12,13 @@ div.setAttribute('id', 'root');
 document.body.appendChild(div);
 
 const GlobalStyle = createGlobalStyle`
-    body {
-        margin: 0;
-    }
+  body {
+    margin: 0;
+  }
 
-    body, html, #root {
-        height: 100%;
-    }
+  body, html, #root {
+    height: 100%;
+  }
 `;
 
 const App = () => {
@@ -27,6 +27,12 @@ const App = () => {
   } = theme.useToken();
 
   const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    window.storyshots = true;
+
+    fetch(`/api/storyshots/setup`);
+  }, []);
 
   return (
     <>

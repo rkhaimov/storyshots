@@ -1,70 +1,77 @@
 import { Application } from 'express-serve-static-core';
 import puppeteer, { Browser, Page } from 'puppeteer';
-import {
-  bindCallback,
-  concatMap,
-  mergeScan,
-  Observable,
-  switchMap,
-  tap,
-} from 'rxjs';
-import {
-  parseStoryshotsPageId,
-  StoryshotsPageId,
-} from '../reusables/storyshotsPageId';
-import { createAsyncDisposableResource } from './createAsyncDisposableResource';
+import { exhaustMap, Observable, switchMap } from 'rxjs';
 
-export function setupPageFactory(
-  app: Application,
-  debugPort: number,
-): Observable<Page | undefined> {
-  const id$ = new Observable<StoryshotsPageId>((subscriber) => {
-    app.get('/api/storyshots/setup/:id', async (request, response) => {
-      subscriber.next(parseStoryshotsPageId(request.params.id));
+export function setupPageFactory(app: Application): Observable<Page> {
+  const setup$ = new Observable<void>((subscriber) => {
+    app.get('/api/storyshots/setup', async (_, response) => {
+      subscriber.next(undefined);
 
       response.send();
     });
   });
 
-  id$.pipe(mergeScan((browser, it) => {}, undefined as Browser | undefined, 1));
+  return setup$.pipe(
+    // TODO: Proper cancellation
+    exhaustMap(async () => {
+      const browser = await createBrowserOnce();
 
-  return id$.pipe(
-    switchMap((id) =>
-      createAsyncDisposableResource(async () => {
-        console.log('CREATING!!!');
-        const browser = await puppeteer.connect({
-          browserURL: `http://127.0.0.1:${debugPort}`,
-          defaultViewport: null,
-        });
+      return findStoryshotsPage(browser);
+    }),
+    switchMap(async (page) => {
+      page.click('aria/Increment[role="button"]');
 
-        const page = await createPuppeteerPage(browser, id);
-
-        return [
-          page,
-          () => {
-            console.log('CLOSING!!!');
-            browser.close();
-          },
-        ];
-      }),
-    ),
+      return page;
+    }),
   );
 }
 
-async function createPuppeteerPage(
-  browser: Browser,
-  id: StoryshotsPageId,
-): Promise<Page | undefined> {
+const asyncOnce = <T>(func: () => Promise<T>): (() => Promise<T>) => {
+  let last: T | undefined = undefined;
+
+  return async () => {
+    if (last === undefined) {
+      last = await func();
+    }
+
+    return last;
+  };
+};
+
+const createBrowserOnce = asyncOnce(() =>
+  puppeteer.connect({
+    browserURL: `http://127.0.0.1:9000`,
+    defaultViewport: null,
+  }),
+);
+
+async function findStoryshotsPage(browser: Browser): Promise<Page> {
   const pages = await browser.pages();
 
-  const r = await Promise.all(
+  const meta = await Promise.all(
     pages.map(async (it) => ({
       page: it,
-      id: await it.evaluate(() => (window as { id?: StoryshotsPageId }).id),
+      storyshots: await it.evaluate(() => window.storyshots),
     })),
   );
 
-  console.log(r);
+  const storyshots = meta.filter((it) => it.storyshots).map((it) => it.page);
 
-  return undefined;
+  if (storyshots.length === 0) {
+    const page = await browser.newPage();
+
+    await page.goto('http://localhost:8080/');
+
+    await page.bringToFront();
+
+    return page;
+  }
+
+  const [first, ...rest] = storyshots;
+
+  await first.bringToFront();
+
+  await Promise.all(rest.map((it) => it.close()));
+
+  return first;
 }

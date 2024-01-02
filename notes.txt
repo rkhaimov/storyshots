@@ -1,1 +1,2 @@
 ui https://playwright.dev/docs/test-ui-mode
+finder https://github.com/antonmedv/finder

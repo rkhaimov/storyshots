@@ -10,7 +10,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["./src/reusables/ambient-types.d.ts"]
   },
   "ts-node": {
     "compilerOptions": {

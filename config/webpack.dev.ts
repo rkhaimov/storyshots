@@ -8,7 +8,7 @@ import { setup } from '../src/server';
 const config: webpack.Configuration = {
   devServer: {
     setupMiddlewares: (middlewares, server) => {
-      setup(server.app!, 9000).subscribe();
+      setup(server.app!).subscribe();
 
       return middlewares;
     },
