@@ -3,17 +3,16 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
-import { setup } from '../src/server';
+import { createWebDriver } from '../src/server/createWebDriver';
 
 const config: webpack.Configuration = {
   devServer: {
     setupMiddlewares: (middlewares, server) => {
-      setup(server.app!).subscribe();
+      createWebDriver(server.app!);
 
       return middlewares;
     },
     open: {
-      target: ['http://localhost:8080'],
       app: {
         name: 'chrome',
         arguments: ['--remote-debugging-port=9000'],
@@ -53,7 +52,7 @@ const config: webpack.Configuration = {
                 ],
                 [
                   '@babel/preset-react',
-                  { runtime: 'automatic', development: true },
+                  {runtime: 'automatic', development: true},
                 ],
                 '@babel/preset-typescript',
               ],
@@ -69,8 +68,8 @@ const config: webpack.Configuration = {
   },
   plugins: [
     new HtmlWebpackPlugin(),
-    new webpack.DefinePlugin({ 'process.env': { NODE_ENV: '"development"' } }),
-    new ForkTsCheckerWebpackPlugin({ async: true }),
+    new webpack.DefinePlugin({'process.env': {NODE_ENV: '"development"'}}),
+    new ForkTsCheckerWebpackPlugin({async: true}),
   ],
 };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Layout, Menu, theme } from 'antd';
 import { createGlobalStyle } from 'styled-components';
@@ -27,12 +27,6 @@ const App = () => {
   } = theme.useToken();
 
   const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    window.storyshots = true;
-
-    fetch(`/api/storyshots/setup`);
-  }, []);
 
   return (
     <>

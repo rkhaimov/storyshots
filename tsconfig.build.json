@@ -1,16 +1,18 @@
 {
+  "include": [
+    "./config/webpack.dev.ts"
+  ],
   "compilerOptions": {
     "target": "ES5",
-    "module": "ESNext",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
+    "outDir": "./compiled",
     "types": [
       "./src/reusables/ambient-types.d.ts"
     ]

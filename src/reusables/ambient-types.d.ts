@@ -1,3 +1,0 @@
-interface Window {
-  storyshots?: true;
-}
