@@ -1,2 +1,16 @@
 ui https://playwright.dev/docs/test-ui-mode
 finder https://github.com/antonmedv/finder
+
+* impl actions with finder
+* impl screenshots
+    * save in temp
+    * original and diff preview
+    * save in baseline
+* advance actions on forms
+* test routing capabilities
+* add selected story memo
+* add resolutions config
+
+FUTURE
+* handle actions exceptions
+* show actions preview

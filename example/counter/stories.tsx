@@ -7,4 +7,10 @@ export const counterStories = createGroup('Counter', [
     title: 'Default',
     render: () => <Counter />,
   }),
+  createStory({
+    title: 'Increment',
+    act: (actor, finder) =>
+      actor.click(finder.getByRole('button', { name: 'Increment' })),
+    render: () => <Counter />,
+  }),
 ]);

@@ -1,6 +1,7 @@
 import { Application } from 'express-serve-static-core';
 import puppeteer, { Browser, Page } from 'puppeteer';
 import { assertNotEmpty, wait } from '../reusables/utils';
+import { createAPIHandlers } from './createAPIHandlers';
 
 // TODO: Implement basic ws channel
 export async function createWebDriver(app: Application) {
@@ -12,7 +13,7 @@ export async function createWebDriver(app: Application) {
 
   await page.bringToFront();
 
-  console.log('PAGE ACQUIRED', page);
+  createAPIHandlers(app, page);
 }
 
 async function createPage(browser: Browser): Promise<Page> {
