@@ -1,4 +1,4 @@
-type Node = Group | Story;
+export type Node = Group | Story;
 
 export type Group = {
   type: 'group';
@@ -9,22 +9,6 @@ export type Group = {
 export type Story = {
   type: 'story';
   title: string;
-  commands: CommandsSnapshot;
-  arrange(externals: unknown): never;
-  act(actor: Actor, find: Finder): Actor;
+  render(): React.ReactNode;
 };
 
-type Actor = {
-  settle(): Actor;
-  click(on: FinderResult): Actor;
-  enterText(on: FinderResult): Actor;
-  screenshot(label: string): Actor;
-};
-
-type Finder = {
-  text(content: string): FinderResult;
-};
-
-type FinderResult = never;
-
-type CommandsSnapshot = string & { __CommandsSnapshot: 'CommandsSnapshot' };

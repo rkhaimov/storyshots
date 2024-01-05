@@ -22,7 +22,7 @@ const config: webpack.Configuration = {
   mode: 'development',
   bail: false,
   devtool: 'cheap-module-source-map',
-  entry: path.join(process.cwd(), 'src', 'client', 'index.tsx'),
+  entry: path.join(process.cwd(), 'example', 'index.tsx'),
   stats: {
     errorDetails: true,
   },

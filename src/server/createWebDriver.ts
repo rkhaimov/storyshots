@@ -1,5 +1,6 @@
 import { Application } from 'express-serve-static-core';
 import puppeteer, { Browser, Page } from 'puppeteer';
+import { assertNotEmpty, wait } from '../reusables/utils';
 
 // TODO: Implement basic ws channel
 export async function createWebDriver(app: Application) {
@@ -10,6 +11,8 @@ export async function createWebDriver(app: Application) {
   const page = await createPage(browser);
 
   await page.bringToFront();
+
+  console.log('PAGE ACQUIRED', page);
 }
 
 async function createPage(browser: Browser): Promise<Page> {
@@ -46,21 +49,3 @@ async function createBrowserConnection(
     .catch(() => createBrowserConnection(retries - 1));
 }
 
-function wait(ms: number): Promise<void> {
-  return new Promise<void>((resolve) => setTimeout(resolve, ms));
-}
-
-function assertNotEmpty<T>(
-  input: T | undefined | null,
-  message: string,
-): asserts input is T {
-  if (input === undefined || input === null) {
-    throw new Error(message);
-  }
-}
-
-function assert(input: unknown, message = 'Assertion is false'): asserts input {
-  if (input === false) {
-    throw new Error(message);
-  }
-}
