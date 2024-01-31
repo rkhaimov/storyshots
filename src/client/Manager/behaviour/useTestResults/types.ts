@@ -7,17 +7,25 @@ import {
 
 export type TestResults = Map<StoryID, TestResult>;
 
-export type ReadyTestResult = {
+export type SuccessTestResult = {
   running: false;
+  type: 'success';
   records: RecordsComparisonResult;
   screenshots: ScreenshotsComparisonResults;
+};
+
+export type FailedTestResult = {
+  running: false;
+  type: 'error';
+  message: string;
 };
 
 export type TestResult =
   | {
       running: true;
     }
-  | ReadyTestResult;
+  | SuccessTestResult
+  | FailedTestResult;
 
 export type ScreenshotsComparisonResults = {
   final: ScreenshotComparisonResult;

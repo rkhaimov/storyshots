@@ -1,4 +1,5 @@
 import React from 'react';
+import { Errors } from './Errors';
 import { Props } from './types';
 import { Layout, theme } from 'antd';
 import { useBehaviour } from './behaviour';
@@ -34,16 +35,17 @@ export const Manager: React.FC<Props> = (props) => {
           {behaviour.selection.type === 'screenshot' && (
             <Screenshot
               selection={behaviour.selection}
-              results={behaviour.results}
               acceptScreenshot={behaviour.acceptScreenshot}
             />
           )}
           {behaviour.selection.type === 'records' && (
             <Records
               selection={behaviour.selection}
-              results={behaviour.results}
               acceptRecords={behaviour.acceptRecords}
             />
+          )}
+          {behaviour.selection.type === 'error' && (
+            <Errors selection={behaviour.selection} />
           )}
         </main>
       </Layout>

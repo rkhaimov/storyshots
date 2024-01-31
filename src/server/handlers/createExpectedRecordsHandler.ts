@@ -6,7 +6,7 @@ export function createExpectedRecordsHandler(
   app: Application,
   baseline: Baseline,
 ) {
-  app.post('/api/record/expected/:id', async (request, response) => {
+  app.get('/api/record/expected/:id', async (request, response) => {
     const id = request.params.id as StoryID;
 
     const expected = await baseline.getExpectedRecords(id);

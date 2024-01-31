@@ -4,6 +4,7 @@ import {
   Screenshot,
   ActualServerSideResult,
   StoryID,
+  WithPossibleError,
 } from '../../reusables/types';
 import { ActionMeta } from '../../reusables/actions';
 import puppeteer from 'puppeteer';
@@ -17,7 +18,7 @@ export function createActServerSideHandler(
     const id = request.params.id as StoryID;
     const actions: ActionMeta[] = request.body;
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: 'new' });
     const page = await browser.newPage();
 
     await page.setViewport({ width: 1480, height: 920 });
@@ -53,9 +54,12 @@ export function createActServerSideHandler(
       others,
     };
 
-    const result: ActualServerSideResult = {
-      records: await preview.evaluate(() => window.readJournalRecords()),
-      screenshots,
+    const result: WithPossibleError<ActualServerSideResult> = {
+      type: 'success',
+      data: {
+        records: await preview.evaluate(() => window.readJournalRecords()),
+        screenshots,
+      },
     };
 
     await browser.close();

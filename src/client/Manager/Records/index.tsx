@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDiffViewer from 'react-diff-viewer-continued';
-import { SelectionState } from '../behaviour/useSelection';
-import { isNil } from '../../../reusables/utils';
 import { UseBehaviourProps } from '../behaviour/types';
+import { SelectionState } from '../behaviour/useSelection';
 
 type RecordsSelection = Extract<
   SelectionState,
@@ -13,31 +12,23 @@ type RecordsSelection = Extract<
 
 type Props = {
   selection: RecordsSelection;
-} & Pick<UseBehaviourProps, 'results' | 'acceptRecords'>;
+} & Pick<UseBehaviourProps, 'acceptRecords'>;
 
-export const Records: React.FC<Props> = ({
-  selection,
-  results,
-  acceptRecords,
-}) => {
-  const storyResults = results.get(selection.story.id);
+export const Records: React.FC<Props> = ({ selection, acceptRecords }) => {
+  const results = selection.result;
 
-  if (isNil(storyResults)) {
-    return <span>Records are not generated yet</span>;
-  }
-
-  if (storyResults.running) {
+  if (results.running) {
     return <span>Records are being generated</span>;
   }
 
-  const records = storyResults.records;
+  const records = results.records;
 
   if (records.type === 'fresh') {
     return (
       <>
         <button
           onClick={() =>
-            acceptRecords(selection.story, records.actual, storyResults)
+            acceptRecords(selection.story, records.actual, results)
           }
         >
           Accept
@@ -72,9 +63,7 @@ export const Records: React.FC<Props> = ({
   return (
     <>
       <button
-        onClick={() =>
-          acceptRecords(selection.story, records.actual, storyResults)
-        }
+        onClick={() => acceptRecords(selection.story, records.actual, results)}
       >
         Accept
       </button>

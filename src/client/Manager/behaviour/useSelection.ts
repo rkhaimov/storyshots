@@ -1,20 +1,29 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'wouter';
 import { useSearch } from 'wouter/use-location';
-import { ScreenshotName, StoryID } from '../../../reusables/types';
+import {
+  ScreenshotName,
+  StoryID,
+  WithPossibleError,
+} from '../../../reusables/types';
 import { isNil } from '../../../reusables/utils';
+import { useExternals } from '../../externals/Context';
 import {
   SerializableStoryNode,
   SerializableStoryshotsNode,
 } from '../../reusables/channel';
-import { Props } from '../types';
 import { findStoryLikeByID } from '../../reusables/findStoryLikeByID';
-import { usePreviewBuildHash } from './usePreviewBuildHash';
+import { Props } from '../types';
 import { communicateWithPreview } from './communicateWithPreview';
-import { useExternals } from '../../externals/Context';
+import { usePreviewBuildHash } from './usePreviewBuildHash';
+import {
+  FailedTestResult,
+  TestResult,
+  TestResults,
+} from './useTestResults/types';
 
 // TODO: Test and simplify
-export function useSelection(props: Props) {
+export function useSelection(props: Props, results: TestResults) {
   const { driver } = useExternals();
   const id = props.params.story as StoryID | undefined;
   const hash = usePreviewBuildHash();
@@ -55,6 +64,9 @@ export function useSelection(props: Props) {
           : `/${story.id}?mode=${SelectionMode.Screenshot}&screenshot=${name}`,
       );
     },
+    setError: (story: SerializableStoryNode) => {
+      navigate(`/${story.id}?mode=${SelectionMode.Errors}`);
+    },
   };
 
   async function selectAndPlay(stories: SerializableStoryshotsNode[]) {
@@ -63,33 +75,94 @@ export function useSelection(props: Props) {
     }
 
     const story = findStoryLikeByID(stories, id);
+    const result = results.get(story.id);
+
+    if (isNil(result)) {
+      return setStorySelection(stories, story);
+    }
+
     const params = new URLSearchParams(search);
     const mode = params.get('mode');
 
-    if (mode === SelectionMode.Records) {
-      return setSelection({ type: 'records', stories, story });
-    }
+    if (mode === SelectionMode.Errors) {
+      if (result.running) {
+        return setStorySelection(stories, story);
+      }
 
-    if (mode === SelectionMode.Screenshot) {
+      if (result.type === 'success') {
+        return setStorySelection(stories, story);
+      }
+
       return setSelection({
-        type: 'screenshot',
-        name: params.get('screenshot') ?? undefined,
+        type: 'error',
+        result,
         stories,
         story,
       });
     }
 
+    if (mode === SelectionMode.Records) {
+      if (result.running || result.type === 'success') {
+        return setSelection({
+          type: 'records',
+          stories,
+          story,
+          result: result,
+        });
+      }
+
+      return setSelection({
+        type: 'error',
+        result,
+        stories,
+        story,
+      });
+    }
+
+    if (mode === SelectionMode.Screenshot) {
+      if (result.running || result.type === 'success') {
+        return setSelection({
+          type: 'screenshot',
+          name: params.get('screenshot') ?? undefined,
+          stories,
+          story,
+          result,
+        });
+      }
+
+      return setSelection({
+        type: 'error',
+        result,
+        stories,
+        story,
+      });
+    }
+
+    return setStorySelection(stories, story);
+  }
+
+  async function setStorySelection(
+    stories: SerializableStoryshotsNode[],
+    story: SerializableStoryNode,
+  ) {
     setSelection({ type: 'story', stories, story, playing: true });
 
-    await driver.actOnClientSide(story.actions);
+    const result = await driver.actOnClientSide(story.actions);
 
-    return setSelection({ type: 'story', stories, story, playing: false });
+    return setSelection({
+      type: 'story',
+      stories,
+      story,
+      result,
+      playing: false,
+    });
   }
 }
 
 enum SelectionMode {
   Records = 'records',
   Screenshot = 'screenshot',
+  Errors = 'errors',
 }
 
 export type SelectionState =
@@ -100,18 +173,33 @@ export type SelectionState =
     }
   | {
       type: 'story';
-      playing: boolean;
+      playing: true;
+      story: SerializableStoryNode;
+      stories: SerializableStoryshotsNode[];
+    }
+  | {
+      type: 'story';
+      playing: false;
+      result: WithPossibleError<null>;
+      story: SerializableStoryNode;
+      stories: SerializableStoryshotsNode[];
+    }
+  | {
+      type: 'error';
+      result: FailedTestResult;
       story: SerializableStoryNode;
       stories: SerializableStoryshotsNode[];
     }
   | {
       type: 'screenshot';
       name: string | undefined;
+      result: Exclude<TestResult, FailedTestResult>;
       story: SerializableStoryNode;
       stories: SerializableStoryshotsNode[];
     }
   | {
       type: 'records';
+      result: Exclude<TestResult, FailedTestResult>;
       story: SerializableStoryNode;
       stories: SerializableStoryshotsNode[];
     };

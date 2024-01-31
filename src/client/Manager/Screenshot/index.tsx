@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactCompareImage from 'react-compare-image';
-import { useExternals } from '../../externals/Context';
+import { ScreenshotName } from '../../../reusables/types';
 import { isNil } from '../../../reusables/utils';
+import { useExternals } from '../../externals/Context';
+import { UseBehaviourProps } from '../behaviour/types';
 import { SelectionState } from '../behaviour/useSelection';
 import {
-  ReadyTestResult,
   ScreenshotComparisonResult,
+  SuccessTestResult,
 } from '../behaviour/useTestResults/types';
-import { UseBehaviourProps } from '../behaviour/types';
-import { ScreenshotName } from '../../../reusables/types';
 
 type ScreenshotSelection = Extract<
   SelectionState,
@@ -19,30 +19,28 @@ type ScreenshotSelection = Extract<
 
 type Props = {
   selection: ScreenshotSelection;
-} & Pick<UseBehaviourProps, 'results' | 'acceptScreenshot'>;
+} & Pick<UseBehaviourProps, 'acceptScreenshot'>;
 
 export const Screenshot: React.FC<Props> = ({
-  results,
   selection,
   acceptScreenshot,
 }): React.ReactElement => {
   const { driver } = useExternals();
-  const storyResults = results.get(selection.story.id);
 
   // TODO: Test it
-  if (isNil(storyResults) || storyResults.running) {
-    return <span>Screenshots are not generated yet</span>;
+  if (selection.result.running) {
+    return <span>Screenshots are being generated</span>;
   }
 
   if (isNil(selection.name)) {
     return renderSelectedScreenshotResults(
       undefined,
-      storyResults.screenshots.final,
-      storyResults,
+      selection.result.screenshots.final,
+      selection.result,
     );
   }
 
-  const selectedOtherScreenshot = storyResults.screenshots.others.find(
+  const selectedOtherScreenshot = selection.result.screenshots.others.find(
     (it) => it.name === selection.name,
   );
 
@@ -53,13 +51,13 @@ export const Screenshot: React.FC<Props> = ({
   return renderSelectedScreenshotResults(
     selectedOtherScreenshot.name,
     selectedOtherScreenshot.result,
-    storyResults,
+    selection.result,
   );
 
   function renderSelectedScreenshotResults(
     name: ScreenshotName | undefined,
     result: ScreenshotComparisonResult,
-    results: ReadyTestResult,
+    results: SuccessTestResult,
   ): React.ReactElement {
     switch (result.type) {
       case 'fresh':

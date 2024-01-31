@@ -1,15 +1,14 @@
 import { IWebDriver } from '../../reusables/types';
 
 export const driver: IWebDriver = {
-  actOnClientSide: async (action) => {
-    await fetch('/api/client/act', {
+  actOnClientSide: async (action) =>
+    fetch('/api/client/act', {
       method: 'POST',
       body: JSON.stringify(action),
       headers: {
         'Content-Type': 'application/json',
       },
-    });
-  },
+    }).then((response) => response.json()),
   actOnServerSide: (at, actions) =>
     fetch(`/api/server/act/${at}`, {
       method: 'POST',
@@ -27,9 +26,7 @@ export const driver: IWebDriver = {
       },
     }).then((response) => response.json()),
   getExpectedRecords: (at) =>
-    fetch(`/api/record/expected/${at}`, { method: 'POST' }).then((response) =>
-      response.json(),
-    ),
+    fetch(`/api/record/expected/${at}`).then((response) => response.json()),
   areScreenshotsEqual: (screenshots) =>
     fetch('/api/screenshot/equals', {
       method: 'POST',

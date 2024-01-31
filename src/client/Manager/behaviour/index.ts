@@ -4,13 +4,13 @@ import { useSelection } from './useSelection';
 import { useGroupExpand } from './useGroupExpand';
 
 export function useBehaviour(props: Props) {
-  const state = useSelection(props);
+  const test = useTestResults();
+  const state = useSelection(props, test.results);
   const expand = useGroupExpand(state.selection);
-  const results = useTestResults();
 
   return {
     ...expand,
-    ...results,
+    ...test,
     ...state,
   };
 }

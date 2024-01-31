@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Props } from './types';
+import { isNil } from '../../../../reusables/utils';
 import { Actions } from './Actions';
-import { Screenshots } from './Screenshots';
-import { Records } from './Records';
+import { ErrorsEntry } from './ErrorsEntry';
+import { RecordsEntry } from './RecordsEntry';
+import { ScreenshotsEntry } from './ScreenshotsEntry';
+import { Props } from './types';
 
 export const StoryEntry: React.FC<Props> = (props) => {
   return (
@@ -12,10 +14,28 @@ export const StoryEntry: React.FC<Props> = (props) => {
         {props.story.title}
         <Actions {...props} />
       </EntryHeader>
-      <Records {...props} />
-      <Screenshots {...props} />
+      {renderResultEntries()}
     </li>
   );
+
+  function renderResultEntries() {
+    const results = props.results.get(props.story.id);
+
+    if (isNil(results) || results.running) {
+      return;
+    }
+
+    if (results.type === 'error') {
+      return <ErrorsEntry {...props} results={results} />;
+    }
+
+    return (
+      <>
+        <RecordsEntry {...props} results={results} />
+        <ScreenshotsEntry {...props} results={results} />
+      </>
+    );
+  }
 };
 
 const EntryHeader = styled.div`

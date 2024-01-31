@@ -1,19 +1,18 @@
 import React from 'react';
-import { isNil } from '../../../../reusables/utils';
-import { Props } from './types';
+import { SuccessTestResult } from '../../behaviour/useTestResults/types';
+import { Props as ParentProps } from './types';
 
-export const Screenshots: React.FC<Props> = ({
+type Props = { results: SuccessTestResult } & Pick<
+  ParentProps,
+  'setScreenshot' | 'story'
+>;
+
+export const ScreenshotsEntry: React.FC<Props> = ({
   story,
   results,
   setScreenshot,
 }) => {
-  const storyResults = results.get(story.id);
-
-  if (isNil(storyResults) || storyResults.running) {
-    return;
-  }
-
-  const screenshots = storyResults.screenshots;
+  const screenshots = results.screenshots;
 
   return (
     <ul>

@@ -2,12 +2,12 @@ import { ActionMeta } from './actions';
 import { Brand } from './brand';
 
 export interface IWebDriver {
-  actOnClientSide(action: ActionMeta[]): Promise<void>;
+  actOnClientSide(action: ActionMeta[]): Promise<WithPossibleError<null>>;
 
   actOnServerSide(
     at: StoryID,
     actions: ActionMeta[],
-  ): Promise<ActualServerSideResult>;
+  ): Promise<WithPossibleError<ActualServerSideResult>>;
 
   getExpectedScreenshots(
     at: StoryID,
@@ -24,6 +24,10 @@ export interface IWebDriver {
 
   createScreenshotPath(path: ScreenshotPath): string;
 }
+
+export type WithPossibleError<T> =
+  | { type: 'error'; message: string }
+  | { type: 'success'; data: T };
 
 export type ScreenshotToAccept = {
   actual: ScreenshotPath;

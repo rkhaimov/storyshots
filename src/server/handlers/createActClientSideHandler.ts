@@ -1,6 +1,7 @@
 import { Application } from 'express-serve-static-core';
 import { Page } from 'puppeteer';
 import { ActionMeta } from '../../reusables/actions';
+import { WithPossibleError } from '../../reusables/types';
 import { act, toPreviewFrame } from '../act';
 
 export function createActClientSideHandler(app: Application, page: Page) {
@@ -16,8 +17,11 @@ export function createActClientSideHandler(app: Application, page: Page) {
       await act(preview, action);
     }
 
-    const result: void = undefined;
+    const result: WithPossibleError<null> = {
+      type: 'success',
+      data: null,
+    };
 
-    response.end(result);
+    response.json(result);
   });
 }

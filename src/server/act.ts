@@ -22,6 +22,8 @@ export async function act(
   preview: Frame,
   action: Exclude<ActionMeta, ScreenshotAction>,
 ): Promise<void> {
+  console.log('DOING', action.action, action.payload.on);
+
   switch (action.action) {
     case 'click': {
       const on = toSelector(action.payload.on);

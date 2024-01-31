@@ -8,7 +8,7 @@ import { useExternals } from '../../../externals/Context';
 import { SerializableStoryNode } from '../../../reusables/channel';
 import { createRunTestResult } from './createRunTestResult';
 import {
-  ReadyTestResult,
+  SuccessTestResult,
   RecordsComparisonResult,
   ScreenshotComparisonResult,
   TestResults,
@@ -29,7 +29,7 @@ export function useTestResults() {
     acceptRecords: async (
       story: SerializableStoryNode,
       records: JournalRecord[],
-      ready: ReadyTestResult,
+      ready: SuccessTestResult,
     ) => {
       await externals.driver.acceptRecords(story.id, records);
 
@@ -48,7 +48,7 @@ export function useTestResults() {
       story: SerializableStoryNode,
       name: ScreenshotName | undefined,
       path: ScreenshotPath,
-      ready: ReadyTestResult,
+      ready: SuccessTestResult,
     ) => {
       await externals.driver.acceptScreenshot({ actual: path });
 

@@ -21,18 +21,27 @@ export async function createRunTestResult(
 ): Promise<TestResult> {
   const actualResults = await driver.actOnServerSide(story.id, story.actions);
 
+  if (actualResults.type === 'error') {
+    return {
+      running: false,
+      type: 'error',
+      message: actualResults.message,
+    };
+  }
+
   return {
     running: false,
+    type: 'success',
     records: await createRecordsComparisonResult(
       driver,
       story.id,
-      actualResults.records,
+      actualResults.data.records,
     ),
     screenshots: await createScreenshotsComparisonResults(
       driver,
       story.id,
       story.actions,
-      actualResults.screenshots,
+      actualResults.data.screenshots,
     ),
   };
 }
