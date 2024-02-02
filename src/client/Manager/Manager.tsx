@@ -30,7 +30,7 @@ export const Manager: React.FC<Props> = (props) => {
         >
           <Menu {...behaviour} />
         </Sider>
-        <main style={{ width: '100%', backgroundColor: 'white', overflowY: 'auto' }}>
+        <main style={{ width: '100%', backgroundColor: 'white', overflowY: 'auto', position: 'relative' }}>
           <Story
             key={behaviour.preview.key}
             ref={behaviour.preview.ref}
