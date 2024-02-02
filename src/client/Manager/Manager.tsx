@@ -20,10 +20,17 @@ export const Manager: React.FC<Props> = (props) => {
   return (
     <>
       <Layout hasSider style={{ height: '100%' }}>
-        <Sider style={{ background: colorBgContainer }}>
+        <Sider
+          width={250}
+          style={{
+            background: colorBgContainer,
+            overflowY: 'auto',
+            borderRight: '1px solid #cecece',
+          }}
+        >
           <Menu {...behaviour} />
         </Sider>
-        <main style={{ width: '100%', backgroundColor: 'white' }}>
+        <main style={{ width: '100%', backgroundColor: 'white', overflowY: 'auto' }}>
           <Story
             key={behaviour.preview.key}
             ref={behaviour.preview.ref}
