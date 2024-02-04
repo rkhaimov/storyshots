@@ -1,31 +1,29 @@
-import React from 'react';
-import styled from 'styled-components';
 import { blue } from '@ant-design/colors';
 import { ProfileOutlined } from '@ant-design/icons';
+import React from 'react';
+import styled from 'styled-components';
 import { Fail, Fresh, Pass } from '../../../reusables/Statuses';
-import { isActiveLink } from '../isActiveLink';
 import { SuccessTestResult } from '../../behaviour/useTestResults/types';
 import { Props as ParentProps } from './types';
 
 type Props = { results: SuccessTestResult } & Pick<
   ParentProps,
-  'setRecords' | 'story' | 'level'
+  'setRecords' | 'story' | 'level' | 'selection'
 >;
 
 export const RecordsEntry: React.FC<Props> = ({
   story,
+  selection,
   level,
   results,
   setRecords,
 }) => {
-  const isActive = isActiveLink('records', story.id);
-
   return (
     <>
       <RecordsHeader
         level={level}
         onClick={() => setRecords(story)}
-        style={{ background: isActive ? blue[0] : '' }}
+        style={{ background: isActive() ? blue[0] : '' }}
       >
         {renderType()}
         <RecordsTitle title="API Records">
@@ -46,6 +44,10 @@ export const RecordsEntry: React.FC<Props> = ({
     }
 
     return <Pass />;
+  }
+
+  function isActive() {
+    return selection.type === 'records' && selection.story.id === story.id;
   }
 };
 

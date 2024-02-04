@@ -29,3 +29,5 @@ export type AriaAttrs = {
   name: string;
   [key: string]: string;
 };
+
+export type NonScreenshotAction = Exclude<ActionMeta, ScreenshotAction>;

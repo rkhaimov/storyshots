@@ -2,7 +2,7 @@ import { ActionMeta } from './actions';
 import { Brand } from './brand';
 
 export interface IWebDriver {
-  actOnClientSide(action: ActionMeta[]): Promise<WithPossibleError<null>>;
+  actOnClientSide(action: ActionMeta[]): Promise<WithPossibleError<void>>;
 
   actOnServerSide(
     at: StoryID,

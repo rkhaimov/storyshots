@@ -1,12 +1,31 @@
+import { blue } from '@ant-design/colors';
 import React from 'react';
-import { FailedTestResult } from '../../behaviour/useTestResults/types';
+import { ErrorTestResult } from '../../behaviour/useTestResults/types';
 import { Props as ParentProps } from './types';
 
-type Props = { results: FailedTestResult } & Pick<
+type Props = { results: ErrorTestResult } & Pick<
   ParentProps,
-  'story' | 'setError'
+  'story' | 'setRecords' | 'selection'
 >;
 
-export const ErrorsEntry: React.FC<Props> = ({ setError, story }) => {
-  return <span onClick={() => setError(story)}>Error</span>;
+export const ErrorsEntry: React.FC<Props> = ({
+  setRecords,
+  story,
+  selection,
+}) => {
+  return (
+    <span
+      style={{ background: isActive() ? blue[0] : '' }}
+      onClick={() => setRecords(story)}
+    >
+      ERROR
+    </span>
+  );
+
+  function isActive() {
+    return (
+      (selection.type === 'records' || selection.type === 'screenshot') &&
+      selection.story.id === story.id
+    );
+  }
 };

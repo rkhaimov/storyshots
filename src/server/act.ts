@@ -1,10 +1,8 @@
 import { Frame, Page } from 'puppeteer';
-import {
-  ActionMeta,
-  ScreenshotAction,
-  SelectorMeta,
-} from '../reusables/actions';
+import { NonScreenshotAction, SelectorMeta } from '../reusables/actions';
+import { WithPossibleError } from '../reusables/types';
 import { assertNotEmpty } from '../reusables/utils';
+import { WithPossibleErrorOP } from './handlers/reusables/with-possible-error';
 
 export async function toPreviewFrame(page: Page): Promise<Frame> {
   const preview = await page.$('#preview');
@@ -20,10 +18,12 @@ export async function toPreviewFrame(page: Page): Promise<Frame> {
 
 export async function act(
   preview: Frame,
-  action: Exclude<ActionMeta, ScreenshotAction>,
-): Promise<void> {
-  console.log('DOING', action.action, action.payload.on);
+  action: NonScreenshotAction,
+): Promise<WithPossibleError<void>> {
+  return WithPossibleErrorOP.fromThrowable(() => _act(action, preview));
+}
 
+function _act(action: NonScreenshotAction, preview: Frame) {
   switch (action.action) {
     case 'click': {
       const on = toSelector(action.payload.on);

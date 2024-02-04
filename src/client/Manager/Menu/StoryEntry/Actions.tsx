@@ -44,7 +44,9 @@ export const Actions: React.FC<Props> = ({
 
             run([story]);
           }}
-          icon={<PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />}
+          icon={
+            <PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />
+          }
         />
       </Flex>
     );

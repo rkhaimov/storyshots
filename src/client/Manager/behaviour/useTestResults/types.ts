@@ -14,7 +14,7 @@ export type SuccessTestResult = {
   screenshots: ScreenshotsComparisonResults;
 };
 
-export type FailedTestResult = {
+export type ErrorTestResult = {
   running: false;
   type: 'error';
   message: string;
@@ -25,7 +25,7 @@ export type TestResult =
       running: true;
     }
   | SuccessTestResult
-  | FailedTestResult;
+  | ErrorTestResult;
 
 export type ScreenshotsComparisonResults = {
   final: ScreenshotComparisonResult;

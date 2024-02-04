@@ -30,7 +30,9 @@ export const GroupEntry: React.FC<
         <EntryTitle title={group.title}>{group.title}</EntryTitle>
         <Flex>
           <ActionButton
-            icon={<PlayCircleOutlined style={{ color: green[6], fontSize: 20 }} />}
+            icon={
+              <PlayCircleOutlined style={{ color: green[6], fontSize: 20 }} />
+            }
             action={(e) => {
               e.stopPropagation();
 

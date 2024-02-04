@@ -5,7 +5,7 @@ import { useGroupExpand } from './useGroupExpand';
 
 export function useBehaviour(props: Props) {
   const test = useTestResults();
-  const state = useSelection(props, test.results);
+  const state = useSelection(props);
   const expand = useGroupExpand(state.selection);
 
   return {

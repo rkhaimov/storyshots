@@ -1,24 +1,25 @@
+import { blue } from '@ant-design/colors';
+import { FileImageOutlined } from '@ant-design/icons';
 import React from 'react';
+import styled from 'styled-components';
+import { ScreenshotName } from '../../../../reusables/types';
+import { Fail, Fresh, Pass } from '../../../reusables/Statuses';
 import {
   ScreenshotComparisonResult,
   SuccessTestResult,
 } from '../../behaviour/useTestResults/types';
-import styled from 'styled-components';
-import { blue } from '@ant-design/colors';
-import { FileImageOutlined } from '@ant-design/icons';
-import { Fail, Fresh, Pass } from '../../../reusables/Statuses';
-import { isActiveLink } from '../isActiveLink';
 import { Props as ParentProps } from './types';
 
 type Props = { results: SuccessTestResult } & Pick<
   ParentProps,
-  'setScreenshot' | 'story' | 'level'
+  'setScreenshot' | 'story' | 'level' | 'selection'
 >;
 
 export const ScreenshotsEntry: React.FC<Props> = ({
   story,
   level,
   results,
+  selection,
   setScreenshot,
 }) => {
   const screenshots = results.screenshots;
@@ -26,13 +27,11 @@ export const ScreenshotsEntry: React.FC<Props> = ({
   return (
     <ScreenshotsList>
       {screenshots.others.map((it) => {
-        const isActive = isActiveLink('screenshot', story.id, it.name);
-
         return (
           <li key={it.name} onClick={() => setScreenshot(story, it.name)}>
             <ScreenshotHeader
               level={level}
-              style={{ backgroundColor: isActive ? blue[0] : '' }}
+              style={{ backgroundColor: isActive(it.name) ? blue[0] : '' }}
             >
               {renderType(it.result.type)}
               <ScreenshotTitle title={it.name}>
@@ -47,9 +46,7 @@ export const ScreenshotsEntry: React.FC<Props> = ({
         <ScreenshotHeader
           level={level}
           style={{
-            backgroundColor: isActiveLink('screenshot', story.id)
-              ? blue[0]
-              : '',
+            backgroundColor: isActive(undefined) ? blue[0] : '',
           }}
         >
           {renderType(screenshots.final.type)}
@@ -72,6 +69,14 @@ export const ScreenshotsEntry: React.FC<Props> = ({
     }
 
     return <Pass />;
+  }
+
+  function isActive(name: ScreenshotName | undefined) {
+    return (
+      selection.type === 'screenshot' &&
+      selection.story.id === story.id &&
+      selection.name === name
+    );
   }
 };
 
