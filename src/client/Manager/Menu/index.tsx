@@ -9,5 +9,5 @@ export const Menu: React.FC<UseBehaviourProps> = (props) => {
     return <MenuWaitingStories />;
   }
 
-  return <MenuHavingStories {...props} stories={props.selection.stories} />;
+  return <MenuHavingStories {...props} stories={props.selection.stories} level={0} />;
 };

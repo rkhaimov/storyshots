@@ -1,5 +1,8 @@
 import React from 'react';
-import { CameraOutlined, LoadingOutlined } from '@ant-design/icons';
+import { Flex } from 'antd';
+import { green } from '@ant-design/colors';
+import { LoadingOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { ActionButton } from '../ActionButton';
 import { Props } from './types';
 
 export const Actions: React.FC<Props> = ({
@@ -25,19 +28,25 @@ export const Actions: React.FC<Props> = ({
   return renderServerAction();
 
   function renderWaiting() {
-    return <LoadingOutlined style={{ fontSize: 20 }} />;
+    return (
+      <Flex>
+        <ActionButton icon={<LoadingOutlined style={{ fontSize: 16 }} />} />
+      </Flex>
+    );
   }
 
   function renderServerAction() {
     return (
-      <CameraOutlined
-        style={{ fontSize: 20 }}
-        onClick={(e) => {
-          e.stopPropagation();
+      <Flex>
+        <ActionButton
+          action={(e) => {
+            e.stopPropagation();
 
-          run([story]);
-        }}
-      />
+            run([story]);
+          }}
+          icon={<PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />}
+        />
+      </Flex>
     );
   }
 };
