@@ -1,4 +1,9 @@
-import { ScreenshotName, ScreenshotPath, StoryID } from '../../reusables/types';
+import {
+  PageMode,
+  ScreenshotName,
+  ScreenshotPath,
+  StoryID,
+} from '../../reusables/types';
 import { isNil, not } from '../../reusables/utils';
 import path from 'path';
 import { copy, exists, mkdir, mkfile, read } from './utils';
@@ -19,29 +24,45 @@ export async function createScreenshotsBaseline() {
   return {
     createActualScreenshot: async (
       id: StoryID,
+      mode: PageMode,
       name: ScreenshotName | undefined,
       content: Buffer,
     ): Promise<ScreenshotPath> => {
-      const file = path.join(
-        actualResultsDir,
+      const dir = path.join(actualResultsDir, mode.id);
+
+      if (not(await exists(dir))) {
+        await mkdir(dir);
+      }
+
+      const at = path.join(
+        dir,
         isNil(name) ? `${id}.png` : `${id}_${name}.png`,
       );
 
-      await mkfile(file, content);
+      await mkfile(at, content);
 
-      return file as ScreenshotPath;
+      return at as ScreenshotPath;
     },
     getExpectedScreenshot: async (
       id: StoryID,
+      mode: PageMode,
       name: ScreenshotName | undefined,
     ): Promise<ScreenshotPath | undefined> => {
       const image = isNil(name) ? `${id}.png` : `${id}_${name}.png`;
-      const file = path.join(expectedResultsDir, image);
+      const file = path.join(expectedResultsDir, mode.id, image);
 
       return (await exists(file)) ? (file as ScreenshotPath) : undefined;
     },
     readScreenshot: (path: ScreenshotPath): Promise<Buffer> => read(path),
-    acceptScreenshot: async (path: ScreenshotPath): Promise<void> =>
-      copy(path, path.replace(actualResultsDir, expectedResultsDir)),
+    acceptScreenshot: async (screenshot: ScreenshotPath): Promise<void> => {
+      const to = screenshot.replace(actualResultsDir, expectedResultsDir);
+      const dir = path.dirname(to);
+
+      if (not(await exists(dir))) {
+        await mkdir(dir);
+      }
+
+      return copy(screenshot, to);
+    },
   };
 }

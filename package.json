@@ -6,8 +6,8 @@
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
   "scripts": {
-    "start": "tsc -p tsconfig.build.json && node ./temp/compiled/scripts/dev.js",
-    "debug": "tsc -p tsconfig.build.json && node --inspect-brk ./temp/compiled/scripts/dev.js"
+    "start": "tsc -p tsconfig.build.json && node ./temp/compiled/example/storyshots/server.js",
+    "debug": "tsc -p tsconfig.build.json && node --inspect-brk ./temp/compiled/example/storyshots/server.js"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",

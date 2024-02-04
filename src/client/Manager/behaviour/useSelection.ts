@@ -16,19 +16,14 @@ import { findStoryLikeByID } from '../../reusables/findStoryLikeByID';
 import { Props } from '../types';
 import { communicateWithPreview } from './communicateWithPreview';
 import { usePreviewBuildHash } from './usePreviewBuildHash';
-import {
-  FailedTestResult,
-  TestResult,
-  TestResults,
-} from './useTestResults/types';
 
 // TODO: Test and simplify
-export function useSelection(props: Props, results: TestResults) {
+export function useSelection(props: Props) {
   const { driver } = useExternals();
   const id = props.params.story as StoryID | undefined;
   const hash = usePreviewBuildHash();
   const search = useSearch();
-  const key = `${id}_${hash}_${search}`;
+  const identity = `${id}_${hash}_${search}`;
   const ref = useRef<HTMLIFrameElement>(null);
 
   const [, navigate] = useLocation();
@@ -40,13 +35,13 @@ export function useSelection(props: Props, results: TestResults) {
   // TODO: Cancellation must be tested
   useEffect(() => {
     communicateWithPreview(ref, id).then(selectAndPlay);
-  }, [key]);
+  }, [identity]);
 
   return {
     selection,
     preview: {
       ref,
-      key,
+      key: identity,
     },
     setStory: (story: SerializableStoryNode) => {
       navigate(`/${story.id}`);
@@ -64,9 +59,6 @@ export function useSelection(props: Props, results: TestResults) {
           : `/${story.id}?mode=${SelectionMode.Screenshot}&screenshot=${name}`,
       );
     },
-    setError: (story: SerializableStoryNode) => {
-      navigate(`/${story.id}?mode=${SelectionMode.Errors}`);
-    },
   };
 
   async function selectAndPlay(stories: SerializableStoryshotsNode[]) {
@@ -75,76 +67,26 @@ export function useSelection(props: Props, results: TestResults) {
     }
 
     const story = findStoryLikeByID(stories, id);
-    const result = results.get(story.id);
-
-    if (isNil(result)) {
-      return setStorySelection(stories, story);
-    }
-
     const params = new URLSearchParams(search);
     const mode = params.get('mode');
 
-    if (mode === SelectionMode.Errors) {
-      if (result.running) {
-        return setStorySelection(stories, story);
-      }
-
-      if (result.type === 'success') {
-        return setStorySelection(stories, story);
-      }
-
-      return setSelection({
-        type: 'error',
-        result,
-        stories,
-        story,
-      });
-    }
-
     if (mode === SelectionMode.Records) {
-      if (result.running || result.type === 'success') {
-        return setSelection({
-          type: 'records',
-          stories,
-          story,
-          result: result,
-        });
-      }
-
       return setSelection({
-        type: 'error',
-        result,
+        type: 'records',
         stories,
         story,
       });
     }
 
     if (mode === SelectionMode.Screenshot) {
-      if (result.running || result.type === 'success') {
-        return setSelection({
-          type: 'screenshot',
-          name: params.get('screenshot') ?? undefined,
-          stories,
-          story,
-          result,
-        });
-      }
-
       return setSelection({
-        type: 'error',
-        result,
+        type: 'screenshot',
+        name: params.get('screenshot') ?? undefined,
         stories,
         story,
       });
     }
 
-    return setStorySelection(stories, story);
-  }
-
-  async function setStorySelection(
-    stories: SerializableStoryshotsNode[],
-    story: SerializableStoryNode,
-  ) {
     setSelection({ type: 'story', stories, story, playing: true });
 
     const result = await driver.actOnClientSide(story.actions);
@@ -162,7 +104,6 @@ export function useSelection(props: Props, results: TestResults) {
 enum SelectionMode {
   Records = 'records',
   Screenshot = 'screenshot',
-  Errors = 'errors',
 }
 
 export type SelectionState =
@@ -180,26 +121,18 @@ export type SelectionState =
   | {
       type: 'story';
       playing: false;
-      result: WithPossibleError<null>;
-      story: SerializableStoryNode;
-      stories: SerializableStoryshotsNode[];
-    }
-  | {
-      type: 'error';
-      result: FailedTestResult;
+      result: WithPossibleError<void>;
       story: SerializableStoryNode;
       stories: SerializableStoryshotsNode[];
     }
   | {
       type: 'screenshot';
       name: string | undefined;
-      result: Exclude<TestResult, FailedTestResult>;
       story: SerializableStoryNode;
       stories: SerializableStoryshotsNode[];
     }
   | {
       type: 'records';
-      result: Exclude<TestResult, FailedTestResult>;
       story: SerializableStoryNode;
       stories: SerializableStoryshotsNode[];
     };

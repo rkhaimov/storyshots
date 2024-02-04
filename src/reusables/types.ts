@@ -1,17 +1,18 @@
 import { ActionMeta } from './actions';
 import { Brand } from './brand';
+import { Device, Viewport } from 'puppeteer';
 
 export interface IWebDriver {
-  actOnClientSide(action: ActionMeta[]): Promise<WithPossibleError<null>>;
+  actOnClientSide(action: ActionMeta[]): Promise<WithPossibleError<void>>;
 
   actOnServerSide(
     at: StoryID,
-    actions: ActionMeta[],
+    payload: ActionsAndMode,
   ): Promise<WithPossibleError<ActualServerSideResult>>;
 
   getExpectedScreenshots(
     at: StoryID,
-    actions: ActionMeta[],
+    payload: ActionsAndMode,
   ): Promise<ExpectedScreenshots>;
 
   getExpectedRecords(at: StoryID): Promise<JournalRecord[] | null>;
@@ -28,6 +29,11 @@ export interface IWebDriver {
 export type WithPossibleError<T> =
   | { type: 'error'; message: string }
   | { type: 'success'; data: T };
+
+export type ActionsAndMode = {
+  actions: ActionMeta[];
+  mode: PageMode;
+};
 
 export type ScreenshotToAccept = {
   actual: ScreenshotPath;
@@ -68,3 +74,17 @@ export type ScreenshotName = Brand<string, 'ScreenshotName'>;
 export type ScreenshotPath = Brand<string, 'ScreenshotPath'>;
 
 export type StoryID = Brand<string, 'StoryID'>;
+
+export type PageMode = SpecificViewPort | SpecificDevice;
+
+type SpecificViewPort = {
+  type: 'viewport';
+  id: string;
+  viewport: Viewport;
+};
+
+type SpecificDevice = {
+  type: 'device';
+  id: string;
+  device: Device;
+};

@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { blue } from '@ant-design/colors';
 import { isNil } from '../../../../reusables/utils';
-import { isActiveLink } from '../isActiveLink';
 import { Actions } from './Actions';
 import { ErrorsEntry } from './ErrorsEntry';
 import { RecordsEntry } from './RecordsEntry';
@@ -10,14 +9,12 @@ import { ScreenshotsEntry } from './ScreenshotsEntry';
 import { Props } from './types';
 
 export const StoryEntry: React.FC<Props> = (props) => {
-  const isActive = isActiveLink('story', props.story.id);
-
   return (
     <li>
       <EntryHeader
         level={props.level}
         onClick={() => props.setStory(props.story)}
-        style={{ background: isActive ? blue[0] : '' }}
+        style={{ background: isActive() ? blue[0] : '' }}
       >
         <EntryTitle title={props.story.title}>{props.story.title}</EntryTitle>
         <Actions {...props} />
@@ -42,6 +39,13 @@ export const StoryEntry: React.FC<Props> = (props) => {
         <RecordsEntry {...props} results={results} />
         <ScreenshotsEntry {...props} results={results} />
       </>
+    );
+  }
+
+  function isActive() {
+    return (
+      props.selection.type === 'story' &&
+      props.selection.story.id === props.story.id
     );
   }
 };

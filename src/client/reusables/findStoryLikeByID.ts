@@ -7,7 +7,10 @@ type StoryshotsNodeLike =
 
 type StoryNodeLike = { id: StoryID; type: 'story' };
 
-export function findStoryLikeByID<T extends StoryshotsNodeLike>(nodes: T[], id: StoryID) {
+export function findStoryLikeByID<T extends StoryshotsNodeLike>(
+  nodes: T[],
+  id: StoryID,
+) {
   const result = _findStoryByID(nodes, id);
 
   assertNotEmpty(result, `Story was not found by given id: ${id}`);

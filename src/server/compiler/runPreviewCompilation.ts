@@ -12,7 +12,13 @@ export function runPreviewCompilation(onHashChange: (hash: string) => void) {
     mode: 'development',
     bail: false,
     devtool: 'cheap-module-source-map',
-    entry: path.join(process.cwd(), 'example', 'storyshots', 'index.ts'),
+    entry: path.join(
+      process.cwd(),
+      'example',
+      'storyshots',
+      'client',
+      'index.ts',
+    ),
     stats: {
       errorDetails: true,
     },

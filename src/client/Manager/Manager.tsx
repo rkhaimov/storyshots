@@ -1,12 +1,11 @@
-import React from 'react';
-import { Errors } from './Errors';
-import { Props } from './types';
 import { Layout, theme } from 'antd';
+import React from 'react';
 import { useBehaviour } from './behaviour';
 import { Menu } from './Menu';
-import { Story } from './Story';
+import { RecordsOrErrors } from './Records';
 import { Screenshot } from './Screenshot';
-import { Records } from './Records';
+import { Story } from './Story';
+import { Props } from './types';
 
 const { Sider } = Layout;
 
@@ -30,7 +29,14 @@ export const Manager: React.FC<Props> = (props) => {
         >
           <Menu {...behaviour} />
         </Sider>
-        <main style={{ width: '100%', backgroundColor: 'white', overflowY: 'auto', position: 'relative' }}>
+        <main
+          style={{
+            width: '100%',
+            backgroundColor: 'white',
+            overflowY: 'auto',
+            position: 'relative',
+          }}
+        >
           <Story
             key={behaviour.preview.key}
             ref={behaviour.preview.ref}
@@ -42,17 +48,16 @@ export const Manager: React.FC<Props> = (props) => {
           {behaviour.selection.type === 'screenshot' && (
             <Screenshot
               selection={behaviour.selection}
+              results={behaviour.results}
               acceptScreenshot={behaviour.acceptScreenshot}
             />
           )}
           {behaviour.selection.type === 'records' && (
-            <Records
+            <RecordsOrErrors
               selection={behaviour.selection}
+              results={behaviour.results}
               acceptRecords={behaviour.acceptRecords}
             />
-          )}
-          {behaviour.selection.type === 'error' && (
-            <Errors selection={behaviour.selection} />
           )}
         </main>
       </Layout>

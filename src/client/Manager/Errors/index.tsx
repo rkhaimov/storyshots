@@ -1,10 +1,10 @@
 import React from 'react';
-import { SelectionState } from '../behaviour/useSelection';
+import { ErrorTestResult } from '../behaviour/useTestResults/types';
 
 type Props = {
-  selection: Extract<SelectionState, { type: 'error' }>;
+  result: ErrorTestResult;
 };
 
-export const Errors: React.FC<Props> = ({ selection }) => {
-  return <span>{selection.result.message}</span>;
+export const Errors: React.FC<Props> = ({ result }) => {
+  return <span>{result.message}</span>;
 };

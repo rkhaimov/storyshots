@@ -9,6 +9,7 @@ import {
   ScreenshotComparisonResult,
   SuccessTestResult,
 } from '../behaviour/useTestResults/types';
+import { Errors } from '../Errors';
 
 type ScreenshotSelection = Extract<
   SelectionState,
@@ -19,28 +20,35 @@ type ScreenshotSelection = Extract<
 
 type Props = {
   selection: ScreenshotSelection;
-} & Pick<UseBehaviourProps, 'acceptScreenshot'>;
+} & Pick<UseBehaviourProps, 'acceptScreenshot' | 'results'>;
 
 export const Screenshot: React.FC<Props> = ({
   selection,
+  results,
   acceptScreenshot,
 }): React.ReactElement => {
   const { driver } = useExternals();
+  const result = results.get(selection.story.id);
 
-  // TODO: Test it
-  if (selection.result.running) {
+  if (isNil(result)) {
+    return <span>Screenshots are not generated yet</span>;
+  }
+
+  if (result.running) {
     return <span>Screenshots are being generated</span>;
   }
 
-  if (isNil(selection.name)) {
-    return renderSelectedScreenshotResults(
-      undefined,
-      selection.result.screenshots.final,
-      selection.result,
-    );
+  if (result.type === 'error') {
+    return <Errors result={result} />;
   }
 
-  const selectedOtherScreenshot = selection.result.screenshots.others.find(
+  const primary = result.screenshots.primary.results;
+
+  if (isNil(selection.name)) {
+    return renderSelectedScreenshotResults(undefined, primary.final, result);
+  }
+
+  const selectedOtherScreenshot = primary.others.find(
     (it) => it.name === selection.name,
   );
 
@@ -51,7 +59,7 @@ export const Screenshot: React.FC<Props> = ({
   return renderSelectedScreenshotResults(
     selectedOtherScreenshot.name,
     selectedOtherScreenshot.result,
-    selection.result,
+    result,
   );
 
   function renderSelectedScreenshotResults(

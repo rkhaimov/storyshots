@@ -1,8 +1,10 @@
 import React from 'react';
 import ReactDiffViewer from 'react-diff-viewer-continued';
+import { isNil } from '../../../reusables/utils';
 import { Spinner } from '../../reusables/Spinner';
 import { UseBehaviourProps } from '../behaviour/types';
 import { SelectionState } from '../behaviour/useSelection';
+import { Errors } from '../Errors';
 import { Workspace } from '../Workspace';
 
 type RecordsSelection = Extract<
@@ -14,16 +16,28 @@ type RecordsSelection = Extract<
 
 type Props = {
   selection: RecordsSelection;
-} & Pick<UseBehaviourProps, 'acceptRecords'>;
+} & Pick<UseBehaviourProps, 'acceptRecords' | 'results'>;
 
-export const Records: React.FC<Props> = ({ selection, acceptRecords }) => {
-  const results = selection.result;
+export const RecordsOrErrors: React.FC<Props> = ({
+  selection,
+  results,
+  acceptRecords,
+}) => {
+  const result = results.get(selection.story.id);
 
-  if (results.running) {
+  if (isNil(result)) {
+    return <span>Records are not generated yet</span>;
+  }
+
+  if (result.running) {
     return <Spinner.AbsoluteStretched />;
   }
 
-  const records = results.records;
+  if (result.type === 'error') {
+    return <Errors result={result} />;
+  }
+
+  const records = result.records;
 
   if (records.type === 'fresh') {
     return (
@@ -31,7 +45,7 @@ export const Records: React.FC<Props> = ({ selection, acceptRecords }) => {
         actions={
           <button
             onClick={() =>
-              acceptRecords(selection.story, records.actual, results)
+              acceptRecords(selection.story, records.actual, result)
             }
           >
             Accept
@@ -71,9 +85,7 @@ export const Records: React.FC<Props> = ({ selection, acceptRecords }) => {
     <Workspace
       actions={
         <button
-          onClick={() =>
-            acceptRecords(selection.story, records.actual, results)
-          }
+          onClick={() => acceptRecords(selection.story, records.actual, result)}
         >
           Accept
         </button>
