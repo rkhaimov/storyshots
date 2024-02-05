@@ -13,8 +13,8 @@ export const StoryEntry: React.FC<Props> = (props) => {
     <li>
       <EntryHeader
         level={props.level}
+        active={isActive()}
         onClick={() => props.setStory(props.story)}
-        style={{ background: isActive() ? blue[0] : '' }}
       >
         <EntryTitle title={props.story.title}>{props.story.title}</EntryTitle>
         <Actions {...props} />
@@ -50,20 +50,24 @@ export const StoryEntry: React.FC<Props> = (props) => {
   }
 };
 
-const EntryHeader = styled.div.attrs<{ level: number }>((props) => ({
-  level: props.level,
-}))`
+const EntryHeader = styled.div.attrs<{ level: number; active: boolean }>(
+  (props) => ({
+    level: props.level,
+    active: props.active,
+  }),
+)`
   height: 25px;
   display: flex;
   align-items: center;
   padding: 2px;
   padding-left: ${(props) => `${props.level * 24 + 8}px`};
+  background: ${({ active }) => active ? blue[0] : ''};
   transition: 0.2s ease-in-out;
   cursor: pointer;
 
   &:hover,
   &:focus {
-    background: #fafafa;
+    background: ${({ active }) => active ? blue[0] : '#fafafa'};
   }
 `;
 

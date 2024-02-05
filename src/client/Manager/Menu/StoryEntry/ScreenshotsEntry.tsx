@@ -26,32 +26,22 @@ export const ScreenshotsEntry: React.FC<Props> = ({
 
   return (
     <ScreenshotsList>
-      {screenshots.others.map((it) => {
-        return (
-          <li key={it.name} onClick={() => setScreenshot(story, it.name)}>
-            <ScreenshotHeader
-              level={level}
-              style={{ backgroundColor: isActive(it.name) ? blue[0] : '' }}
-            >
-              {renderType(it.result.type)}
-              <ScreenshotTitle title={it.name}>
-                <FileImageOutlined style={{ marginRight: 4 }} />
-                {it.name}
-              </ScreenshotTitle>
-            </ScreenshotHeader>
-          </li>
-        );
-      })}
+      {screenshots.others.map((it) => (
+        <li key={it.name} onClick={() => setScreenshot(story, it.name)}>
+          <ScreenshotHeader level={level} active={isActive(it.name)}>
+            {renderType(it.result.type)}
+            <ScreenshotTitle title={it.name}>
+              <FileImageOutlined />
+              {it.name}
+            </ScreenshotTitle>
+          </ScreenshotHeader>
+        </li>
+      ))}
       <li key="final" onClick={() => setScreenshot(story, undefined)}>
-        <ScreenshotHeader
-          level={level}
-          style={{
-            backgroundColor: isActive(undefined) ? blue[0] : '',
-          }}
-        >
+        <ScreenshotHeader level={level} active={isActive(undefined)}>
           {renderType(screenshots.final.type)}
           <ScreenshotTitle title="FINAL">
-            <FileImageOutlined style={{ marginRight: 4 }} />
+            <FileImageOutlined />
             FINAL
           </ScreenshotTitle>
         </ScreenshotHeader>
@@ -85,20 +75,24 @@ const ScreenshotsList = styled.ul`
   text-decoration: 'none';
 `;
 
-const ScreenshotHeader = styled.div.attrs<{ level: number }>((props) => ({
-  level: props.level,
-}))`
+const ScreenshotHeader = styled.div.attrs<{ level: number; active: boolean }>(
+  (props) => ({
+    level: props.level,
+    active: props.active,
+  }),
+)`
   height: 25px;
   display: flex;
   align-items: center;
   padding: 2px;
   padding-left: ${(props) => `${props.level * 40 + 8}px`};
+  background: ${({ active }) => (active ? blue[0] : '')};
   transition: 0.2s ease-in-out;
   cursor: pointer;
 
   &:hover,
   &:focus {
-    background: #fafafa;
+    background: ${({ active }) => active ? blue[0] : '#fafafa'};
   }
 `;
 
@@ -107,4 +101,8 @@ const ScreenshotTitle = styled.span`
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+
+  & svg {
+    margin-right: 4px;
+  }
 `;

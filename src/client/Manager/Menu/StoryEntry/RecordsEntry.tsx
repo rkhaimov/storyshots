@@ -22,12 +22,12 @@ export const RecordsEntry: React.FC<Props> = ({
     <>
       <RecordsHeader
         level={level}
+        active={isActive()}
         onClick={() => setRecords(story)}
-        style={{ background: isActive() ? blue[0] : '' }}
       >
         {renderType()}
         <RecordsTitle title="API Records">
-          <ProfileOutlined style={{ marginRight: 4 }} />
+          <ProfileOutlined />
           Records
         </RecordsTitle>
       </RecordsHeader>
@@ -51,20 +51,24 @@ export const RecordsEntry: React.FC<Props> = ({
   }
 };
 
-const RecordsHeader = styled.div.attrs<{ level: number }>((props) => ({
-  level: props.level,
-}))`
+const RecordsHeader = styled.div.attrs<{ level: number; active: boolean }>(
+  (props) => ({
+    level: props.level,
+    active: props.active,
+  }),
+)`
   height: 25px;
   display: flex;
   align-items: center;
   padding: 2px;
   padding-left: ${(props) => `${props.level * 40 + 8}px`};
+  background: ${({ active }) => (active ? blue[0] : '')};
   transition: 0.2s ease-in-out;
   cursor: pointer;
 
   &:hover,
   &:focus {
-    background: #fafafa;
+    background: ${({ active }) => active ? blue[0] : '#fafafa'};
   }
 `;
 
@@ -73,4 +77,8 @@ const RecordsTitle = styled.span`
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+
+  & svg {
+    margin-right: 4px;
+  }
 `;

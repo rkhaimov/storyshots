@@ -1,4 +1,3 @@
-import { Flex } from 'antd';
 import { green } from '@ant-design/colors';
 import { PlayCircleOutlined, UpOutlined } from '@ant-design/icons';
 import React from 'react';
@@ -26,9 +25,9 @@ export const GroupEntry: React.FC<
         level={others.level}
         onClick={() => others.toggleGroupExpanded(group)}
       >
-        {<Fold open={expanded} />}
+        <Fold open={expanded} />
         <EntryTitle title={group.title}>{group.title}</EntryTitle>
-        <Flex>
+        <div>
           <ActionButton
             icon={
               <PlayCircleOutlined style={{ color: green[6], fontSize: 20 }} />
@@ -39,7 +38,7 @@ export const GroupEntry: React.FC<
               others.run(extractAllStories(group.children));
             }}
           />
-        </Flex>
+        </div>
       </EntryHeader>
       {expanded && (
         <MenuHavingStories
