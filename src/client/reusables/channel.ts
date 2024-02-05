@@ -1,5 +1,6 @@
 import { ActionMeta } from '../../reusables/actions';
 import { StoryID } from '../../reusables/types';
+import { FinalClientConfig, Modes } from '../create-configure-client/types';
 
 export type FromManagerToPreviewMessage = {
   type: 'select-story';
@@ -16,6 +17,7 @@ export type SerializableStoryNode = {
   type: 'story';
   title: string;
   actions: ActionMeta[];
+  modes: Modes;
 };
 
 export type SerializableGroupNode = {

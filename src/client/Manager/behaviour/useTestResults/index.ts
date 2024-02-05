@@ -8,9 +8,9 @@ import { useExternals } from '../../../externals/Context';
 import { SerializableStoryNode } from '../../../reusables/channel';
 import { createRunTestResult } from './createRunTestResult';
 import {
-  SuccessTestResult,
   RecordsComparisonResult,
   ScreenshotComparisonResult,
+  SuccessTestResult,
   TestResults,
 } from './types';
 
@@ -59,10 +59,20 @@ export function useTestResults() {
           results.set(story.id, {
             ...ready,
             screenshots: {
-              final: name === undefined ? pass : ready.screenshots.final,
-              others: ready.screenshots.others.map((other) =>
-                other.name === name ? { name, result: pass } : other,
-              ),
+              primary: {
+                mode: ready.screenshots.primary.mode,
+                results: {
+                  final:
+                    name === undefined
+                      ? pass
+                      : ready.screenshots.primary.results.final,
+                  others: ready.screenshots.primary.results.others.map(
+                    (other) =>
+                      other.name === name ? { name, result: pass } : other,
+                  ),
+                },
+              },
+              additional: [],
             },
           }),
         ),

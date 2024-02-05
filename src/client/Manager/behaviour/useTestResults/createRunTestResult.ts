@@ -1,4 +1,5 @@
 import {
+  ActionsAndMode,
   ActualScreenshots,
   JournalRecord,
   ScreenshotPath,
@@ -13,13 +14,13 @@ import {
   ScreenshotsComparisonResults,
   TestResult,
 } from './types';
-import { ActionMeta } from '../../../../reusables/actions';
 
 export async function createRunTestResult(
   driver: IExternals['driver'],
   story: SerializableStoryNode,
 ): Promise<TestResult> {
-  const actualResults = await driver.actOnServerSide(story.id, story.actions);
+  const payload = { actions: story.actions, mode: story.modes.primary };
+  const actualResults = await driver.actOnServerSide(story.id, payload);
 
   if (actualResults.type === 'error') {
     return {
@@ -37,22 +38,28 @@ export async function createRunTestResult(
       story.id,
       actualResults.data.records,
     ),
-    screenshots: await createScreenshotsComparisonResults(
-      driver,
-      story.id,
-      story.actions,
-      actualResults.data.screenshots,
-    ),
+    screenshots: {
+      primary: {
+        mode: story.modes.primary,
+        results: await createScreenshotsComparisonResults(
+          driver,
+          story.id,
+          payload,
+          actualResults.data.screenshots,
+        ),
+      },
+      additional: [],
+    },
   };
 }
 
 async function createScreenshotsComparisonResults(
   driver: IExternals['driver'],
   id: StoryID,
-  actions: ActionMeta[],
+  payload: ActionsAndMode,
   actual: ActualScreenshots,
 ): Promise<ScreenshotsComparisonResults> {
-  const expected = await driver.getExpectedScreenshots(id, actions);
+  const expected = await driver.getExpectedScreenshots(id, payload);
 
   const others = actual.others.map(async (actualOther) => {
     const matchedOther = expected.others.find(

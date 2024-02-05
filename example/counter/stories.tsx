@@ -1,4 +1,4 @@
-import { createGroup, createStory } from '../storyshots/config';
+import { createGroup, createStory } from '../storyshots/client/config';
 import { createNeverEndingPromise } from './utils';
 
 export const counterStories = createGroup('Counter', [

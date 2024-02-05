@@ -1,5 +1,6 @@
 import {
   JournalRecord,
+  PageMode,
   ScreenshotName,
   ScreenshotPath,
   StoryID,
@@ -11,7 +12,15 @@ export type SuccessTestResult = {
   running: false;
   type: 'success';
   records: RecordsComparisonResult;
-  screenshots: ScreenshotsComparisonResults;
+  screenshots: {
+    primary: ScreenshotsComparisonResultsByMode;
+    additional: ScreenshotsComparisonResultsByMode[];
+  };
+};
+
+type ScreenshotsComparisonResultsByMode = {
+  mode: PageMode;
+  results: ScreenshotsComparisonResults;
 };
 
 export type ErrorTestResult = {

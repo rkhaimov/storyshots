@@ -24,6 +24,7 @@ export const RecordsEntry: React.FC<Props> = ({
         level={level}
         active={isActive()}
         onClick={() => setRecords(story)}
+        style={{ background: isActive() ? blue[0] : '' }}
       >
         {renderType()}
         <RecordsTitle title="API Records">

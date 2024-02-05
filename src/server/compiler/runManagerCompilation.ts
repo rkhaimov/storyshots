@@ -6,7 +6,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import history from 'connect-history-api-fallback';
 import wsify from 'express-ws';
-import { createWebDriver } from '../src/server/createWebDriver';
+import { createWebDriver } from '../createWebDriver';
 import { createPreviewWatcher } from './createPreviewWatcher';
 
 export function runManagerCompilation() {

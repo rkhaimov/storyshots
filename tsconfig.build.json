@@ -1,6 +1,6 @@
 {
   "include": [
-    "./scripts/dev.ts"
+    "./example/storyshots/server.ts"
   ],
   "compilerOptions": {
     "target": "ES5",
@@ -13,6 +13,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "outDir": "./temp/compiled",
+    "inlineSourceMap": true,
     "types": [
       "./src/reusables/ambient-types.d.ts"
     ]

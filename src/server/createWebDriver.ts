@@ -14,10 +14,8 @@ export async function createWebDriver(app: Application) {
     'Was not able to connect. Try to close chrome and rerun',
   );
 
-  console.log('Browser has been acquired');
   const page = await createAndFocusPage(browser);
 
-  console.log('Page was allocated');
   createApiHandlers(app, page, baseline);
 }
 

@@ -1,11 +1,11 @@
 import { Application } from 'express-serve-static-core';
 import { Baseline } from '../baseline';
 import {
+  ActionsAndMode,
   ExpectedScreenshots,
   Screenshot,
   StoryID,
 } from '../../reusables/types';
-import { ActionMeta } from '../../reusables/actions';
 import { isNil } from '../../reusables/utils';
 
 export function createExpectedScreenshotsHandler(
@@ -14,7 +14,7 @@ export function createExpectedScreenshotsHandler(
 ) {
   app.post('/api/screenshot/expected/:id', async (request, response) => {
     const id = request.params.id as StoryID;
-    const actions: ActionMeta[] = request.body;
+    const { actions, mode }: ActionsAndMode = request.body;
 
     const others: Screenshot[] = [];
     for (const action of actions) {
@@ -24,6 +24,7 @@ export function createExpectedScreenshotsHandler(
 
       const path = await baseline.getExpectedScreenshot(
         id,
+        mode,
         action.payload.name,
       );
 
@@ -38,7 +39,7 @@ export function createExpectedScreenshotsHandler(
     }
 
     const result: ExpectedScreenshots = {
-      final: await baseline.getExpectedScreenshot(id, undefined),
+      final: await baseline.getExpectedScreenshot(id, mode, undefined),
       others,
     };
 

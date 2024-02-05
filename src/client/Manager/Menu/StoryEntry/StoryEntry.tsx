@@ -15,6 +15,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
         level={props.level}
         active={isActive()}
         onClick={() => props.setStory(props.story)}
+        style={{ background: isActive() ? blue[0] : '' }}
       >
         <EntryTitle title={props.story.title}>{props.story.title}</EntryTitle>
         <Actions {...props} />

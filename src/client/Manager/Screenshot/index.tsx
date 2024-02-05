@@ -42,15 +42,13 @@ export const Screenshot: React.FC<Props> = ({
     return <Errors result={result} />;
   }
 
+  const primary = result.screenshots.primary.results;
+
   if (isNil(selection.name)) {
-    return renderSelectedScreenshotResults(
-      undefined,
-      result.screenshots.final,
-      result,
-    );
+    return renderSelectedScreenshotResults(undefined, primary.final, result);
   }
 
-  const selectedOtherScreenshot = result.screenshots.others.find(
+  const selectedOtherScreenshot = primary.others.find(
     (it) => it.name === selection.name,
   );
 

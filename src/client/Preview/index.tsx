@@ -1,5 +1,5 @@
 import React from 'react';
-import { FinalClientConfig } from '../create-configure-client/types';
+import { FinalClientConfig, Modes } from '../create-configure-client/types';
 import { StoryshotsNode } from '../types';
 import ReactDOM from 'react-dom/client';
 import {
@@ -14,7 +14,7 @@ import { Preview } from './Preview';
 export async function createPreviewApp(config: FinalClientConfig) {
   const { port, message } = await waitForManagerConnection();
 
-  sendStoriesToManager(port, config.stories);
+  sendStoriesToManager(port, config);
 
   const div = document.createElement('div');
 
@@ -44,10 +44,10 @@ function waitForManagerConnection() {
   });
 }
 
-function sendStoriesToManager(port: MessagePort, stories: StoryshotsNode[]) {
+function sendStoriesToManager(port: MessagePort, config: FinalClientConfig) {
   const message: FromPreviewToManagerMessage = {
     type: 'stories-changed',
-    stories: toSerializableStories(stories),
+    stories: toSerializableStories(config.stories, config.modes),
   };
 
   port.postMessage(message);
@@ -55,16 +55,18 @@ function sendStoriesToManager(port: MessagePort, stories: StoryshotsNode[]) {
 
 function toSerializableStories(
   stories: StoryshotsNode[],
+  modes: Modes,
 ): SerializableStoryshotsNode[] {
   return stories.map((node) => {
     if (node.type === 'group') {
-      return { ...node, children: toSerializableStories(node.children) };
+      return { ...node, children: toSerializableStories(node.children, modes) };
     }
 
     return {
       id: node.id,
       title: node.title,
       type: node.type,
+      modes,
       actions: node.act(createActor(), createFinder()).toMeta(),
     };
   });

@@ -1,8 +1,10 @@
 import { Application } from 'express-serve-static-core';
 import puppeteer, { Frame, Page } from 'puppeteer';
-import { ActionMeta, ScreenshotAction } from '../../reusables/actions';
+import { ScreenshotAction } from '../../reusables/actions';
 import {
+  ActionsAndMode,
   ActualServerSideResult,
+  PageMode,
   Screenshot,
   ScreenshotPath,
   StoryID,
@@ -18,41 +20,61 @@ export function createActServerSideHandler(
 ) {
   app.post('/api/server/act/:id', async (request, response) => {
     const id = request.params.id as StoryID;
-    const actions: ActionMeta[] = request.body;
+    const payload: ActionsAndMode = request.body;
 
     const browser = await puppeteer.launch({ headless: 'new' });
     const page = await browser.newPage();
 
-    await page.setViewport({ width: 1480, height: 920 });
-    await page.goto(`http://localhost:8080/chromium/${id}`);
-
-    const preview = await toPreviewFrame(page);
-
-    const result = await createActServerResult(
+    const results = await createServerResultByPageMode(
       baseline,
       page,
-      preview,
       id,
-      actions,
+      payload,
     );
 
     await browser.close();
 
-    response.json(result);
+    response.json(results);
   });
 }
 
-async function createActServerResult(
+async function createServerResultByPageMode(
+  baseline: Baseline,
+  page: Page,
+  id: StoryID,
+  payload: ActionsAndMode,
+) {
+  await configurePageByMode(payload.mode, page);
+
+  await page.goto(`http://localhost:8080/chromium/${id}`, {
+    waitUntil: 'networkidle0',
+  });
+
+  const preview = await toPreviewFrame(page);
+
+  return interactWithPageAndMakeShots(baseline, page, preview, id, payload);
+}
+
+async function configurePageByMode(mode: PageMode, page: Page) {
+  switch (mode.type) {
+    case 'viewport':
+      return page.setViewport(mode.viewport);
+    case 'device':
+      return page.emulate(mode.device);
+  }
+}
+
+async function interactWithPageAndMakeShots(
   baseline: Baseline,
   page: Page,
   preview: Frame,
   id: StoryID,
-  actions: ActionMeta[],
+  { mode, actions }: ActionsAndMode,
 ): Promise<WithPossibleError<ActualServerSideResult>> {
   const others: Screenshot[] = [];
   for (const action of actions) {
     if (action.action === 'screenshot') {
-      const result = await createScreenshot(baseline, page, id, action);
+      const result = await createScreenshot(baseline, page, id, action, mode);
 
       if (result.type === 'error') {
         return result;
@@ -68,7 +90,7 @@ async function createActServerResult(
     }
   }
 
-  const final = await createFinalScreenshot(baseline, page, id);
+  const final = await createFinalScreenshot(baseline, page, id, mode);
 
   if (final.type === 'error') {
     return final;
@@ -99,10 +121,12 @@ async function createScreenshot(
   page: Page,
   id: StoryID,
   action: ScreenshotAction,
+  mode: PageMode,
 ): Promise<WithPossibleError<Screenshot>> {
   return WithPossibleErrorOP.fromThrowable(async () => {
     const path = await baseline.createActualScreenshot(
       id,
+      mode,
       action.payload.name,
       await page.screenshot({ type: 'png' }),
     );
@@ -118,10 +142,12 @@ async function createFinalScreenshot(
   baseline: Baseline,
   page: Page,
   id: StoryID,
+  mode: PageMode,
 ): Promise<WithPossibleError<ScreenshotPath>> {
   return WithPossibleErrorOP.fromThrowable(async () => {
     return baseline.createActualScreenshot(
       id,
+      mode,
       undefined,
       await page.screenshot({ type: 'png' }),
     );
