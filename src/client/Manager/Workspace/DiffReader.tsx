@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import ReactDiffViewer, {
   ReactDiffViewerProps,
@@ -9,33 +9,19 @@ type Props = ReactDiffViewerProps & {
 };
 
 export const DiffReader: React.FC<Props> = (props) => {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (props.single && ref.current) {
-      hideFirstGutters();
-    }
-  });
-
-  return (
-    <ReaderPanel>
-      <div ref={ref}>
-        <ReactDiffViewer {...props} />
-      </div>
-    </ReaderPanel>
-  );
-
-  function hideFirstGutters() {
-    const div = ref.current;
-    if (!div) {
-      return;
+  function renderViewer() {
+    if (props.single) {
+      return (
+        <WithoutFirstGutter>
+          <ReactDiffViewer {...props} />
+        </WithoutFirstGutter>
+      );
     }
 
-    const gutters = div.querySelectorAll('table>tbody>tr>td:first-of-type');
-    gutters.forEach((gutter) => {
-      (gutter as HTMLElement).style.display = 'none';
-    });
+    return <ReactDiffViewer {...props} />;
   }
+
+  return <ReaderPanel>{renderViewer()}</ReaderPanel>;
 };
 
 const ReaderPanel = styled.div`
@@ -45,4 +31,10 @@ const ReaderPanel = styled.div`
   border: 1px solid #cecece;
   border-radius: 4px;
   box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+`;
+
+const WithoutFirstGutter = styled.div`
+  & > table > tbody > tr > td:first-of-type {
+    display: none;
+  }
 `;
