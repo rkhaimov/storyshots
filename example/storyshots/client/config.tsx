@@ -3,7 +3,7 @@ import {
   createJournalExternals,
   createMockExternals,
 } from '../../externals/createMockExternals';
-import { createConfigureClient } from '../../../src/client/create-configure-client';
+import { createConfigureClient } from '../../../src/client';
 import { PureApp } from '../../PureApp';
 
 const {

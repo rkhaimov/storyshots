@@ -1,5 +1,5 @@
 import { Application } from 'express-serve-static-core';
-import { Baseline } from '../baseline';
+import { Baseline } from '../reusables/baseline';
 import { JournalRecord, StoryID } from '../../reusables/types';
 
 export function createAcceptRecordsHandler(

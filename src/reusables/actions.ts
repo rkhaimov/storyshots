@@ -1,10 +1,10 @@
-import type { AriaRole } from 'react';
+import { FinderMeta } from './finder';
 import { ScreenshotName } from './types';
 
 type ClickAction = {
   action: 'click';
   payload: {
-    on: SelectorMeta;
+    on: FinderMeta;
   };
 };
 
@@ -16,18 +16,5 @@ export type ScreenshotAction = {
 };
 
 export type ActionMeta = ClickAction | ScreenshotAction;
-
-export type SelectorMeta = {
-  selector: 'aria';
-  payload: {
-    role: AriaRole;
-    attrs?: AriaAttrs;
-  };
-};
-
-export type AriaAttrs = {
-  name: string;
-  [key: string]: string;
-};
 
 export type NonScreenshotAction = Exclude<ActionMeta, ScreenshotAction>;

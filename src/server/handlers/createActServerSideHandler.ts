@@ -10,8 +10,9 @@ import {
   StoryID,
   WithPossibleError,
 } from '../../reusables/types';
-import { act, toPreviewFrame } from '../act';
-import { Baseline } from '../baseline';
+import { act } from '../reusables/act';
+import { Baseline } from '../reusables/baseline';
+import { toPreviewFrame } from '../reusables/toPreviewFrame';
 import { WithPossibleErrorOP } from './reusables/with-possible-error';
 
 export function createActServerSideHandler(

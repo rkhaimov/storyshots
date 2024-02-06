@@ -1,5 +1,5 @@
 import { Application } from 'express-serve-static-core';
-import { Baseline } from '../baseline';
+import { Baseline } from '../reusables/baseline';
 import { ScreenshotsToCompare } from '../../reusables/types';
 import { PNG } from 'pngjs';
 import pixelmatch from 'pixelmatch';

@@ -3,7 +3,7 @@ import { Application } from 'express-serve-static-core';
 import puppeteer, { Browser, Page } from 'puppeteer';
 import { assertNotEmpty, wait } from '../reusables/utils';
 import { createApiHandlers } from './handlers';
-import { createBaseline } from './baseline';
+import { createBaseline } from './reusables/baseline';
 
 export async function createWebDriver(app: Application) {
   const baseline = await createBaseline();

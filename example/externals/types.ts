@@ -2,8 +2,8 @@ export interface IExternals {
   analytics: {
     log(event: string): void;
   };
-  counter: {
-    getInitialValue(date: string): Promise<number>;
+  balance: {
+    getBalanceAt(date: Date): Promise<number>;
   };
   environment: {
     now(): Date;

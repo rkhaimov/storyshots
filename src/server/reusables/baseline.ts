@@ -1,5 +1,5 @@
-import { createScreenshotsBaseline } from './baseline/createScreenshotsBaseline';
-import { createRecordsBaseline } from './baseline/createRecordsBaseline';
+import { createScreenshotsBaseline } from '../baseline/createScreenshotsBaseline';
+import { createRecordsBaseline } from '../baseline/createRecordsBaseline';
 
 export async function createBaseline() {
   const screenshots = await createScreenshotsBaseline();

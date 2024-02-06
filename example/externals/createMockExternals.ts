@@ -1,4 +1,4 @@
-import { Journal } from '../../src/client/types';
+import { Journal } from '../../src/client';
 import { IExternals } from './types';
 
 export function createMockExternals(): IExternals {
@@ -6,8 +6,8 @@ export function createMockExternals(): IExternals {
     analytics: {
       log: () => {},
     },
-    counter: {
-      getInitialValue: async () => 0,
+    balance: {
+      getBalanceAt: async () => 0,
     },
     environment: {
       // 13.01.2024

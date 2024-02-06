@@ -1,7 +1,7 @@
 import { Application } from 'express-serve-static-core';
 import express from 'express';
 import { Page } from 'puppeteer';
-import type { Baseline } from '../baseline';
+import type { Baseline } from '../reusables/baseline';
 import { createActClientSideHandler } from './createActClientSideHandler';
 import { createActServerSideHandler } from './createActServerSideHandler';
 import { createAcceptScreenshotHandler } from './createAcceptScreenshotHandler';

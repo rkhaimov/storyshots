@@ -2,7 +2,8 @@ import { Application } from 'express-serve-static-core';
 import { Frame, Page } from 'puppeteer';
 import { ActionMeta } from '../../reusables/actions';
 import { WithPossibleError } from '../../reusables/types';
-import { act, toPreviewFrame } from '../act';
+import { act } from '../reusables/act';
+import { toPreviewFrame } from '../reusables/toPreviewFrame';
 
 export function createActClientSideHandler(app: Application, page: Page) {
   app.post('/api/client/act', async (request, response) => {

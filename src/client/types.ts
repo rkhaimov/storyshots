@@ -1,5 +1,6 @@
 import { AriaRole } from 'react';
-import { ActionMeta, AriaAttrs, SelectorMeta } from '../reusables/actions';
+import { ActionMeta } from '../reusables/actions';
+import { FinderMeta } from '../reusables/finder';
 import { JournalRecord, StoryID } from '../reusables/types';
 
 export type StoryshotsNode = Group | Story;
@@ -17,7 +18,7 @@ export type Story<out TExternals = unknown> = {
   type: 'story';
   title: string;
   arrange(externals: TExternals, journal: Journal): TExternals;
-  act(actor: Actor, finder: Finder): Actor;
+  act(actor: Actor): Actor;
   render(externals: TExternals): React.ReactNode;
 };
 
@@ -27,10 +28,26 @@ export type Actor = {
   toMeta(): ActionMeta[];
 };
 
+type SupportedAriaAttrs = Partial<Record<'name', string>>;
+
 export type Finder = {
-  getByRole(role: AriaRole, attrs?: AriaAttrs): Finder;
-  toMeta(): SelectorMeta;
+  getByRole(role: AriaRole, attrs?: SupportedAriaAttrs): Finder;
+  getByText(substring: string): Finder;
+  has(element: Finder): Finder;
+  // getByLabel(label: string): Finder;
+  // getByPlaceholder(placeholder: string): Finder;
+  // getByAltText(alt: string): Finder;
+  getBySelector(selector: string): Finder;
+  at(index: number): Finder;
+  toMeta(): FinderMeta;
 };
+
+// FinderFactory contains only selector methods from Finder
+// TODO: Automate selectors picking
+export type FinderFactory = Pick<
+  Finder,
+  'getBySelector' | 'getByRole' | 'getByText'
+>;
 
 export type Journal = {
   record<TArgs extends unknown[], TReturn>(

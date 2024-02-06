@@ -8,7 +8,6 @@ import {
   SerializableStoryshotsNode,
 } from '../reusables/channel';
 import { createActor } from '../createActor';
-import { createFinder } from '../createFinder';
 import { Preview } from './Preview';
 
 export async function createPreviewApp(config: FinalClientConfig) {
@@ -67,7 +66,7 @@ function toSerializableStories(
       title: node.title,
       type: node.type,
       modes,
-      actions: node.act(createActor(), createFinder()).toMeta(),
+      actions: node.act(createActor()).toMeta(),
     };
   });
 }
