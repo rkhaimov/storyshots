@@ -88,6 +88,7 @@ export const Screenshot: React.FC<Props> = ({
             }
           >
             <Workspace.ImgViewer
+              type="fresh"
               src={driver.createScreenshotPath(result.actual)}
             />
           </Workspace>
@@ -96,6 +97,7 @@ export const Screenshot: React.FC<Props> = ({
         return (
           <Workspace title={title}>
             <Workspace.ImgViewer
+              type="pass"
               src={driver.createScreenshotPath(result.actual)}
             />
           </Workspace>

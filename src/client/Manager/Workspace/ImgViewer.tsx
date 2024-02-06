@@ -1,11 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export const ImgViewer: React.FC<{ src: string; alt?: string }> = (props) => {
+type ViewType = 'pass' | 'fresh';
+
+export const ImgViewer: React.FC<{
+  type: ViewType;
+  src: string;
+  alt?: string;
+}> = (props) => {
   return (
     <ViewerPanel>
       <Frame>
-        <Image src={props.src} alt={props.alt} />
+        <Image src={props.src} alt={props.alt} type={props.type} />
       </Frame>
     </ViewerPanel>
   );
@@ -26,10 +32,12 @@ const Frame = styled.div`
   position: relative;
 `;
 
-const Image = styled.img`
+const Image = styled.img.attrs<{ type: ViewType }>((props) => ({
+  type: props.type,
+}))`
   display: block;
   margin: 0 auto;
   max-width: 100%;
   pointer-events: none;
-  border: 1px solid #1677ff;
+  border: 1px solid ${({ type }) => (type === 'fresh' ? '#1677ff' : '#63c363')};
 `;
