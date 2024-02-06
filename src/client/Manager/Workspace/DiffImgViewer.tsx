@@ -3,7 +3,10 @@ import styled from 'styled-components';
 import ReactCompareImage from 'react-compare-image';
 import { Radio, RadioChangeEvent } from 'antd';
 
-type ViewerMode = '2up' | 'swipe';
+enum ViewerMode {
+  TwoUp = 'twoup',
+  Swipe = 'swipe',
+}
 
 const leftBorderColor = '#f77';
 const sliderLineColor = '#acacac';
@@ -12,7 +15,7 @@ const rightBorderColor = '#63c363';
 export const DiffImgViewer: React.FC<
   React.ComponentProps<typeof ReactCompareImage>
 > = (props) => {
-  const [mode, setMode] = useState<ViewerMode>('2up');
+  const [mode, setMode] = useState<ViewerMode>(ViewerMode.TwoUp);
 
   function render2Up() {
     return (
@@ -43,8 +46,8 @@ export const DiffImgViewer: React.FC<
   return (
     <ViewerPanel>
       <Frame>
-        {mode === '2up' && render2Up()}
-        {mode === 'swipe' && renderSwipe()}
+        {mode === ViewerMode.TwoUp && render2Up()}
+        {mode === ViewerMode.Swipe && renderSwipe()}
       </Frame>
       <Controls>
         <Radio.Group
@@ -52,8 +55,8 @@ export const DiffImgViewer: React.FC<
           value={mode}
           onChange={(e: RadioChangeEvent) => setMode(e.target.value)}
         >
-          <Radio.Button value="2up">2-up</Radio.Button>
-          <Radio.Button value="swipe">Swipe</Radio.Button>
+          <Radio.Button value={ViewerMode.TwoUp}>2-up</Radio.Button>
+          <Radio.Button value={ViewerMode.Swipe}>Swipe</Radio.Button>
         </Radio.Group>
       </Controls>
     </ViewerPanel>
