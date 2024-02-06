@@ -37,7 +37,7 @@ export const Actions: React.FC<Props> = ({
 
   function renderServerAction() {
     return (
-      <ServerActionStyled visible={isActionsVisible()}>
+      <ServerActionStyled>
         <ActionButton
           action={(e) => {
             e.stopPropagation();
@@ -51,14 +51,13 @@ export const Actions: React.FC<Props> = ({
       </ServerActionStyled>
     );
   }
-
-  function isActionsVisible() {
-    return selection.type === 'story' && selection.story.id === story.id;
-  }
 };
 
-const ServerActionStyled = styled.div.attrs<{ visible: boolean }>((props) => ({
-  visible: props.visible,
-}))`
-  display: ${({ visible }) => (visible ? undefined : 'none')};
+const ServerActionStyled = styled.div`
+  transition: opacity 0.2s;
+  opacity: 0;
+
+  &:hover {
+    opacity: 1;
+  }
 `;
