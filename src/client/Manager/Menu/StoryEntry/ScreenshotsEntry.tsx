@@ -28,10 +28,7 @@ export const ScreenshotsEntry: React.FC<Props> = ({
       {screenshots.others.map((it) => {
         return (
           <li key={it.name} onClick={() => setScreenshot(story, it.name)}>
-            <ScreenshotHeader
-              level={level}
-              style={{ backgroundColor: isActive(it.name) ? blue[0] : '' }}
-            >
+            <ScreenshotHeader level={level} active={isActive(it.name)}>
               {renderType(it.result.type)}
               <ScreenshotTitle title={it.name}>
                 <FileImageOutlined style={{ marginRight: 4 }} />
@@ -42,12 +39,7 @@ export const ScreenshotsEntry: React.FC<Props> = ({
         );
       })}
       <li key="final" onClick={() => setScreenshot(story, undefined)}>
-        <ScreenshotHeader
-          level={level}
-          style={{
-            backgroundColor: isActive(undefined) ? blue[0] : '',
-          }}
-        >
+        <ScreenshotHeader level={level} active={isActive(undefined)}>
           {renderType(screenshots.final.type)}
           <ScreenshotTitle title="FINAL">
             <FileImageOutlined />
@@ -86,8 +78,10 @@ const ScreenshotsList = styled.ul`
 
 const ScreenshotHeader = styled.div.attrs<{
   level: number;
+  active: boolean;
 }>((props) => ({
   level: props.level,
+  active: props.active,
 }))`
   height: 25px;
   display: flex;
@@ -100,7 +94,7 @@ const ScreenshotHeader = styled.div.attrs<{
 
   &:hover,
   &:focus {
-    background: ${({ active }) => active ? blue[0] : '#fafafa'};
+    background: ${({ active }) => (active ? blue[0] : '#fafafa')};
   }
 `;
 

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { blue } from '@ant-design/colors';
 import { isNil } from '../../../../reusables/utils';
+import { Fail, Fresh, Pass } from '../../../reusables/Statuses';
 import { Actions } from './Actions';
 import { ErrorsEntry } from './ErrorsEntry';
 import { RecordsEntry } from './RecordsEntry';
@@ -17,12 +18,45 @@ export const StoryEntry: React.FC<Props> = (props) => {
         onClick={() => props.setStory(props.story)}
         style={{ background: isActive() ? blue[0] : '' }}
       >
-        <EntryTitle title={props.story.title}>{props.story.title}</EntryTitle>
+        <EntryTitle title={props.story.title}>
+          {renderStoryStatus()}
+          <span>{props.story.title}</span>
+        </EntryTitle>
         <Actions {...props} />
       </EntryHeader>
       {renderResultEntries()}
     </li>
   );
+
+  function renderStoryStatus() {
+    const results = props.results.get(props.story.id);
+
+    if (isNil(results) || results.running) {
+      return;
+    }
+
+    if (results.type === 'success') {
+      const types = [
+        results.records.type,
+        results.screenshots.primary.results.final.type,
+        ...results.screenshots.primary.results.others.map(
+          ({ result }) => result.type,
+        ),
+      ];
+
+      if (types.includes('fail')) {
+        return <Fail />;
+      }
+
+      if (types.includes('fresh')) {
+        return <Fresh />;
+      }
+
+      if (types.includes('pass')) {
+        return <Pass />;
+      }
+    }
+  }
 
   function renderResultEntries() {
     const results = props.results.get(props.story.id);
@@ -62,13 +96,13 @@ const EntryHeader = styled.div.attrs<{ level: number; active: boolean }>(
   align-items: center;
   padding: 2px;
   padding-left: ${(props) => `${props.level * 24 + 8}px`};
-  background: ${({ active }) => active ? blue[0] : ''};
+  background: ${({ active }) => (active ? blue[0] : '')};
   transition: 0.2s ease-in-out;
   cursor: pointer;
 
   &:hover,
   &:focus {
-    background: ${({ active }) => active ? blue[0] : '#fafafa'};
+    background: ${({ active }) => (active ? blue[0] : '#fafafa')};
   }
 `;
 
@@ -82,4 +116,8 @@ const EntryTitle = styled.span`
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+
+  & > span:last-of-type {
+    margin-left: 6px;
+  }
 `;

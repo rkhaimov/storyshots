@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import { green } from '@ant-design/colors';
 import { LoadingOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import { ActionButton } from '../ActionButton';
@@ -36,7 +37,7 @@ export const Actions: React.FC<Props> = ({
 
   function renderServerAction() {
     return (
-      <div>
+      <ServerActionStyled visible={isActionsVisible()}>
         <ActionButton
           action={(e) => {
             e.stopPropagation();
@@ -47,7 +48,17 @@ export const Actions: React.FC<Props> = ({
             <PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />
           }
         />
-      </div>
+      </ServerActionStyled>
     );
   }
+
+  function isActionsVisible() {
+    return selection.type === 'story' && selection.story.id === story.id;
+  }
 };
+
+const ServerActionStyled = styled.div.attrs<{ visible: boolean }>((props) => ({
+  visible: props.visible,
+}))`
+  display: ${({ visible }) => (visible ? undefined : 'none')};
+`;
