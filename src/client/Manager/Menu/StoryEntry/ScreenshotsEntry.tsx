@@ -3,11 +3,8 @@ import { FileImageOutlined } from '@ant-design/icons';
 import React from 'react';
 import styled from 'styled-components';
 import { ScreenshotName } from '../../../../reusables/types';
-import { Fail, Fresh, Pass } from '../../../reusables/Statuses';
-import {
-  ScreenshotComparisonResult,
-  SuccessTestResult,
-} from '../../behaviour/useTestResults/types';
+import { Status } from '../../../reusables/Status';
+import { SuccessTestResult } from '../../behaviour/useTestResults/types';
 import { Props as ParentProps } from './types';
 
 type Props = {
@@ -29,7 +26,7 @@ export const ScreenshotsEntry: React.FC<Props> = ({
         return (
           <li key={it.name} onClick={() => setScreenshot(story, it.name)}>
             <ScreenshotHeader level={level} active={isActive(it.name)}>
-              {renderType(it.result.type)}
+              <Status type={it.result.type} />
               <ScreenshotTitle title={it.name}>
                 <FileImageOutlined style={{ marginRight: 4 }} />
                 {it.name}
@@ -40,7 +37,7 @@ export const ScreenshotsEntry: React.FC<Props> = ({
       })}
       <li key="final" onClick={() => setScreenshot(story, undefined)}>
         <ScreenshotHeader level={level} active={isActive(undefined)}>
-          {renderType(screenshots.final.type)}
+          <Status type={screenshots.final.type} />
           <ScreenshotTitle title="FINAL">
             <FileImageOutlined />
             FINAL
@@ -49,18 +46,6 @@ export const ScreenshotsEntry: React.FC<Props> = ({
       </li>
     </ScreenshotsList>
   );
-
-  function renderType(type: ScreenshotComparisonResult['type']) {
-    if (type === 'fail') {
-      return <Fail />;
-    }
-
-    if (type === 'fresh') {
-      return <Fresh />;
-    }
-
-    return <Pass />;
-  }
 
   function isActive(name: ScreenshotName | undefined) {
     return (

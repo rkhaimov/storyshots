@@ -2,7 +2,7 @@ import { blue } from '@ant-design/colors';
 import { ProfileOutlined } from '@ant-design/icons';
 import React from 'react';
 import styled from 'styled-components';
-import { Fail, Fresh, Pass } from '../../../reusables/Statuses';
+import { Status } from '../../../reusables/Status';
 import { SuccessTestResult } from '../../behaviour/useTestResults/types';
 import { Props as ParentProps } from './types';
 
@@ -25,7 +25,7 @@ export const RecordsEntry: React.FC<Props> = ({
         active={isActive()}
         onClick={() => setRecords(story)}
       >
-        {renderType()}
+        <Status type={results.records.type} />
         <RecordsTitle title="API Records">
           <ProfileOutlined />
           Records
@@ -33,18 +33,6 @@ export const RecordsEntry: React.FC<Props> = ({
       </RecordsHeader>
     </>
   );
-
-  function renderType() {
-    if (results.records.type === 'fail') {
-      return <Fail />;
-    }
-
-    if (results.records.type === 'fresh') {
-      return <Fresh />;
-    }
-
-    return <Pass />;
-  }
 
   function isActive() {
     return selection.type === 'records' && selection.story.id === story.id;

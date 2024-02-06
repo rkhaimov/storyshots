@@ -10,6 +10,7 @@ import {
 import { MenuHavingStories } from '../MenuHavingStories';
 import { ActionButton } from '../ActionButton';
 import { Props } from '../types';
+import { Status, getGroupStatus } from '../../../reusables/Status';
 
 export const GroupEntry: React.FC<
   Props & {
@@ -26,6 +27,7 @@ export const GroupEntry: React.FC<
         onClick={() => others.toggleGroupExpanded(group)}
       >
         <Fold open={expanded} />
+        <Status type={getGroupStatus(group.children, others.results)} />
         <EntryTitle title={group.title}>{group.title}</EntryTitle>
         <div>
           <ActionButton
