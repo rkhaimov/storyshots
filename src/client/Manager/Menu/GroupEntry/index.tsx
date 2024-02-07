@@ -27,8 +27,10 @@ export const GroupEntry: React.FC<
         onClick={() => others.toggleGroupExpanded(group)}
       >
         <Fold open={expanded} />
-        <Status type={getGroupStatus(group.children, others.results)} />
-        <EntryTitle title={group.title}>{group.title}</EntryTitle>
+        <EntryTitle title={group.title}>
+          <Status type={getGroupStatus(group.children, others.results)} />
+          {group.title}
+        </EntryTitle>
         <div>
           <ActionButton
             icon={
@@ -76,7 +78,6 @@ const EntryHeader = styled.div.attrs<{ level: number }>((props) => ({
 }))`
   display: flex;
   align-items: center;
-  padding: 2px;
   padding-left: ${(props) => `${props.level * 24 + 8}px`};
   transition: 0.2s ease-in-out;
   cursor: pointer;
@@ -98,4 +99,8 @@ const EntryTitle = styled.span`
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+
+  & > span:first-of-type {
+    margin-right: 4px;
+  }
 `;

@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import { blue } from '@ant-design/colors';
 import { isNil } from '../../../../reusables/utils';
 import { Status, getStoryStatus } from '../../../reusables/Status';
@@ -8,21 +7,25 @@ import { ErrorsEntry } from './ErrorsEntry';
 import { RecordsEntry } from './RecordsEntry';
 import { ScreenshotsEntry } from './ScreenshotsEntry';
 import { Props } from './types';
+import { Title } from './styled/Title';
+import { Header } from './styled/Header';
 
 export const StoryEntry: React.FC<Props> = (props) => {
   return (
     <li>
-      <EntryHeader
+      <Header
+        levelMargin={8}
         level={props.level}
         active={isActive()}
+        activeColor={blue[0]}
         onClick={() => props.setStory(props.story)}
       >
-        <EntryTitle title={props.story.title}>
+        <Title title={props.story.title}>
           <Status type={getStoryStatus(props.story.id, props.results)} />
           <span>{props.story.title}</span>
-        </EntryTitle>
+        </Title>
         <Actions {...props} />
-      </EntryHeader>
+      </Header>
       {renderResultEntries()}
     </li>
   );
@@ -53,40 +56,3 @@ export const StoryEntry: React.FC<Props> = (props) => {
     );
   }
 };
-
-const EntryHeader = styled.div.attrs<{ level: number; active: boolean }>(
-  (props) => ({
-    level: props.level,
-    active: props.active,
-  }),
-)`
-  height: 25px;
-  display: flex;
-  align-items: center;
-  padding: 2px;
-  padding-left: ${(props) => `${props.level * 24 + 8}px`};
-  background: ${({ active }) => (active ? blue[0] : '')};
-  transition: 0.2s ease-in-out;
-  cursor: pointer;
-
-  &:hover,
-  &:focus {
-    background: ${({ active }) => (active ? blue[0] : '#fafafa')};
-  }
-`;
-
-const EntryTitle = styled.span`
-  flex: 1 1 auto;
-  font-size: 14px;
-  min-width: 100px;
-  margin-top: -2px;
-  padding: 0 4px;
-  user-select: none;
-  overflow-x: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-
-  & > span:last-of-type {
-    margin-left: 6px;
-  }
-`;

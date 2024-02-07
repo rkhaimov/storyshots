@@ -10,12 +10,12 @@ export function getStoryStatus(
 ): StatusType {
   const testResult = results.get(storyId);
 
-  if (
-    isNil(testResult) ||
-    testResult.running ||
-    (testResult && testResult.type !== 'success')
-  ) {
+  if (isNil(testResult) || testResult.running) {
     return 'default';
+  }
+
+  if (testResult.type === 'error') {
+    return 'error';
   }
 
   const typeFinal = testResult.screenshots.primary.results.final.type;
@@ -47,6 +47,10 @@ export function getGroupStatus(
 }
 
 function getCommonStatus(types: StatusType[]): StatusType {
+  if (types.includes('error')) {
+    return 'error';
+  }
+
   if (types.includes('fail')) {
     return 'fail';
   }
