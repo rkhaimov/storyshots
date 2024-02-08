@@ -1,12 +1,13 @@
 import React from 'react';
-import { Flex } from 'antd';
+import styled from 'styled-components';
 import { green } from '@ant-design/colors';
 import { LoadingOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import { ActionButton } from '../ActionButton';
 import { Props } from './types';
 
-export const Actions: React.FC<Props> = ({
+export const Actions: React.FC<Props & { opacity: number }> = ({
   selection,
+  opacity,
   story,
   results,
   run,
@@ -29,15 +30,15 @@ export const Actions: React.FC<Props> = ({
 
   function renderWaiting() {
     return (
-      <Flex>
+      <div>
         <ActionButton icon={<LoadingOutlined style={{ fontSize: 16 }} />} />
-      </Flex>
+      </div>
     );
   }
 
   function renderServerAction() {
     return (
-      <Flex>
+      <ServerActionStyled opacity={opacity}>
         <ActionButton
           action={(e) => {
             e.stopPropagation();
@@ -48,7 +49,14 @@ export const Actions: React.FC<Props> = ({
             <PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />
           }
         />
-      </Flex>
+      </ServerActionStyled>
     );
   }
 };
+
+const ServerActionStyled = styled.div.attrs<{ opacity: number }>((props) => ({
+  opacity: props.opacity,
+}))`
+  transition: opacity 0.2s;
+  opacity: ${(props) => props.opacity};
+`;

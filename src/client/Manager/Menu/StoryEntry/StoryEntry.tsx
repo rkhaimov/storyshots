@@ -1,24 +1,35 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState } from 'react';
 import { blue } from '@ant-design/colors';
 import { isNil } from '../../../../reusables/utils';
+import { Status, getStoryStatus } from '../../../reusables/Status';
 import { Actions } from './Actions';
 import { ErrorsEntry } from './ErrorsEntry';
 import { RecordsEntry } from './RecordsEntry';
 import { ScreenshotsEntry } from './ScreenshotsEntry';
 import { Props } from './types';
+import { Title } from '../../../reusables/Menu/styled/Title';
+import { Header } from '../../../reusables/Menu/styled/Header';
 
 export const StoryEntry: React.FC<Props> = (props) => {
+  const [actionsOpacity, setActionsOpacity] = useState(0);
+
   return (
     <li>
-      <EntryHeader
+      <Header
+        levelMargin={8}
         level={props.level}
+        active={isActive()}
+        activeColor={blue[0]}
         onClick={() => props.setStory(props.story)}
-        style={{ background: isActive() ? blue[0] : '' }}
+        onMouseEnter={() => setActionsOpacity(1)}
+        onMouseLeave={() => setActionsOpacity(0)}
       >
-        <EntryTitle title={props.story.title}>{props.story.title}</EntryTitle>
-        <Actions {...props} />
-      </EntryHeader>
+        <Title title={props.story.title}>
+          <Status type={getStoryStatus(props.story.id, props.results)} />
+          <span>{props.story.title}</span>
+        </Title>
+        <Actions {...props} opacity={actionsOpacity} />
+      </Header>
       {renderResultEntries()}
     </li>
   );
@@ -49,32 +60,3 @@ export const StoryEntry: React.FC<Props> = (props) => {
     );
   }
 };
-
-const EntryHeader = styled.div.attrs<{ level: number }>((props) => ({
-  level: props.level,
-}))`
-  height: 25px;
-  display: flex;
-  align-items: center;
-  padding: 2px;
-  padding-left: ${(props) => `${props.level * 24 + 8}px`};
-  transition: 0.2s ease-in-out;
-  cursor: pointer;
-
-  &:hover,
-  &:focus {
-    background: #fafafa;
-  }
-`;
-
-const EntryTitle = styled.span`
-  flex: 1 1 auto;
-  font-size: 14px;
-  min-width: 100px;
-  margin-top: -2px;
-  padding: 0 4px;
-  user-select: none;
-  overflow-x: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`;

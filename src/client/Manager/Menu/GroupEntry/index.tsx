@@ -1,7 +1,6 @@
-import { Flex } from 'antd';
 import { green } from '@ant-design/colors';
 import { PlayCircleOutlined, UpOutlined } from '@ant-design/icons';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import {
   SerializableGroupNode,
@@ -11,6 +10,15 @@ import {
 import { MenuHavingStories } from '../MenuHavingStories';
 import { ActionButton } from '../ActionButton';
 import { Props } from '../types';
+import {
+  Status,
+  getCommonStatus,
+  getStoryStatus,
+} from '../../../reusables/Status';
+import { TestResults } from '../../behaviour/useTestResults/types';
+import { StatusType } from '../../../reusables/Status/types';
+import { Header } from '../../../reusables/Menu/styled/Header';
+import { Title } from '../../../reusables/Menu/styled/Title';
 
 export const GroupEntry: React.FC<
   Props & {
@@ -19,16 +27,25 @@ export const GroupEntry: React.FC<
 > = (props) => {
   const { group, ...others } = props;
   const expanded = others.expanded.has(group.id);
+  const [actionsOpacity, setActionsOpacity] = useState(0);
 
   return (
     <li>
-      <EntryHeader
+      <Header
+        levelMargin={8}
         level={others.level}
+        active={false}
+        activeColor=""
         onClick={() => others.toggleGroupExpanded(group)}
+        onMouseEnter={() => setActionsOpacity(1)}
+        onMouseLeave={() => setActionsOpacity(0)}
       >
-        {<Fold open={expanded} />}
-        <EntryTitle title={group.title}>{group.title}</EntryTitle>
-        <Flex>
+        <Fold open={expanded} />
+        <Title title={group.title} fontSize={16} fontWeight={600}>
+          <Status type={getGroupStatus(group.children, others.results)} />
+          {group.title}
+        </Title>
+        <GroupActions opacity={actionsOpacity}>
           <ActionButton
             icon={
               <PlayCircleOutlined style={{ color: green[6], fontSize: 20 }} />
@@ -39,8 +56,8 @@ export const GroupEntry: React.FC<
               others.run(extractAllStories(group.children));
             }}
           />
-        </Flex>
-      </EntryHeader>
+        </GroupActions>
+      </Header>
       {expanded && (
         <MenuHavingStories
           {...others}
@@ -64,37 +81,30 @@ function extractAllStories(
   });
 }
 
+export function getGroupStatus(
+  nodes: SerializableStoryshotsNode[],
+  results: TestResults,
+): StatusType {
+  const allStoriesStatuses = nodes.map((it) => {
+    if (it.type === 'group') {
+      return getGroupStatus(it.children, results);
+    }
+
+    return getStoryStatus(it.id, results);
+  });
+
+  return getCommonStatus(allStoriesStatuses);
+}
+
 const Fold = styled(UpOutlined)`
   margin-right: 2px;
   transform: rotate(${({ open }) => `${open ? '180' : '90'}deg`});
   transition: 0.2s;
 `;
 
-const EntryHeader = styled.div.attrs<{ level: number }>((props) => ({
-  level: props.level,
+const GroupActions = styled.div.attrs<{ opacity: number }>((props) => ({
+  opacity: props.opacity,
 }))`
-  display: flex;
-  align-items: center;
-  padding: 2px;
-  padding-left: ${(props) => `${props.level * 24 + 8}px`};
-  transition: 0.2s ease-in-out;
-  cursor: pointer;
-
-  &:hover,
-  &:focus {
-    background: #fafafa;
-  }
-`;
-
-const EntryTitle = styled.span`
-  flex: 1 1 auto;
-  font-size: 16px;
-  font-weight: 600;
-  min-width: 100px;
-  margin-top: -2px;
-  padding: 0 4px;
-  user-select: none;
-  overflow-x: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  transition: opacity 0.2s ease-in-out;
+  opacity: ${(props) => props.opacity};
 `;

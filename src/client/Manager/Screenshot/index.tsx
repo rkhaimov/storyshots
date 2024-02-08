@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactCompareImage from 'react-compare-image';
 import { ScreenshotName } from '../../../reusables/types';
 import { isNil } from '../../../reusables/utils';
 import { useExternals } from '../../externals/Context';
@@ -10,6 +9,8 @@ import {
   SuccessTestResult,
 } from '../behaviour/useTestResults/types';
 import { Errors } from '../Errors';
+import { Workspace } from '../Workspace';
+import { ActionAccept } from '../Workspace/Actions/Accept';
 
 type ScreenshotSelection = Extract<
   SelectionState,
@@ -29,6 +30,7 @@ export const Screenshot: React.FC<Props> = ({
 }): React.ReactElement => {
   const { driver } = useExternals();
   const result = results.get(selection.story.id);
+  const title = `${selection.story.title} — ${selection.name ?? 'FINAL'}`;
 
   if (isNil(result)) {
     return <span>Screenshots are not generated yet</span>;
@@ -70,37 +72,58 @@ export const Screenshot: React.FC<Props> = ({
     switch (result.type) {
       case 'fresh':
         return (
-          <>
-            <button
-              onClick={() =>
-                acceptScreenshot(selection.story, name, result.actual, results)
-              }
-            >
-              Accept
-            </button>
-            <img src={driver.createScreenshotPath(result.actual)} />
-          </>
+          <Workspace
+            title={title}
+            actions={
+              <ActionAccept
+                onAction={() =>
+                  acceptScreenshot(
+                    selection.story,
+                    name,
+                    result.actual,
+                    results,
+                  )
+                }
+              />
+            }
+          >
+            <Workspace.ImgViewer
+              type="fresh"
+              src={driver.createScreenshotPath(result.actual)}
+            />
+          </Workspace>
         );
       case 'pass':
-        return <img src={driver.createScreenshotPath(result.actual)} />;
+        return (
+          <Workspace title={title}>
+            <Workspace.ImgViewer
+              type="pass"
+              src={driver.createScreenshotPath(result.actual)}
+            />
+          </Workspace>
+        );
       case 'fail':
         return (
-          <>
-            <button
-              onClick={() =>
-                acceptScreenshot(selection.story, name, result.actual, results)
-              }
-            >
-              Accept
-            </button>
-            <span>DIFF</span>
-            <ReactCompareImage
+          <Workspace
+            title={title}
+            actions={
+              <ActionAccept
+                onAction={() =>
+                  acceptScreenshot(
+                    selection.story,
+                    name,
+                    result.actual,
+                    results,
+                  )
+                }
+              />
+            }
+          >
+            <Workspace.DiffImgViewer
               leftImage={driver.createScreenshotPath(result.expected)}
               rightImage={driver.createScreenshotPath(result.actual)}
-              leftImageLabel="Expected"
-              rightImageLabel="Actual"
             />
-          </>
+          </Workspace>
         );
     }
   }

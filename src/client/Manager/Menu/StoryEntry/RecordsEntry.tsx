@@ -1,10 +1,11 @@
 import { blue } from '@ant-design/colors';
 import { ProfileOutlined } from '@ant-design/icons';
 import React from 'react';
-import styled from 'styled-components';
-import { Fail, Fresh, Pass } from '../../../reusables/Statuses';
+import { Status } from '../../../reusables/Status';
 import { SuccessTestResult } from '../../behaviour/useTestResults/types';
 import { Props as ParentProps } from './types';
+import { Title } from '../../../reusables/Menu/styled/Title';
+import { Header } from '../../../reusables/Menu/styled/Header';
 
 type Props = { results: SuccessTestResult } & Pick<
   ParentProps,
@@ -20,57 +21,23 @@ export const RecordsEntry: React.FC<Props> = ({
 }) => {
   return (
     <>
-      <RecordsHeader
+      <Header
         level={level}
+        levelMargin={24}
+        active={isActive()}
+        activeColor={blue[0]}
         onClick={() => setRecords(story)}
-        style={{ background: isActive() ? blue[0] : '' }}
       >
-        {renderType()}
-        <RecordsTitle title="API Records">
-          <ProfileOutlined style={{ marginRight: 4 }} />
+        <Title title="API Records">
+          <Status type={results.records.type} />
+          <ProfileOutlined />
           Records
-        </RecordsTitle>
-      </RecordsHeader>
+        </Title>
+      </Header>
     </>
   );
-
-  function renderType() {
-    if (results.records.type === 'fail') {
-      return <Fail />;
-    }
-
-    if (results.records.type === 'fresh') {
-      return <Fresh />;
-    }
-
-    return <Pass />;
-  }
 
   function isActive() {
     return selection.type === 'records' && selection.story.id === story.id;
   }
 };
-
-const RecordsHeader = styled.div.attrs<{ level: number }>((props) => ({
-  level: props.level,
-}))`
-  height: 25px;
-  display: flex;
-  align-items: center;
-  padding: 2px;
-  padding-left: ${(props) => `${props.level * 40 + 8}px`};
-  transition: 0.2s ease-in-out;
-  cursor: pointer;
-
-  &:hover,
-  &:focus {
-    background: #fafafa;
-  }
-`;
-
-const RecordsTitle = styled.span`
-  margin-left: 6px;
-  overflow-x: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`;

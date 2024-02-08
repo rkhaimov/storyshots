@@ -1,11 +1,11 @@
 import React from 'react';
-import ReactDiffViewer from 'react-diff-viewer-continued';
 import { isNil } from '../../../reusables/utils';
 import { Spinner } from '../../reusables/Spinner';
 import { UseBehaviourProps } from '../behaviour/types';
 import { SelectionState } from '../behaviour/useSelection';
 import { Errors } from '../Errors';
 import { Workspace } from '../Workspace';
+import { ActionAccept } from '../Workspace/Actions/Accept';
 
 type RecordsSelection = Extract<
   SelectionState,
@@ -24,6 +24,7 @@ export const RecordsOrErrors: React.FC<Props> = ({
   acceptRecords,
 }) => {
   const result = results.get(selection.story.id);
+  const title = `${selection.story.title} — Records`;
 
   if (isNil(result)) {
     return <span>Records are not generated yet</span>;
@@ -42,63 +43,59 @@ export const RecordsOrErrors: React.FC<Props> = ({
   if (records.type === 'fresh') {
     return (
       <Workspace
+        title={title}
         actions={
-          <button
-            onClick={() =>
+          <ActionAccept
+            onAction={() =>
               acceptRecords(selection.story, records.actual, result)
             }
-          >
-            Accept
-          </button>
+          />
         }
       >
-        <Workspace.CodeReader>
-          <ReactDiffViewer
-            oldValue={JSON.stringify(records.actual, null, 2)}
-            newValue={JSON.stringify(records.actual, null, 2)}
-            showDiffOnly={false}
-            splitView={false}
-            hideLineNumbers={false}
-          />
-        </Workspace.CodeReader>
+        <Workspace.DiffReader
+          oldValue={JSON.stringify(records.actual, null, 2)}
+          newValue={JSON.stringify(records.actual, null, 2)}
+          showDiffOnly={false}
+          splitView={false}
+          hideLineNumbers={false}
+          single
+        />
       </Workspace>
     );
   }
 
   if (records.type === 'pass') {
     return (
-      <Workspace>
-        <Workspace.CodeReader>
-          <ReactDiffViewer
-            oldValue={JSON.stringify(records.actual, null, 2)}
-            newValue={JSON.stringify(records.actual, null, 2)}
-            showDiffOnly={false}
-            splitView={false}
-            hideLineNumbers={false}
-          />
-        </Workspace.CodeReader>
+      <Workspace title={title}>
+        <Workspace.DiffReader
+          oldValue={JSON.stringify(records.actual, null, 2)}
+          newValue={JSON.stringify(records.actual, null, 2)}
+          showDiffOnly={false}
+          splitView={false}
+          hideLineNumbers={false}
+          single
+        />
       </Workspace>
     );
   }
 
   return (
     <Workspace
+      title={title}
       actions={
-        <button
-          onClick={() => acceptRecords(selection.story, records.actual, result)}
-        >
-          Accept
-        </button>
+        <ActionAccept
+          onAction={() =>
+            acceptRecords(selection.story, records.actual, result)
+          }
+        />
       }
     >
-      <Workspace.CodeReader>
-        <ReactDiffViewer
-          oldValue={JSON.stringify(records.expected, null, 2)}
-          newValue={JSON.stringify(records.actual, null, 2)}
-          showDiffOnly={false}
-          hideLineNumbers={false}
-        />
-      </Workspace.CodeReader>
+      <Workspace.DiffReader
+        oldValue={JSON.stringify(records.expected, null, 2)}
+        newValue={JSON.stringify(records.actual, null, 2)}
+        showDiffOnly={false}
+        hideLineNumbers={false}
+      />
     </Workspace>
   );
 };

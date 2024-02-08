@@ -3,12 +3,11 @@ import { FileImageOutlined } from '@ant-design/icons';
 import React from 'react';
 import styled from 'styled-components';
 import { ScreenshotName } from '../../../../reusables/types';
-import { Fail, Fresh, Pass } from '../../../reusables/Statuses';
-import {
-  ScreenshotComparisonResult,
-  SuccessTestResult,
-} from '../../behaviour/useTestResults/types';
+import { Status } from '../../../reusables/Status';
+import { SuccessTestResult } from '../../behaviour/useTestResults/types';
 import { Props as ParentProps } from './types';
+import { Title } from '../../../reusables/Menu/styled/Title';
+import { Header } from '../../../reusables/Menu/styled/Header';
 
 type Props = {
   results: SuccessTestResult;
@@ -28,47 +27,37 @@ export const ScreenshotsEntry: React.FC<Props> = ({
       {screenshots.others.map((it) => {
         return (
           <li key={it.name} onClick={() => setScreenshot(story, it.name)}>
-            <ScreenshotHeader
+            <Header
               level={level}
-              style={{ backgroundColor: isActive(it.name) ? blue[0] : '' }}
+              levelMargin={24}
+              activeColor={blue[0]}
+              active={isActive(it.name)}
             >
-              {renderType(it.result.type)}
-              <ScreenshotTitle title={it.name}>
+              <Title title={it.name}>
+                <Status type={it.result.type} />
                 <FileImageOutlined style={{ marginRight: 4 }} />
                 {it.name}
-              </ScreenshotTitle>
-            </ScreenshotHeader>
+              </Title>
+            </Header>
           </li>
         );
       })}
       <li key="final" onClick={() => setScreenshot(story, undefined)}>
-        <ScreenshotHeader
+        <Header
           level={level}
-          style={{
-            backgroundColor: isActive(undefined) ? blue[0] : '',
-          }}
+          levelMargin={24}
+          activeColor={blue[0]}
+          active={isActive(undefined)}
         >
-          {renderType(screenshots.final.type)}
-          <ScreenshotTitle title="FINAL">
-            <FileImageOutlined style={{ marginRight: 4 }} />
+          <Title title="FINAL">
+            <Status type={screenshots.final.type} />
+            <FileImageOutlined />
             FINAL
-          </ScreenshotTitle>
-        </ScreenshotHeader>
+          </Title>
+        </Header>
       </li>
     </ScreenshotsList>
   );
-
-  function renderType(type: ScreenshotComparisonResult['type']) {
-    if (type === 'fail') {
-      return <Fail />;
-    }
-
-    if (type === 'fresh') {
-      return <Fresh />;
-    }
-
-    return <Pass />;
-  }
 
   function isActive(name: ScreenshotName | undefined) {
     return (
@@ -82,30 +71,4 @@ export const ScreenshotsEntry: React.FC<Props> = ({
 const ScreenshotsList = styled.ul`
   padding: 0;
   text-decoration: none;
-`;
-
-const ScreenshotHeader = styled.div.attrs<{
-  level: number;
-}>((props) => ({
-  level: props.level,
-}))`
-  height: 25px;
-  display: flex;
-  align-items: center;
-  padding: 2px;
-  padding-left: ${(props) => `${props.level * 40 + 8}px`};
-  transition: 0.2s ease-in-out;
-  cursor: pointer;
-
-  &:hover,
-  &:focus {
-    background: #fafafa;
-  }
-`;
-
-const ScreenshotTitle = styled.span`
-  margin-left: 6px;
-  overflow-x: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 `;
