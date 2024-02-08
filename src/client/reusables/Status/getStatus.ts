@@ -1,7 +1,6 @@
 import { StoryID } from '../../../reusables/types';
 import { isNil } from '../../../reusables/utils';
 import { TestResults } from '../../Manager/behaviour/useTestResults/types';
-import { SerializableStoryshotsNode } from '../channel';
 import { StatusType } from './types';
 
 export function getStoryStatus(
@@ -11,7 +10,7 @@ export function getStoryStatus(
   const testResult = results.get(storyId);
 
   if (isNil(testResult) || testResult.running) {
-    return 'default';
+    return null;
   }
 
   if (testResult.type === 'error') {
@@ -31,37 +30,50 @@ export function getStoryStatus(
   return getCommonStatus(types);
 }
 
-export function getGroupStatus(
-  nodes: SerializableStoryshotsNode[],
-  results: TestResults,
-): StatusType {
-  const allStoriesStatuses = nodes.map((it) => {
-    if (it.type === 'group') {
-      return getGroupStatus(it.children, results);
-    }
-
-    return getStoryStatus(it.id, results);
-  });
-
-  return getCommonStatus(allStoriesStatuses);
+export function getCommonStatus(types: StatusType[]): StatusType {
+  return types.reduce(compareStatuses, null);
 }
 
-function getCommonStatus(types: StatusType[]): StatusType {
-  if (types.includes('error')) {
-    return 'error';
+function compareStatuses(left: StatusType, right: StatusType): StatusType {
+  if (right === null) {
+    return left;
   }
 
-  if (types.includes('fail')) {
-    return 'fail';
+  if (left === null) {
+    return right;
   }
 
-  if (types.includes('fresh')) {
-    return 'fresh';
+  if (left === 'error') {
+    return left;
   }
 
-  if (types.includes('pass')) {
-    return 'pass';
+  if (left === 'fail') {
+    return left;
   }
 
-  return 'default';
+  if (right === 'pass') {
+    return left;
+  }
+
+  return right;
 }
+
+// function getCommonStatus(types: StatusType[]): StatusType {
+//   if (types.includes('error')) {
+//     return 'error';
+//   }
+
+//   if (types.includes('fail')) {
+//     return 'fail';
+//   }
+
+//   if (types.includes('fresh')) {
+//     return 'fresh';
+//   }
+
+//   if (types.includes('pass')) {
+//     return 'pass';
+//   }
+
+//   return null;
+// }

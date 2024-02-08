@@ -1,5 +1,4 @@
 import React from 'react';
-import { Default } from './Default';
 import { Fresh } from './Fresh';
 import { Fail } from './Fail';
 import { Pass } from './Pass';
@@ -23,7 +22,7 @@ export const Status: React.FC<{ type: StatusType }> = (props) => {
     return <Error />;
   }
 
-  return <Default />;
+  return null;
 };
 
-export { getGroupStatus, getStoryStatus } from './getStatus';
+export { getCommonStatus, getStoryStatus } from './getStatus';

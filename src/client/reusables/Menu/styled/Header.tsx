@@ -16,6 +16,7 @@ export const Header = styled.div.attrs<{
   display: flex;
   align-items: center;
   transition: 0.2s ease-in-out;
+  padding-right: 2px;
   padding-left: ${(props) => `${props.level * 24 + props.levelMargin}px`};
   background: ${({ active, activeColor }) => (active ? activeColor : '')};
 

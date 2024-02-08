@@ -7,4 +7,4 @@ export type RecordsOrScreenshotComparisonResultType =
   | RecordsComparisonResult['type']
   | ScreenshotComparisonResult['type'];
 
-export type StatusType = RecordsOrScreenshotComparisonResultType | 'default' | 'error';
+export type StatusType = RecordsOrScreenshotComparisonResultType | 'error' | null;

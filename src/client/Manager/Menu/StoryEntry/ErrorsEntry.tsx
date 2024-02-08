@@ -3,8 +3,8 @@ import React from 'react';
 import { ErrorTestResult } from '../../behaviour/useTestResults/types';
 import { Props as ParentProps } from './types';
 import { Status } from '../../../reusables/Status';
-import { Title } from './styled/Title';
-import { Header } from './styled/Header';
+import { Title } from '../../../reusables/Menu/styled/Title';
+import { Header } from '../../../reusables/Menu/styled/Header';
 
 type Props = { results: ErrorTestResult } & Pick<
   ParentProps,
@@ -27,7 +27,7 @@ export const ErrorsEntry: React.FC<Props> = ({
     >
       <Title>
         <Status type="error" />
-        <span style={{ color: '#f77' }}>ERROR</span>
+        <span style={{ color: '#f5222d' }}>ERROR</span>
       </Title>
     </Header>
   );

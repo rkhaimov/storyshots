@@ -1,6 +1,6 @@
 import React from 'react';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { ExclamationOutlined } from '@ant-design/icons';
 
 export const Error = () => (
-  <ExclamationCircleOutlined style={{ color: '#f77' }} />
+  <ExclamationOutlined style={{ color: '#f5222d' }} />
 );

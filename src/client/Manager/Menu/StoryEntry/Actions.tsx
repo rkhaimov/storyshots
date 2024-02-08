@@ -5,8 +5,9 @@ import { LoadingOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import { ActionButton } from '../ActionButton';
 import { Props } from './types';
 
-export const Actions: React.FC<Props> = ({
+export const Actions: React.FC<Props & { opacity: number }> = ({
   selection,
+  opacity,
   story,
   results,
   run,
@@ -37,7 +38,7 @@ export const Actions: React.FC<Props> = ({
 
   function renderServerAction() {
     return (
-      <ServerActionStyled>
+      <ServerActionStyled opacity={opacity}>
         <ActionButton
           action={(e) => {
             e.stopPropagation();
@@ -53,11 +54,9 @@ export const Actions: React.FC<Props> = ({
   }
 };
 
-const ServerActionStyled = styled.div`
+const ServerActionStyled = styled.div.attrs<{ opacity: number }>((props) => ({
+  opacity: props.opacity,
+}))`
   transition: opacity 0.2s;
-  opacity: 0;
-
-  &:hover {
-    opacity: 1;
-  }
+  opacity: ${(props) => props.opacity};
 `;

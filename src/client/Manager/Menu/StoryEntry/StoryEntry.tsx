@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { blue } from '@ant-design/colors';
 import { isNil } from '../../../../reusables/utils';
 import { Status, getStoryStatus } from '../../../reusables/Status';
@@ -7,10 +7,12 @@ import { ErrorsEntry } from './ErrorsEntry';
 import { RecordsEntry } from './RecordsEntry';
 import { ScreenshotsEntry } from './ScreenshotsEntry';
 import { Props } from './types';
-import { Title } from './styled/Title';
-import { Header } from './styled/Header';
+import { Title } from '../../../reusables/Menu/styled/Title';
+import { Header } from '../../../reusables/Menu/styled/Header';
 
 export const StoryEntry: React.FC<Props> = (props) => {
+  const [actionsOpacity, setActionsOpacity] = useState(0);
+
   return (
     <li>
       <Header
@@ -19,12 +21,14 @@ export const StoryEntry: React.FC<Props> = (props) => {
         active={isActive()}
         activeColor={blue[0]}
         onClick={() => props.setStory(props.story)}
+        onMouseEnter={() => setActionsOpacity(1)}
+        onMouseLeave={() => setActionsOpacity(0)}
       >
         <Title title={props.story.title}>
           <Status type={getStoryStatus(props.story.id, props.results)} />
           <span>{props.story.title}</span>
         </Title>
-        <Actions {...props} />
+        <Actions {...props} opacity={actionsOpacity} />
       </Header>
       {renderResultEntries()}
     </li>

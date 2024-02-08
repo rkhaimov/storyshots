@@ -4,8 +4,8 @@ import React from 'react';
 import { Status } from '../../../reusables/Status';
 import { SuccessTestResult } from '../../behaviour/useTestResults/types';
 import { Props as ParentProps } from './types';
-import { Title } from './styled/Title';
-import { Header } from './styled/Header';
+import { Title } from '../../../reusables/Menu/styled/Title';
+import { Header } from '../../../reusables/Menu/styled/Header';
 
 type Props = { results: SuccessTestResult } & Pick<
   ParentProps,
