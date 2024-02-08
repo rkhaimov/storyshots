@@ -1,5 +1,5 @@
 import {
-  PageMode,
+  Device,
   ScreenshotName,
   ScreenshotPath,
   StoryID,
@@ -24,11 +24,11 @@ export async function createScreenshotsBaseline() {
   return {
     createActualScreenshot: async (
       id: StoryID,
-      mode: PageMode,
+      device: Device,
       name: ScreenshotName | undefined,
       content: Buffer,
     ): Promise<ScreenshotPath> => {
-      const dir = path.join(actualResultsDir, mode.id);
+      const dir = path.join(actualResultsDir, device.name);
 
       if (not(await exists(dir))) {
         await mkdir(dir);
@@ -45,11 +45,11 @@ export async function createScreenshotsBaseline() {
     },
     getExpectedScreenshot: async (
       id: StoryID,
-      mode: PageMode,
+      device: Device,
       name: ScreenshotName | undefined,
     ): Promise<ScreenshotPath | undefined> => {
       const image = isNil(name) ? `${id}.png` : `${id}_${name}.png`;
-      const file = path.join(expectedResultsDir, mode.id, image);
+      const file = path.join(expectedResultsDir, device.name, image);
 
       return (await exists(file)) ? (file as ScreenshotPath) : undefined;
     },

@@ -10,6 +10,7 @@ import {
 export async function communicateWithPreview(
   ref: RefObject<HTMLIFrameElement>,
   id: StoryID | undefined,
+  screenshotting: boolean,
 ): Promise<SerializableStoryshotsNode[]> {
   const preview = ref.current;
 
@@ -17,12 +18,13 @@ export async function communicateWithPreview(
 
   await waitForPreviewToLoad(preview);
 
-  return getPreviewStories(preview, id);
+  return getPreviewStories(preview, id, screenshotting);
 }
 
 function getPreviewStories(
   preview: HTMLIFrameElement,
   id: StoryID | undefined,
+  screenshotting: boolean,
 ): Promise<SerializableStoryshotsNode[]> {
   const channel = new MessageChannel();
 
@@ -31,6 +33,7 @@ function getPreviewStories(
   const message: FromManagerToPreviewMessage = {
     type: 'select-story',
     story: id,
+    screenshotting,
   };
 
   preview.contentWindow.postMessage(message, '*', [channel.port2]);

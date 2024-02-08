@@ -23,7 +23,8 @@ export type Story<out TExternals = unknown> = {
 };
 
 export type Actor = {
-  click(finder: Finder): Actor;
+  click(on: Finder): Actor;
+  fill(on: Finder, text: string): Actor;
   screenshot(name: string): Actor;
   toMeta(): ActionMeta[];
 };
@@ -33,11 +34,10 @@ type SupportedAriaAttrs = Partial<Record<'name', string>>;
 export type Finder = {
   getByRole(role: AriaRole, attrs?: SupportedAriaAttrs): Finder;
   getByText(substring: string): Finder;
-  has(element: Finder): Finder;
-  // getByLabel(label: string): Finder;
-  // getByPlaceholder(placeholder: string): Finder;
-  // getByAltText(alt: string): Finder;
+  getByPlaceholder(placeholder: string): Finder;
+  getByLabel(label: string): Finder;
   getBySelector(selector: string): Finder;
+  has(element: Finder): Finder;
   at(index: number): Finder;
   toMeta(): FinderMeta;
 };
@@ -46,7 +46,11 @@ export type Finder = {
 // TODO: Automate selectors picking
 export type FinderFactory = Pick<
   Finder,
-  'getBySelector' | 'getByRole' | 'getByText'
+  | 'getBySelector'
+  | 'getByRole'
+  | 'getByText'
+  | 'getByPlaceholder'
+  | 'getByLabel'
 >;
 
 export type Journal = {

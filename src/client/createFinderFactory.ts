@@ -13,6 +13,22 @@ export const finder: FinderFactory = {
       beginning: { type: 'selector', on: createTextSelector(substring) },
       consequent: [],
     }),
+  getByPlaceholder: (placeholder) =>
+    createFinder({
+      beginning: {
+        type: 'selector',
+        on: createPlaceholderSelector(placeholder),
+      },
+      consequent: [],
+    }),
+  getByLabel: (label) =>
+    createFinder({
+      beginning: {
+        type: 'selector',
+        on: createLabelSelector(label),
+      },
+      consequent: [],
+    }),
   getBySelector: (selector) =>
     createFinder({
       beginning: { type: 'selector', on: selector },
@@ -49,6 +65,28 @@ function createFinder(meta: FinderMeta): Finder {
           },
         ],
       }),
+    getByPlaceholder: (placeholder) =>
+      createFinder({
+        ...meta,
+        consequent: [
+          ...meta.consequent,
+          {
+            type: 'selector',
+            on: createPlaceholderSelector(placeholder),
+          },
+        ],
+      }),
+    getByLabel: (label) =>
+      createFinder({
+        ...meta,
+        consequent: [
+          ...meta.consequent,
+          {
+            type: 'selector',
+            on: createLabelSelector(label),
+          },
+        ],
+      }),
     has: (element) =>
       createFinder({
         ...meta,
@@ -82,4 +120,12 @@ function createAriaSelector(
 
 function createTextSelector(substring: string) {
   return `::-p-text(${substring})`;
+}
+
+function createPlaceholderSelector(placeholder: string) {
+  return `[placeholder="${placeholder}"]`;
+}
+
+function createLabelSelector(label: string) {
+  return `label::-p-text(${label})`;
 }

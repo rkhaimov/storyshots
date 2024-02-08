@@ -1,18 +1,12 @@
 https://github.com/puppeteer/puppeteer/blob/main/packages/puppeteer-core/src/api/locators/locators.ts
+https://github.com/puppeteer/puppeteer/blob/197f00547ea402118c7db3cfaa4a57eb0efdd4cc/packages/puppeteer-core/src/common/Device.ts#L17
 
 finder https://github.com/antonmedv/finder
 
 * develop ui like https://playwright.dev/docs/test-ui-mode
 * result indicators (failed shots, failed actions)
-* gitlab like image compare
-* gitlab like records compare
 * badges or grouping for viewports
-* obsolete results indicators
+* memo results between page reloads
 * bulk actions and run progress
 * bulk indicators
-* add config for server
-* selector quantifiers
-* more selector kinds
-* advance actions on forms
-* handle actions exceptions
-* impl actions and screenshots queue
+* impl actions and screenshots queue (with multiple chromium instances)

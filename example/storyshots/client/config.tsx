@@ -1,9 +1,14 @@
+import { ConfigProvider } from 'antd';
 import React from 'react';
 import {
   createJournalExternals,
   createMockExternals,
 } from '../../externals/createMockExternals';
-import { createConfigureClient } from '../../../src/client';
+import {
+  createConfigureClient,
+  createDesktopDevice,
+  createMobileDevice,
+} from '../../../src/client';
 import { PureApp } from '../../PureApp';
 
 const {
@@ -11,45 +16,30 @@ const {
   createStory: _createStory,
   createGroup,
 } = createConfigureClient({
-  modes: {
-    primary: {
-      type: 'viewport',
-      id: 'desktop',
-      viewport: {
-        width: 1480,
-        height: 920,
-      },
-    },
+  devices: {
+    primary: createDesktopDevice('desktop', {
+      width: 1480,
+      height: 920,
+    }),
     additional: [
-      {
-        type: 'viewport',
-        id: 'desktopXL',
-        viewport: {
-          width: 1920,
-          height: 1080,
-        },
-      },
-      // https://github.com/puppeteer/puppeteer/blob/197f00547ea402118c7db3cfaa4a57eb0efdd4cc/packages/puppeteer-core/src/common/Device.ts#L17
-      {
-        type: 'device',
-        id: 'mobile',
-        device: {
-          userAgent:
-            'Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1',
-          viewport: {
-            width: 414,
-            height: 896,
-            deviceScaleFactor: 3,
-            isMobile: true,
-            hasTouch: true,
-            isLandscape: false,
-          },
-        },
-      },
+      createDesktopDevice('desktopXL', {
+        width: 1920,
+        height: 1080,
+      }),
+      createMobileDevice('mobile', {
+        userAgent:
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1',
+        width: 414,
+        height: 896,
+        deviceScaleFactor: 3,
+      }),
     ],
   },
   createExternals: createMockExternals,
   createJournalExternals: createJournalExternals,
+  renderScreenshotTimeEnv: (app) => (
+    <ConfigProvider theme={{ token: { motion: false } }}>{app}</ConfigProvider>
+  ),
 });
 
 const createStory = (config: RenderBoundConfig) =>

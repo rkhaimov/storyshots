@@ -60,7 +60,7 @@ export function useTestResults() {
             ...ready,
             screenshots: {
               primary: {
-                mode: ready.screenshots.primary.mode,
+                device: ready.screenshots.primary.device,
                 results: {
                   final:
                     name === undefined

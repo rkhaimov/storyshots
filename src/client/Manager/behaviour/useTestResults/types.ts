@@ -1,6 +1,6 @@
 import {
   JournalRecord,
-  PageMode,
+  Device,
   ScreenshotName,
   ScreenshotPath,
   StoryID,
@@ -19,7 +19,7 @@ export type SuccessTestResult = {
 };
 
 type ScreenshotsComparisonResultsByMode = {
-  mode: PageMode;
+  device: Device;
   results: ScreenshotsComparisonResults;
 };
 

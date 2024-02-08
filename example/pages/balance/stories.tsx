@@ -2,7 +2,7 @@ import { createGroup, createStory } from '../../storyshots/client/config';
 import { createNeverEndingPromise } from './utils';
 import { finder } from '../../../src/client';
 
-export const counterStories = createGroup('Counter', [
+export const balanceStories = createGroup('Balance', [
   createStory({
     title: 'Default',
     act: (actor) =>

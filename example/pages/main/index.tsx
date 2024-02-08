@@ -15,9 +15,9 @@ export const Main = () => {
           to: '/balance',
         },
         {
-          title: 'Form',
-          description: 'Complex form example',
-          to: '/form',
+          title: 'CV',
+          description: 'Complex cv example',
+          to: '/cv',
         },
       ]}
       renderItem={({ title, description, to }) => (

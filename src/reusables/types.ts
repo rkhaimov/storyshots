@@ -1,6 +1,6 @@
 import { ActionMeta } from './actions';
 import { Brand } from './brand';
-import { Device, Viewport } from 'puppeteer';
+import { Device as PuppeteerDevice, Viewport } from 'puppeteer';
 
 export interface IWebDriver {
   actOnClientSide(action: ActionMeta[]): Promise<WithPossibleError<void>>;
@@ -32,7 +32,7 @@ export type WithPossibleError<T> =
 
 export type ActionsAndMode = {
   actions: ActionMeta[];
-  mode: PageMode;
+  device: Device;
 };
 
 export type ScreenshotToAccept = {
@@ -75,16 +75,16 @@ export type ScreenshotPath = Brand<string, 'ScreenshotPath'>;
 
 export type StoryID = Brand<string, 'StoryID'>;
 
-export type PageMode = SpecificViewPort | SpecificDevice;
+export type Device = ViewPortOnlyDeviceConfig | CompleteDeviceConfig;
 
-type SpecificViewPort = {
-  type: 'viewport';
-  id: string;
+export type ViewPortOnlyDeviceConfig = {
+  type: 'viewport-only';
+  name: string;
   viewport: Viewport;
 };
 
-type SpecificDevice = {
-  type: 'device';
-  id: string;
-  device: Device;
+export type CompleteDeviceConfig = {
+  type: 'complete';
+  name: string;
+  config: PuppeteerDevice;
 };

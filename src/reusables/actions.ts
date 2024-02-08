@@ -8,6 +8,14 @@ type ClickAction = {
   };
 };
 
+type FillAction = {
+  action: 'fill';
+  payload: {
+    on: FinderMeta;
+    text: string;
+  };
+};
+
 export type ScreenshotAction = {
   action: 'screenshot';
   payload: {
@@ -15,6 +23,6 @@ export type ScreenshotAction = {
   };
 };
 
-export type ActionMeta = ClickAction | ScreenshotAction;
+export type ActionMeta = ClickAction | FillAction | ScreenshotAction;
 
 export type NonScreenshotAction = Exclude<ActionMeta, ScreenshotAction>;

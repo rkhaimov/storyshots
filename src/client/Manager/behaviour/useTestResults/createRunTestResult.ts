@@ -19,8 +19,10 @@ export async function createRunTestResult(
   driver: IExternals['driver'],
   story: SerializableStoryNode,
 ): Promise<TestResult> {
-  const payload = { actions: story.actions, mode: story.modes.primary };
-  const actualResults = await driver.actOnServerSide(story.id, payload);
+  const actualResults = await driver.actOnServerSide(story.id, {
+    actions: story.actions,
+    device: story.modes.primary,
+  });
 
   if (actualResults.type === 'error') {
     return {
@@ -40,11 +42,11 @@ export async function createRunTestResult(
     ),
     screenshots: {
       primary: {
-        mode: story.modes.primary,
+        device: story.modes.primary,
         results: await createScreenshotsComparisonResults(
           driver,
           story.id,
-          payload,
+          { actions: story.actions, device: story.modes.primary },
           actualResults.data.screenshots,
         ),
       },

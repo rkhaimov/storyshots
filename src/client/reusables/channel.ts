@@ -1,10 +1,11 @@
 import { ActionMeta } from '../../reusables/actions';
 import { StoryID } from '../../reusables/types';
-import { FinalClientConfig, Modes } from '../create-configure-client/types';
+import { Devices } from '../create-configure-client/types';
 
 export type FromManagerToPreviewMessage = {
   type: 'select-story';
   story: StoryID | undefined;
+  screenshotting: boolean;
 };
 
 export type FromPreviewToManagerMessage = {
@@ -17,7 +18,7 @@ export type SerializableStoryNode = {
   type: 'story';
   title: string;
   actions: ActionMeta[];
-  modes: Modes;
+  modes: Devices;
 };
 
 export type SerializableGroupNode = {

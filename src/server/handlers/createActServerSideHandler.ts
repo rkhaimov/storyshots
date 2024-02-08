@@ -4,7 +4,7 @@ import { ScreenshotAction } from '../../reusables/actions';
 import {
   ActionsAndMode,
   ActualServerSideResult,
-  PageMode,
+  Device,
   Screenshot,
   ScreenshotPath,
   StoryID,
@@ -45,7 +45,7 @@ async function createServerResultByPageMode(
   id: StoryID,
   payload: ActionsAndMode,
 ) {
-  await configurePageByMode(payload.mode, page);
+  await configurePageByMode(payload.device, page);
 
   await page.goto(`http://localhost:8080/chromium/${id}`, {
     waitUntil: 'networkidle0',
@@ -56,12 +56,12 @@ async function createServerResultByPageMode(
   return interactWithPageAndMakeShots(baseline, page, preview, id, payload);
 }
 
-async function configurePageByMode(mode: PageMode, page: Page) {
-  switch (mode.type) {
-    case 'viewport':
-      return page.setViewport(mode.viewport);
-    case 'device':
-      return page.emulate(mode.device);
+async function configurePageByMode(device: Device, page: Page) {
+  switch (device.type) {
+    case 'viewport-only':
+      return page.setViewport(device.viewport);
+    case 'complete':
+      return page.emulate(device.config);
   }
 }
 
@@ -70,12 +70,12 @@ async function interactWithPageAndMakeShots(
   page: Page,
   preview: Frame,
   id: StoryID,
-  { mode, actions }: ActionsAndMode,
+  { device, actions }: ActionsAndMode,
 ): Promise<WithPossibleError<ActualServerSideResult>> {
   const others: Screenshot[] = [];
   for (const action of actions) {
     if (action.action === 'screenshot') {
-      const result = await createScreenshot(baseline, page, id, action, mode);
+      const result = await createScreenshot(baseline, page, id, action, device);
 
       if (result.type === 'error') {
         return result;
@@ -91,7 +91,7 @@ async function interactWithPageAndMakeShots(
     }
   }
 
-  const final = await createFinalScreenshot(baseline, page, id, mode);
+  const final = await createFinalScreenshot(baseline, page, id, device);
 
   if (final.type === 'error') {
     return final;
@@ -122,12 +122,12 @@ async function createScreenshot(
   page: Page,
   id: StoryID,
   action: ScreenshotAction,
-  mode: PageMode,
+  device: Device,
 ): Promise<WithPossibleError<Screenshot>> {
   return WithPossibleErrorOP.fromThrowable(async () => {
     const path = await baseline.createActualScreenshot(
       id,
-      mode,
+      device,
       action.payload.name,
       await page.screenshot({ type: 'png' }),
     );
@@ -143,12 +143,12 @@ async function createFinalScreenshot(
   baseline: Baseline,
   page: Page,
   id: StoryID,
-  mode: PageMode,
+  device: Device,
 ): Promise<WithPossibleError<ScreenshotPath>> {
   return WithPossibleErrorOP.fromThrowable(async () => {
     return baseline.createActualScreenshot(
       id,
-      mode,
+      device,
       undefined,
       await page.screenshot({ type: 'png' }),
     );

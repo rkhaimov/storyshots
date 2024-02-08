@@ -1,5 +1,5 @@
 import React from 'react';
-import { FinalClientConfig, Modes } from '../create-configure-client/types';
+import { FinalClientConfig, Devices } from '../create-configure-client/types';
 import { StoryshotsNode } from '../types';
 import ReactDOM from 'react-dom/client';
 import {
@@ -21,7 +21,7 @@ export async function createPreviewApp(config: FinalClientConfig) {
 
   document.body.appendChild(div);
 
-  ReactDOM.createRoot(div).render(<Preview {...config} id={message.story} />);
+  ReactDOM.createRoot(div).render(<Preview {...config} {...message} />);
 }
 
 type ManagerResponse = {
@@ -46,7 +46,7 @@ function waitForManagerConnection() {
 function sendStoriesToManager(port: MessagePort, config: FinalClientConfig) {
   const message: FromPreviewToManagerMessage = {
     type: 'stories-changed',
-    stories: toSerializableStories(config.stories, config.modes),
+    stories: toSerializableStories(config.stories, config.devices),
   };
 
   port.postMessage(message);
@@ -54,7 +54,7 @@ function sendStoriesToManager(port: MessagePort, config: FinalClientConfig) {
 
 function toSerializableStories(
   stories: StoryshotsNode[],
-  modes: Modes,
+  modes: Devices,
 ): SerializableStoryshotsNode[] {
   return stories.map((node) => {
     if (node.type === 'group') {

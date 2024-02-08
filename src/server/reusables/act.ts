@@ -1,31 +1,27 @@
 import { Frame } from 'puppeteer';
 import { NonScreenshotAction } from '../../reusables/actions';
 import { WithPossibleError } from '../../reusables/types';
+import { WithPossibleErrorOP } from '../handlers/reusables/with-possible-error';
 import { select } from './select';
 
 export async function act(
   preview: Frame,
   action: NonScreenshotAction,
 ): Promise<WithPossibleError<void>> {
-  const elements = await select(preview, action.payload.on);
+  const result = await select(preview, action.payload.on);
 
-  if (elements.length === 0) {
-    return {
-      type: 'error',
-      message: 'Found zero elements matching given criteria.',
-    };
+  if (result.type === 'error') {
+    return result;
   }
 
-  if (elements.length > 1) {
-    console.warn(`Found more than one element (${elements.length}) matching given criteria!`);
+  const element = result.data;
+
+  switch (action.action) {
+    case 'click':
+      return WithPossibleErrorOP.fromThrowable(() => element.click());
+    case 'fill':
+      return WithPossibleErrorOP.fromThrowable(() =>
+        element.type(action.payload.text),
+      );
   }
-
-  const [element] = elements;
-
-  await element.click();
-
-  return {
-    type: 'success',
-    data: undefined,
-  };
 }

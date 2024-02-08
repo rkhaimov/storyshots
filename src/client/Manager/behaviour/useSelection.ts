@@ -34,7 +34,7 @@ export function useSelection(props: Props) {
 
   // TODO: Cancellation must be tested
   useEffect(() => {
-    communicateWithPreview(ref, id).then(selectAndPlay);
+    communicateWithPreview(ref, id, false).then(selectAndPlay);
   }, [identity]);
 
   return {

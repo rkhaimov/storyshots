@@ -1,4 +1,4 @@
 import { run } from './config';
-import { counterStories } from '../../pages/balance/stories';
+import { stories } from './stories';
 
-run([counterStories]);
+run(stories);

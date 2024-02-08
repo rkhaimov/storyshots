@@ -10,7 +10,7 @@ export function createAcceptRecordsHandler(
     const id = request.params.id as StoryID;
     const records: JournalRecord[] = request.body;
 
-    baseline.acceptRecords(id, records);
+    await baseline.acceptRecords(id, records);
 
     return response.end();
   });
