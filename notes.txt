@@ -5,8 +5,12 @@ finder https://github.com/antonmedv/finder
 
 * develop ui like https://playwright.dev/docs/test-ui-mode
 * result indicators (failed shots, failed actions)
+* error screen for autoplay and server run
+* autoplay retry button
+* watch mode
 * badges or grouping for viewports
+* run mode for all viewports
 * memo results between page reloads
-* bulk actions and run progress
+* bulk actions
 * bulk indicators
 * impl actions and screenshots queue (with multiple chromium instances)
