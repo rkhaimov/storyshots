@@ -7,9 +7,10 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import history from 'connect-history-api-fallback';
 import wsify from 'express-ws';
 import { createWebDriver } from '../createWebDriver';
+import { ServerConfig } from '../reusables/types';
 import { createPreviewWatcher } from './createPreviewWatcher';
 
-export function runManagerCompilation() {
+export function runManagerCompilation(config: ServerConfig) {
   const compiler = webpack({
     mode: 'development',
     bail: false,
@@ -74,7 +75,7 @@ export function runManagerCompilation() {
 
   const onPreviewUpdate = createPreviewWatcher(app);
 
-  createWebDriver(app);
+  createWebDriver(app, config);
 
   app.listen(8080, () => console.log('Manager is served at 8080'));
 

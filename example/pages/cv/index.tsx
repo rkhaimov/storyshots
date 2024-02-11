@@ -1,21 +1,20 @@
-import React, { useState } from 'react';
 import {
+  App,
   AutoComplete,
   Button,
   Cascader,
   CascaderProps,
   Checkbox,
-  Col,
   Form,
   Input,
   InputNumber,
-  Modal,
-  Row,
   Select,
 } from 'antd';
+import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 
 export const CV: React.FC = () => {
+  const { modal } = App.useApp();
   const [, navigate] = useLocation();
   const [form] = Form.useForm();
 
@@ -66,7 +65,7 @@ export const CV: React.FC = () => {
     >
       <Form
         onFinish={() => {
-          Modal.info({
+          modal.info({
             title: 'This is a notification message',
             content: (
               <div>

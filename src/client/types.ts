@@ -23,8 +23,10 @@ export type Story<out TExternals = unknown> = {
 };
 
 export type Actor = {
+  hover(on: Finder): Actor;
   click(on: Finder): Actor;
   fill(on: Finder, text: string): Actor;
+  wait(ms: number): Actor;
   screenshot(name: string): Actor;
   toMeta(): ActionMeta[];
 };
@@ -32,7 +34,7 @@ export type Actor = {
 type SupportedAriaAttrs = Partial<Record<'name', string>>;
 
 export type Finder = {
-  getByRole(role: AriaRole, attrs?: SupportedAriaAttrs): Finder;
+  getByRole(role: string, attrs?: SupportedAriaAttrs): Finder;
   getByText(substring: string): Finder;
   getByPlaceholder(placeholder: string): Finder;
   getByLabel(label: string): Finder;

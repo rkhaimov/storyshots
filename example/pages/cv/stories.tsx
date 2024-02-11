@@ -36,7 +36,12 @@ export const cvStories = createGroup('CV', [
         .screenshot('Filled')
         .click(finder.getByRole('button', { name: 'Register' }))
         .screenshot('Popup')
-        .click(finder.getByRole('dialog').getByRole('button', { name: 'OK' })),
+        .click(
+          finder
+            .getByRole('dialog')
+            .has(finder.getByText('notification message'))
+            .getByRole('button', { name: 'OK' }),
+        ),
   }),
   createStory({
     title: 'EmailError',
@@ -64,5 +69,13 @@ export const cvStories = createGroup('CV', [
         .screenshot('Prefilled')
         .click(finder.getByText('West Lake'))
         .click(finder.getByRole('combobox', { name: 'Residence' })),
+  }),
+  createStory({
+    title: 'TipHover',
+    act: (actor) =>
+      actor
+        .click(finder.getByRole('button', { name: 'Navigate' }).at(1))
+        .hover(finder.getByRole('image', { name: 'question-circle' }))
+        .wait(100),
   }),
 ]);

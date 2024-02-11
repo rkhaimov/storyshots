@@ -7,12 +7,12 @@ export interface IWebDriver {
 
   actOnServerSide(
     at: StoryID,
-    payload: ActionsAndMode,
+    payload: ActionsOnDevice,
   ): Promise<WithPossibleError<ActualServerSideResult>>;
 
   getExpectedScreenshots(
     at: StoryID,
-    payload: ActionsAndMode,
+    payload: ActionsOnDevice,
   ): Promise<ExpectedScreenshots>;
 
   getExpectedRecords(at: StoryID): Promise<JournalRecord[] | null>;
@@ -30,7 +30,7 @@ export type WithPossibleError<T> =
   | { type: 'error'; message: string }
   | { type: 'success'; data: T };
 
-export type ActionsAndMode = {
+export type ActionsOnDevice = {
   actions: ActionMeta[];
   device: Device;
 };

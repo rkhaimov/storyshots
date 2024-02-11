@@ -2,10 +2,12 @@ import React from 'react';
 import { Button } from 'antd';
 import styled from 'styled-components';
 
-export const ActionButton: React.FC<{
+type Props = {
   icon: React.ReactNode;
   action?: React.MouseEventHandler<HTMLElement>;
-}> = ({ action, icon }) => (
+};
+
+export const EntryAction: React.FC<Props> = ({ action, icon }) => (
   <ActionButtonStyled
     shape="circle"
     size="small"

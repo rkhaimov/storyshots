@@ -4,9 +4,10 @@ import puppeteer, { Browser, Page } from 'puppeteer';
 import { assertNotEmpty, wait } from '../reusables/utils';
 import { createApiHandlers } from './handlers';
 import { createBaseline } from './reusables/baseline';
+import { ServerConfig } from './reusables/types';
 
-export async function createWebDriver(app: Application) {
-  const baseline = await createBaseline();
+export async function createWebDriver(app: Application, config: ServerConfig) {
+  const baseline = await createBaseline(config);
   const browser = await openBrowserAndCreateConnection();
 
   assertNotEmpty(
@@ -21,21 +22,17 @@ export async function createWebDriver(app: Application) {
 
 async function createAndFocusPage(browser: Browser): Promise<Page> {
   const pages = await browser.pages();
-  console.log('Pages was received');
   const page = await browser.newPage();
 
   pages.filter((it) => it.url() === 'about:blank').forEach((it) => it.close());
 
-  console.log('Navigating');
   await page.goto('http://localhost:8080', { timeout: 0 });
-  console.log('Focusing');
   await page.bringToFront();
 
   return page;
 }
 
 async function openBrowserAndCreateConnection(): Promise<Browser | undefined> {
-  console.log('Connecting to chrome');
   await open('about:blank', {
     app: {
       name: open.apps.chrome,

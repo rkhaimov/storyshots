@@ -1,13 +1,12 @@
 import path from 'path';
-import { not } from '../../reusables/utils';
-import { exists, mkdir, mkfile, read } from './utils';
 import { JournalRecord, StoryID } from '../../reusables/types';
+import { not } from '../../reusables/utils';
+import { ServerConfig } from '../reusables/types';
+import { exists, mkdir, mkfile, read } from './utils';
 
-export async function createRecordsBaseline() {
-  const expectedResultsDir = path.join(process.cwd(), 'records');
-
-  if (not(await exists(expectedResultsDir))) {
-    await mkdir(expectedResultsDir);
+export async function createRecordsBaseline(config: ServerConfig) {
+  if (not(await exists(config.recordsPath))) {
+    await mkdir(config.recordsPath);
   }
 
   return {
@@ -29,7 +28,7 @@ export async function createRecordsBaseline() {
 
   async function getRecordsMapByStoryId(id: StoryID): Promise<RecordsMap> {
     const name = getRecordsMapFileNameById(id);
-    const fullPath = path.join(expectedResultsDir, name);
+    const fullPath = path.join(config.recordsPath, name);
 
     if (not(await exists(fullPath))) {
       return {};
@@ -43,7 +42,7 @@ export async function createRecordsBaseline() {
     records: RecordsMap,
   ): Promise<void> {
     const name = getRecordsMapFileNameById(id);
-    const file = path.join(expectedResultsDir, name);
+    const file = path.join(config.recordsPath, name);
 
     return mkfile(file, JSON.stringify(records, null, 2));
   }

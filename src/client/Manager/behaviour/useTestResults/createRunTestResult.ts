@@ -1,5 +1,5 @@
 import {
-  ActionsAndMode,
+  ActionsOnDevice,
   ActualScreenshots,
   JournalRecord,
   ScreenshotPath,
@@ -58,7 +58,7 @@ export async function createRunTestResult(
 async function createScreenshotsComparisonResults(
   driver: IExternals['driver'],
   id: StoryID,
-  payload: ActionsAndMode,
+  payload: ActionsOnDevice,
   actual: ActualScreenshots,
 ): Promise<ScreenshotsComparisonResults> {
   const expected = await driver.getExpectedScreenshots(id, payload);

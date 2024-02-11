@@ -14,3 +14,8 @@ finder https://github.com/antonmedv/finder
 * bulk actions
 * bulk indicators
 * impl actions and screenshots queue (with multiple chromium instances)
+* think about hmr behaviour
+* fix slow start
+* implement rigorous text matching system
+* fix devtools closing constantly
+* implement cancellation on client act

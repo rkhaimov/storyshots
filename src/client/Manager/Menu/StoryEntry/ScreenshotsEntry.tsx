@@ -1,13 +1,12 @@
 import { blue } from '@ant-design/colors';
-import { FileImageOutlined } from '@ant-design/icons';
+import { FileImageOutlined, PictureOutlined } from '@ant-design/icons';
 import React from 'react';
 import styled from 'styled-components';
 import { ScreenshotName } from '../../../../reusables/types';
-import { Status } from '../../../reusables/Status';
 import { SuccessTestResult } from '../../behaviour/useTestResults/types';
+import { ActiveEntryHeader } from '../reusables/EntryHeader';
+import { EntryTitle } from '../reusables/EntryTitle';
 import { Props as ParentProps } from './types';
-import { Title } from '../../../reusables/Menu/styled/Title';
-import { Header } from '../../../reusables/Menu/styled/Header';
 
 type Props = {
   results: SuccessTestResult;
@@ -27,34 +26,42 @@ export const ScreenshotsEntry: React.FC<Props> = ({
       {screenshots.others.map((it) => {
         return (
           <li key={it.name} onClick={() => setScreenshot(story, it.name)}>
-            <Header
-              level={level}
-              levelMargin={24}
-              activeColor={blue[0]}
-              active={isActive(it.name)}
+            <ActiveEntryHeader
+              $level={level}
+              $offset={24}
+              $color={blue[0]}
+              $active={isActive(it.name)}
             >
-              <Title title={it.name}>
-                <Status type={it.result.type} />
-                <FileImageOutlined style={{ marginRight: 4 }} />
-                {it.name}
-              </Title>
-            </Header>
+              <EntryTitle
+                title={
+                  <>
+                    <PictureOutlined style={{ marginRight: 4 }} />
+                    <span>{it.name}</span>
+                  </>
+                }
+                status={it.result.type}
+              />
+            </ActiveEntryHeader>
           </li>
         );
       })}
       <li key="final" onClick={() => setScreenshot(story, undefined)}>
-        <Header
-          level={level}
-          levelMargin={24}
-          activeColor={blue[0]}
-          active={isActive(undefined)}
+        <ActiveEntryHeader
+          $level={level}
+          $offset={24}
+          $color={blue[0]}
+          $active={isActive(undefined)}
         >
-          <Title title="FINAL">
-            <Status type={screenshots.final.type} />
-            <FileImageOutlined />
-            FINAL
-          </Title>
-        </Header>
+          <EntryTitle
+            title={
+              <>
+                <PictureOutlined style={{ marginRight: 4 }} />
+                <span>FINAL</span>
+              </>
+            }
+            status={screenshots.final.type}
+          />
+        </ActiveEntryHeader>
       </li>
     </ScreenshotsList>
   );

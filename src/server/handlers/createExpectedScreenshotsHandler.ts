@@ -1,7 +1,7 @@
 import { Application } from 'express-serve-static-core';
 import { Baseline } from '../reusables/baseline';
 import {
-  ActionsAndMode,
+  ActionsOnDevice,
   ExpectedScreenshots,
   Screenshot,
   StoryID,
@@ -14,7 +14,7 @@ export function createExpectedScreenshotsHandler(
 ) {
   app.post('/api/screenshot/expected/:id', async (request, response) => {
     const id = request.params.id as StoryID;
-    const { actions, device }: ActionsAndMode = request.body;
+    const { actions, device }: ActionsOnDevice = request.body;
 
     const others: Screenshot[] = [];
     for (const action of actions) {

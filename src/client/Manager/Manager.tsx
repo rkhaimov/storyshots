@@ -2,7 +2,7 @@ import { Layout, theme } from 'antd';
 import React from 'react';
 import { useBehaviour } from './behaviour';
 import { Menu } from './Menu';
-import { RecordsOrErrors } from './Records';
+import { Records } from './Records';
 import { Screenshot } from './Screenshot';
 import { Story } from './Story';
 import { Props } from './types';
@@ -53,7 +53,7 @@ export const Manager: React.FC<Props> = (props) => {
             />
           )}
           {behaviour.selection.type === 'records' && (
-            <RecordsOrErrors
+            <Records
               selection={behaviour.selection}
               results={behaviour.results}
               acceptRecords={behaviour.acceptRecords}

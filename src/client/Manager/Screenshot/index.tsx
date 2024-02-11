@@ -8,7 +8,7 @@ import {
   ScreenshotComparisonResult,
   SuccessTestResult,
 } from '../behaviour/useTestResults/types';
-import { Errors } from '../Errors';
+import { Spinner } from '../reusables/Spinner';
 import { Workspace } from '../Workspace';
 import { ActionAccept } from '../Workspace/Actions/Accept';
 
@@ -37,11 +37,13 @@ export const Screenshot: React.FC<Props> = ({
   }
 
   if (result.running) {
-    return <span>Screenshots are being generated</span>;
+    return <Spinner />;
   }
 
   if (result.type === 'error') {
-    return <Errors result={result} />;
+    return (
+      <span>Error has been caught during last run. Check the errors pane.</span>
+    );
   }
 
   const primary = result.screenshots.primary.results;

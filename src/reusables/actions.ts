@@ -16,6 +16,20 @@ type FillAction = {
   };
 };
 
+type HoverAction = {
+  action: 'hover';
+  payload: {
+    on: FinderMeta;
+  };
+};
+
+type WaitAction = {
+  action: 'wait';
+  payload: {
+    ms: number;
+  };
+};
+
 export type ScreenshotAction = {
   action: 'screenshot';
   payload: {
@@ -23,6 +37,11 @@ export type ScreenshotAction = {
   };
 };
 
-export type ActionMeta = ClickAction | FillAction | ScreenshotAction;
+export type ActionMeta =
+  | ClickAction
+  | FillAction
+  | HoverAction
+  | WaitAction
+  | ScreenshotAction;
 
 export type NonScreenshotAction = Exclude<ActionMeta, ScreenshotAction>;

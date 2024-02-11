@@ -1,24 +1,21 @@
 import express from 'express';
-import middleware from 'webpack-dev-middleware';
-import webpack from 'webpack';
-import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import path from 'path';
+import webpack from 'webpack';
+import middleware from 'webpack-dev-middleware';
+import { ServerConfig } from '../reusables/types';
 
-export function runPreviewCompilation(onHashChange: (hash: string) => void) {
+export function runPreviewCompilation(
+  config: ServerConfig,
+  onHashChange: (hash: string) => void,
+) {
   const app = express();
 
-  const compiler = webpack({
+  const options = config.overrideWebpackConfig({
     mode: 'development',
     bail: false,
     devtool: 'cheap-module-source-map',
-    entry: path.join(
-      process.cwd(),
-      'example',
-      'storyshots',
-      'client',
-      'index.ts',
-    ),
+    entry: config.clientEntry,
     stats: {
       errorDetails: true,
     },
@@ -29,47 +26,15 @@ export function runPreviewCompilation(onHashChange: (hash: string) => void) {
       assetModuleFilename: 'static/media/[name].[hash][ext]',
       publicPath: '/',
     },
-    module: {
-      rules: [
-        {
-          oneOf: [
-            {
-              test: /\.tsx?$/,
-              loader: 'babel-loader',
-              exclude: /node_modules/,
-              options: {
-                presets: [
-                  [
-                    '@babel/preset-env',
-                    {
-                      useBuiltIns: 'entry',
-                      corejs: 3,
-                    },
-                  ],
-                  [
-                    '@babel/preset-react',
-                    { runtime: 'automatic', development: true },
-                  ],
-                  '@babel/preset-typescript',
-                ],
-                plugins: ['babel-plugin-styled-components'],
-              },
-            },
-          ],
-        },
-      ],
-    },
-    resolve: {
-      extensions: ['.js', '.ts', '.tsx'],
-    },
     plugins: [
       new HtmlWebpackPlugin(),
       new webpack.DefinePlugin({
         'process.env': { NODE_ENV: '"development"' },
       }),
-      new ForkTsCheckerWebpackPlugin({ async: true }),
     ],
   });
+
+  const compiler = webpack(options);
 
   app.use(middleware(compiler));
 

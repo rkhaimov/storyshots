@@ -1,7 +1,7 @@
-import { ElementHandle, Frame } from 'puppeteer';
+import { BoundingBox, ElementHandle, Frame } from 'puppeteer';
 import { FinderMeta } from '../../reusables/finder';
 import { WithPossibleError } from '../../reusables/types';
-import { isNil, wait } from '../../reusables/utils';
+import { isNil, not, wait } from '../../reusables/utils';
 
 export async function select(
   frame: Frame,
@@ -39,20 +39,72 @@ async function _select(
     const elements = await begin(frame, by);
 
     if (elements.length === 0) {
+      console.log('No elements found. Retrying...');
+
       await wait(100);
 
       continue;
     }
 
-    if (await elements[0].isVisible()) {
-      return elements[0];
+    if (elements.length > 1) {
+      console.warn(
+        `Found too many elements (${elements.length}). Picking first occurrence`,
+      );
     }
 
-    await wait(100);
+    const element = elements[0];
+
+    if (not(await element.isVisible())) {
+      console.log('Element is not visible yet. Retrying...');
+
+      await wait(100);
+
+      continue;
+    }
+
+    if (not(await element.isIntersectingViewport({ threshold: 0 }))) {
+      console.log('Element is out of view. Scrolling...');
+
+      await element.scrollIntoView();
+      await wait(100);
+
+      continue;
+    }
+
+    const first = await getBoundingBox(element);
+    const second = await getBoundingBox(element);
+
+    if (not(equals(first, second))) {
+      console.log('Element is not stable between RAF calls. Retrying...');
+
+      await wait(100);
+
+      continue;
+    }
+
+    return element;
   }
 }
 
-export async function begin(
+function equals(left: BoundingBox, right: BoundingBox): boolean {
+  return (
+    left.x === right.x &&
+    left.y === right.y &&
+    left.width === right.width &&
+    left.height === right.height
+  );
+}
+
+function getBoundingBox(element: ElementHandle): Promise<BoundingBox> {
+  return element.evaluate(
+    (it) =>
+      new Promise<BoundingBox>((resolve) =>
+        window.requestAnimationFrame(() => resolve(it.getBoundingClientRect())),
+      ),
+  );
+}
+
+async function begin(
   element: Pick<Frame, '$$'>,
   by: FinderMeta,
 ): Promise<ElementHandle[]> {

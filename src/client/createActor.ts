@@ -16,6 +16,16 @@ export const createActor = (): Actor => {
 
       return actor;
     },
+    hover: (on) => {
+      meta.push({ action: 'hover', payload: { on: on.toMeta() } });
+
+      return actor;
+    },
+    wait: (ms) => {
+      meta.push({ action: 'wait', payload: { ms } });
+
+      return actor;
+    },
     screenshot: (name) => {
       meta.push({
         action: 'screenshot',

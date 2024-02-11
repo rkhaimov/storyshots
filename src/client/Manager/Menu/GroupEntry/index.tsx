@@ -1,24 +1,21 @@
 import { green } from '@ant-design/colors';
 import { PlayCircleOutlined, UpOutlined } from '@ant-design/icons';
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import {
   SerializableGroupNode,
   SerializableStoryNode,
   SerializableStoryshotsNode,
 } from '../../../reusables/channel';
-import { MenuHavingStories } from '../MenuHavingStories';
-import { ActionButton } from '../ActionButton';
-import { Props } from '../types';
-import {
-  Status,
-  getCommonStatus,
-  getStoryStatus,
-} from '../../../reusables/Status';
+import { SelectionState } from '../../behaviour/useSelection';
 import { TestResults } from '../../behaviour/useTestResults/types';
-import { StatusType } from '../../../reusables/Status/types';
-import { Header } from '../../../reusables/Menu/styled/Header';
-import { Title } from '../../../reusables/Menu/styled/Title';
+import { EntryAction } from '../reusables/EntryAction';
+import { MenuHavingStories } from '../MenuHavingStories';
+import { EntryActions } from '../reusables/EntryActions';
+import { EntryHeader } from '../reusables/EntryHeader';
+import { EntryStatus, EntryTitle } from '../reusables/EntryTitle';
+import { getStoryEntryStatus } from '../reusables/getStoryEntryStatus';
+import { Props } from '../types';
 
 export const GroupEntry: React.FC<
   Props & {
@@ -27,28 +24,24 @@ export const GroupEntry: React.FC<
 > = (props) => {
   const { group, ...others } = props;
   const expanded = others.expanded.has(group.id);
-  const [actionsOpacity, setActionsOpacity] = useState(0);
 
   return (
     <li>
-      <Header
-        levelMargin={8}
-        level={others.level}
-        active={false}
-        activeColor=""
+      <EntryHeader
+        $offset={8}
+        $level={others.level}
         onClick={() => others.toggleGroupExpanded(group)}
-        onMouseEnter={() => setActionsOpacity(1)}
-        onMouseLeave={() => setActionsOpacity(0)}
       >
         <Fold open={expanded} />
-        <Title title={group.title} fontSize={16} fontWeight={600}>
-          <Status type={getGroupStatus(group.children, others.results)} />
-          {group.title}
-        </Title>
-        <GroupActions opacity={actionsOpacity}>
-          <ActionButton
+        <EntryTitle
+          title={group.title}
+          status={getGroupEntryStatus(props.results, props.selection, group.children)}
+          style={{ fontSize: 16, fontWeight: 600 }}
+        />
+        <EntryActions>
+          <EntryAction
             icon={
-              <PlayCircleOutlined style={{ color: green[6], fontSize: 20 }} />
+              <PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />
             }
             action={(e) => {
               e.stopPropagation();
@@ -56,8 +49,8 @@ export const GroupEntry: React.FC<
               others.run(extractAllStories(group.children));
             }}
           />
-        </GroupActions>
-      </Header>
+        </EntryActions>
+      </EntryHeader>
       {expanded && (
         <MenuHavingStories
           {...others}
@@ -81,30 +74,38 @@ function extractAllStories(
   });
 }
 
-export function getGroupStatus(
-  nodes: SerializableStoryshotsNode[],
+function getGroupEntryStatus(
   results: TestResults,
-): StatusType {
-  const allStoriesStatuses = nodes.map((it) => {
-    if (it.type === 'group') {
-      return getGroupStatus(it.children, results);
-    }
+  selection: SelectionState,
+  children: SerializableStoryshotsNode[],
+): EntryStatus {
+  const statuses = children.map((child) =>
+    child.type === 'group'
+      ? getGroupEntryStatus(results, selection, child.children)
+      : getStoryEntryStatus(results, selection, child),
+  );
 
-    return getStoryStatus(it.id, results);
-  });
+  if (statuses.includes('error')) {
+    return 'error';
+  }
 
-  return getCommonStatus(allStoriesStatuses);
+  if (statuses.includes('fail')) {
+    return 'fail';
+  }
+
+  if (statuses.includes('fresh')) {
+    return 'fresh';
+  }
+
+  if (statuses.length > 0 && statuses.every(it => it === 'pass')) {
+    return 'pass';
+  }
+
+  return null;
 }
 
 const Fold = styled(UpOutlined)`
   margin-right: 2px;
   transform: rotate(${({ open }) => `${open ? '180' : '90'}deg`});
   transition: 0.2s;
-`;
-
-const GroupActions = styled.div.attrs<{ opacity: number }>((props) => ({
-  opacity: props.opacity,
-}))`
-  transition: opacity 0.2s ease-in-out;
-  opacity: ${(props) => props.opacity};
 `;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { not } from '../../../reusables/utils';
 import {
   SerializableGroupNode,
@@ -6,7 +6,6 @@ import {
   SerializableStoryshotsNode,
 } from '../../reusables/channel';
 import { SelectionState } from './useSelection';
-import { usePrevious } from '../../reusables/usePrevious';
 
 export function useGroupExpand(initial: SelectionState) {
   const [expanded, setExpanded] = useState(new Set<string>());
@@ -60,4 +59,14 @@ function findParentsChain(
   }
 
   return [head.id, ...findParentsChain(head.children, story)];
+}
+
+function usePrevious<T>(value: T): T {
+  const prev = useRef(value);
+
+  useEffect(() => {
+    prev.current = value;
+  }, [value]);
+
+  return prev.current;
 }

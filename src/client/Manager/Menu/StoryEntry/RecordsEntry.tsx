@@ -1,11 +1,10 @@
 import { blue } from '@ant-design/colors';
 import { ProfileOutlined } from '@ant-design/icons';
 import React from 'react';
-import { Status } from '../../../reusables/Status';
 import { SuccessTestResult } from '../../behaviour/useTestResults/types';
+import { ActiveEntryHeader } from '../reusables/EntryHeader';
+import { EntryTitle } from '../reusables/EntryTitle';
 import { Props as ParentProps } from './types';
-import { Title } from '../../../reusables/Menu/styled/Title';
-import { Header } from '../../../reusables/Menu/styled/Header';
 
 type Props = { results: SuccessTestResult } & Pick<
   ParentProps,
@@ -21,19 +20,23 @@ export const RecordsEntry: React.FC<Props> = ({
 }) => {
   return (
     <>
-      <Header
-        level={level}
-        levelMargin={24}
-        active={isActive()}
-        activeColor={blue[0]}
+      <ActiveEntryHeader
+        $level={level}
+        $offset={24}
+        $active={isActive()}
+        $color={blue[0]}
         onClick={() => setRecords(story)}
       >
-        <Title title="API Records">
-          <Status type={results.records.type} />
-          <ProfileOutlined />
-          Records
-        </Title>
-      </Header>
+        <EntryTitle
+          title={
+            <>
+              <ProfileOutlined style={{ marginRight: 4 }} />
+              <span>Records</span>
+            </>
+          }
+          status={results.records.type}
+        />
+      </ActiveEntryHeader>
     </>
   );
 

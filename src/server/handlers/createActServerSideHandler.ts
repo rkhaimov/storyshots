@@ -2,7 +2,7 @@ import { Application } from 'express-serve-static-core';
 import puppeteer, { Frame, Page } from 'puppeteer';
 import { ScreenshotAction } from '../../reusables/actions';
 import {
-  ActionsAndMode,
+  ActionsOnDevice,
   ActualServerSideResult,
   Device,
   Screenshot,
@@ -21,12 +21,12 @@ export function createActServerSideHandler(
 ) {
   app.post('/api/server/act/:id', async (request, response) => {
     const id = request.params.id as StoryID;
-    const payload: ActionsAndMode = request.body;
+    const payload: ActionsOnDevice = request.body;
 
     const browser = await puppeteer.launch({ headless: 'new' });
     const page = await browser.newPage();
 
-    const results = await createServerResultByPageMode(
+    const results = await createServerResultByDevice(
       baseline,
       page,
       id,
@@ -39,11 +39,11 @@ export function createActServerSideHandler(
   });
 }
 
-async function createServerResultByPageMode(
+async function createServerResultByDevice(
   baseline: Baseline,
   page: Page,
   id: StoryID,
-  payload: ActionsAndMode,
+  payload: ActionsOnDevice,
 ) {
   await configurePageByMode(payload.device, page);
 
@@ -70,7 +70,7 @@ async function interactWithPageAndMakeShots(
   page: Page,
   preview: Frame,
   id: StoryID,
-  { device, actions }: ActionsAndMode,
+  { device, actions }: ActionsOnDevice,
 ): Promise<WithPossibleError<ActualServerSideResult>> {
   const others: Screenshot[] = [];
   for (const action of actions) {

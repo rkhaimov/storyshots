@@ -1,9 +1,8 @@
 import React from 'react';
 import { isNil } from '../../../reusables/utils';
-import { Spinner } from '../../reusables/Spinner';
+import { Spinner } from '../reusables/Spinner';
 import { UseBehaviourProps } from '../behaviour/types';
 import { SelectionState } from '../behaviour/useSelection';
-import { Errors } from '../Errors';
 import { Workspace } from '../Workspace';
 import { ActionAccept } from '../Workspace/Actions/Accept';
 
@@ -18,7 +17,7 @@ type Props = {
   selection: RecordsSelection;
 } & Pick<UseBehaviourProps, 'acceptRecords' | 'results'>;
 
-export const RecordsOrErrors: React.FC<Props> = ({
+export const Records: React.FC<Props> = ({
   selection,
   results,
   acceptRecords,
@@ -31,11 +30,13 @@ export const RecordsOrErrors: React.FC<Props> = ({
   }
 
   if (result.running) {
-    return <Spinner.AbsoluteStretched />;
+    return <Spinner />;
   }
 
   if (result.type === 'error') {
-    return <Errors result={result} />;
+    return (
+      <span>Error has been caught during last run. Check the errors pane.</span>
+    );
   }
 
   const records = result.records;
