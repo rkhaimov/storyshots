@@ -4,7 +4,8 @@ import { Spinner } from '../reusables/Spinner';
 import { UseBehaviourProps } from '../behaviour/types';
 import { SelectionState } from '../behaviour/useSelection';
 import { Workspace } from '../Workspace';
-import { ActionAccept } from '../Workspace/Actions/Accept';
+import { ActionAccept } from '../Workspace/Accept';
+import { DiffReader } from './DiffReader';
 
 type RecordsSelection = Extract<
   SelectionState,
@@ -53,7 +54,7 @@ export const Records: React.FC<Props> = ({
           />
         }
       >
-        <Workspace.DiffReader
+        <DiffReader
           oldValue={JSON.stringify(records.actual, null, 2)}
           newValue={JSON.stringify(records.actual, null, 2)}
           showDiffOnly={false}
@@ -68,7 +69,7 @@ export const Records: React.FC<Props> = ({
   if (records.type === 'pass') {
     return (
       <Workspace title={title}>
-        <Workspace.DiffReader
+        <DiffReader
           oldValue={JSON.stringify(records.actual, null, 2)}
           newValue={JSON.stringify(records.actual, null, 2)}
           showDiffOnly={false}
@@ -91,7 +92,7 @@ export const Records: React.FC<Props> = ({
         />
       }
     >
-      <Workspace.DiffReader
+      <DiffReader
         oldValue={JSON.stringify(records.expected, null, 2)}
         newValue={JSON.stringify(records.actual, null, 2)}
         showDiffOnly={false}

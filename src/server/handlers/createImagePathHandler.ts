@@ -10,6 +10,10 @@ export function createImagePathHandler(app: Application, baseline: Baseline) {
     assert(typeof file === 'string');
 
     response.contentType('image/png');
+    response.setHeader("Surrogate-Control", "no-store");
+    response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    response.setHeader("Expires", "0");
+
     response.send(await baseline.readScreenshot(file as ScreenshotPath));
   });
 }

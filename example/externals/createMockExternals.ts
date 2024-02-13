@@ -6,8 +6,9 @@ export function createMockExternals(): IExternals {
     analytics: {
       log: () => {},
     },
-    balance: {
+    business: {
       getBalanceAt: async () => 0,
+      applyCV: async () => {},
     },
     environment: {
       // 13.01.2024
@@ -25,6 +26,10 @@ export function createJournalExternals(
     analytics: {
       ...externals.analytics,
       log: journal.record('log', externals.analytics.log),
+    },
+    business: {
+      ...externals.business,
+      applyCV: journal.record('applyCV', externals.business.applyCV),
     },
   };
 }

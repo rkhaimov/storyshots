@@ -1,30 +1,35 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import ReactCompareImage from 'react-compare-image';
 import { Radio, RadioChangeEvent } from 'antd';
+import React, { useState } from 'react';
+import ReactCompareImage from 'react-compare-image';
+import styled from 'styled-components';
+import { ScreenshotPath } from '../../../reusables/types';
+import { useExternals } from '../../externals/Context';
 
 enum ViewerMode {
   TwoUp = 'twoup',
   Swipe = 'swipe',
 }
 
-const leftBorderColor = '#f77';
-const sliderLineColor = '#acacac';
-const rightBorderColor = '#63c363';
+type Props = {
+  actual: ScreenshotPath;
+  expected: ScreenshotPath;
+};
 
-export const DiffImgViewer: React.FC<
-  React.ComponentProps<typeof ReactCompareImage>
-> = (props) => {
+export const DiffImgViewer: React.FC<Props> = (props) => {
+  const { driver } = useExternals();
   const [mode, setMode] = useState<ViewerMode>(ViewerMode.TwoUp);
 
   function render2Up() {
     return (
       <>
         <Left>
-          <Image src={props.leftImage} alt={props.leftImageAlt} />
+          <Image src={driver.createScreenshotPath(props.actual)} alt="Actual" />
         </Left>
         <Right>
-          <Image src={props.rightImage} alt={props.rightImageAlt} />
+          <Image
+            src={driver.createScreenshotPath(props.expected)}
+            alt="Expected"
+          />
         </Right>
       </>
     );
@@ -33,12 +38,13 @@ export const DiffImgViewer: React.FC<
   function renderSwipe() {
     return (
       <ReactCompareImage
-        leftImageCss={{ border: `1px solid ${leftBorderColor}` }}
-        rightImageCss={{ border: `1px solid ${rightBorderColor}` }}
-        sliderLineColor={sliderLineColor}
+        leftImageCss={{ border: `1px solid ${ACTUAL_BORDER_COLOR}` }}
+        rightImageCss={{ border: `1px solid ${EXPECTED_BORDER_COLOR}` }}
+        sliderLineColor={'#acacac'}
         sliderLineWidth={1}
         handle={<></>}
-        {...props}
+        leftImage={driver.createScreenshotPath(props.actual)}
+        rightImage={driver.createScreenshotPath(props.expected)}
       />
     );
   }
@@ -62,6 +68,9 @@ export const DiffImgViewer: React.FC<
     </ViewerPanel>
   );
 };
+
+const ACTUAL_BORDER_COLOR = '#1677ff';
+const EXPECTED_BORDER_COLOR = '#63c363';
 
 const ViewerPanel = styled.div`
   margin: 0 auto;
@@ -87,12 +96,12 @@ const Controls = styled.div`
 
 const Left = styled.div`
   width: 50%;
-  border: 1px solid ${leftBorderColor};
+  border: 1px solid ${ACTUAL_BORDER_COLOR};
 `;
 
 const Right = styled.div`
   width: 50%;
-  border: 1px solid ${rightBorderColor};
+  border: 1px solid ${EXPECTED_BORDER_COLOR};
 `;
 
 const Image = styled.img`

@@ -8,12 +8,11 @@ import {
   Screenshot,
   ScreenshotPath,
   StoryID,
-  WithPossibleError,
 } from '../../reusables/types';
 import { act } from '../reusables/act';
 import { Baseline } from '../reusables/baseline';
 import { toPreviewFrame } from '../reusables/toPreviewFrame';
-import { WithPossibleErrorOP } from './reusables/with-possible-error';
+import { handlePossibleErrors } from './reusables/with-possible-error';
 
 export function createActServerSideHandler(
   app: Application,
@@ -26,11 +25,8 @@ export function createActServerSideHandler(
     const browser = await puppeteer.launch({ headless: 'new' });
     const page = await browser.newPage();
 
-    const results = await createServerResultByDevice(
-      baseline,
-      page,
-      id,
-      payload,
+    const results = await handlePossibleErrors(() =>
+      createServerResultByDevice(baseline, page, id, payload),
     );
 
     await browser.close();
@@ -71,48 +67,25 @@ async function interactWithPageAndMakeShots(
   preview: Frame,
   id: StoryID,
   { device, actions }: ActionsOnDevice,
-): Promise<WithPossibleError<ActualServerSideResult>> {
+): Promise<ActualServerSideResult> {
   const others: Screenshot[] = [];
   for (const action of actions) {
     if (action.action === 'screenshot') {
-      const result = await createScreenshot(baseline, page, id, action, device);
-
-      if (result.type === 'error') {
-        return result;
-      }
-
-      others.push(result.data);
+      others.push(await createScreenshot(baseline, page, id, action, device));
     } else {
-      const result = await act(preview, action);
-
-      if (result.type === 'error') {
-        return result;
-      }
+      await act(preview, action);
     }
   }
 
   const final = await createFinalScreenshot(baseline, page, id, device);
 
-  if (final.type === 'error') {
-    return final;
-  }
-
-  const records = await WithPossibleErrorOP.fromThrowable(() =>
-    preview.evaluate(() => window.readJournalRecords()),
-  );
-
-  if (records.type === 'error') {
-    return records;
-  }
+  const records = await preview.evaluate(() => window.readJournalRecords());
 
   return {
-    type: 'success',
-    data: {
-      records: records.data,
-      screenshots: {
-        final: final.data,
-        others: others,
-      },
+    records,
+    screenshots: {
+      final,
+      others,
     },
   };
 }
@@ -123,20 +96,18 @@ async function createScreenshot(
   id: StoryID,
   action: ScreenshotAction,
   device: Device,
-): Promise<WithPossibleError<Screenshot>> {
-  return WithPossibleErrorOP.fromThrowable(async () => {
-    const path = await baseline.createActualScreenshot(
-      id,
-      device,
-      action.payload.name,
-      await page.screenshot({ type: 'png' }),
-    );
+): Promise<Screenshot> {
+  const path = await baseline.createActualScreenshot(
+    id,
+    device,
+    action.payload.name,
+    await page.screenshot({ type: 'png' }),
+  );
 
-    return {
-      name: action.payload.name,
-      path,
-    };
-  });
+  return {
+    name: action.payload.name,
+    path,
+  };
 }
 
 async function createFinalScreenshot(
@@ -144,13 +115,11 @@ async function createFinalScreenshot(
   page: Page,
   id: StoryID,
   device: Device,
-): Promise<WithPossibleError<ScreenshotPath>> {
-  return WithPossibleErrorOP.fromThrowable(async () => {
-    return baseline.createActualScreenshot(
-      id,
-      device,
-      undefined,
-      await page.screenshot({ type: 'png' }),
-    );
-  });
+): Promise<ScreenshotPath> {
+  return baseline.createActualScreenshot(
+    id,
+    device,
+    undefined,
+    await page.screenshot({ type: 'png' }),
+  );
 }

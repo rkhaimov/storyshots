@@ -3,11 +3,13 @@ import styled from 'styled-components';
 
 type ViewType = 'pass' | 'fresh';
 
-export const ImgViewer: React.FC<{
+type Props = {
   type: ViewType;
   src: string;
   alt?: string;
-}> = (props) => {
+};
+
+export const ImgViewer: React.FC<Props> = (props) => {
   return (
     <ViewerPanel>
       <Frame>

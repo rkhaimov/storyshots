@@ -9,19 +9,19 @@ type Props = ReactDiffViewerProps & {
 };
 
 export const DiffReader: React.FC<Props> = (props) => {
+  return <ReaderPanel>{renderViewer()}</ReaderPanel>;
+
   function renderViewer() {
     if (props.single) {
       return (
-        <WithoutFirstGutter>
-          <ReactDiffViewer {...props} />
-        </WithoutFirstGutter>
+          <WithoutFirstGutter>
+            <ReactDiffViewer {...props} />
+          </WithoutFirstGutter>
       );
     }
 
     return <ReactDiffViewer {...props} />;
   }
-
-  return <ReaderPanel>{renderViewer()}</ReaderPanel>;
 };
 
 const ReaderPanel = styled.div`

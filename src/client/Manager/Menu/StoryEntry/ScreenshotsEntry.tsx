@@ -1,5 +1,5 @@
 import { blue } from '@ant-design/colors';
-import { FileImageOutlined, PictureOutlined } from '@ant-design/icons';
+import { PictureOutlined } from '@ant-design/icons';
 import React from 'react';
 import styled from 'styled-components';
 import { ScreenshotName } from '../../../../reusables/types';
@@ -39,7 +39,7 @@ export const ScreenshotsEntry: React.FC<Props> = ({
                     <span>{it.name}</span>
                   </>
                 }
-                status={it.result.type}
+                status={{ type: it.result.type }}
               />
             </ActiveEntryHeader>
           </li>
@@ -59,7 +59,7 @@ export const ScreenshotsEntry: React.FC<Props> = ({
                 <span>FINAL</span>
               </>
             }
-            status={screenshots.final.type}
+            status={{ type: screenshots.final.type }}
           />
         </ActiveEntryHeader>
       </li>

@@ -8,7 +8,7 @@ export const Balance = () => {
   const [balance, setBalance] = useState<number>();
 
   useEffect(() => {
-    externals.balance
+    externals.business
       .getBalanceAt(externals.environment.now())
       .then((balance) => setBalance(balance));
   }, []);

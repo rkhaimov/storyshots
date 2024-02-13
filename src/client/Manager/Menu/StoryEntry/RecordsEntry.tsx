@@ -34,7 +34,7 @@ export const RecordsEntry: React.FC<Props> = ({
               <span>Records</span>
             </>
           }
-          status={results.records.type}
+          status={{ type: results.records.type }}
         />
       </ActiveEntryHeader>
     </>

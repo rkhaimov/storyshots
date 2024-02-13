@@ -9,8 +9,8 @@ import {
 } from '../../../reusables/channel';
 import { SelectionState } from '../../behaviour/useSelection';
 import { TestResults } from '../../behaviour/useTestResults/types';
-import { EntryAction } from '../reusables/EntryAction';
 import { MenuHavingStories } from '../MenuHavingStories';
+import { EntryAction } from '../reusables/EntryAction';
 import { EntryActions } from '../reusables/EntryActions';
 import { EntryHeader } from '../reusables/EntryHeader';
 import { EntryStatus, EntryTitle } from '../reusables/EntryTitle';
@@ -35,7 +35,11 @@ export const GroupEntry: React.FC<
         <Fold open={expanded} />
         <EntryTitle
           title={group.title}
-          status={getGroupEntryStatus(props.results, props.selection, group.children)}
+          status={getGroupEntryStatus(
+            props.results,
+            props.selection,
+            group.children,
+          )}
           style={{ fontSize: 16, fontWeight: 600 }}
         />
         <EntryActions>
@@ -85,20 +89,29 @@ function getGroupEntryStatus(
       : getStoryEntryStatus(results, selection, child),
   );
 
-  if (statuses.includes('error')) {
-    return 'error';
+  const error = statuses.find((it) => it?.type === 'error');
+
+  if (error) {
+    return {
+      type: 'error',
+      message: 'One or more stories contain errors. Please, check insides',
+    };
   }
 
-  if (statuses.includes('fail')) {
-    return 'fail';
+  const fail = statuses.find((it) => it?.type === 'fail');
+
+  if (fail) {
+    return fail;
   }
 
-  if (statuses.includes('fresh')) {
-    return 'fresh';
+  const fresh = statuses.find((it) => it?.type === 'fresh');
+
+  if (fresh) {
+    return fresh;
   }
 
-  if (statuses.length > 0 && statuses.every(it => it === 'pass')) {
-    return 'pass';
+  if (statuses.length > 0 && statuses.every((it) => it?.type === 'pass')) {
+    return { type: 'pass' };
   }
 
   return null;

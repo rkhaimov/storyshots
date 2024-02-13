@@ -7,7 +7,12 @@ import { Badge } from 'antd';
 import React, { CSSProperties } from 'react';
 import styled from 'styled-components';
 
-export type EntryStatus = 'fresh' | 'pass' | 'fail' | 'error' | null;
+export type EntryStatus =
+  | { type: 'fresh' }
+  | { type: 'pass' }
+  | { type: 'fail' }
+  | { type: 'error'; message: string }
+  | null;
 
 type Props = {
   title: React.ReactNode;
@@ -23,15 +28,15 @@ export const EntryTitle: React.FC<Props> = ({ title, status, style }) => (
 );
 
 function renderStatus(status: Props['status']): React.ReactNode {
-  if (status === 'pass') {
+  if (status?.type === 'pass') {
     return <CheckOutlined style={{ color: '#389e0d' }} />;
   }
 
-  if (status === 'fail') {
+  if (status?.type === 'fail') {
     return <CloseOutlined style={{ color: '#f5222d' }} />;
   }
 
-  if (status === 'fresh') {
+  if (status?.type === 'fresh') {
     return (
       <Badge
         color="hwb(205 6% 9%)"
@@ -43,8 +48,13 @@ function renderStatus(status: Props['status']): React.ReactNode {
     );
   }
 
-  if (status === 'error') {
-    return <ExclamationOutlined style={{ color: '#f5222d' }} />;
+  if (status?.type === 'error') {
+    return (
+      <ExclamationOutlined
+        style={{ color: '#f5222d' }}
+        title={status.message}
+      />
+    );
   }
 
   return null;

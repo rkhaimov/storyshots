@@ -1,28 +1,23 @@
 import { BoundingBox, ElementHandle, Frame } from 'puppeteer';
 import { FinderMeta } from '../../reusables/finder';
-import { WithPossibleError } from '../../reusables/types';
 import { isNil, not, wait } from '../../reusables/utils';
 
 export async function select(
   frame: Frame,
   by: FinderMeta,
-): Promise<WithPossibleError<ElementHandle>> {
+): Promise<ElementHandle> {
   const controller = new AbortController();
 
   return Promise.race([
-    _select(frame, by, controller.signal).then(
-      (element): WithPossibleError<ElementHandle> => ({
-        type: 'success',
-        data: element,
-      }),
-    ),
-    wait(10_000)
+    _select(frame, by, controller.signal),
+    wait(TIMEOUT)
       .then(() => controller.abort())
-      .then(
-        (): WithPossibleError<ElementHandle> => ({
-          type: 'error',
-          message: 'Element was not found withing given time interval',
-        }),
+      .then(() =>
+        Promise.reject(
+          new Error(
+            `Element was not found within given time interval (${TIMEOUT} ms)`,
+          ),
+        ),
       ),
   ]);
 }
@@ -155,3 +150,5 @@ async function narrow(
     }
   }
 }
+
+const TIMEOUT = 10_000;

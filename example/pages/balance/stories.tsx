@@ -34,7 +34,7 @@ export const balanceStories = createGroup('Balance', [
     arrange: (externals) => ({
       ...externals,
       balance: {
-        ...externals.balance,
+        ...externals.business,
         getBalanceAt: createNeverEndingPromise,
       },
     }),
@@ -46,7 +46,7 @@ export const balanceStories = createGroup('Balance', [
     arrange: (externals) => ({
       ...externals,
       balance: {
-        ...externals.balance,
+        ...externals.business,
         getBalanceAt: async () => 100_000,
       },
     }),
@@ -58,10 +58,10 @@ export const balanceStories = createGroup('Balance', [
     arrange: (externals, journal) => ({
       ...externals,
       balance: {
-        ...externals.balance,
+        ...externals.business,
         getBalanceAt: journal.record(
           'getInitialValue',
-          externals.balance.getBalanceAt,
+          externals.business.getBalanceAt,
         ),
       },
     }),

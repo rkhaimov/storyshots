@@ -1,9 +1,6 @@
 import { Layout } from 'antd';
 import React, { PropsWithChildren } from 'react';
 import styled from 'styled-components';
-import { DiffReader } from './DiffReader';
-import { DiffImgViewer } from './DiffImgViewer';
-import { ImgViewer } from './ImgViewer';
 
 const { Header } = Layout;
 
@@ -12,11 +9,7 @@ type Props = PropsWithChildren & {
   actions?: React.ReactNode;
 };
 
-export const Workspace: React.FC<Props> & {
-  DiffReader: typeof DiffReader;
-  ImgViewer: typeof ImgViewer;
-  DiffImgViewer: typeof DiffImgViewer;
-} = ({ children, actions, title }) => {
+export const Workspace: React.FC<Props> = ({ children, actions, title }) => {
   return (
     <Layout>
       <TopPanel>
@@ -27,10 +20,6 @@ export const Workspace: React.FC<Props> & {
     </Layout>
   );
 };
-
-Workspace.DiffReader = DiffReader;
-Workspace.ImgViewer = ImgViewer;
-Workspace.DiffImgViewer = DiffImgViewer;
 
 const TopPanel = styled(Header)`
   display: flex;

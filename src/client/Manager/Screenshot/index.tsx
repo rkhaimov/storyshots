@@ -10,7 +10,9 @@ import {
 } from '../behaviour/useTestResults/types';
 import { Spinner } from '../reusables/Spinner';
 import { Workspace } from '../Workspace';
-import { ActionAccept } from '../Workspace/Actions/Accept';
+import { ActionAccept } from '../Workspace/Accept';
+import { DiffImgViewer } from './DiffImgViewer';
+import { ImgViewer } from './ImgViewer';
 
 type ScreenshotSelection = Extract<
   SelectionState,
@@ -89,7 +91,7 @@ export const Screenshot: React.FC<Props> = ({
               />
             }
           >
-            <Workspace.ImgViewer
+            <ImgViewer
               type="fresh"
               src={driver.createScreenshotPath(result.actual)}
             />
@@ -98,7 +100,7 @@ export const Screenshot: React.FC<Props> = ({
       case 'pass':
         return (
           <Workspace title={title}>
-            <Workspace.ImgViewer
+            <ImgViewer
               type="pass"
               src={driver.createScreenshotPath(result.actual)}
             />
@@ -121,10 +123,7 @@ export const Screenshot: React.FC<Props> = ({
               />
             }
           >
-            <Workspace.DiffImgViewer
-              leftImage={driver.createScreenshotPath(result.expected)}
-              rightImage={driver.createScreenshotPath(result.actual)}
-            />
+            <DiffImgViewer {...result} />
           </Workspace>
         );
     }

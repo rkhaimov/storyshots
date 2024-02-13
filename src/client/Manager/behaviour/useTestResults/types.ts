@@ -18,7 +18,7 @@ export type SuccessTestResult = {
   };
 };
 
-type ScreenshotsComparisonResultsByMode = {
+export type ScreenshotsComparisonResultsByMode = {
   device: Device;
   results: ScreenshotsComparisonResults;
 };

@@ -12,8 +12,10 @@ import {
 } from 'antd';
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
+import { useExternals } from '../../externals/Context';
 
 export const CV: React.FC = () => {
+  const { business } = useExternals();
   const { modal } = App.useApp();
   const [, navigate] = useLocation();
   const [form] = Form.useForm();
@@ -64,7 +66,9 @@ export const CV: React.FC = () => {
       }}
     >
       <Form
-        onFinish={() => {
+        onFinish={async (values) => {
+          await business.applyCV(values);
+
           modal.info({
             title: 'This is a notification message',
             content: (

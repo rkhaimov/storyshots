@@ -34,6 +34,7 @@ export const Manager: React.FC<Props> = (props) => {
             width: '100%',
             backgroundColor: 'white',
             overflowY: 'auto',
+            overflowX: 'hidden',
             position: 'relative',
           }}
         >

@@ -1,34 +1,24 @@
 import { Frame } from 'puppeteer';
 import { NonScreenshotAction } from '../../reusables/actions';
-import { WithPossibleError } from '../../reusables/types';
 import { wait } from '../../reusables/utils';
-import { WithPossibleErrorOP } from '../handlers/reusables/with-possible-error';
 import { select } from './select';
 
 export async function act(
   preview: Frame,
   action: NonScreenshotAction,
-): Promise<WithPossibleError<void>> {
+): Promise<void> {
   if (action.action === 'wait') {
-    return WithPossibleErrorOP.fromThrowable(() => wait(action.payload.ms));
+    return wait(action.payload.ms);
   }
 
-  const result = await select(preview, action.payload.on);
-
-  if (result.type === 'error') {
-    return result;
-  }
-
-  const element = result.data;
+  const element = await select(preview, action.payload.on);
 
   switch (action.action) {
     case 'click':
-      return WithPossibleErrorOP.fromThrowable(() => element.click());
+      return element.click();
     case 'hover':
-      return WithPossibleErrorOP.fromThrowable(() => element.hover());
+      return element.hover();
     case 'fill':
-      return WithPossibleErrorOP.fromThrowable(() =>
-        element.type(action.payload.text),
-      );
+      return element.type(action.payload.text);
   }
 }
