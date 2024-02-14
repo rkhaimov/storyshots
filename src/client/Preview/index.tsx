@@ -12,11 +12,11 @@ import { Preview } from './Preview';
 
 export async function createPreviewApp(config: FinalClientConfig) {
   const { port, message } = await waitForManagerConnection();
-
-  if (window.top) {
-    window.__REACT_DEVTOOLS_GLOBAL_HOOK__ =
-      window.top.__REACT_DEVTOOLS_GLOBAL_HOOK__;
-  }
+  //
+  // if (window.top) {
+  //   window.__REACT_DEVTOOLS_GLOBAL_HOOK__ =
+  //     window.top.__REACT_DEVTOOLS_GLOBAL_HOOK__;
+  // }
 
   sendStoriesToManager(port, config);
 

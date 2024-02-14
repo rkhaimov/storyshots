@@ -12,7 +12,7 @@ run({
   ),
   screenshotsPath: path.join(process.cwd(), 'screenshots'),
   recordsPath: path.join(process.cwd(), 'records'),
-  tempPath: path.join(process.cwd(), 'temp'),
+  tempDirPath: path.join(process.cwd(), 'temp'),
   overrideWebpackConfig: (config) => {
     config.module = {
       rules: [

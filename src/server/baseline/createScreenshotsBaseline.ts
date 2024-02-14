@@ -10,7 +10,7 @@ import { ServerConfig } from '../reusables/types';
 import { copy, exists, mkdir, mkfile, read } from './utils';
 
 export async function createScreenshotsBaseline(config: ServerConfig) {
-  const actualResultsDir = path.join(config.tempPath, 'actual');
+  const actualResultsDir = path.join(config.tempDirPath, 'actual');
 
   if (not(await exists(actualResultsDir))) {
     await mkdir(actualResultsDir);

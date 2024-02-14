@@ -4,6 +4,6 @@ export type ServerConfig = {
   clientEntry: string;
   recordsPath: string;
   screenshotsPath: string;
-  tempPath: string;
+  tempDirPath: string;
   overrideWebpackConfig(config: Configuration): Configuration;
 };

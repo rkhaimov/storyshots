@@ -1,59 +1,30 @@
-import open from 'open';
 import { Application } from 'express-serve-static-core';
-import puppeteer, { Browser, Page } from 'puppeteer';
-import { assertNotEmpty, wait } from '../reusables/utils';
+import puppeteer, { Page } from 'puppeteer';
 import { createApiHandlers } from './handlers';
 import { createBaseline } from './reusables/baseline';
 import { ServerConfig } from './reusables/types';
+import path from 'path';
 
 export async function createWebDriver(app: Application, config: ServerConfig) {
   const baseline = await createBaseline(config);
-  const browser = await openBrowserAndCreateConnection();
-
-  assertNotEmpty(
-    browser,
-    'Was not able to connect. Try to close chrome and rerun',
-  );
-
-  const page = await createAndFocusPage(browser);
+  const page = await openAppAndGetPage(config);
 
   createApiHandlers(app, page, baseline);
 }
 
-async function createAndFocusPage(browser: Browser): Promise<Page> {
-  const pages = await browser.pages();
-  const page = await browser.newPage();
-
-  pages.filter((it) => it.url() === 'about:blank').forEach((it) => it.close());
-
-  await page.goto('http://localhost:8080', { timeout: 0 });
-  await page.bringToFront();
-
-  return page;
-}
-
-async function openBrowserAndCreateConnection(): Promise<Browser | undefined> {
-  await open('about:blank', {
-    app: {
-      name: open.apps.chrome,
-      arguments: ['--remote-debugging-port=9000'],
-    },
+async function openAppAndGetPage(config: ServerConfig): Promise<Page> {
+  const browser = await puppeteer.launch({
+    headless: false,
+    defaultViewport: null,
+    args: [
+      '--app=http://localhost:8080',
+      '--start-maximized',
+      '--test-type=gpu',
+    ],
+    userDataDir: path.join(config.tempDirPath, 'chrome-data'),
   });
 
-  await wait(5_000);
+  const [page] = await browser.pages();
 
-  return createConnection();
-}
-
-async function createConnection(retries = 3): Promise<Browser | undefined> {
-  if (retries === 0) {
-    return undefined;
-  }
-
-  return puppeteer
-    .connect({
-      browserURL: `http://127.0.0.1:9000`,
-      defaultViewport: null,
-    })
-    .catch(() => wait(3_000).then(() => createConnection(retries - 1)));
+  return page;
 }
