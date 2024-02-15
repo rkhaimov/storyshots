@@ -2,18 +2,7 @@ import { ActionMeta } from '../../reusables/actions';
 import { StoryID } from '../../reusables/types';
 import { Devices } from '../create-configure-client/types';
 
-export type FromManagerToPreviewMessage = {
-  type: 'select-story';
-  story: StoryID | undefined;
-  screenshotting: boolean;
-};
-
-export type FromPreviewToManagerMessage = {
-  type: 'stories-changed';
-  stories: SerializableStoryshotsNode[];
-};
-
-export type SerializableStoryNode = {
+export type EvaluatedStoryNode = {
   id: StoryID;
   type: 'story';
   title: string;
@@ -21,13 +10,11 @@ export type SerializableStoryNode = {
   modes: Devices;
 };
 
-export type SerializableGroupNode = {
+export type EvaluatedGroupNode = {
   id: string;
   type: 'group';
   title: string;
-  children: SerializableStoryshotsNode[];
+  children: EvaluatedStoryshotsNode[];
 };
 
-export type SerializableStoryshotsNode =
-  | SerializableGroupNode
-  | SerializableStoryNode;
+export type EvaluatedStoryshotsNode = EvaluatedGroupNode | EvaluatedStoryNode;

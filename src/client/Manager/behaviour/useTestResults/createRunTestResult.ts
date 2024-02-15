@@ -7,7 +7,7 @@ import {
 } from '../../../../reusables/types';
 import { isNil } from '../../../../reusables/utils';
 import { IExternals } from '../../../externals/types';
-import { SerializableStoryNode } from '../../../reusables/channel';
+import { EvaluatedStoryNode } from '../../../reusables/channel';
 import {
   RecordsComparisonResult,
   ScreenshotComparisonResult,
@@ -17,7 +17,7 @@ import {
 
 export async function createRunTestResult(
   driver: IExternals['driver'],
-  story: SerializableStoryNode,
+  story: EvaluatedStoryNode,
 ): Promise<TestResult> {
   const actualResults = await driver.actOnServerSide(story.id, {
     actions: story.actions,

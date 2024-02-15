@@ -8,7 +8,7 @@ export const Story = forwardRef<HTMLIFrameElement, Props>((props, ref) => (
   <iframe
     id="preview"
     ref={ref}
-    src="http://localhost:3030"
+    src="http://localhost:6006"
     style={{
       display: 'block',
       height: props.hidden ? 0 : '100%',

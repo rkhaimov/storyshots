@@ -4,6 +4,7 @@ import { createApiHandlers } from './handlers';
 import { createBaseline } from './reusables/baseline';
 import { ServerConfig } from './reusables/types';
 import path from 'path';
+import { MANAGER_INDEX } from './router';
 
 export async function createWebDriver(app: Application, config: ServerConfig) {
   const baseline = await createBaseline(config);
@@ -16,11 +17,7 @@ async function openAppAndGetPage(config: ServerConfig): Promise<Page> {
   const browser = await puppeteer.launch({
     headless: false,
     defaultViewport: null,
-    args: [
-      '--app=http://localhost:8080',
-      '--start-maximized',
-      '--test-type=gpu',
-    ],
+    args: [`--app=${MANAGER_INDEX}`, '--start-maximized', '--test-type=gpu'],
     userDataDir: path.join(config.tempDirPath, 'chrome-data'),
   });
 

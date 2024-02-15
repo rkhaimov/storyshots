@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { not } from '../../../reusables/utils';
 import {
-  SerializableGroupNode,
-  SerializableStoryNode,
-  SerializableStoryshotsNode,
+  EvaluatedGroupNode,
+  EvaluatedStoryNode,
+  EvaluatedStoryshotsNode,
 } from '../../reusables/channel';
-import { SelectionState } from './useSelection';
+import { RichSelection } from './useRichSelection';
 
-export function useGroupExpand(initial: SelectionState) {
+export function useGroupExpand(initial: RichSelection) {
   const [expanded, setExpanded] = useState(new Set<string>());
   const prev = usePrevious(initial);
 
@@ -19,7 +19,7 @@ export function useGroupExpand(initial: SelectionState) {
 
   return {
     expanded,
-    toggleGroupExpanded: (group: SerializableGroupNode) =>
+    toggleGroupExpanded: (group: EvaluatedGroupNode) =>
       setExpanded((prev) => {
         if (prev.has(group.id)) {
           prev.delete(group.id);
@@ -33,7 +33,7 @@ export function useGroupExpand(initial: SelectionState) {
 }
 
 function createInitialState(
-  initial: Exclude<SelectionState, { type: 'initializing' }>,
+  initial: Exclude<RichSelection, { type: 'initializing' }>,
 ): Set<string> {
   if (initial.type === 'no-selection') {
     return new Set();
@@ -43,8 +43,8 @@ function createInitialState(
 }
 
 function findParentsChain(
-  node: SerializableStoryshotsNode[],
-  story: SerializableStoryNode,
+  node: EvaluatedStoryshotsNode[],
+  story: EvaluatedStoryNode,
 ): string[] {
   const [head, ...tail] = node;
 

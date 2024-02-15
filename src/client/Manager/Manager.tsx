@@ -39,8 +39,11 @@ export const Manager: React.FC<Props> = (props) => {
           }}
         >
           <Story
-            key={behaviour.preview.key}
-            ref={behaviour.preview.ref}
+            key={
+              behaviour.selection.type === 'story'
+                ? behaviour.selection.key
+                : undefined
+            }
             hidden={
               behaviour.selection.type === 'screenshot' ||
               behaviour.selection.type === 'records'

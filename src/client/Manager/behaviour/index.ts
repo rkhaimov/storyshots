@@ -1,16 +1,23 @@
 import { Props } from '../types';
-import { useTestResults } from './useTestResults';
-import { useSelection } from './useSelection';
+import { useAutoPlay } from './useAutoPlay';
+import { useBehaviourRouter } from './useBehaviourRouter';
 import { useGroupExpand } from './useGroupExpand';
+import { useRichSelection } from './useRichSelection';
+import { useTestResults } from './useTestResults';
 
 export function useBehaviour(props: Props) {
   const test = useTestResults();
-  const state = useSelection(props);
-  const expand = useGroupExpand(state.selection);
+  const router = useBehaviourRouter(props);
+  const selection = useRichSelection(router.params);
+  const playable = useAutoPlay(selection);
+  const expand = useGroupExpand(selection);
 
   return {
     ...expand,
     ...test,
-    ...state,
+    selection: playable,
+    setStory: router.setStory,
+    setRecords: router.setRecords,
+    setScreenshot: router.setScreenshot,
   };
 }

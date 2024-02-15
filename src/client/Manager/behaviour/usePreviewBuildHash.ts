@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { assert } from '../../../reusables/utils';
 
 export function usePreviewBuildHash(): string {
-  const [hash, setHash] = useState('Initializing');
+  const [hash, setHash] = useState('');
 
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:8080');

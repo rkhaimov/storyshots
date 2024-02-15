@@ -3,7 +3,6 @@ import { ScreenshotName } from '../../../reusables/types';
 import { isNil } from '../../../reusables/utils';
 import { useExternals } from '../../externals/Context';
 import { UseBehaviourProps } from '../behaviour/types';
-import { SelectionState } from '../behaviour/useSelection';
 import {
   ScreenshotComparisonResult,
   SuccessTestResult,
@@ -15,7 +14,7 @@ import { DiffImgViewer } from './DiffImgViewer';
 import { ImgViewer } from './ImgViewer';
 
 type ScreenshotSelection = Extract<
-  SelectionState,
+  UseBehaviourProps['selection'],
   {
     type: 'screenshot';
   }

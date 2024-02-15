@@ -25,7 +25,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
         $level={props.level}
         $active={isActive()}
         $color={blue[0]}
-        onClick={() => props.setStory(props.story)}
+        onClick={() => props.setStory(props.story.id)}
       >
         <EntryTitle status={status} title={props.story.title} />
         <EntryActions waiting={isPlayingOrRunning()}>

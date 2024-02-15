@@ -1,14 +1,13 @@
 import React from 'react';
 import { isNil } from '../../../reusables/utils';
-import { Spinner } from '../reusables/Spinner';
 import { UseBehaviourProps } from '../behaviour/types';
-import { SelectionState } from '../behaviour/useSelection';
+import { Spinner } from '../reusables/Spinner';
 import { Workspace } from '../Workspace';
 import { ActionAccept } from '../Workspace/Accept';
 import { DiffReader } from './DiffReader';
 
 type RecordsSelection = Extract<
-  SelectionState,
+  UseBehaviourProps['selection'],
   {
     type: 'records';
   }

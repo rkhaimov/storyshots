@@ -25,7 +25,7 @@ export const RecordsEntry: React.FC<Props> = ({
         $offset={24}
         $active={isActive()}
         $color={blue[0]}
-        onClick={() => setRecords(story)}
+        onClick={() => setRecords(story.id)}
       >
         <EntryTitle
           title={

@@ -1,4 +1,3 @@
-import { AriaRole } from 'react';
 import { ActionMeta } from '../reusables/actions';
 import { FinderMeta } from '../reusables/finder';
 import { JournalRecord, StoryID } from '../reusables/types';

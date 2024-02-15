@@ -1,6 +1,6 @@
 import { isNil } from '../../../../reusables/utils';
-import { SerializableStoryNode } from '../../../reusables/channel';
-import { SelectionState } from '../../behaviour/useSelection';
+import { EvaluatedStoryNode } from '../../../reusables/channel';
+import { UseBehaviourProps } from '../../behaviour/types';
 import {
   RecordsComparisonResult,
   ScreenshotsComparisonResultsByMode,
@@ -10,8 +10,8 @@ import { EntryStatus } from './EntryTitle';
 
 export function getStoryEntryStatus(
   results: TestResults,
-  selection: SelectionState,
-  story: SerializableStoryNode,
+  selection: UseBehaviourProps['selection'],
+  story: EvaluatedStoryNode,
 ): EntryStatus {
   if (
     selection.type === 'story' &&

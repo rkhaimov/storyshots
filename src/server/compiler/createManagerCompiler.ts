@@ -1,17 +1,11 @@
-import express from 'express';
-import webpack from 'webpack';
-import middleware from 'webpack-dev-middleware';
-import path from 'path';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import history from 'connect-history-api-fallback';
-import wsify from 'express-ws';
-import { createWebDriver } from '../createWebDriver';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import path from 'path';
+import webpack from 'webpack';
 import { ServerConfig } from '../reusables/types';
-import { createPreviewWatcher } from './createPreviewWatcher';
 
-export function runManagerCompilation(config: ServerConfig) {
-  const compiler = webpack({
+export function createManagerCompiler() {
+  return webpack({
     mode: 'development',
     bail: false,
     devtool: 'cheap-module-source-map',
@@ -20,11 +14,11 @@ export function runManagerCompilation(config: ServerConfig) {
       errorDetails: true,
     },
     output: {
-      path: path.join(process.cwd(), 'build'),
+      path: path.join(process.cwd(), 'build', 'manager'),
       pathinfo: true,
-      filename: 'static/js/manager.js',
+      filename: 'static/js/bundle.js',
       assetModuleFilename: 'static/media/[name].[hash][ext]',
-      publicPath: '/',
+      publicPath: '/manager',
     },
     module: {
       rules: [
@@ -67,17 +61,4 @@ export function runManagerCompilation(config: ServerConfig) {
       new ForkTsCheckerWebpackPlugin({ async: true }),
     ],
   });
-
-  const { app } = wsify(express());
-
-  app.use(history({ htmlAcceptHeaders: ['text/html'] }));
-  app.use(middleware(compiler));
-
-  const onPreviewUpdate = createPreviewWatcher(app);
-
-  createWebDriver(app, config);
-
-  app.listen(8080, () => console.log('Manager is served at 8080'));
-
-  return onPreviewUpdate;
 }

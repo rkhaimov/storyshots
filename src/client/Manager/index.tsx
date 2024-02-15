@@ -1,11 +1,11 @@
-import { createGlobalStyle } from 'styled-components';
-import ReactDOM from 'react-dom/client';
 import React from 'react';
-import { Manager } from './Manager';
-import { externals } from '../externals/externals';
+import ReactDOM from 'react-dom/client';
+import { createGlobalStyle } from 'styled-components';
 import { Route, Switch } from 'wouter';
 import { ExternalsProvider } from '../externals/Context';
+import { externals } from '../externals/externals';
 import { ForChromiumOnly } from './ForChromiumOnly';
+import { Manager } from './Manager';
 
 const div = document.createElement('div');
 

@@ -5,7 +5,7 @@ import {
   ScreenshotPath,
 } from '../../../../reusables/types';
 import { useExternals } from '../../../externals/Context';
-import { SerializableStoryNode } from '../../../reusables/channel';
+import { EvaluatedStoryNode } from '../../../reusables/channel';
 import { createRunTestResult } from './createRunTestResult';
 import {
   RecordsComparisonResult,
@@ -20,14 +20,14 @@ export function useTestResults() {
 
   return {
     results,
-    run: async (stories: SerializableStoryNode[]) => {
+    run: async (stories: EvaluatedStoryNode[]) => {
       setChosenAsRunning(stories);
 
       runSetTestResults(stories);
     },
     // TODO: Logic duplication
     acceptRecords: async (
-      story: SerializableStoryNode,
+      story: EvaluatedStoryNode,
       records: JournalRecord[],
       ready: SuccessTestResult,
     ) => {
@@ -45,7 +45,7 @@ export function useTestResults() {
       );
     },
     acceptScreenshot: async (
-      story: SerializableStoryNode,
+      story: EvaluatedStoryNode,
       name: ScreenshotName | undefined,
       path: ScreenshotPath,
       ready: SuccessTestResult,
@@ -80,7 +80,7 @@ export function useTestResults() {
     },
   };
 
-  function setChosenAsRunning(stories: SerializableStoryNode[]) {
+  function setChosenAsRunning(stories: EvaluatedStoryNode[]) {
     return setResults(
       stories.reduce(
         (acc, story) => acc.set(story.id, { running: true }),
@@ -89,7 +89,7 @@ export function useTestResults() {
     );
   }
 
-  async function runSetTestResults(stories: SerializableStoryNode[]) {
+  async function runSetTestResults(stories: EvaluatedStoryNode[]) {
     for (const story of stories) {
       const result = await createRunTestResult(externals.driver, story);
 

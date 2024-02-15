@@ -12,6 +12,7 @@ import {
 import { act } from '../reusables/act';
 import { Baseline } from '../reusables/baseline';
 import { toPreviewFrame } from '../reusables/toPreviewFrame';
+import { createPathToStory } from '../router';
 import { handlePossibleErrors } from './reusables/with-possible-error';
 
 export function createActServerSideHandler(
@@ -43,7 +44,7 @@ async function createServerResultByDevice(
 ) {
   await configurePageByMode(payload.device, page);
 
-  await page.goto(`http://localhost:8080/chromium/${id}`, {
+  await page.goto(createPathToStory(id), {
     waitUntil: 'networkidle0',
   });
 

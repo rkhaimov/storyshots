@@ -4,16 +4,18 @@ import { Placeholder } from './Placeholder';
 import { ScreenshotReadyStory } from './ScreenshotReadyStory';
 import { Story } from './Story';
 import { Props } from './types';
+import { useManagerChannel } from './useManagerChannel';
 
 export const Preview: React.FC<Props> = (props) => {
-  if (isNil(props.story)) {
+  const { id, screenshotting } = useManagerChannel(props);
+
+  if (isNil(id)) {
     return <Placeholder />;
   }
 
-  if (props.screenshotting) {
-    return <ScreenshotReadyStory id={props.story} {...props} />;
+  if (screenshotting) {
+    return <ScreenshotReadyStory id={id} {...props} />;
   }
 
-  return <Story id={props.story} {...props} />;
+  return <Story id={id} {...props} />;
 };
-

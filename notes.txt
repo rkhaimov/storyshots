@@ -20,3 +20,4 @@ finder https://github.com/antonmedv/finder
 * fix devtools closing constantly
 * implement cancellation on client act
 * implement errors pane with more details and autofocus
+* implement server logging

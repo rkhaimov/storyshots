@@ -3,11 +3,11 @@ import { PlayCircleOutlined, UpOutlined } from '@ant-design/icons';
 import React from 'react';
 import styled from 'styled-components';
 import {
-  SerializableGroupNode,
-  SerializableStoryNode,
-  SerializableStoryshotsNode,
+  EvaluatedGroupNode,
+  EvaluatedStoryNode,
+  EvaluatedStoryshotsNode,
 } from '../../../reusables/channel';
-import { SelectionState } from '../../behaviour/useSelection';
+import { UseBehaviourProps } from '../../behaviour/types';
 import { TestResults } from '../../behaviour/useTestResults/types';
 import { MenuHavingStories } from '../MenuHavingStories';
 import { EntryAction } from '../reusables/EntryAction';
@@ -19,7 +19,7 @@ import { Props } from '../types';
 
 export const GroupEntry: React.FC<
   Props & {
-    group: SerializableGroupNode;
+    group: EvaluatedGroupNode;
   }
 > = (props) => {
   const { group, ...others } = props;
@@ -67,8 +67,8 @@ export const GroupEntry: React.FC<
 };
 
 function extractAllStories(
-  nodes: SerializableStoryshotsNode[],
-): SerializableStoryNode[] {
+  nodes: EvaluatedStoryshotsNode[],
+): EvaluatedStoryNode[] {
   return nodes.flatMap((node) => {
     if (node.type === 'story') {
       return [node];
@@ -80,8 +80,8 @@ function extractAllStories(
 
 function getGroupEntryStatus(
   results: TestResults,
-  selection: SelectionState,
-  children: SerializableStoryshotsNode[],
+  selection: UseBehaviourProps['selection'],
+  children: EvaluatedStoryshotsNode[],
 ): EntryStatus {
   const statuses = children.map((child) =>
     child.type === 'group'

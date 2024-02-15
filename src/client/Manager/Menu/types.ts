@@ -1,7 +1,7 @@
-import { SerializableStoryshotsNode } from '../../reusables/channel';
+import { EvaluatedStoryshotsNode } from '../../reusables/channel';
 import { UseBehaviourProps } from '../behaviour/types';
 
 export type Props = UseBehaviourProps & {
-  stories: SerializableStoryshotsNode[];
+  stories: EvaluatedStoryshotsNode[];
   level: number;
 };
