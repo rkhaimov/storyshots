@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 import { useLocation } from 'wouter';
 import { useSearch } from 'wouter/use-location';
 import { ScreenshotName, StoryID } from '../../../reusables/types';
-import { isNil } from '../../../reusables/utils';
+import { assertNotEmpty, isNil } from '../../../reusables/utils';
 import { Props } from '../types';
 
 export function useBehaviourRouter(props: Props) {
-  const [, navigate] = useLocation();
+  const navigate = useNavigation();
 
   return {
     params: useParsedParams(props),
@@ -23,6 +23,24 @@ export function useBehaviourRouter(props: Props) {
           : `/${id}?mode=${Mode.Screenshot}&screenshot=${name}`,
       );
     },
+  };
+}
+
+function useNavigation() {
+  const search = useSearch();
+  const [, navigate] = useLocation();
+
+  return (url: string) => {
+    const params = new URLSearchParams(search);
+    const secret = params.get('manager');
+
+    assertNotEmpty(secret);
+
+    navigate(
+      url.includes('?')
+        ? `${url}&manager=${secret}`
+        : `${url}?manager=${secret}`,
+    );
   };
 }
 

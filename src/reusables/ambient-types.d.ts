@@ -1,8 +1,3 @@
-type State<T> = {
-  current: T;
-  next(onChange: (value: T) => void): void;
-};
-
 type ManagerState = {
   id?: import('./types').StoryID;
   screenshotting: boolean;
@@ -13,7 +8,7 @@ interface Window {
 
   setStoriesAndGetState(
     stories: import('../client/reusables/channel').EvaluatedStoryshotsNode[],
-  ): State<ManagerState>;
+  ): ManagerState;
 
   readJournalRecords(): import('./types').JournalRecord[];
 }

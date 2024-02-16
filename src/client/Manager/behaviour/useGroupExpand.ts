@@ -5,9 +5,9 @@ import {
   EvaluatedStoryNode,
   EvaluatedStoryshotsNode,
 } from '../../reusables/channel';
-import { RichSelection } from './useRichSelection';
+import { AutoPlaySelection } from './useAutoPlaySelection';
 
-export function useGroupExpand(initial: RichSelection) {
+export function useGroupExpand(initial: AutoPlaySelection) {
   const [expanded, setExpanded] = useState(new Set<string>());
   const prev = usePrevious(initial);
 
@@ -33,7 +33,7 @@ export function useGroupExpand(initial: RichSelection) {
 }
 
 function createInitialState(
-  initial: Exclude<RichSelection, { type: 'initializing' }>,
+  initial: Exclude<AutoPlaySelection, { type: 'initializing' }>,
 ): Set<string> {
   if (initial.type === 'no-selection') {
     return new Set();

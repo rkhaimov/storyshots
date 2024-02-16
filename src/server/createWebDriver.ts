@@ -17,11 +17,13 @@ async function openAppAndGetPage(config: ServerConfig): Promise<Page> {
   const browser = await puppeteer.launch({
     headless: false,
     defaultViewport: null,
-    args: [`--app=${MANAGER_INDEX}`, '--start-maximized', '--test-type=gpu'],
+    args: ['--start-maximized', '--test-type=gpu'],
     userDataDir: path.join(config.tempDirPath, 'chrome-data'),
   });
 
   const [page] = await browser.pages();
+
+  await page.goto(MANAGER_INDEX);
 
   return page;
 }

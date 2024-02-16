@@ -1,21 +1,19 @@
 import { Props } from '../types';
-import { useAutoPlay } from './useAutoPlay';
+import { useAutoPlaySelection } from './useAutoPlaySelection';
 import { useBehaviourRouter } from './useBehaviourRouter';
 import { useGroupExpand } from './useGroupExpand';
-import { useRichSelection } from './useRichSelection';
 import { useTestResults } from './useTestResults';
 
 export function useBehaviour(props: Props) {
   const test = useTestResults();
   const router = useBehaviourRouter(props);
-  const selection = useRichSelection(router.params);
-  const playable = useAutoPlay(selection);
-  const expand = useGroupExpand(selection);
+  const play = useAutoPlaySelection(router.params);
+  const expand = useGroupExpand(play.selection);
 
   return {
     ...expand,
     ...test,
-    selection: playable,
+    ...play,
     setStory: router.setStory,
     setRecords: router.setRecords,
     setScreenshot: router.setScreenshot,

@@ -1,13 +1,19 @@
-import React, { useRef } from 'react';
+import React, { useMemo } from 'react';
 import { RouteComponentProps } from 'wouter';
 import { Story } from './Story';
+import { StoryID } from '../../reusables/types';
 
 type Props = RouteComponentProps<{
   story: string;
 }>;
 
 export const ForChromiumOnly: React.FC<Props> = (props) => {
-  const ref = useRef<HTMLIFrameElement>(null);
+  useMemo(() => {
+    window.setStoriesAndGetState = () => ({
+      id: props.params.story as StoryID,
+      screenshotting: true,
+    });
+  }, []);
 
-  return <Story ref={ref} hidden={false} />;
+  return <Story hidden={false} />;
 };

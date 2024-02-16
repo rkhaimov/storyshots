@@ -39,11 +39,7 @@ export const Manager: React.FC<Props> = (props) => {
           }}
         >
           <Story
-            key={
-              behaviour.selection.type === 'story'
-                ? behaviour.selection.key
-                : undefined
-            }
+            key={behaviour.identity}
             hidden={
               behaviour.selection.type === 'screenshot' ||
               behaviour.selection.type === 'records'

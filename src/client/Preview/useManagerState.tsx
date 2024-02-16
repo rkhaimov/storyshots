@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { assertNotEmpty } from '../../reusables/utils';
 import { Devices } from '../create-configure-client/types';
 import { createActor } from '../createActor';
@@ -6,8 +6,8 @@ import { EvaluatedStoryshotsNode } from '../reusables/channel';
 import { StoryshotsNode } from '../types';
 import { Props } from './types';
 
-export function useManagerChannel(props: Props) {
-  const manager = useMemo(() => {
+export function useManagerState(props: Props) {
+  return useMemo(() => {
     const top = window.top;
 
     assertNotEmpty(top, 'Preview should be wrapped in manager');
@@ -16,17 +16,6 @@ export function useManagerChannel(props: Props) {
       toEvaluatedStories(props.stories, props.devices),
     );
   }, [props.stories]);
-
-  const [current, setNext] = useState(manager.current);
-
-  // TODO: Does it need cleanup?
-  useEffect(() => {
-    setNext(manager.current);
-
-    manager.next(setNext);
-  }, [manager]);
-
-  return current;
 }
 
 function toEvaluatedStories(
