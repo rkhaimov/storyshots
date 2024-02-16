@@ -8,7 +8,8 @@ import { ServerConfig } from './reusables/types';
 import { PORT, router } from './router';
 import { createPreviewWatcher } from './compiler/createPreviewWatcher';
 
-export function run(config: ServerConfig) {
+// TODO: Divide manager and preview differently
+export function runManager(config: ServerConfig) {
   const preview = createPreviewCompiler(config);
   const manager = createManagerCompiler();
 

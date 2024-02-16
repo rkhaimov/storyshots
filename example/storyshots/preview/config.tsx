@@ -5,17 +5,17 @@ import {
   createMockExternals,
 } from '../../externals/createMockExternals';
 import {
-  createConfigureClient,
+  createConfigurePreview,
   createDesktopDevice,
   createMobileDevice,
 } from '../../../src/client';
 import { PureApp } from '../../PureApp';
 
 const {
-  run,
+  runPreview,
   createStory: _createStory,
   createGroup,
-} = createConfigureClient({
+} = createConfigurePreview({
   devices: {
     primary: createDesktopDevice('desktop', {
       width: 1480,
@@ -50,4 +50,4 @@ const createStory = (config: RenderBoundConfig) =>
 
 type RenderBoundConfig = Omit<Parameters<typeof _createStory>[0], 'render'>;
 
-export { run, createStory, createGroup };
+export { runPreview, createStory, createGroup };

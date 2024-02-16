@@ -1,4 +1,4 @@
-import { createGroup, createStory } from '../../storyshots/client/config';
+import { createGroup, createStory } from '../../storyshots/preview/config';
 import { finder } from '../../../src/client';
 
 export const cvStories = createGroup('CV', [

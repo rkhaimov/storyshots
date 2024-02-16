@@ -1,7 +1,7 @@
 import { Configuration } from 'webpack';
 
 export type ServerConfig = {
-  clientEntry: string;
+  previewEntry: string;
   recordsPath: string;
   screenshotsPath: string;
   tempDirPath: string;

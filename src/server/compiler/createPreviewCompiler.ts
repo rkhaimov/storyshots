@@ -8,7 +8,7 @@ export function createPreviewCompiler(config: ServerConfig) {
     mode: 'development',
     bail: false,
     devtool: 'cheap-module-source-map',
-    entry: config.clientEntry,
+    entry: config.previewEntry,
     stats: {
       errorDetails: true,
     },

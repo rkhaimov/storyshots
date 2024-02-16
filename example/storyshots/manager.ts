@@ -1,13 +1,13 @@
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import path from 'path';
-import { run } from '../../src/server';
+import { runManager } from '../../src/server';
 
-run({
-  clientEntry: path.join(
+runManager({
+  previewEntry: path.join(
     process.cwd(),
     'example',
     'storyshots',
-    'client',
+    'preview',
     'index.ts',
   ),
   screenshotsPath: path.join(process.cwd(), 'screenshots'),

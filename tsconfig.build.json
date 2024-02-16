@@ -1,6 +1,6 @@
 {
   "include": [
-    "./example/storyshots/server.ts"
+    "./example/storyshots/manager.ts"
   ],
   "compilerOptions": {
     "target": "ES5",

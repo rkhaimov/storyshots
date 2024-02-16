@@ -1,4 +1,4 @@
-import { createGroup, createStory } from '../../storyshots/client/config';
+import { createGroup, createStory } from '../../storyshots/preview/config';
 import { createNeverEndingPromise } from './utils';
 import { finder } from '../../../src/client';
 

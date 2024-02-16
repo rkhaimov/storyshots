@@ -21,3 +21,4 @@ finder https://github.com/antonmedv/finder
 * implement cancellation on client act
 * implement errors pane with more details and autofocus
 * implement server logging
+* introduce manager/preview arch

@@ -34,8 +34,6 @@ async function _select(
     const elements = await begin(frame, by);
 
     if (elements.length === 0) {
-      console.log('No elements found. Retrying...');
-
       await wait(100);
 
       continue;
@@ -50,16 +48,12 @@ async function _select(
     const element = elements[0];
 
     if (not(await element.isVisible())) {
-      console.log('Element is not visible yet. Retrying...');
-
       await wait(100);
 
       continue;
     }
 
     if (not(await element.isIntersectingViewport({ threshold: 0 }))) {
-      console.log('Element is out of view. Scrolling...');
-
       await element.scrollIntoView();
       await wait(100);
 
@@ -70,8 +64,6 @@ async function _select(
     const second = await getBoundingBox(element);
 
     if (not(equals(first, second))) {
-      console.log('Element is not stable between RAF calls. Retrying...');
-
       await wait(100);
 
       continue;
