@@ -9,7 +9,7 @@ export const Balance = () => {
 
   useEffect(() => {
     externals.business
-      .getBalanceAt(externals.environment.now())
+      .getBalanceAt(externals.environment.now().getTime())
       .then((balance) => setBalance(balance));
   }, []);
 

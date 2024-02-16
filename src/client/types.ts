@@ -11,8 +11,7 @@ export type Group = {
   children: StoryshotsNode[];
 };
 
-// Covariant relation is intentional here
-export type Story<out TExternals = unknown> = {
+export type Story<TExternals = unknown> = {
   id: StoryID;
   type: 'story';
   title: string;

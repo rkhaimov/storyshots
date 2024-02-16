@@ -22,3 +22,4 @@ finder https://github.com/antonmedv/finder
 * implement errors pane with more details and autofocus
 * implement server logging
 * introduce manager/preview arch
+* exhaustive check on story arrange

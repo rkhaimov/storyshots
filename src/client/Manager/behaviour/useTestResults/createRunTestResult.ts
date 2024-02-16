@@ -21,7 +21,7 @@ export async function createRunTestResult(
 ): Promise<TestResult> {
   const actualResults = await driver.actOnServerSide(story.id, {
     actions: story.actions,
-    device: story.modes.primary,
+    device: story.devices.primary,
   });
 
   if (actualResults.type === 'error') {
@@ -42,11 +42,11 @@ export async function createRunTestResult(
     ),
     screenshots: {
       primary: {
-        device: story.modes.primary,
+        device: story.devices.primary,
         results: await createScreenshotsComparisonResults(
           driver,
           story.id,
-          { actions: story.actions, device: story.modes.primary },
+          { actions: story.actions, device: story.devices.primary },
           actualResults.data.screenshots,
         ),
       },

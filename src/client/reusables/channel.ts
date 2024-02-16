@@ -7,7 +7,7 @@ export type EvaluatedStoryNode = {
   type: 'story';
   title: string;
   actions: ActionMeta[];
-  modes: Devices;
+  devices: Devices;
 };
 
 export type EvaluatedGroupNode = {

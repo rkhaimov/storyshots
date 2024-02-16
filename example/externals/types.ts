@@ -3,7 +3,7 @@ export interface IExternals {
     log(event: string): void;
   };
   business: {
-    getBalanceAt(date: Date): Promise<number>;
+    getBalanceAt(date: number): Promise<number>;
     applyCV(form: unknown): Promise<void>;
   };
   environment: {
