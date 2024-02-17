@@ -7,7 +7,7 @@ interface Window {
   __REACT_DEVTOOLS_GLOBAL_HOOK__: unknown;
 
   setStoriesAndGetState(
-    stories: import('../client/reusables/channel').EvaluatedStoryshotsNode[],
+    stories: import('../client/reusables/channel').EvaluatedStoryTree[],
   ): ManagerState;
 
   readJournalRecords(): import('./types').JournalRecord[];

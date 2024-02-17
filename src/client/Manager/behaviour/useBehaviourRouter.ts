@@ -4,6 +4,7 @@ import { useSearch } from 'wouter/use-location';
 import { StoryID } from '../../../reusables/types';
 import { assertNotEmpty, isNil } from '../../../reusables/utils';
 import { Props } from '../types';
+import { TreeOP } from '../../../reusables/tree';
 
 export function useBehaviourRouter(props: Props) {
   const navigate = useNavigation();
@@ -48,14 +49,15 @@ function useNavigation() {
 }
 
 function useParsedParams(props: Props) {
-  const id = props.params.story as StoryID | undefined;
+  const story = props.params.story as string | undefined;
   const search = useSearch();
 
   return useMemo((): URLParsedParams => {
-    if (isNil(id)) {
+    if (isNil(story)) {
       return { type: 'no-selection' };
     }
 
+    const id = TreeOP.ensureIsLeafID(story);
     const params = new URLSearchParams(search);
     const mode = params.get('mode');
 
@@ -79,7 +81,7 @@ function useParsedParams(props: Props) {
       type: 'story',
       id,
     };
-  }, [id, search]);
+  }, [story, search]);
 }
 
 export type URLParsedParams =

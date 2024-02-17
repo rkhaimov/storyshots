@@ -1,52 +1,25 @@
-import { StoryID } from '../reusables/types';
+import { TreeOP } from '../reusables/tree';
 import { createActor } from './createActor';
 import { Group, Story } from './types';
 
-export function createGroup(
-  title: Group['title'],
-  children: Group['children'],
-): Group {
-  return {
-    type: 'group',
-    title,
-    id: title,
-    children: extendGroupChildrenIDs(title, children),
-  };
-}
-
-function extendGroupChildrenIDs(
-  parent: string,
-  children: Group['children'],
-): Group['children'] {
-  return children.map((it) => {
-    switch (it.type) {
-      case 'group':
-        return {
-          ...it,
-          id: `${parent}_${it.id}`,
-          children: extendGroupChildrenIDs(parent, it.children),
-        };
-      case 'story':
-        return { ...it, id: `${parent}_${it.id}` as StoryID };
-    }
-  });
+export function describe(title: string, children: Group['children']): Group {
+  return TreeOP.createIntermediateNode(title, { title }, children);
 }
 
 type StoryConfig<TExternals> = {
-  title: Story<TExternals>['title'];
-  render: Story<TExternals>['render'];
-  arrange?: Story<TExternals>['arrange'];
-  act?: Story<TExternals>['act'];
+  render: Story<TExternals>['payload']['render'];
+  arrange?: Story<TExternals>['payload']['arrange'];
+  act?: Story<TExternals>['payload']['act'];
 };
 
-export function createStory<TExternals>(
+export function it<TExternals>(
+  title: string,
   config: StoryConfig<TExternals>,
 ): Story<TExternals> {
-  return {
-    ...config,
-    id: config.title as StoryID,
-    type: 'story',
+  return TreeOP.createLeafNode(title, {
+    title,
+    render: config.render,
     act: config.act ?? (() => createActor()),
     arrange: config.arrange ?? ((externals) => externals),
-  };
+  });
 }

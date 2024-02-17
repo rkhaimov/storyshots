@@ -3,6 +3,7 @@ import { ProfileOutlined } from '@ant-design/icons';
 import React from 'react';
 import { SuccessTestResult } from '../../behaviour/useTestResults/types';
 import { ActiveEntryHeader } from '../reusables/EntryHeader';
+import { EntryStatus } from '../reusables/EntryStatus';
 import { EntryTitle } from '../reusables/EntryTitle';
 import { Props as ParentProps } from './types';
 
@@ -28,13 +29,13 @@ export const RecordsEntry: React.FC<Props> = ({
         onClick={() => setRecords(story.id)}
       >
         <EntryTitle
-          title={
+          left={
             <>
+              <EntryStatus status={{ type: results.records.type }} />
               <ProfileOutlined style={{ marginRight: 4 }} />
-              <span>Records</span>
             </>
           }
-          status={{ type: results.records.type }}
+          title="Records"
         />
       </ActiveEntryHeader>
     </>

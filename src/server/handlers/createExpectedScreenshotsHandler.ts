@@ -4,16 +4,16 @@ import {
   ActionsOnDevice,
   ExpectedScreenshots,
   Screenshot,
-  StoryID,
 } from '../../reusables/types';
 import { isNil } from '../../reusables/utils';
+import { TreeOP } from '../../reusables/tree';
 
 export function createExpectedScreenshotsHandler(
   app: Application,
   baseline: Baseline,
 ) {
   app.post('/api/screenshot/expected/:id', async (request, response) => {
-    const id = request.params.id as StoryID;
+    const id = TreeOP.ensureIsLeafID(request.params.id);
     const { actions, device }: ActionsOnDevice = request.body;
 
     const others: Screenshot[] = [];

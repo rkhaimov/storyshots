@@ -1,14 +1,12 @@
-import { createGroup, createStory } from '../../storyshots/preview/config';
 import { finder } from '../../../src/client';
+import { describe, it } from '../../storyshots/preview/config';
 
-export const cvStories = createGroup('CV', [
-  createStory({
-    title: 'Default',
+export const cvStories = describe('CV', [
+  it('renders all fields as empty by default', {
     act: (actor) =>
       actor.click(finder.getByRole('button', { name: 'Navigate' }).at(1)),
   }),
-  createStory({
-    title: 'Filled',
+  it('lets all of its fields to be filled', {
     act: (actor) =>
       actor
         .click(finder.getByRole('button', { name: 'Navigate' }).at(1))
@@ -43,23 +41,20 @@ export const cvStories = createGroup('CV', [
             .getByRole('button', { name: 'OK' }),
         ),
   }),
-  createStory({
-    title: 'EmailError',
+  it('checks validity of an email that was entered', {
     act: (actor) =>
       actor
         .click(finder.getByRole('button', { name: 'Navigate' }).at(1))
         .fill(finder.getByPlaceholder('example@site.com'), 'hello@'),
   }),
-  createStory({
-    title: 'PasswordsDoNotMatch',
+  it('ensures entered passwords match', {
     act: (actor) =>
       actor
         .click(finder.getByRole('button', { name: 'Navigate' }).at(1))
         .fill(finder.getByLabel('Password'), '123pppq@33p')
         .fill(finder.getByLabel('Confirm Password'), '123pppq@'),
   }),
-  createStory({
-    title: 'ResidenceSelect',
+  it('lets to select residence', {
     act: (actor) =>
       actor
         .click(finder.getByRole('button', { name: 'Navigate' }).at(1))
@@ -70,8 +65,7 @@ export const cvStories = createGroup('CV', [
         .click(finder.getByText('West Lake'))
         .click(finder.getByRole('combobox', { name: 'Residence' })),
   }),
-  createStory({
-    title: 'TipHover',
+  it('provides certain tips', {
     act: (actor) =>
       actor
         .click(finder.getByRole('button', { name: 'Navigate' }).at(1))

@@ -4,8 +4,9 @@ import {
   ScreenshotName,
   ScreenshotPath,
 } from '../../../../reusables/types';
+import { isNil } from '../../../../reusables/utils';
 import { useExternals } from '../../../externals/Context';
-import { EvaluatedStoryNode } from '../../../reusables/channel';
+import { EvaluatedStory } from '../../../reusables/channel';
 import { createRunTestResult } from './createRunTestResult';
 import {
   RecordsComparisonResult,
@@ -14,7 +15,6 @@ import {
   SuccessTestResult,
   TestResults,
 } from './types';
-import { isNil } from '../../../../reusables/utils';
 
 export function useTestResults() {
   const externals = useExternals();
@@ -22,19 +22,19 @@ export function useTestResults() {
 
   return {
     results,
-    run: async (stories: EvaluatedStoryNode[]) => {
+    run: async (stories: EvaluatedStory[]) => {
       setChosenAsRunning(stories);
 
       runSetTestResults(stories);
     },
-    runComplete: async (stories: EvaluatedStoryNode[]) => {
+    runComplete: async (stories: EvaluatedStory[]) => {
       setChosenAsRunning(stories);
 
       runCompleteSetTestResults(stories);
     },
     // TODO: Logic duplication
     acceptRecords: async (
-      story: EvaluatedStoryNode,
+      story: EvaluatedStory,
       records: JournalRecord[],
       ready: SuccessTestResult,
     ) => {
@@ -52,7 +52,7 @@ export function useTestResults() {
       );
     },
     acceptScreenshot: async (
-      story: EvaluatedStoryNode,
+      story: EvaluatedStory,
       name: ScreenshotName | undefined,
       device: string | undefined,
       path: ScreenshotPath,
@@ -100,7 +100,7 @@ export function useTestResults() {
     },
   };
 
-  function setChosenAsRunning(stories: EvaluatedStoryNode[]) {
+  function setChosenAsRunning(stories: EvaluatedStory[]) {
     return setResults(
       stories.reduce(
         (acc, story) => acc.set(story.id, { running: true }),
@@ -109,7 +109,7 @@ export function useTestResults() {
     );
   }
 
-  async function runSetTestResults(stories: EvaluatedStoryNode[]) {
+  async function runSetTestResults(stories: EvaluatedStory[]) {
     for (const story of stories) {
       const result = await createRunTestResult(externals.driver, story, false);
 
@@ -117,7 +117,7 @@ export function useTestResults() {
     }
   }
 
-  async function runCompleteSetTestResults(stories: EvaluatedStoryNode[]) {
+  async function runCompleteSetTestResults(stories: EvaluatedStory[]) {
     for (const story of stories) {
       const result = await createRunTestResult(externals.driver, story, true);
 

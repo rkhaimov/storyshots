@@ -2,24 +2,20 @@ import { green, blue } from '@ant-design/colors';
 import { PlayCircleOutlined, UpOutlined } from '@ant-design/icons';
 import React from 'react';
 import styled from 'styled-components';
-import {
-  EvaluatedGroupNode,
-  EvaluatedStoryNode,
-  EvaluatedStoryshotsNode,
-} from '../../../reusables/channel';
-import { UseBehaviourProps } from '../../behaviour/types';
-import { TestResults } from '../../behaviour/useTestResults/types';
+import { EvaluatedGroup } from '../../../reusables/channel';
 import { MenuHavingStories } from '../MenuHavingStories';
 import { EntryAction } from '../reusables/EntryAction';
 import { EntryActions } from '../reusables/EntryActions';
 import { EntryHeader } from '../reusables/EntryHeader';
-import { EntryStatus, EntryTitle } from '../reusables/EntryTitle';
-import { getStoryEntryStatus } from '../reusables/getStoryEntryStatus';
+import { EntryStatus } from '../reusables/EntryStatus';
+import { EntryTitle } from '../reusables/EntryTitle';
 import { Props } from '../types';
+import { getGroupEntryStatus } from './getGroupEntryStatus';
+import { TreeOP } from '../../../../reusables/tree';
 
 export const GroupEntry: React.FC<
   Props & {
-    group: EvaluatedGroupNode;
+    group: EvaluatedGroup;
   }
 > = (props) => {
   const { group, ...others } = props;
@@ -34,12 +30,16 @@ export const GroupEntry: React.FC<
       >
         <Fold open={expanded} />
         <EntryTitle
-          title={group.title}
-          status={getGroupEntryStatus(
-            props.results,
-            props.selection,
-            group.children,
-          )}
+          left={
+            <EntryStatus
+              status={getGroupEntryStatus(
+                props.results,
+                props.selection,
+                group.children,
+              )}
+            />
+          }
+          title={group.payload.title}
           style={{ fontSize: 16, fontWeight: 600 }}
         />
         <EntryActions>
@@ -50,7 +50,7 @@ export const GroupEntry: React.FC<
             action={(e) => {
               e.stopPropagation();
 
-              others.run(extractAllStories(group.children));
+              others.run(TreeOP.toLeafsArray(group.children));
             }}
           />
           <EntryAction
@@ -60,7 +60,7 @@ export const GroupEntry: React.FC<
             action={(e) => {
               e.stopPropagation();
 
-              others.runComplete(extractAllStories(group.children));
+              others.runComplete(TreeOP.toLeafsArray(group.children));
             }}
           />
         </EntryActions>
@@ -75,57 +75,6 @@ export const GroupEntry: React.FC<
     </li>
   );
 };
-
-function extractAllStories(
-  nodes: EvaluatedStoryshotsNode[],
-): EvaluatedStoryNode[] {
-  return nodes.flatMap((node) => {
-    if (node.type === 'story') {
-      return [node];
-    }
-
-    return extractAllStories(node.children);
-  });
-}
-
-function getGroupEntryStatus(
-  results: TestResults,
-  selection: UseBehaviourProps['selection'],
-  children: EvaluatedStoryshotsNode[],
-): EntryStatus {
-  const statuses = children.map((child) =>
-    child.type === 'group'
-      ? getGroupEntryStatus(results, selection, child.children)
-      : getStoryEntryStatus(results, selection, child),
-  );
-
-  const error = statuses.find((it) => it?.type === 'error');
-
-  if (error) {
-    return {
-      type: 'error',
-      message: 'One or more stories contain errors. Please, check insides',
-    };
-  }
-
-  const fail = statuses.find((it) => it?.type === 'fail');
-
-  if (fail) {
-    return fail;
-  }
-
-  const fresh = statuses.find((it) => it?.type === 'fresh');
-
-  if (fresh) {
-    return fresh;
-  }
-
-  if (statuses.length > 0 && statuses.every((it) => it?.type === 'pass')) {
-    return { type: 'pass' };
-  }
-
-  return null;
-}
 
 const Fold = styled(UpOutlined)`
   margin-right: 2px;

@@ -1,6 +1,8 @@
 import { Application } from 'express-serve-static-core';
-import puppeteer, { Frame, Page } from 'puppeteer';
+import { Frame, Page } from 'puppeteer';
+import { Cluster } from 'puppeteer-cluster';
 import { ScreenshotAction } from '../../reusables/actions';
+import { TreeOP } from '../../reusables/tree';
 import {
   ActionsOnDevice,
   ActualServerSideResult,
@@ -8,6 +10,7 @@ import {
   Screenshot,
   ScreenshotPath,
   StoryID,
+  WithPossibleError,
 } from '../../reusables/types';
 import { act } from '../reusables/act';
 import { Baseline } from '../reusables/baseline';
@@ -15,24 +18,38 @@ import { toPreviewFrame } from '../reusables/toPreviewFrame';
 import { createPathToStory } from '../router';
 import { handlePossibleErrors } from './reusables/with-possible-error';
 
-export function createActServerSideHandler(
+type ActPayload = {
+  id: StoryID;
+  payload: ActionsOnDevice;
+};
+
+export async function createActServerSideHandler(
   app: Application,
   baseline: Baseline,
 ) {
+  const cluster: Cluster<
+    ActPayload,
+    WithPossibleError<ActualServerSideResult>
+  > = await Cluster.launch({
+    timeout: Math.pow(2, 31) - 1,
+    concurrency: Cluster.CONCURRENCY_BROWSER,
+    maxConcurrency: 1,
+    puppeteerOptions: {
+      headless: 'new',
+    },
+  });
+
+  await cluster.task(({ page, data }) =>
+    handlePossibleErrors(() =>
+      createServerResultByDevice(baseline, page, data.id, data.payload),
+    ),
+  );
+
   app.post('/api/server/act/:id', async (request, response) => {
-    const id = request.params.id as StoryID;
+    const id = TreeOP.ensureIsLeafID(request.params.id);
     const payload: ActionsOnDevice = request.body;
 
-    const browser = await puppeteer.launch({ headless: 'new' });
-    const page = await browser.newPage();
-
-    const results = await handlePossibleErrors(() =>
-      createServerResultByDevice(baseline, page, id, payload),
-    );
-
-    await browser.close();
-
-    response.json(results);
+    response.json(await cluster.execute({ id, payload }));
   });
 }
 

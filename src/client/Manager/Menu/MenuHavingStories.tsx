@@ -8,9 +8,9 @@ export const MenuHavingStories: React.FC<Props> = (props) => (
   <Entries>
     {props.stories.map((it) => {
       switch (it.type) {
-        case 'group':
+        case 'node':
           return <GroupEntry key={it.id} {...props} group={it} />;
-        case 'story':
+        case 'leaf':
           return <StoryEntry key={it.id} {...props} story={it} />;
       }
     })}

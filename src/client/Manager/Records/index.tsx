@@ -23,7 +23,7 @@ export const Records: React.FC<Props> = ({
   acceptRecords,
 }) => {
   const result = results.get(selection.story.id);
-  const title = `${selection.story.title} — Records`;
+  const title = `${selection.story.payload.title} — Records`;
 
   if (isNil(result)) {
     return <span>Records are not generated yet</span>;

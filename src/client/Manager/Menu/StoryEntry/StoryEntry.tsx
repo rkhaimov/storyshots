@@ -5,6 +5,7 @@ import { isNil } from '../../../../reusables/utils';
 import { EntryAction } from '../reusables/EntryAction';
 import { EntryActions } from '../reusables/EntryActions';
 import { ActiveEntryHeader } from '../reusables/EntryHeader';
+import { EntryStatus } from '../reusables/EntryStatus';
 import { EntryTitle } from '../reusables/EntryTitle';
 import { getStoryEntryStatus } from '../reusables/getStoryEntryStatus';
 import { RecordsEntry } from './RecordsEntry';
@@ -12,12 +13,6 @@ import { ScreenshotsEntry } from './ScreenshotsEntry';
 import { Props } from './types';
 
 export const StoryEntry: React.FC<Props> = (props) => {
-  const status = getStoryEntryStatus(
-    props.results,
-    props.selection,
-    props.story,
-  );
-
   return (
     <li>
       <ActiveEntryHeader
@@ -27,7 +22,18 @@ export const StoryEntry: React.FC<Props> = (props) => {
         $color={blue[0]}
         onClick={() => props.setStory(props.story.id)}
       >
-        <EntryTitle status={status} title={props.story.title} />
+        <EntryTitle
+          left={
+            <EntryStatus
+              status={getStoryEntryStatus(
+                props.results,
+                props.selection,
+                props.story,
+              )}
+            />
+          }
+          title={props.story.payload.title}
+        />
         <EntryActions waiting={isPlayingOrRunning()}>
           {renderStoryActions()}
         </EntryActions>

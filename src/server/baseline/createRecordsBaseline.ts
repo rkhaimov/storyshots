@@ -3,6 +3,7 @@ import { JournalRecord, StoryID } from '../../reusables/types';
 import { not } from '../../reusables/utils';
 import { ServerConfig } from '../reusables/types';
 import { exists, mkdir, mkfile, read } from './utils';
+import { TreeOP } from '../../reusables/tree';
 
 export async function createRecordsBaseline(config: ServerConfig) {
   if (not(await exists(config.recordsPath))) {
@@ -13,16 +14,15 @@ export async function createRecordsBaseline(config: ServerConfig) {
     getExpectedRecords: async (
       id: StoryID,
     ): Promise<JournalRecord[] | undefined> => {
-      const key = getRecordsKeyByStoryId(id);
-      const recordsMap = await getRecordsMapByStoryId(id);
+      const records = await getRecordsMapByStoryId(id);
 
-      return recordsMap[key];
+      return records[id];
     },
     acceptRecords: async (id: StoryID, actual: JournalRecord[]) => {
-      const key = getRecordsKeyByStoryId(id);
-      const recordsMap = await getRecordsMapByStoryId(id);
+      debugger;
+      const records = await getRecordsMapByStoryId(id);
 
-      return updateRecordsMapByStoryId(id, { ...recordsMap, [key]: actual });
+      return updateRecordsMapByStoryId(id, { ...records, [id]: actual });
     },
   };
 
@@ -48,17 +48,12 @@ export async function createRecordsBaseline(config: ServerConfig) {
   }
 }
 
-type RecordsMap = Record<string, JournalRecord[]>;
+function getRecordsMapFileNameById(id: StoryID): string {
+  const parents = TreeOP.parseInterNodeIDsChain(id);
 
-function getRecordsKeyByStoryId(id: StoryID) {
-  const parts = id.split('_');
+  const last = parents[parents.length - 1];
 
-  return parts[parts.length - 1];
+  return `${last ?? id}.json`;
 }
 
-// TODO: Make structure of StoryID implicit
-function getRecordsMapFileNameById(id: StoryID) {
-  const parts = id.split('_');
-
-  return `${parts.length === 1 ? parts[0] : parts.slice(0, -1).join('_')}.json`;
-}
+type RecordsMap = Record<StoryID, JournalRecord[]>;

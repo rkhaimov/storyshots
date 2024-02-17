@@ -5,6 +5,7 @@ import { createBaseline } from './reusables/baseline';
 import { ServerConfig } from './reusables/types';
 import path from 'path';
 import { MANAGER_INDEX } from './router';
+import { assertNotEmpty } from '../reusables/utils';
 
 export async function createWebDriver(app: Application, config: ServerConfig) {
   const baseline = await createBaseline(config);

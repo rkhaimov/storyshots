@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 import { StoryID, WithPossibleError } from '../../../reusables/types';
 import { useExternals } from '../../externals/Context';
-import {
-  EvaluatedStoryNode,
-  EvaluatedStoryshotsNode,
-} from '../../reusables/channel';
+import { EvaluatedStory, EvaluatedStoryTree } from '../../reusables/channel';
 import { URLParsedParams } from './useBehaviourRouter';
 import { usePreviewBuildHash } from './usePreviewBuildHash';
-import { findStoryLikeByID } from '../../reusables/findStoryLikeByID';
+import { TreeOP } from '../../../reusables/tree';
+import { assertNotEmpty } from '../../../reusables/utils';
 
 // TODO: Solve cancellation problem
 export function useAutoPlaySelection(params: URLParsedParams) {
@@ -36,7 +34,9 @@ export function useAutoPlaySelection(params: URLParsedParams) {
       return setSelection({ type: 'no-selection', stories });
     }
 
-    const story = findStoryLikeByID(stories, params.id);
+    const story = TreeOP.find(stories, params.id);
+
+    assertNotEmpty(story);
 
     if (params.type === 'records') {
       return setSelection({ type: 'records', story, stories });
@@ -54,7 +54,7 @@ export function useAutoPlaySelection(params: URLParsedParams) {
 
     setSelection({ type: 'story', story, stories, playing: true });
 
-    const result = await driver.actOnClientSide(story.actions);
+    const result = await driver.actOnClientSide(story.payload.actions);
 
     setSelection({ type: 'story', story, stories, playing: false, result });
   }
@@ -66,36 +66,36 @@ export type AutoPlaySelection =
     }
   | {
       type: 'no-selection';
-      stories: EvaluatedStoryshotsNode[];
+      stories: EvaluatedStoryTree[];
     }
   | {
       type: 'story';
-      story: EvaluatedStoryNode;
-      stories: EvaluatedStoryshotsNode[];
+      story: EvaluatedStory;
+      stories: EvaluatedStoryTree[];
       playing: true;
     }
   | {
       type: 'story';
-      story: EvaluatedStoryNode;
-      stories: EvaluatedStoryshotsNode[];
+      story: EvaluatedStory;
+      stories: EvaluatedStoryTree[];
       playing: false;
       result: WithPossibleError<void>;
     }
   | {
       type: 'records';
-      story: EvaluatedStoryNode;
-      stories: EvaluatedStoryshotsNode[];
+      story: EvaluatedStory;
+      stories: EvaluatedStoryTree[];
     }
   | {
       type: 'screenshot';
       name: string | undefined;
       device: string | undefined;
-      story: EvaluatedStoryNode;
-      stories: EvaluatedStoryshotsNode[];
+      story: EvaluatedStory;
+      stories: EvaluatedStoryTree[];
     };
 
 function getStoriesAndSupplyState(id: StoryID | undefined) {
-  return new Promise<EvaluatedStoryshotsNode[]>((resolve) => {
+  return new Promise<EvaluatedStoryTree[]>((resolve) => {
     window.setStoriesAndGetState = (stories) => {
       resolve(stories);
 

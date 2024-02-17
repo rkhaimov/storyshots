@@ -1,8 +1,10 @@
 import React from 'react';
+
 import { StoryID } from '../../reusables/types';
 import { createJournal } from '../createJournal';
-import { findStoryLikeByID } from '../reusables/findStoryLikeByID';
 import { Props } from './types';
+import { TreeOP } from '../../reusables/tree';
+import { assertNotEmpty } from '../../reusables/utils';
 
 export const Story: React.FC<{ id: StoryID } & Props> = ({
   id,
@@ -10,16 +12,18 @@ export const Story: React.FC<{ id: StoryID } & Props> = ({
   createExternals,
   createJournalExternals,
 }) => {
-  const story = findStoryLikeByID(stories, id);
+  const story = TreeOP.find(stories, id);
+
+  assertNotEmpty(story);
 
   const journal = createJournal();
 
   const externals = createJournalExternals(
-    story.arrange(createExternals(), journal),
+    story.payload.arrange(createExternals(), journal),
     journal,
   );
 
   window.readJournalRecords = journal.read;
 
-  return story.render(externals);
+  return story.payload.render(externals);
 };

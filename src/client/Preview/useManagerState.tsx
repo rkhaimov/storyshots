@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 import { assertNotEmpty } from '../../reusables/utils';
 import { createActor } from '../createActor';
-import { EvaluatedStoryshotsNode } from '../reusables/channel';
-import { StoryshotsNode } from '../types';
+import { EvaluatedStoryTree } from '../reusables/channel';
+import { StoryTree } from '../types';
 import { Props } from './types';
+import { TreeOP } from '../../reusables/tree';
 
 export function useManagerState(props: Props) {
   return useMemo(() => {
@@ -15,18 +16,16 @@ export function useManagerState(props: Props) {
   }, [props.stories]);
 }
 
-function toEvaluatedStories(nodes: StoryshotsNode[], props: Props) {
-  return nodes.map((node): EvaluatedStoryshotsNode => {
-    if (node.type === 'group') {
-      return { ...node, children: toEvaluatedStories(node.children, props) };
-    }
-
-    return {
-      id: node.id,
-      title: node.title,
-      type: 'story',
+function toEvaluatedStories(
+  nodes: StoryTree[],
+  props: Props,
+): EvaluatedStoryTree[] {
+  return TreeOP.map(nodes, {
+    node: (node) => node,
+    leaf: (leaf) => ({
+      title: leaf.title,
       devices: props.devices,
-      actions: node.act(createActor()).toMeta(),
-    };
+      actions: leaf.act(createActor()).toMeta(),
+    }),
   });
 }

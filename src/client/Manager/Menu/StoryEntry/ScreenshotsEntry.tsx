@@ -9,6 +9,7 @@ import {
   SuccessTestResult,
 } from '../../behaviour/useTestResults/types';
 import { ActiveEntryHeader } from '../reusables/EntryHeader';
+import { EntryStatus } from '../reusables/EntryStatus';
 import { EntryTitle } from '../reusables/EntryTitle';
 import { Props as ParentProps } from './types';
 import { isNil } from '../../../../reusables/utils';
@@ -41,13 +42,15 @@ export const ScreenshotsEntry: React.FC<Props> = ({
               $active={isActive(it.name)}
             >
               <EntryTitle
-                title={
+                left={
                   <>
+                    <EntryStatus
+                      status={{ type: aggregateStatus(results, it.name) }}
+                    />
                     <PictureOutlined style={{ marginRight: 4 }} />
-                    <span>{it.name}</span>
                   </>
                 }
-                status={{ type: aggregateStatus(results, it.name) }}
+                title={it.name}
               />
             </ActiveEntryHeader>
           </li>
@@ -64,13 +67,15 @@ export const ScreenshotsEntry: React.FC<Props> = ({
           $active={isActive(undefined)}
         >
           <EntryTitle
-            title={
+            left={
               <>
+                <EntryStatus
+                  status={{ type: aggregateStatus(results, undefined) }}
+                />
                 <PictureOutlined style={{ marginRight: 4 }} />
-                <span>FINAL</span>
               </>
             }
-            status={{ type: aggregateStatus(results, undefined) }}
+            title="FINAL"
           />
         </ActiveEntryHeader>
       </li>

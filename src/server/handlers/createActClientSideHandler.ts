@@ -1,18 +1,18 @@
 import { Application } from 'express-serve-static-core';
 import { Frame, Page } from 'puppeteer';
 import { ActionMeta } from '../../reusables/actions';
+import { WithPossibleError } from '../../reusables/types';
 import { act } from '../reusables/act';
 import { toPreviewFrame } from '../reusables/toPreviewFrame';
 import { handlePossibleErrors } from './reusables/with-possible-error';
 
+// TODO: Implement cancellation
 export function createActClientSideHandler(app: Application, page: Page) {
   app.post('/api/client/act', async (request, response) => {
     const actions: ActionMeta[] = request.body;
 
-    const preview = await toPreviewFrame(page);
-
-    const result = await handlePossibleErrors(() =>
-      createActResult(preview, actions),
+    const result: WithPossibleError<void> = await handlePossibleErrors(() =>
+      toPreviewFrame(page).then((preview) => createActResult(preview, actions)),
     );
 
     response.json(result);

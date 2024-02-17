@@ -1,15 +1,13 @@
-import { createGroup, createStory } from '../../storyshots/preview/config';
-import { createNeverEndingPromise } from './utils';
 import { finder } from '../../../src/client';
+import { describe, it } from '../../storyshots/preview/config';
+import { createNeverEndingPromise } from './utils';
 
-export const balanceStories = createGroup('Balance', [
-  createStory({
-    title: 'Default',
+export const balanceStories = describe('Balance', [
+  it('shows current salary', {
     act: (actor) =>
       actor.click(finder.getByRole('button', { name: 'Navigate' }).at(0)),
   }),
-  createStory({
-    title: 'Increment',
+  it('provides ability to work hard', {
     act: (actor) =>
       actor
         .click(
@@ -20,8 +18,7 @@ export const balanceStories = createGroup('Balance', [
         )
         .click(finder.getByRole('button', { name: 'Work hard' })),
   }),
-  createStory({
-    title: 'Decrement',
+  it('lets user to relax and spend money', {
     act: (actor) =>
       actor
         .click(finder.getByRole('button', { name: 'Navigate' }).at(0))
@@ -29,8 +26,7 @@ export const balanceStories = createGroup('Balance', [
         .screenshot('Incremented')
         .click(finder.getByRole('button', { name: 'Relax' })),
   }),
-  createStory({
-    title: 'Initializing',
+  it('shows spinner when balance is not retrieved yet', {
     arrange: (externals) => ({
       ...externals,
       business: {
@@ -41,8 +37,7 @@ export const balanceStories = createGroup('Balance', [
     act: (actor) =>
       actor.click(finder.getByRole('button', { name: 'Navigate' }).at(0)),
   }),
-  createStory({
-    title: 'OtherInitialValue',
+  it('balance can be different by default', {
     arrange: (externals) => ({
       ...externals,
       business: {
@@ -53,8 +48,7 @@ export const balanceStories = createGroup('Balance', [
     act: (actor) =>
       actor.click(finder.getByRole('button', { name: 'Navigate' }).at(0)),
   }),
-  createStory({
-    title: 'PassingCorrectNow',
+  it('provides correct date when retrieving current balance', {
     arrange: (externals, journal) => ({
       ...externals,
       business: {

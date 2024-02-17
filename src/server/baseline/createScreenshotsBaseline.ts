@@ -2,8 +2,8 @@ import path from 'path';
 import {
   Device,
   ScreenshotName,
-  ScreenshotPath,
-  StoryID,
+  ScreenshotPath, StoryID,
+
 } from '../../reusables/types';
 import { isNil, not } from '../../reusables/utils';
 import { ServerConfig } from '../reusables/types';

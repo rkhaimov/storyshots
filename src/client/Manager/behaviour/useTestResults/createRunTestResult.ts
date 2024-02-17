@@ -7,7 +7,7 @@ import {
 } from '../../../../reusables/types';
 import { isNil } from '../../../../reusables/utils';
 import { IExternals } from '../../../externals/types';
-import { EvaluatedStoryNode } from '../../../reusables/channel';
+import { EvaluatedStory } from '../../../reusables/channel';
 import {
   RecordsComparisonResult,
   ScreenshotComparisonResult,
@@ -18,12 +18,12 @@ import {
 
 export async function createRunTestResult(
   driver: IExternals['driver'],
-  story: EvaluatedStoryNode,
+  story: EvaluatedStory,
   includeAdditional: boolean,
 ): Promise<TestResult> {
   const actualResults = await driver.actOnServerSide(story.id, {
-    actions: story.actions,
-    device: story.devices.primary,
+    actions: story.payload.actions,
+    device: story.payload.devices.primary,
   });
 
   if (actualResults.type === 'error') {
@@ -37,9 +37,9 @@ export async function createRunTestResult(
   const additionalResults: ScreenshotsComparisonResultsByMode[] = [];
 
   if (includeAdditional) {
-    for (const device of story.devices.additional) {
+    for (const device of story.payload.devices.additional) {
       const result = await driver.actOnServerSide(story.id, {
-        actions: story.actions,
+        actions: story.payload.actions,
         device,
       });
 
@@ -56,7 +56,7 @@ export async function createRunTestResult(
         results: await createScreenshotsComparisonResults(
           driver,
           story.id,
-          { actions: story.actions, device },
+          { actions: story.payload.actions, device },
           result.data.screenshots,
         ),
       });
@@ -73,11 +73,14 @@ export async function createRunTestResult(
     ),
     screenshots: {
       primary: {
-        device: story.devices.primary,
+        device: story.payload.devices.primary,
         results: await createScreenshotsComparisonResults(
           driver,
           story.id,
-          { actions: story.actions, device: story.devices.primary },
+          {
+            actions: story.payload.actions,
+            device: story.payload.devices.primary,
+          },
           actualResults.data.screenshots,
         ),
       },

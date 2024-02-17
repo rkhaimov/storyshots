@@ -1,20 +1,16 @@
 import { ActionMeta } from '../../reusables/actions';
-import { StoryID } from '../../reusables/types';
+import { IntermediateNode, LeafNode } from '../../reusables/tree';
 import { Devices } from '../create-configure-client/types';
 
-export type EvaluatedStoryNode = {
-  id: StoryID;
-  type: 'story';
+export type EvaluatedStory = LeafNode<{
   title: string;
   actions: ActionMeta[];
   devices: Devices;
-};
+}>;
 
-export type EvaluatedGroupNode = {
-  id: string;
-  type: 'group';
-  title: string;
-  children: EvaluatedStoryshotsNode[];
-};
+export type EvaluatedGroup = IntermediateNode<
+  { title: string },
+  EvaluatedStory['payload']
+>;
 
-export type EvaluatedStoryshotsNode = EvaluatedGroupNode | EvaluatedStoryNode;
+export type EvaluatedStoryTree = EvaluatedGroup | EvaluatedStory;

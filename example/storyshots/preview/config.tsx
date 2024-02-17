@@ -13,8 +13,8 @@ import { PureApp } from '../../PureApp';
 
 const {
   runPreview,
-  createStory: _createStory,
-  createGroup,
+  it: _it,
+  describe,
 } = createConfigurePreview({
   devices: {
     primary: createDesktopDevice('desktop', {
@@ -42,12 +42,12 @@ const {
   ),
 });
 
-const createStory = (config: RenderBoundConfig) =>
-  _createStory({
+const it = (title: Parameters<typeof _it>[0], config: RenderBoundConfig) =>
+  _it(title, {
     ...config,
     render: (externals) => <PureApp externals={externals} />,
   });
 
-type RenderBoundConfig = Omit<Parameters<typeof _createStory>[0], 'render'>;
+type RenderBoundConfig = Omit<Parameters<typeof _it>[1], 'render'>;
 
-export { runPreview, createStory, createGroup };
+export { runPreview, it, describe };

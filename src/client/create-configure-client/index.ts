@@ -1,15 +1,15 @@
-import { createGroup, createStory } from '../foundations';
+import { describe, it } from '../foundations';
 import { createPreviewApp } from '../Preview';
-import { StoryshotsNode } from '../types';
+import { StoryTree } from '../types';
 import { ClientConfig } from './types';
 
 export function createConfigurePreview<TExternals>(
   config: ClientConfig<TExternals>,
 ) {
   return {
-    createGroup: createGroup,
-    createStory: createStory<TExternals>,
-    runPreview: (stories: StoryshotsNode[]) =>
+    describe: describe,
+    it: it<TExternals>,
+    runPreview: (stories: StoryTree[]) =>
       createPreviewApp({ ...config, stories }),
   };
 }

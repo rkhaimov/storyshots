@@ -1,7 +1,9 @@
 import React, { useMemo } from 'react';
 import { RouteComponentProps } from 'wouter';
-import { Story } from './Story';
+
 import { StoryID } from '../../reusables/types';
+import { Story } from './Story';
+import { TreeOP } from '../../reusables/tree';
 
 type Props = RouteComponentProps<{
   story: string;
@@ -10,7 +12,7 @@ type Props = RouteComponentProps<{
 export const ForChromiumOnly: React.FC<Props> = (props) => {
   useMemo(() => {
     window.setStoriesAndGetState = () => ({
-      id: props.params.story as StoryID,
+      id: TreeOP.ensureIsLeafID(props.params.story),
       screenshotting: true,
     });
   }, []);

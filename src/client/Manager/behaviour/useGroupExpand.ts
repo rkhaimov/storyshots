@@ -1,14 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { not } from '../../../reusables/utils';
-import {
-  EvaluatedGroupNode,
-  EvaluatedStoryNode,
-  EvaluatedStoryshotsNode,
-} from '../../reusables/channel';
+import { EvaluatedGroup } from '../../reusables/channel';
 import { AutoPlaySelection } from './useAutoPlaySelection';
+import { GroupID } from '../../../reusables/types';
+import { TreeOP } from '../../../reusables/tree';
 
 export function useGroupExpand(initial: AutoPlaySelection) {
-  const [expanded, setExpanded] = useState(new Set<string>());
+  const [expanded, setExpanded] = useState(new Set<GroupID>());
   const prev = usePrevious(initial);
 
   useEffect(() => {
@@ -19,7 +16,7 @@ export function useGroupExpand(initial: AutoPlaySelection) {
 
   return {
     expanded,
-    toggleGroupExpanded: (group: EvaluatedGroupNode) =>
+    toggleGroupExpanded: (group: EvaluatedGroup) =>
       setExpanded((prev) => {
         if (prev.has(group.id)) {
           prev.delete(group.id);
@@ -34,31 +31,12 @@ export function useGroupExpand(initial: AutoPlaySelection) {
 
 function createInitialState(
   initial: Exclude<AutoPlaySelection, { type: 'initializing' }>,
-): Set<string> {
+): Set<GroupID> {
   if (initial.type === 'no-selection') {
     return new Set();
   }
 
-  return new Set(findParentsChain(initial.stories, initial.story));
-}
-
-function findParentsChain(
-  node: EvaluatedStoryshotsNode[],
-  story: EvaluatedStoryNode,
-): string[] {
-  const [head, ...tail] = node;
-
-  if (head.type === 'story') {
-    return head.id === story.id ? [] : findParentsChain(tail, story);
-  }
-
-  const inside = story.id.includes(head.id);
-
-  if (not(inside)) {
-    return findParentsChain(tail, story);
-  }
-
-  return [head.id, ...findParentsChain(head.children, story)];
+  return new Set(TreeOP.parseInterNodeIDsChain(initial.story.id));
 }
 
 function usePrevious<T>(value: T): T {

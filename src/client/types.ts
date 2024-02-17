@@ -1,24 +1,24 @@
+import React from 'react';
 import { ActionMeta } from '../reusables/actions';
 import { FinderMeta } from '../reusables/finder';
-import { JournalRecord, StoryID } from '../reusables/types';
+import { IntermediateNode, LeafNode } from '../reusables/tree';
+import { JournalRecord } from '../reusables/types';
 
-export type StoryshotsNode = Group | Story;
+export type StoryTree = Group | Story;
 
-export type Group = {
-  id: string;
-  type: 'group';
-  title: string;
-  children: StoryshotsNode[];
-};
+export type Group = IntermediateNode<
+  {
+    title: string;
+  },
+  Story['payload']
+>;
 
-export type Story<TExternals = unknown> = {
-  id: StoryID;
-  type: 'story';
+export type Story<TExternals = unknown> = LeafNode<{
   title: string;
   arrange(externals: TExternals, journal: Journal): TExternals;
   act(actor: Actor): Actor;
   render(externals: TExternals): React.ReactNode;
-};
+}>;
 
 export type Actor = {
   hover(on: Finder): Actor;

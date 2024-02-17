@@ -1,5 +1,5 @@
 import React from 'react';
-import { Journal, StoryshotsNode } from '../types';
+import { Journal, StoryTree } from '../types';
 import { Device } from '../../reusables/types';
 
 export type Devices = {
@@ -15,5 +15,5 @@ export type ClientConfig<TExternals> = {
 };
 
 export type FinalClientConfig = ClientConfig<unknown> & {
-  stories: StoryshotsNode[];
+  stories: StoryTree[];
 };

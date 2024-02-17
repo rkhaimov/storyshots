@@ -41,7 +41,7 @@ export const Screenshot: React.FC<Props> = ({
 }): React.ReactElement => {
   const { driver } = useExternals();
   const result = results.get(selection.story.id);
-  const title = `${selection.story.title} — ${selection.name ?? 'FINAL'}`;
+  const title = `${selection.story.payload.title} — ${selection.name ?? 'FINAL'}`;
 
   if (isNil(result)) {
     return <span>Screenshots are not generated yet</span>;

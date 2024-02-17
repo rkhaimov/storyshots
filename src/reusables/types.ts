@@ -1,6 +1,7 @@
+import { Device as PuppeteerDevice, Viewport } from 'puppeteer';
 import { ActionMeta } from './actions';
 import { Brand } from './brand';
-import { Device as PuppeteerDevice, Viewport } from 'puppeteer';
+import { IntermediateNodeID, LeafNodeID } from './tree';
 
 export interface IWebDriver {
   actOnClientSide(action: ActionMeta[]): Promise<WithPossibleError<void>>;
@@ -69,13 +70,17 @@ export type Screenshot = {
   path: ScreenshotPath;
 };
 
+// Denotes unique (up to story) reference to intermediate screenshot
 export type ScreenshotName = Brand<string, 'ScreenshotName'>;
 
+// Represents full path to saved screenshot (either actual or expected)
 export type ScreenshotPath = Brand<string, 'ScreenshotPath'>;
 
-export type StoryID = Brand<string, 'StoryID'>;
-
 export type Device = ViewPortOnlyDeviceConfig | CompleteDeviceConfig;
+
+export type GroupID = IntermediateNodeID;
+
+export type StoryID = LeafNodeID;
 
 export type ViewPortOnlyDeviceConfig = {
   type: 'viewport-only';

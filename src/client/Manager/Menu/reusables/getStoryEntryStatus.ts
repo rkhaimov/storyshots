@@ -1,17 +1,18 @@
 import { isNil } from '../../../../reusables/utils';
-import { EvaluatedStoryNode } from '../../../reusables/channel';
+import { EvaluatedStory } from '../../../reusables/channel';
 import { UseBehaviourProps } from '../../behaviour/types';
 import {
   RecordsComparisonResult,
   ScreenshotsComparisonResultsByMode,
   TestResults,
 } from '../../behaviour/useTestResults/types';
-import { EntryStatus } from './EntryTitle';
+
+import { EntryStatus } from './EntryStatus/types';
 
 export function getStoryEntryStatus(
   results: TestResults,
   selection: UseBehaviourProps['selection'],
-  story: EvaluatedStoryNode,
+  story: EvaluatedStory,
 ): EntryStatus {
   if (
     selection.type === 'story' &&

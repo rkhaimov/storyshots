@@ -1,13 +1,13 @@
 import { Application } from 'express-serve-static-core';
 import { Baseline } from '../reusables/baseline';
-import { StoryID } from '../../reusables/types';
+import { TreeOP } from '../../reusables/tree';
 
 export function createExpectedRecordsHandler(
   app: Application,
   baseline: Baseline,
 ) {
   app.get('/api/record/expected/:id', async (request, response) => {
-    const id = request.params.id as StoryID;
+    const id = TreeOP.ensureIsLeafID(request.params.id);
 
     const expected = await baseline.getExpectedRecords(id);
 

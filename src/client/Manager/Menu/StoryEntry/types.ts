@@ -1,9 +1,9 @@
-import { EvaluatedStoryNode } from '../../../reusables/channel';
+import { EvaluatedStory } from '../../../reusables/channel';
 import { SuccessTestResult } from '../../behaviour/useTestResults/types';
 import { Props as ParentProps } from '../types';
 
 export type Props = ParentProps & {
-  story: EvaluatedStoryNode;
+  story: EvaluatedStory;
 };
 
 export type ResultKindComponentProps = { results: SuccessTestResult } & Pick<
