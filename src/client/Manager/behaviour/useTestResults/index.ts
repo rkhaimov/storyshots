@@ -10,9 +10,11 @@ import { createRunTestResult } from './createRunTestResult';
 import {
   RecordsComparisonResult,
   ScreenshotComparisonResult,
+  ScreenshotsComparisonResultsByMode,
   SuccessTestResult,
   TestResults,
 } from './types';
+import { isNil } from '../../../../reusables/utils';
 
 export function useTestResults() {
   const externals = useExternals();
@@ -24,6 +26,11 @@ export function useTestResults() {
       setChosenAsRunning(stories);
 
       runSetTestResults(stories);
+    },
+    runComplete: async (stories: EvaluatedStoryNode[]) => {
+      setChosenAsRunning(stories);
+
+      runCompleteSetTestResults(stories);
     },
     // TODO: Logic duplication
     acceptRecords: async (
@@ -47,6 +54,7 @@ export function useTestResults() {
     acceptScreenshot: async (
       story: EvaluatedStoryNode,
       name: ScreenshotName | undefined,
+      device: string | undefined,
       path: ScreenshotPath,
       ready: SuccessTestResult,
     ) => {
@@ -54,25 +62,37 @@ export function useTestResults() {
 
       const pass: ScreenshotComparisonResult = { type: 'pass', actual: path };
 
+      function deriveScreenshotResults(
+        results: ScreenshotsComparisonResultsByMode,
+      ) {
+        return {
+          device: results.device,
+          results: {
+            final: name === undefined ? pass : results.results.final,
+            others: results.results.others.map((other) =>
+              other.name === name ? { name, result: pass } : other,
+            ),
+          },
+        };
+      }
+
       setResults(
         new Map(
           results.set(story.id, {
             ...ready,
             screenshots: {
-              primary: {
-                device: ready.screenshots.primary.device,
-                results: {
-                  final:
-                    name === undefined
-                      ? pass
-                      : ready.screenshots.primary.results.final,
-                  others: ready.screenshots.primary.results.others.map(
-                    (other) =>
-                      other.name === name ? { name, result: pass } : other,
-                  ),
-                },
-              },
-              additional: [],
+              primary:
+                isNil(device) ||
+                ready.screenshots.primary.device.name === device
+                  ? deriveScreenshotResults(ready.screenshots.primary)
+                  : ready.screenshots.primary,
+              additional: ready.screenshots.additional.map((additional) => {
+                if (additional.device.name !== device) {
+                  return additional;
+                }
+
+                return deriveScreenshotResults(additional);
+              }),
             },
           }),
         ),
@@ -91,7 +111,15 @@ export function useTestResults() {
 
   async function runSetTestResults(stories: EvaluatedStoryNode[]) {
     for (const story of stories) {
-      const result = await createRunTestResult(externals.driver, story);
+      const result = await createRunTestResult(externals.driver, story, false);
+
+      setResults((curr) => new Map(curr.set(story.id, result)));
+    }
+  }
+
+  async function runCompleteSetTestResults(stories: EvaluatedStoryNode[]) {
+    for (const story of stories) {
+      const result = await createRunTestResult(externals.driver, story, true);
 
       setResults((curr) => new Map(curr.set(story.id, result)));
     }

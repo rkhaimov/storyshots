@@ -50,6 +50,7 @@ export const Manager: React.FC<Props> = (props) => {
               selection={behaviour.selection}
               results={behaviour.results}
               acceptScreenshot={behaviour.acceptScreenshot}
+              setScreenshot={behaviour.setScreenshot}
             />
           )}
           {behaviour.selection.type === 'records' && (
