@@ -1,4 +1,4 @@
-import { green } from '@ant-design/colors';
+import { green, blue } from '@ant-design/colors';
 import { PlayCircleOutlined, UpOutlined } from '@ant-design/icons';
 import React from 'react';
 import styled from 'styled-components';
@@ -51,6 +51,16 @@ export const GroupEntry: React.FC<
               e.stopPropagation();
 
               others.run(extractAllStories(group.children));
+            }}
+          />
+          <EntryAction
+            icon={
+              <PlayCircleOutlined style={{ color: blue[6], fontSize: 16 }} />
+            }
+            action={(e) => {
+              e.stopPropagation();
+
+              others.runComplete(extractAllStories(group.children));
             }}
           />
         </EntryActions>

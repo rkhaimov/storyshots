@@ -37,7 +37,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
   );
 
   function renderStoryActions() {
-    const { results, story, run } = props;
+    const { results, story, run, runComplete } = props;
 
     const comparison = results.get(story.id);
 
@@ -46,14 +46,26 @@ export const StoryEntry: React.FC<Props> = (props) => {
     }
 
     return (
-      <EntryAction
-        action={(e) => {
-          e.stopPropagation();
+      <>
+        <EntryAction
+          action={(e) => {
+            e.stopPropagation();
 
-          run([story]);
-        }}
-        icon={<PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />}
-      />
+            run([story]);
+          }}
+          icon={
+            <PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />
+          }
+        />
+        <EntryAction
+          action={(e) => {
+            e.stopPropagation();
+
+            runComplete([story]);
+          }}
+          icon={<PlayCircleOutlined style={{ color: blue[6], fontSize: 16 }} />}
+        />
+      </>
     );
   }
 

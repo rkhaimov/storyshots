@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-type ViewType = 'pass' | 'fresh';
+type ViewType = 'pass' | 'fresh' | 'fail';
 
 type Props = {
   type: ViewType;
@@ -34,10 +34,21 @@ const Frame = styled.div`
   position: relative;
 `;
 
-const Image = styled.img<{ $type: ViewType }>`
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    pointer-events: none;
-    border: 1px solid ${({ $type }) => ($type === 'fresh' ? '#1677ff' : '#63c363')};
+export const Image = styled.img<{ $type: ViewType }>`
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  pointer-events: none;
+  border: 1px solid ${({ $type }) => getViewTypeColor($type)};
 `;
+
+function getViewTypeColor(type: ViewType): string {
+  switch (type) {
+    case 'pass':
+      return '#63c363';
+    case 'fresh':
+      return '#1677ff';
+    case 'fail':
+      return '#f5222d';
+  }
+}

@@ -12,12 +12,14 @@ import {
   RecordsComparisonResult,
   ScreenshotComparisonResult,
   ScreenshotsComparisonResults,
+  ScreenshotsComparisonResultsByMode,
   TestResult,
 } from './types';
 
 export async function createRunTestResult(
   driver: IExternals['driver'],
   story: EvaluatedStoryNode,
+  includeAdditional: boolean,
 ): Promise<TestResult> {
   const actualResults = await driver.actOnServerSide(story.id, {
     actions: story.actions,
@@ -30,6 +32,35 @@ export async function createRunTestResult(
       type: 'error',
       message: actualResults.message,
     };
+  }
+
+  const additionalResults: ScreenshotsComparisonResultsByMode[] = [];
+
+  if (includeAdditional) {
+    for (const device of story.devices.additional) {
+      const result = await driver.actOnServerSide(story.id, {
+        actions: story.actions,
+        device,
+      });
+
+      if (result.type === 'error') {
+        return {
+          running: false,
+          type: 'error',
+          message: result.message,
+        };
+      }
+
+      additionalResults.push({
+        device,
+        results: await createScreenshotsComparisonResults(
+          driver,
+          story.id,
+          { actions: story.actions, device },
+          result.data.screenshots,
+        ),
+      });
+    }
   }
 
   return {
@@ -50,7 +81,7 @@ export async function createRunTestResult(
           actualResults.data.screenshots,
         ),
       },
-      additional: [],
+      additional: additionalResults,
     },
   };
 }

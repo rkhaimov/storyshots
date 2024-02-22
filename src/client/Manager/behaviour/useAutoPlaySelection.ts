@@ -48,6 +48,7 @@ export function useAutoPlaySelection(params: URLParsedParams) {
         story,
         stories,
         name: params.name,
+        device: params.device,
       });
     }
 
@@ -88,6 +89,7 @@ export type AutoPlaySelection =
   | {
       type: 'screenshot';
       name: string | undefined;
+      device: string | undefined;
       story: EvaluatedStoryNode;
       stories: EvaluatedStoryshotsNode[];
     };

@@ -3,10 +3,15 @@ import { PictureOutlined } from '@ant-design/icons';
 import React from 'react';
 import styled from 'styled-components';
 import { ScreenshotName } from '../../../../reusables/types';
-import { SuccessTestResult } from '../../behaviour/useTestResults/types';
+import {
+  ScreenshotComparisonResult,
+  ScreenshotsComparisonResultsByMode,
+  SuccessTestResult,
+} from '../../behaviour/useTestResults/types';
 import { ActiveEntryHeader } from '../reusables/EntryHeader';
 import { EntryTitle } from '../reusables/EntryTitle';
 import { Props as ParentProps } from './types';
+import { isNil } from '../../../../reusables/utils';
 
 type Props = {
   results: SuccessTestResult;
@@ -25,7 +30,10 @@ export const ScreenshotsEntry: React.FC<Props> = ({
     <ScreenshotsList>
       {screenshots.others.map((it) => {
         return (
-          <li key={it.name} onClick={() => setScreenshot(story.id, it.name)}>
+          <li
+            key={it.name}
+            onClick={() => setScreenshot(story.id, it.name, undefined)}
+          >
             <ActiveEntryHeader
               $level={level}
               $offset={24}
@@ -39,13 +47,16 @@ export const ScreenshotsEntry: React.FC<Props> = ({
                     <span>{it.name}</span>
                   </>
                 }
-                status={{ type: it.result.type }}
+                status={{ type: aggregateStatus(results, it.name) }}
               />
             </ActiveEntryHeader>
           </li>
         );
       })}
-      <li key="final" onClick={() => setScreenshot(story.id, undefined)}>
+      <li
+        key="final"
+        onClick={() => setScreenshot(story.id, undefined, undefined)}
+      >
         <ActiveEntryHeader
           $level={level}
           $offset={24}
@@ -59,12 +70,54 @@ export const ScreenshotsEntry: React.FC<Props> = ({
                 <span>FINAL</span>
               </>
             }
-            status={{ type: screenshots.final.type }}
+            status={{ type: aggregateStatus(results, undefined) }}
           />
         </ActiveEntryHeader>
       </li>
     </ScreenshotsList>
   );
+
+  function aggregateStatus(
+    results: SuccessTestResult,
+    name: ScreenshotName | undefined,
+  ): ScreenshotComparisonResult['type'] {
+    const statuses: ScreenshotComparisonResult['type'][] = [];
+
+    function extractStatus(device: ScreenshotsComparisonResultsByMode) {
+      if (isNil(name)) {
+        return device.results.final.type;
+      }
+
+      for (const screenshot of device.results.others) {
+        if (screenshot.name === name) {
+          return screenshot.result.type;
+        }
+      }
+    }
+
+    const primaryStatus = extractStatus(results.screenshots.primary);
+    if (!isNil(primaryStatus)) {
+      statuses.push(primaryStatus);
+    }
+
+    for (const device of results.screenshots.additional) {
+      const status = extractStatus(device);
+
+      if (!isNil(status)) {
+        statuses.push(status);
+      }
+    }
+
+    if (statuses.includes('fail')) {
+      return 'fail';
+    }
+
+    if (statuses.includes('fresh')) {
+      return 'fresh';
+    }
+
+    return 'pass';
+  }
 
   function isActive(name: ScreenshotName | undefined) {
     return (
