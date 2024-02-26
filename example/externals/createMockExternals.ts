@@ -1,4 +1,4 @@
-import { Journal } from '../../src/client';
+import { Journal } from '../../src/preview/react';
 import { IExternals } from './types';
 
 export function createMockExternals(): IExternals {

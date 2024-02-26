@@ -1,21 +1,21 @@
 import { ConfigProvider } from 'antd';
 import React from 'react';
 import {
+  createDesktopDevice,
+  createMobileDevice,
+  createPreviewApp,
+} from '../../../src/preview/react';
+import {
   createJournalExternals,
   createMockExternals,
 } from '../../externals/createMockExternals';
-import {
-  createConfigurePreview,
-  createDesktopDevice,
-  createMobileDevice,
-} from '../../../src/client';
 import { PureApp } from '../../PureApp';
 
 const {
   runPreview,
   it: _it,
   describe,
-} = createConfigurePreview({
+} = createPreviewApp({
   devices: {
     primary: createDesktopDevice('desktop', {
       width: 1480,

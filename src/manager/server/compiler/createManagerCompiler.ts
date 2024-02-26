@@ -1,20 +1,31 @@
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
-import { runManager } from '../../src/manager/server';
+import webpack from 'webpack';
 
-runManager({
-  previewEntry: path.join(
-    process.cwd(),
-    'example',
-    'storyshots',
-    'preview',
-    'index.ts',
-  ),
-  screenshotsPath: path.join(process.cwd(), 'screenshots'),
-  recordsPath: path.join(process.cwd(), 'records'),
-  tempDirPath: path.join(process.cwd(), 'temp'),
-  overridePreviewBuildConfig: (config) => {
-    config.module = {
+export function createManagerCompiler() {
+  return webpack({
+    mode: 'development',
+    bail: false,
+    devtool: 'cheap-module-source-map',
+    entry: path.join(
+      process.cwd(),
+      'src',
+      'manager',
+      'client',
+      'index.tsx',
+    ),
+    stats: {
+      errorDetails: true,
+    },
+    output: {
+      path: path.join(process.cwd(), 'build', 'manager'),
+      pathinfo: true,
+      filename: 'static/js/bundle.js',
+      assetModuleFilename: 'static/media/[name].[hash][ext]',
+      publicPath: '/manager',
+    },
+    module: {
       rules: [
         {
           oneOf: [
@@ -43,14 +54,16 @@ runManager({
           ],
         },
       ],
-    };
-
-    config.resolve = {
+    },
+    resolve: {
       extensions: ['.js', '.ts', '.tsx'],
-    };
-
-    config.plugins?.push(new ForkTsCheckerWebpackPlugin({ async: true }));
-
-    return config;
-  },
-});
+    },
+    plugins: [
+      new HtmlWebpackPlugin(),
+      new webpack.DefinePlugin({
+        'process.env': { NODE_ENV: '"development"' },
+      }),
+      new ForkTsCheckerWebpackPlugin({ async: true }),
+    ],
+  });
+}

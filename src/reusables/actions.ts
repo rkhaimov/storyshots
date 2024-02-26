@@ -1,5 +1,5 @@
 import { FinderMeta } from './finder';
-import { ScreenshotName } from './types';
+import { ScreenshotName } from './screenshot';
 
 type ClickAction = {
   action: 'click';
@@ -43,5 +43,3 @@ export type ActionMeta =
   | HoverAction
   | WaitAction
   | ScreenshotAction;
-
-export type NonScreenshotAction = Exclude<ActionMeta, ScreenshotAction>;

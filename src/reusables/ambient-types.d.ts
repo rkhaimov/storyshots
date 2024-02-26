@@ -1,14 +1,12 @@
 type ManagerState = {
-  id?: import('./types').StoryID;
+  id?: import('./story').StoryID;
   screenshotting: boolean;
 };
 
 interface Window {
-  __REACT_DEVTOOLS_GLOBAL_HOOK__: unknown;
-
   setStoriesAndGetState(
-    stories: import('../client/reusables/channel').EvaluatedStoryTree[],
+    stories: import('./story').PureStoryTree[],
   ): ManagerState;
 
-  readJournalRecords(): import('./types').JournalRecord[];
+  readJournalRecords(): import('./journal').JournalRecord[];
 }
