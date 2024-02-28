@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { ScreenshotName } from '../../../reusables/screenshot';
 import { isNil } from '../../../reusables/utils';
@@ -26,7 +26,7 @@ type ScreenshotSelection = Extract<
 
 type Props = {
   selection: ScreenshotSelection;
-} & Pick<UseBehaviourProps, 'setScreenshot' | 'acceptScreenshot' | 'results'>;
+} & Pick<UseBehaviourProps, 'acceptScreenshot' | 'results'>;
 
 interface ScreenshotResult {
   name: ScreenshotName | undefined;
@@ -38,11 +38,12 @@ export const Screenshot: React.FC<Props> = ({
   selection,
   results,
   acceptScreenshot,
-  setScreenshot,
 }): React.ReactElement => {
   const driver = useDriver();
   const result = results.get(selection.story.id);
-  const title = `${selection.story.payload.title} — ${selection.name ?? 'FINAL'}`;
+  const title = `${selection.story.payload.title} — ${
+    selection.name ?? 'FINAL'
+  }`;
 
   if (isNil(result)) {
     return <span>Screenshots are not generated yet</span>;
@@ -58,27 +59,37 @@ export const Screenshot: React.FC<Props> = ({
     );
   }
 
-  if (!isNil(selection.device) && result.screenshots.additional.length > 0) {
-    if (result.screenshots.primary.device.name === selection.device) {
-      return renderSingleScreenshot(result, result.screenshots.primary);
+  if (result.screenshots.additional.length > 0) {
+    return renderScreenshotGallery(result);
+  }
+
+  return renderSingleScreenshot(
+    result,
+    result.screenshots.primary,
+    false,
+    () => {},
+  );
+
+  function renderScreenshotGallery(result: SuccessTestResult) {
+    const [device, setDevice] = useState<string | null>(null);
+
+    if (result.screenshots.primary.device.name === device) {
+      return renderSingleScreenshot(
+        result,
+        result.screenshots.primary,
+        true,
+        () => setDevice(null),
+      );
     }
 
     for (const comparisonResult of result.screenshots.additional) {
-      if (comparisonResult.device.name === selection.device) {
-        return renderSingleScreenshot(result, comparisonResult);
+      if (comparisonResult.device.name === device) {
+        return renderSingleScreenshot(result, comparisonResult, true, () =>
+          setDevice(null),
+        );
       }
     }
 
-    return <span>Screenshot for given device is missing</span>;
-  }
-
-  if (result.screenshots.additional.length == 0) {
-    return renderSingleScreenshot(result, result.screenshots.primary);
-  }
-
-  return renderScreenshotGallery(result);
-
-  function renderScreenshotGallery(result: SuccessTestResult) {
     const screenshotList: ScreenshotResult[] = [];
 
     const primary = result.screenshots.primary;
@@ -106,11 +117,7 @@ export const Screenshot: React.FC<Props> = ({
             <GalleryItem
               key={screenshot.result.actual}
               onClick={() => {
-                setScreenshot(
-                  selection.story.id,
-                  selection.name,
-                  screenshot.deviceName,
-                );
+                setDevice(screenshot.deviceName);
               }}
             >
               <GalleryImage
@@ -154,6 +161,8 @@ export const Screenshot: React.FC<Props> = ({
   function renderSingleScreenshot(
     result: SuccessTestResult,
     screenshotResults: ScreenshotsComparisonResultsByMode,
+    fromGallery: boolean,
+    resetDevice: () => void,
   ) {
     const screenshot = pickScreenshot(screenshotResults);
 
@@ -162,24 +171,21 @@ export const Screenshot: React.FC<Props> = ({
     }
 
     return renderSelectedScreenshotResults(
-      screenshot.name,
-      screenshot.result,
+      screenshot,
       result,
+      fromGallery,
+      resetDevice,
     );
   }
 
   function renderSelectedScreenshotResults(
-    name: ScreenshotName | undefined,
-    result: ScreenshotComparisonResult,
+    screenshot: ScreenshotResult,
     results: SuccessTestResult,
+    fromGallery: boolean,
+    onBack: () => void,
   ): React.ReactElement {
-    const actionBack = isNil(selection.device) ? null : (
-      <ActionBack
-        onAction={() => {
-          setScreenshot(selection.story.id, selection.name, undefined);
-        }}
-      />
-    );
+    const actionBack = fromGallery && <ActionBack onAction={onBack} />;
+    const { result, deviceName, name } = screenshot;
 
     switch (result.type) {
       case 'fresh':
@@ -193,7 +199,7 @@ export const Screenshot: React.FC<Props> = ({
                   acceptScreenshot(
                     selection.story,
                     name,
-                    selection.device,
+                    deviceName,
                     result.actual,
                     results,
                   )
@@ -227,7 +233,7 @@ export const Screenshot: React.FC<Props> = ({
                   acceptScreenshot(
                     selection.story,
                     name,
-                    selection.device,
+                    deviceName,
                     result.actual,
                     results,
                   )

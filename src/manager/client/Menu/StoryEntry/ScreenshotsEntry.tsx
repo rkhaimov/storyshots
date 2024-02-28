@@ -32,10 +32,7 @@ export const ScreenshotsEntry: React.FC<Props> = ({
     <ScreenshotsList>
       {screenshots.others.map((it) => {
         return (
-          <li
-            key={it.name}
-            onClick={() => setScreenshot(story.id, it.name, undefined)}
-          >
+          <li key={it.name} onClick={() => setScreenshot(story.id, it.name)}>
             <ActiveEntryHeader
               $level={level}
               $offset={24}
@@ -57,10 +54,7 @@ export const ScreenshotsEntry: React.FC<Props> = ({
           </li>
         );
       })}
-      <li
-        key="final"
-        onClick={() => setScreenshot(story.id, undefined, undefined)}
-      >
+      <li key="final" onClick={() => setScreenshot(story.id, undefined)}>
         <ActiveEntryHeader
           $level={level}
           $offset={24}

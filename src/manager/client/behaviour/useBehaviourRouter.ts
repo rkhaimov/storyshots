@@ -18,15 +18,10 @@ export function useBehaviourRouter(props: Props) {
     setRecords: (id: StoryID) => {
       navigate(`/${id}?mode=${Mode.Records}`);
     },
-    setScreenshot: (
-      id: StoryID,
-      name: string | undefined,
-      deviceName: string | undefined,
-    ) => {
+    setScreenshot: (id: StoryID, name: string | undefined) => {
       const screenshot = isNil(name) ? '' : `&screenshot=${name}`;
-      const device = isNil(deviceName) ? '' : `&device=${deviceName}`;
 
-      navigate(`/${id}?mode=${Mode.Screenshot}${screenshot}${device}`);
+      navigate(`/${id}?mode=${Mode.Screenshot}${screenshot}`);
     },
   };
 }
@@ -73,7 +68,6 @@ function useParsedParams(props: Props) {
       return {
         type: 'screenshot',
         name: params.get('screenshot') ?? undefined,
-        device: params.get('device') ?? undefined,
         id,
       };
     }
@@ -97,7 +91,6 @@ export type URLParsedParams =
       type: 'screenshot';
       id: StoryID;
       name: string | undefined;
-      device: string | undefined;
     }
   | {
       type: 'records';
