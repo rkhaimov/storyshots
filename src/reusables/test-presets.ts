@@ -21,7 +21,7 @@ export type DevicePresets = {
 
 export type CustomPreset<TExternals> = {
   name: string;
-  prepare: (externals: TExternals) => TExternals;
+  prepare(externals: TExternals): TExternals;
 };
 
 export type CustomPresetGroup<TExternals> = {
