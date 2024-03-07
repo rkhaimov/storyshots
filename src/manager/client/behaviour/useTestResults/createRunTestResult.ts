@@ -1,5 +1,6 @@
 import { JournalRecord } from '../../../../reusables/journal';
 import { PureStory, StoryID } from '../../../../reusables/story';
+import { DevicePresets } from '../../../../reusables/test-presets';
 import { isNil } from '../../../../reusables/utils';
 import {
   ActionsOnDevice,
@@ -18,11 +19,14 @@ import {
 export async function createRunTestResult(
   driver: IWebDriver,
   story: PureStory,
+  devices: DevicePresets,
+  presets: SelectedPresets,
   includeAdditional: boolean,
 ): Promise<TestResult> {
   const actualResults = await driver.actOnServerSide(story.id, {
     actions: story.payload.actions,
-    device: story.payload.devices.primary,
+    device: devices.primary,
+    presets,
   });
 
   if (actualResults.type === 'error') {
@@ -36,10 +40,11 @@ export async function createRunTestResult(
   const additionalResults: ScreenshotsComparisonResultsByMode[] = [];
 
   if (includeAdditional) {
-    for (const device of story.payload.devices.additional) {
+    for (const device of devices.additional) {
       const result = await driver.actOnServerSide(story.id, {
         actions: story.payload.actions,
         device,
+        presets,
       });
 
       if (result.type === 'error') {
@@ -55,7 +60,7 @@ export async function createRunTestResult(
         results: await createScreenshotsComparisonResults(
           driver,
           story.id,
-          { actions: story.payload.actions, device },
+          { actions: story.payload.actions, device, presets },
           result.data.screenshots,
         ),
       });
@@ -72,13 +77,14 @@ export async function createRunTestResult(
     ),
     screenshots: {
       primary: {
-        device: story.payload.devices.primary,
+        device: devices.primary,
         results: await createScreenshotsComparisonResults(
           driver,
           story.id,
           {
             actions: story.payload.actions,
-            device: story.payload.devices.primary,
+            device: devices.primary,
+            presets,
           },
           actualResults.data.screenshots,
         ),

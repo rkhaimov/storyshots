@@ -5,9 +5,9 @@ import { StoryID } from '../../reusables/story';
 import { Story } from './Story';
 import { Props } from './types';
 
-export const ScreenshotReadyStory: React.FC<{ id: StoryID } & Props> = (
-  props,
-) => {
+export const ScreenshotReadyStory: React.FC<
+  { id: StoryID; selectedPresets: SelectedPresets } & Props
+> = (props) => {
   return props.renderScreenshotTimeEnv(
     <>
       <AllCssInconsistenciesDisabled />

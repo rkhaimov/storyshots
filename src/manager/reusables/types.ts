@@ -37,6 +37,7 @@ export type WithPossibleError<T> =
 export type ActionsOnDevice = {
   actions: ActionMeta[];
   device: Device;
+  presets: SelectedPresets;
 };
 
 export type ScreenshotToAccept = {

@@ -20,7 +20,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
         $level={props.level}
         $active={isActive()}
         $color={blue[0]}
-        onClick={() => props.setStory(props.story.id)}
+        onClick={() => props.setStory(props.story.id, {})}
       >
         <EntryTitle
           left={
@@ -43,11 +43,15 @@ export const StoryEntry: React.FC<Props> = (props) => {
   );
 
   function renderStoryActions() {
-    const { results, story, run, runComplete } = props;
+    const { results, story, run, runComplete, selection } = props;
 
     const comparison = results.get(story.id);
 
     if (comparison && comparison.running) {
+      return;
+    }
+
+    if (selection.type === 'initializing') {
       return;
     }
 
@@ -57,7 +61,13 @@ export const StoryEntry: React.FC<Props> = (props) => {
           action={(e) => {
             e.stopPropagation();
 
-            run([story]);
+            run(
+              [story],
+              selection.config.devices,
+              props.routerParams.type === 'story'
+                ? props.routerParams.presets
+                : {},
+            );
           }}
           icon={
             <PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />
@@ -67,7 +77,13 @@ export const StoryEntry: React.FC<Props> = (props) => {
           action={(e) => {
             e.stopPropagation();
 
-            runComplete([story]);
+            runComplete(
+              [story],
+              selection.config.devices,
+              props.routerParams.type === 'story'
+                ? props.routerParams.presets
+                : {},
+            );
           }}
           icon={<PlayCircleOutlined style={{ color: blue[6], fontSize: 16 }} />}
         />

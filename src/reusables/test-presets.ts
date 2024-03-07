@@ -14,7 +14,18 @@ export type CompleteDeviceConfig = {
   config: PuppeteerDevice;
 };
 
-export type TestPresets = {
+export type DevicePresets = {
   primary: Device;
   additional: Device[];
+};
+
+export type CustomPreset<TExternals> = {
+  name: string;
+  prepare: (externals: TExternals) => TExternals;
+};
+
+export type CustomPresetGroup<TExternals> = {
+  name: string;
+  primary: CustomPreset<TExternals>;
+  additional: CustomPreset<TExternals>[];
 };

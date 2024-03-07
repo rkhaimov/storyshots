@@ -1,11 +1,18 @@
 import path from 'path';
 import { StoryID } from '../../../reusables/story';
-import { isNil, not } from '../../../reusables/utils';
+import { not } from '../../../reusables/utils';
 import { ScreenshotPath } from '../../reusables/types';
 import { Device } from '../../../reusables/test-presets';
 import { ScreenshotName } from '../../../reusables/screenshot';
 import { ServerConfig } from '../reusables/types';
-import { copy, exists, mkdir, mkfile, read } from './utils';
+import {
+  constructScreenshotFileName,
+  copy,
+  exists,
+  mkdir,
+  mkfile,
+  read,
+} from './utils';
 
 export async function createScreenshotsBaseline(config: ServerConfig) {
   const actualResultsDir = path.join(config.tempDirPath, 'actual');
@@ -22,6 +29,7 @@ export async function createScreenshotsBaseline(config: ServerConfig) {
     createActualScreenshot: async (
       id: StoryID,
       device: Device,
+      presets: SelectedPresets,
       name: ScreenshotName | undefined,
       content: Buffer,
     ): Promise<ScreenshotPath> => {
@@ -31,10 +39,7 @@ export async function createScreenshotsBaseline(config: ServerConfig) {
         await mkdir(dir);
       }
 
-      const at = path.join(
-        dir,
-        isNil(name) ? `${id}.png` : `${id}_${name}.png`,
-      );
+      const at = path.join(dir, constructScreenshotFileName(id, name, presets));
 
       await mkfile(at, content);
 
@@ -43,9 +48,10 @@ export async function createScreenshotsBaseline(config: ServerConfig) {
     getExpectedScreenshot: async (
       id: StoryID,
       device: Device,
+      presets: SelectedPresets,
       name: ScreenshotName | undefined,
     ): Promise<ScreenshotPath | undefined> => {
-      const image = isNil(name) ? `${id}.png` : `${id}_${name}.png`;
+      const image = constructScreenshotFileName(id, name, presets);
       const file = path.join(config.screenshotsPath, device.name, image);
 
       return (await exists(file)) ? (file as ScreenshotPath) : undefined;

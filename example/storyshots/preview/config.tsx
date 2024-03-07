@@ -35,6 +35,29 @@ const {
       }),
     ],
   },
+  presets: [
+    {
+      name: 'Theme',
+      primary: {
+        name: 'Light',
+        prepare: (externals) => externals,
+      },
+      additional: [
+        {
+          name: 'Dark',
+          prepare: (externals) => {
+            return {
+              ...externals,
+              options: {
+                ...externals.options,
+                getTheme: () => 'dark',
+              },
+            };
+          },
+        },
+      ],
+    },
+  ],
   createExternals: createMockExternals,
   createJournalExternals: createJournalExternals,
   renderScreenshotTimeEnv: (app) => (

@@ -12,8 +12,10 @@ export function useBehaviourRouter(props: Props) {
 
   return {
     params: useParsedParams(props),
-    setStory: (id: StoryID) => {
-      navigate(`/${id}`);
+    setStory: (id: StoryID, selectedPresets: SelectedPresets) => {
+      navigate(
+        `/${id}?presets=${encodeURIComponent(JSON.stringify(selectedPresets))}`,
+      );
     },
     setRecords: (id: StoryID) => {
       navigate(`/${id}?mode=${Mode.Records}`);
@@ -72,9 +74,15 @@ function useParsedParams(props: Props) {
       };
     }
 
+    const presetsParam = params.get('presets');
+    const presets = isNil(presetsParam)
+      ? {}
+      : (JSON.parse(presetsParam) as SelectedPresets);
+
     return {
       type: 'story',
       id,
+      presets,
     };
   }, [story, search]);
 }
@@ -86,6 +94,7 @@ export type URLParsedParams =
   | {
       type: 'story';
       id: StoryID;
+      presets: SelectedPresets;
     }
   | {
       type: 'screenshot';
