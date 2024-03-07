@@ -28,5 +28,7 @@ export const router: RequestHandler = (request, response, next) => {
 // TODO: Deduplicate constants and url matching logic (client including)
 export const PORT = 6006;
 export const MANAGER_INDEX = `http://localhost:6006?manager=SECRET`;
-export const createPathToStory = (id: StoryID) =>
-  `http://localhost:6006/chromium/${id}?manager=SECRET`;
+export const createPathToStory = (id: StoryID, presets: SelectedPresets) =>
+  `http://localhost:6006/chromium/${id}?manager=SECRET&presets=${encodeURIComponent(
+    JSON.stringify(presets),
+  )}`;

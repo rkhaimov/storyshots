@@ -10,6 +10,10 @@ export const Menu: React.FC<UseBehaviourProps> = (props) => {
   }
 
   return (
-    <MenuHavingStories {...props} stories={props.selection.stories} level={0} />
+    <MenuHavingStories
+      {...props}
+      stories={props.selection.config.stories}
+      level={0}
+    />
   );
 };

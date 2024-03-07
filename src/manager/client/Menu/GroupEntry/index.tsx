@@ -18,8 +18,12 @@ export const GroupEntry: React.FC<
     group: PureGroup;
   }
 > = (props) => {
-  const { group, ...others } = props;
+  const { group, selection, ...others } = props;
   const expanded = others.expanded.has(group.id);
+
+  if (selection.type === 'initializing') {
+    return;
+  }
 
   return (
     <li>
@@ -50,7 +54,13 @@ export const GroupEntry: React.FC<
             action={(e) => {
               e.stopPropagation();
 
-              others.run(TreeOP.toLeafsArray(group.children));
+              others.run(
+                TreeOP.toLeafsArray(group.children),
+                selection.config.devices,
+                props.routerParams.type === 'story'
+                  ? props.routerParams.presets
+                  : {},
+              );
             }}
           />
           <EntryAction
@@ -60,7 +70,13 @@ export const GroupEntry: React.FC<
             action={(e) => {
               e.stopPropagation();
 
-              others.runComplete(TreeOP.toLeafsArray(group.children));
+              others.runComplete(
+                TreeOP.toLeafsArray(group.children),
+                selection.config.devices,
+                props.routerParams.type === 'story'
+                  ? props.routerParams.presets
+                  : {},
+              );
             }}
           />
         </EntryActions>
@@ -69,6 +85,7 @@ export const GroupEntry: React.FC<
         <MenuHavingStories
           {...others}
           stories={group.children}
+          selection={selection}
           level={others.level + 1}
         />
       )}

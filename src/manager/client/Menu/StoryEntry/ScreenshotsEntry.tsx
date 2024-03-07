@@ -6,14 +6,12 @@ import styled from 'styled-components';
 import { ScreenshotName } from '../../../../reusables/screenshot';
 import {
   ScreenshotComparisonResult,
-  ScreenshotsComparisonResultsByMode,
   SuccessTestResult,
 } from '../../behaviour/useTestResults/types';
 import { ActiveEntryHeader } from '../reusables/EntryHeader';
 import { EntryStatus } from '../reusables/EntryStatus';
 import { EntryTitle } from '../reusables/EntryTitle';
 import { Props as ParentProps } from './types';
-import { isNil } from '../../../../reusables/utils';
 
 type Props = {
   results: SuccessTestResult;
@@ -26,15 +24,15 @@ export const ScreenshotsEntry: React.FC<Props> = ({
   selection,
   setScreenshot,
 }) => {
-  const screenshots = results.screenshots.primary.results;
+  const screenshots = invertTestResultsByScreenshotName(results);
 
   return (
     <ScreenshotsList>
-      {screenshots.others.map((it) => {
+      {screenshots.map((it) => {
         return (
           <li
-            key={it.name}
-            onClick={() => setScreenshot(story.id, it.name, undefined)}
+            key={it.name ?? 'final'}
+            onClick={() => setScreenshot(story.id, it.name)}
           >
             <ActiveEntryHeader
               $level={level}
@@ -45,73 +43,28 @@ export const ScreenshotsEntry: React.FC<Props> = ({
               <EntryTitle
                 left={
                   <>
-                    <EntryStatus
-                      status={{ type: aggregateStatus(results, it.name) }}
-                    />
+                    <EntryStatus status={{ type: aggregateStatus(it) }} />
                     <PictureOutlined style={{ marginRight: 4 }} />
                   </>
                 }
-                title={it.name}
+                title={it.name ?? 'FINAL'}
               />
             </ActiveEntryHeader>
           </li>
         );
       })}
-      <li
-        key="final"
-        onClick={() => setScreenshot(story.id, undefined, undefined)}
-      >
-        <ActiveEntryHeader
-          $level={level}
-          $offset={24}
-          $color={blue[0]}
-          $active={isActive(undefined)}
-        >
-          <EntryTitle
-            left={
-              <>
-                <EntryStatus
-                  status={{ type: aggregateStatus(results, undefined) }}
-                />
-                <PictureOutlined style={{ marginRight: 4 }} />
-              </>
-            }
-            title="FINAL"
-          />
-        </ActiveEntryHeader>
-      </li>
     </ScreenshotsList>
   );
 
   function aggregateStatus(
-    results: SuccessTestResult,
-    name: ScreenshotName | undefined,
+    results: ScreenshotNamedGroup,
   ): ScreenshotComparisonResult['type'] {
     const statuses: ScreenshotComparisonResult['type'][] = [];
 
-    function extractStatus(device: ScreenshotsComparisonResultsByMode) {
-      if (isNil(name)) {
-        return device.results.final.type;
-      }
+    statuses.push(results.devices.primary.result.type);
 
-      for (const screenshot of device.results.others) {
-        if (screenshot.name === name) {
-          return screenshot.result.type;
-        }
-      }
-    }
-
-    const primaryStatus = extractStatus(results.screenshots.primary);
-    if (!isNil(primaryStatus)) {
-      statuses.push(primaryStatus);
-    }
-
-    for (const device of results.screenshots.additional) {
-      const status = extractStatus(device);
-
-      if (!isNil(status)) {
-        statuses.push(status);
-      }
+    for (const device of results.devices.additional) {
+      statuses.push(device.result.type);
     }
 
     if (statuses.includes('fail')) {
@@ -138,3 +91,54 @@ const ScreenshotsList = styled.ul`
   padding: 0;
   text-decoration: none;
 `;
+
+type ScreenshotNamedGroup = {
+  name: ScreenshotName | undefined;
+  devices: {
+    primary: DeviceScreenshotResult;
+    additional: DeviceScreenshotResult[];
+  };
+};
+
+type DeviceScreenshotResult = {
+  name: string;
+  result: ScreenshotComparisonResult;
+};
+
+function invertTestResultsByScreenshotName(
+  results: SuccessTestResult,
+): ScreenshotNamedGroup[] {
+  const groups: ScreenshotNamedGroup[] = [];
+
+  results.screenshots.primary.results.others.map((screenshot, index) => {
+    groups.push({
+      name: screenshot.name,
+      devices: {
+        primary: {
+          name: results.screenshots.primary.device.name,
+          result: screenshot.result,
+        },
+        additional: results.screenshots.additional.map((device) => ({
+          name: device.device.name,
+          result: device.results.others[index].result,
+        })),
+      },
+    });
+  });
+
+  groups.push({
+    name: undefined,
+    devices: {
+      primary: {
+        name: results.screenshots.primary.device.name,
+        result: results.screenshots.primary.results.final,
+      },
+      additional: results.screenshots.additional.map((device) => ({
+        name: device.device.name,
+        result: device.results.final,
+      })),
+    },
+  });
+
+  return groups;
+}

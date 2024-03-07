@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { WithPossibleError } from '../../reusables/types';
-import { PureStory, PureStoryTree, StoryID } from '../../../reusables/story';
+import { PureStory, StoryID } from '../../../reusables/story';
 import { useDriver } from '../driver';
 import { URLParsedParams } from './useBehaviourRouter';
 import { usePreviewBuildHash } from './usePreviewBuildHash';
 import { TreeOP } from '../../../reusables/tree';
 import { assertNotEmpty } from '../../../reusables/utils';
+import { AppConfig } from './types';
 
 // TODO: Solve cancellation problem
 export function useAutoPlaySelection(params: URLParsedParams) {
@@ -26,37 +27,37 @@ export function useAutoPlaySelection(params: URLParsedParams) {
   };
 
   async function selectAndPlay() {
-    const stories = await getStoriesAndSupplyState(
+    const config = await getAppConfigAndSupplyState(
       params.type === 'no-selection' ? undefined : params.id,
+      params.type === 'story' ? params.presets : {},
     );
 
     if (params.type === 'no-selection') {
-      return setSelection({ type: 'no-selection', stories });
+      return setSelection({ type: 'no-selection', config });
     }
 
-    const story = TreeOP.find(stories, params.id);
+    const story = TreeOP.find(config.stories, params.id);
 
     assertNotEmpty(story);
 
     if (params.type === 'records') {
-      return setSelection({ type: 'records', story, stories });
+      return setSelection({ type: 'records', story, config });
     }
 
     if (params.type === 'screenshot') {
       return setSelection({
         type: 'screenshot',
         story,
-        stories,
+        config,
         name: params.name,
-        device: params.device,
       });
     }
 
-    setSelection({ type: 'story', story, stories, playing: true });
+    setSelection({ type: 'story', story, config, playing: true });
 
     const result = await driver.actOnClientSide(story.payload.actions);
 
-    setSelection({ type: 'story', story, stories, playing: false, result });
+    setSelection({ type: 'story', story, config, playing: false, result });
   }
 }
 
@@ -66,40 +67,42 @@ export type AutoPlaySelection =
     }
   | {
       type: 'no-selection';
-      stories: PureStoryTree[];
+      config: AppConfig;
     }
   | {
       type: 'story';
       story: PureStory;
-      stories: PureStoryTree[];
+      config: AppConfig;
       playing: true;
     }
   | {
       type: 'story';
       story: PureStory;
-      stories: PureStoryTree[];
+      config: AppConfig;
       playing: false;
       result: WithPossibleError<void>;
     }
   | {
       type: 'records';
       story: PureStory;
-      stories: PureStoryTree[];
+      config: AppConfig;
     }
   | {
       type: 'screenshot';
       name: string | undefined;
-      device: string | undefined;
       story: PureStory;
-      stories: PureStoryTree[];
+      config: AppConfig;
     };
 
-function getStoriesAndSupplyState(id: StoryID | undefined) {
-  return new Promise<PureStoryTree[]>((resolve) => {
-    window.setStoriesAndGetState = (stories) => {
-      resolve(stories);
+function getAppConfigAndSupplyState(
+  id: StoryID | undefined,
+  selectedPresets: SelectedPresets,
+) {
+  return new Promise<AppConfig>((resolve) => {
+    window.setAppConfigAndGetState = (stories, devices, presets) => {
+      resolve({ stories, devices, presets });
 
-      return { id, screenshotting: false };
+      return { id, screenshotting: false, selectedPresets };
     };
   });
 }

@@ -11,16 +11,19 @@ export function useManagerState(props: Props) {
 
     assertNotEmpty(top, 'Preview should be wrapped in manager');
 
-    return top.setStoriesAndGetState(toEvaluatedStories(props.stories, props));
+    return top.setAppConfigAndGetState(
+      toEvaluatedStories(props.stories),
+      props.devices,
+      props.presets,
+    );
   }, [props.stories]);
 }
 
-function toEvaluatedStories(nodes: StoryTree[], props: Props): PureStoryTree[] {
+function toEvaluatedStories(nodes: StoryTree[]): PureStoryTree[] {
   return TreeOP.map(nodes, {
     node: (node) => node,
     leaf: (leaf) => ({
       title: leaf.title,
-      devices: props.devices,
       actions: leaf.act(createActor()).toMeta(),
     }),
   });

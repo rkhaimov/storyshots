@@ -61,7 +61,7 @@ async function createServerResultByDevice(
 ) {
   await configurePageByMode(payload.device, page);
 
-  await page.goto(createPathToStory(id), {
+  await page.goto(createPathToStory(id, payload.presets), {
     waitUntil: 'networkidle0',
   });
 
@@ -84,18 +84,26 @@ async function interactWithPageAndMakeShots(
   page: Page,
   preview: Frame,
   id: StoryID,
-  { device, actions }: ActionsOnDevice,
+  { device, actions, presets }: ActionsOnDevice,
 ): Promise<ActualServerSideResult> {
   const others: Screenshot[] = [];
   for (const action of actions) {
     if (action.action === 'screenshot') {
-      others.push(await createScreenshot(baseline, page, id, action, device));
+      others.push(
+        await createScreenshot(baseline, page, id, action, device, presets),
+      );
     } else {
       await act(preview, action);
     }
   }
 
-  const final = await createFinalScreenshot(baseline, page, id, device);
+  const final = await createFinalScreenshot(
+    baseline,
+    page,
+    id,
+    device,
+    presets,
+  );
 
   const records = await preview.evaluate(() => window.readJournalRecords());
 
@@ -114,10 +122,12 @@ async function createScreenshot(
   id: StoryID,
   action: ScreenshotAction,
   device: Device,
+  presets: SelectedPresets,
 ): Promise<Screenshot> {
   const path = await baseline.createActualScreenshot(
     id,
     device,
+    presets,
     action.payload.name,
     await page.screenshot({ type: 'png' }),
   );
@@ -133,10 +143,12 @@ async function createFinalScreenshot(
   page: Page,
   id: StoryID,
   device: Device,
+  presets: SelectedPresets,
 ): Promise<ScreenshotPath> {
   return baseline.createActualScreenshot(
     id,
     device,
+    presets,
     undefined,
     await page.screenshot({ type: 'png' }),
   );

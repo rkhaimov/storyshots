@@ -1,5 +1,5 @@
 import React from 'react';
-import { TestPresets } from '../../reusables/test-presets';
+import { CustomPresetGroup, DevicePresets } from '../../reusables/test-presets';
 import { IntermediateNode, LeafNode } from '../../reusables/tree';
 import { Actor } from './actor/types';
 import { Journal } from './journal/types';
@@ -21,7 +21,8 @@ export type Story<TExternals = unknown> = LeafNode<{
 }>;
 
 export type ClientConfig<TExternals> = {
-  devices: TestPresets;
+  devices: DevicePresets;
+  presets: CustomPresetGroup<TExternals>[];
   createExternals(): TExternals;
   createJournalExternals(externals: TExternals, journal: Journal): TExternals;
   renderScreenshotTimeEnv(app: React.ReactNode): React.ReactNode;

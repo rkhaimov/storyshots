@@ -12,21 +12,18 @@ export function useBehaviourRouter(props: Props) {
 
   return {
     params: useParsedParams(props),
-    setStory: (id: StoryID) => {
-      navigate(`/${id}`);
+    setStory: (id: StoryID, selectedPresets: SelectedPresets) => {
+      navigate(
+        `/${id}?presets=${encodeURIComponent(JSON.stringify(selectedPresets))}`,
+      );
     },
     setRecords: (id: StoryID) => {
       navigate(`/${id}?mode=${Mode.Records}`);
     },
-    setScreenshot: (
-      id: StoryID,
-      name: string | undefined,
-      deviceName: string | undefined,
-    ) => {
+    setScreenshot: (id: StoryID, name: string | undefined) => {
       const screenshot = isNil(name) ? '' : `&screenshot=${name}`;
-      const device = isNil(deviceName) ? '' : `&device=${deviceName}`;
 
-      navigate(`/${id}?mode=${Mode.Screenshot}${screenshot}${device}`);
+      navigate(`/${id}?mode=${Mode.Screenshot}${screenshot}`);
     },
   };
 }
@@ -73,14 +70,19 @@ function useParsedParams(props: Props) {
       return {
         type: 'screenshot',
         name: params.get('screenshot') ?? undefined,
-        device: params.get('device') ?? undefined,
         id,
       };
     }
 
+    const presetsParam = params.get('presets');
+    const presets = isNil(presetsParam)
+      ? {}
+      : (JSON.parse(presetsParam) as SelectedPresets);
+
     return {
       type: 'story',
       id,
+      presets,
     };
   }, [story, search]);
 }
@@ -92,12 +94,12 @@ export type URLParsedParams =
   | {
       type: 'story';
       id: StoryID;
+      presets: SelectedPresets;
     }
   | {
       type: 'screenshot';
       id: StoryID;
       name: string | undefined;
-      device: string | undefined;
     }
   | {
       type: 'records';

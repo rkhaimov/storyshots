@@ -13,6 +13,7 @@ import {
   SuccessTestResult,
   TestResults,
 } from './types';
+import { DevicePresets } from '../../../../reusables/test-presets';
 
 export function useTestResults() {
   const externals = useDriver();
@@ -20,15 +21,23 @@ export function useTestResults() {
 
   return {
     results,
-    run: async (stories: PureStory[]) => {
+    run: async (
+      stories: PureStory[],
+      devices: DevicePresets,
+      presets: SelectedPresets,
+    ) => {
       setChosenAsRunning(stories);
 
-      runSetTestResults(stories);
+      runSetTestResults(stories, devices, presets);
     },
-    runComplete: async (stories: PureStory[]) => {
+    runComplete: async (
+      stories: PureStory[],
+      devices: DevicePresets,
+      presets: SelectedPresets,
+    ) => {
       setChosenAsRunning(stories);
 
-      runCompleteSetTestResults(stories);
+      runCompleteSetTestResults(stories, devices, presets);
     },
     // TODO: Logic duplication
     acceptRecords: async (
@@ -107,17 +116,37 @@ export function useTestResults() {
     );
   }
 
-  async function runSetTestResults(stories: PureStory[]) {
+  async function runSetTestResults(
+    stories: PureStory[],
+    devices: DevicePresets,
+    presets: SelectedPresets,
+  ) {
     for (const story of stories) {
-      const result = await createRunTestResult(externals, story, false);
+      const result = await createRunTestResult(
+        externals,
+        story,
+        devices,
+        presets,
+        false,
+      );
 
       setResults((curr) => new Map(curr.set(story.id, result)));
     }
   }
 
-  async function runCompleteSetTestResults(stories: PureStory[]) {
+  async function runCompleteSetTestResults(
+    stories: PureStory[],
+    devices: DevicePresets,
+    presets: SelectedPresets,
+  ) {
     for (const story of stories) {
-      const result = await createRunTestResult(externals, story, true);
+      const result = await createRunTestResult(
+        externals,
+        story,
+        devices,
+        presets,
+        true,
+      );
 
       setResults((curr) => new Map(curr.set(story.id, result)));
     }

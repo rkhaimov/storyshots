@@ -7,15 +7,21 @@ import { Props } from './types';
 import { useManagerState } from './useManagerState';
 
 export const Preview: React.FC<Props> = (props) => {
-  const { id, screenshotting } = useManagerState(props);
+  const { id, screenshotting, selectedPresets } = useManagerState(props);
 
   if (isNil(id)) {
     return <Placeholder />;
   }
 
   if (screenshotting) {
-    return <ScreenshotReadyStory id={id} {...props} />;
+    return (
+      <ScreenshotReadyStory
+        id={id}
+        {...props}
+        selectedPresets={selectedPresets}
+      />
+    );
   }
 
-  return <Story id={id} {...props} />;
+  return <Story id={id} {...props} selectedPresets={selectedPresets} />;
 };

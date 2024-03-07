@@ -9,4 +9,9 @@ export interface IExternals {
   environment: {
     now(): Date;
   };
+  options: {
+    getTheme(): ThemeName;
+  };
 }
+
+type ThemeName = 'light' | 'dark';

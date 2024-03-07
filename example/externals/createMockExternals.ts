@@ -14,6 +14,9 @@ export function createMockExternals(): IExternals {
       // 13.01.2024
       now: () => new Date(2024, 0, 13, 12),
     },
+    options: {
+      getTheme: () => 'light',
+    },
   };
 }
 
