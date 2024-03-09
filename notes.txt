@@ -23,3 +23,16 @@ finder https://github.com/antonmedv/finder
 * implement server logging
 * introduce manager/preview arch
 * exhaustive check on story arrange
+
+move devices to manager
+simplify ambient types from package usage
+
+Names suggestions:
+vcheck
+ui-play
+
+* add api extractor
+* add ts-project refs
+* implement dev scripts
+* divide manager and preview build modes (if possible)
+* create solution diagram (with all SRP decisions described)

@@ -1,4 +1,4 @@
-import { finder } from '../../../src/preview/react';
+import { finder } from '@storyshots/react-preview';
 import { describe, it } from '../../storyshots/preview/config';
 import { createNeverEndingPromise } from './utils';
 

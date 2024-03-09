@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig",
+  "include": [
+    "./src/index.ts",
+    "./src/channel.ts"
+  ],
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "CommonJS",
+    "outDir": "./lib",
+    "declaration": true
+  }
+}

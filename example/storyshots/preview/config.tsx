@@ -4,7 +4,7 @@ import {
   createDesktopDevice,
   createMobileDevice,
   createPreviewApp,
-} from '../../../src/preview/react';
+} from '@storyshots/react-preview';
 import {
   createJournalExternals,
   createMockExternals,
@@ -12,7 +12,7 @@ import {
 import { PureApp } from '../../PureApp';
 
 const {
-  runPreview,
+  run,
   it: _it,
   describe,
 } = createPreviewApp({
@@ -38,7 +38,7 @@ const {
   presets: [
     {
       name: 'Theme',
-      primary: {
+      default: {
         name: 'Light',
         prepare: (externals) => externals,
       },
@@ -73,4 +73,4 @@ const it = (title: Parameters<typeof _it>[0], config: RenderBoundConfig) =>
 
 type RenderBoundConfig = Omit<Parameters<typeof _it>[1], 'render'>;
 
-export { runPreview, it, describe };
+export { run, it, describe };

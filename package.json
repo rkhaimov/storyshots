@@ -6,68 +6,26 @@
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
   "scripts": {
-    "start": "tsc -p tsconfig.build.json && node ./temp/compiled/example/storyshots/manager.js",
-    "debug": "tsc -p tsconfig.build.json && node --inspect ./temp/compiled/example/storyshots/manager.js"
-  },
-  "dependencies": {
-    "@ant-design/icons": "^5.2.6",
-    "antd": "^5.11.4",
-    "connect-history-api-fallback": "^2.0.0",
-    "express": "^4.18.2",
-    "express-ws": "^5.0.2",
-    "open": "^8.0.9",
-    "pixelmatch": "^5.3.0",
-    "pngjs": "^7.0.0",
-    "puppeteer": "^21.6.1",
-    "puppeteer-cluster": "^0.23.0",
-    "react": "^18.2.0",
-    "react-compare-image": "^3.4.0",
-    "react-diff-viewer-continued": "^3.3.1",
-    "react-dom": "^18.2.0",
-    "styled-components": "^6.1.1",
-    "webpack-dev-middleware": "^7.0.0",
-    "wouter": "^2.12.1"
+    "start": "cross-env STORYSHOTS_BUILD_MODE=development npm run example",
+    "build": "npm run build --workspaces",
+    "example": "ts-node ./example/storyshots/manager.ts"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.23.3",
-    "@babel/preset-react": "^7.23.3",
-    "@babel/preset-typescript": "^7.23.3",
-    "@types/connect-history-api-fallback": "^1.5.4",
-    "@types/express": "^4.17.21",
-    "@types/express-ws": "^3.0.4",
-    "@types/html-webpack-plugin": "^3.2.9",
-    "@types/node": "^20.10.0",
-    "@types/pixelmatch": "^5.2.6",
-    "@types/pngjs": "^6.0.4",
-    "@types/react": "^18.2.38",
-    "@types/react-dom": "^18.2.17",
-    "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
-    "babel-loader": "^9.1.3",
-    "babel-plugin-styled-components": "^2.1.4",
+    "cross-env": "^7.0.3",
     "eslint": "^8.54.0",
     "eslint-plugin-react": "^7.33.2",
-    "fork-ts-checker-webpack-plugin": "^9.0.2",
-    "html-webpack-plugin": "^5.5.3",
     "prettier": "3.1.0",
+    "rimraf": "^5.0.5",
     "ts-node": "^10.9.1",
-    "typescript": "^5.3.2",
-    "webpack": "^5.89.0",
-    "webpack-cli": "^5.1.4"
+    "typescript": "^5.3.2"
   },
-  "browserslist": {
-    "production": [
-      "last 2 chrome version",
-      "last 2 firefox version",
-      "last 2 safari version"
-    ],
-    "development": [
-      "last 2 chrome version",
-      "last 2 firefox version",
-      "last 2 safari version"
-    ]
-  },
+  "workspaces": [
+    "packages/core",
+    "packages/manager",
+    "packages/preview/react"
+  ],
   "engines": {
     "node": ">=20"
   }

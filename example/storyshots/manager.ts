@@ -1,15 +1,9 @@
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import path from 'path';
-import { runManager } from '../../src/manager/server';
+import { run } from '@storyshots/manager';
 
-runManager({
-  previewEntry: path.join(
-    process.cwd(),
-    'example',
-    'storyshots',
-    'preview',
-    'index.ts',
-  ),
+run({
+  previewEntry: path.join(__dirname, 'preview', 'index.ts'),
   screenshotsPath: path.join(process.cwd(), 'screenshots'),
   recordsPath: path.join(process.cwd(), 'records'),
   tempDirPath: path.join(process.cwd(), 'temp'),
@@ -19,7 +13,7 @@ runManager({
         {
           oneOf: [
             {
-              test: /\.tsx?$/,
+              test: /\.(ts|js)x?$/,
               loader: 'babel-loader',
               exclude: /node_modules/,
               options: {
@@ -46,7 +40,8 @@ runManager({
     };
 
     config.resolve = {
-      extensions: ['.js', '.ts', '.tsx'],
+      ...config.resolve,
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
     };
 
     config.plugins?.push(new ForkTsCheckerWebpackPlugin({ async: true }));

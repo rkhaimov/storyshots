@@ -1,4 +1,4 @@
 import { stories } from './stories';
-import { runPreview } from './config';
+import { run } from './config';
 
-runPreview(stories);
+run(stories);
