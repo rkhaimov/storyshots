@@ -62,28 +62,20 @@ export const Screenshot: React.FC<Props> = ({
     return renderScreenshotGallery(result);
   }
 
-  return renderSingleScreenshot(
-    result,
-    result.screenshots.primary,
-    false,
-    () => {},
-  );
+  return renderSingleScreenshot(result, result.screenshots.primary);
 
   function renderScreenshotGallery(result: SuccessTestResult) {
     const [device, setDevice] = useState<string | null>(null);
 
     if (result.screenshots.primary.device.name === device) {
-      return renderSingleScreenshot(
-        result,
-        result.screenshots.primary,
-        true,
-        () => setDevice(null),
+      return renderSingleScreenshot(result, result.screenshots.primary, () =>
+        setDevice(null),
       );
     }
 
     for (const comparisonResult of result.screenshots.additional) {
       if (comparisonResult.device.name === device) {
-        return renderSingleScreenshot(result, comparisonResult, true, () =>
+        return renderSingleScreenshot(result, comparisonResult, () =>
           setDevice(null),
         );
       }
@@ -160,8 +152,7 @@ export const Screenshot: React.FC<Props> = ({
   function renderSingleScreenshot(
     result: SuccessTestResult,
     screenshotResults: ScreenshotsComparisonResultsByMode,
-    fromGallery: boolean,
-    resetDevice: () => void,
+    resetDevice?: () => void,
   ) {
     const screenshot = pickScreenshot(screenshotResults);
 
@@ -169,21 +160,15 @@ export const Screenshot: React.FC<Props> = ({
       return <span>Given screenshot is missing</span>;
     }
 
-    return renderSelectedScreenshotResults(
-      screenshot,
-      result,
-      fromGallery,
-      resetDevice,
-    );
+    return renderSelectedScreenshotResults(screenshot, result, resetDevice);
   }
 
   function renderSelectedScreenshotResults(
     screenshot: ScreenshotResult,
     results: SuccessTestResult,
-    fromGallery: boolean,
-    onBack: () => void,
+    onBack?: () => void,
   ): React.ReactElement {
-    const actionBack = fromGallery && <ActionBack onAction={onBack} />;
+    const actionBack = onBack && <ActionBack onAction={onBack} />;
     const { result, deviceName, name } = screenshot;
 
     switch (result.type) {
