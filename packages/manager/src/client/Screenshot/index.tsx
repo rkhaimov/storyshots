@@ -1,20 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { useDriver } from '../driver';
 import { UseBehaviourProps } from '../behaviour/types';
-import {
-  ScreenshotComparisonResult,
-  ScreenshotsComparisonResultsByMode,
-  SuccessTestResult,
-} from '../behaviour/useTestResults/types';
 import { Spinner } from '../reusables/Spinner';
-import { Workspace } from '../Workspace';
-import { ActionAccept } from '../Workspace/Accept';
-import { DiffImgViewer } from './DiffImgViewer';
-import { ImgViewer, Image } from './ImgViewer';
-import styled from 'styled-components';
-import { ActionBack } from '../Workspace/Back';
-import { isNil, ScreenshotName } from '@storyshots/core';
+import { isNil } from '@storyshots/core';
+import { SingleScreenshot } from './SingleScreenshot';
+import { ScreenshotGallery } from './ScreenshotGallery';
 
 type ScreenshotSelection = Extract<
   UseBehaviourProps['selection'],
@@ -27,22 +17,12 @@ type Props = {
   selection: ScreenshotSelection;
 } & Pick<UseBehaviourProps, 'acceptScreenshot' | 'results'>;
 
-interface ScreenshotResult {
-  name: ScreenshotName | undefined;
-  deviceName: string;
-  result: ScreenshotComparisonResult;
-}
-
 export const Screenshot: React.FC<Props> = ({
   selection,
   results,
   acceptScreenshot,
 }): React.ReactElement => {
-  const driver = useDriver();
   const result = results.get(selection.story.id);
-  const title = `${selection.story.payload.title} — ${
-    selection.name ?? 'FINAL'
-  }`;
 
   if (isNil(result)) {
     return <span>Screenshots are not generated yet</span>;
@@ -59,199 +39,23 @@ export const Screenshot: React.FC<Props> = ({
   }
 
   if (result.screenshots.additional.length > 0) {
-    return renderScreenshotGallery(result);
-  }
-
-  return renderSingleScreenshot(result, result.screenshots.primary);
-
-  function renderScreenshotGallery(result: SuccessTestResult) {
-    const [device, setDevice] = useState<string | null>(null);
-
-    if (result.screenshots.primary.device.name === device) {
-      return renderSingleScreenshot(result, result.screenshots.primary, () =>
-        setDevice(null),
-      );
-    }
-
-    for (const comparisonResult of result.screenshots.additional) {
-      if (comparisonResult.device.name === device) {
-        return renderSingleScreenshot(result, comparisonResult, () =>
-          setDevice(null),
-        );
-      }
-    }
-
-    const screenshotList: ScreenshotResult[] = [];
-
-    const primary = result.screenshots.primary;
-
-    const primaryScreenshot = pickScreenshot(primary);
-
-    if (isNil(primaryScreenshot)) {
-      return <span>Given screenshot is missing</span>;
-    }
-
-    screenshotList.push(primaryScreenshot);
-
-    for (const comparisonResult of result.screenshots.additional) {
-      const additionalScreenshot = pickScreenshot(comparisonResult);
-
-      if (additionalScreenshot != undefined) {
-        screenshotList.push(additionalScreenshot);
-      }
-    }
-
     return (
-      <ScreenshotGallery>
-        {screenshotList.map((screenshot) => {
-          return (
-            <GalleryItem
-              key={screenshot.result.actual}
-              onClick={() => {
-                setDevice(screenshot.deviceName);
-              }}
-            >
-              <GalleryImage
-                $type={screenshot.result.type}
-                alt={screenshot.deviceName}
-                src={driver.createScreenshotPath(screenshot.result.actual)}
-              />
-              <span>{screenshot.deviceName}</span>
-            </GalleryItem>
-          );
-        })}
-      </ScreenshotGallery>
+      <ScreenshotGallery
+        story={selection.story}
+        acceptScreenshot={acceptScreenshot}
+        result={result}
+        name={selection.name}
+      />
     );
   }
 
-  function pickScreenshot(
-    comparisonResult: ScreenshotsComparisonResultsByMode,
-  ): ScreenshotResult | undefined {
-    if (isNil(selection.name)) {
-      return {
-        name: undefined,
-        deviceName: comparisonResult.device.name,
-        result: comparisonResult.results.final,
-      };
-    }
-
-    const screenshot = comparisonResult.results.others.find(
-      (it) => it.name === selection.name,
-    );
-
-    if (isNil(screenshot)) {
-      return undefined;
-    }
-
-    return {
-      deviceName: comparisonResult.device.name,
-      ...screenshot,
-    };
-  }
-
-  function renderSingleScreenshot(
-    result: SuccessTestResult,
-    screenshotResults: ScreenshotsComparisonResultsByMode,
-    resetDevice?: () => void,
-  ) {
-    const screenshot = pickScreenshot(screenshotResults);
-
-    if (isNil(screenshot)) {
-      return <span>Given screenshot is missing</span>;
-    }
-
-    return renderSelectedScreenshotResults(screenshot, result, resetDevice);
-  }
-
-  function renderSelectedScreenshotResults(
-    screenshot: ScreenshotResult,
-    results: SuccessTestResult,
-    onBack?: () => void,
-  ): React.ReactElement {
-    const actionBack = onBack && <ActionBack onAction={onBack} />;
-    const { result, deviceName, name } = screenshot;
-
-    switch (result.type) {
-      case 'fresh':
-        return (
-          <Workspace
-            title={title}
-            firstAction={actionBack}
-            actions={
-              <ActionAccept
-                onAction={() =>
-                  acceptScreenshot(
-                    selection.story,
-                    name,
-                    deviceName,
-                    result.actual,
-                    results,
-                  )
-                }
-              />
-            }
-          >
-            <ImgViewer
-              type="fresh"
-              src={driver.createScreenshotPath(result.actual)}
-            />
-          </Workspace>
-        );
-      case 'pass':
-        return (
-          <Workspace firstAction={actionBack} title={title}>
-            <ImgViewer
-              type="pass"
-              src={driver.createScreenshotPath(result.actual)}
-            />
-          </Workspace>
-        );
-      case 'fail':
-        return (
-          <Workspace
-            title={title}
-            firstAction={actionBack}
-            actions={
-              <ActionAccept
-                onAction={() =>
-                  acceptScreenshot(
-                    selection.story,
-                    name,
-                    deviceName,
-                    result.actual,
-                    results,
-                  )
-                }
-              />
-            }
-          >
-            <DiffImgViewer {...result} />
-          </Workspace>
-        );
-    }
-  }
+  return (
+    <SingleScreenshot
+      screenshotName={selection.name}
+      story={selection.story}
+      screenshotResults={result.screenshots.primary}
+      acceptScreenshot={acceptScreenshot}
+      results={result}
+    />
+  );
 };
-
-const ScreenshotGallery = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-auto-rows: minmax(0, 300px);
-  padding: 20px;
-  gap: 20px;
-`;
-
-const GalleryItem = styled.button`
-  display: flex;
-  gap: 5px;
-  text-align: center;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-`;
-
-const GalleryImage = styled(Image)`
-  min-height: 0;
-`;
