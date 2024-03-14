@@ -1,6 +1,6 @@
 import { JournalRecord } from './journal';
-import { PureStoryTree, StoryID } from './story';
-import { CustomPresetGroup, DevicePresets } from './test-presets';
+import { PurePresetGroup, PureStoryTree, StoryID } from './story';
+import { DevicePresets } from './test-presets';
 
 export type SelectedPresets = null | {
   [key: string]: string;
@@ -9,7 +9,7 @@ export type SelectedPresets = null | {
 export type PreviewState = {
   stories: PureStoryTree[];
   devices: DevicePresets;
-  presets: CustomPresetGroup<unknown>[];
+  presets: PurePresetGroup[];
 };
 
 export type ManagerState = {

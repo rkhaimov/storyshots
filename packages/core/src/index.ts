@@ -3,7 +3,13 @@ export type { ChildBrand, Brand } from './brand';
 export type { FinderMeta, Selector } from './finder';
 export type { JournalRecord } from './journal';
 export type { ScreenshotName } from './screenshot';
-export type { PureGroup, PureStory, PureStoryTree, StoryID } from './story';
+export type {
+  PureGroup,
+  PureStory,
+  PureStoryTree,
+  StoryID,
+  PurePresetGroup,
+} from './story';
 export type {
   CompleteDeviceConfig,
   CustomPreset,

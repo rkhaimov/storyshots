@@ -14,3 +14,9 @@ export type PureGroup = IntermediateNode<
 >;
 
 export type PureStoryTree = PureGroup | PureStory;
+
+export type PurePresetGroup = {
+  name: string;
+  default: string;
+  additional: string[];
+};
