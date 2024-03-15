@@ -22,37 +22,21 @@ export const ScreenshotGallery: React.FC<Props> = ({
   acceptScreenshot,
 }) => {
   const driver = useDriver();
-  const [device, setDevice] = useState<string | null>(null);
+  const [currentScreenshot, setScreenshot] = useState<ScreenshotResult | null>(
+    null,
+  );
 
-  if (result.screenshots.primary.device.name === device) {
+  if (!isNil(currentScreenshot)) {
     return (
       <SingleScreenshot
-        screenshotName={name}
+        screenshot={currentScreenshot}
         story={story}
-        screenshotResults={result.screenshots.primary}
         acceptScreenshot={acceptScreenshot}
-        onBack={() => setDevice(null)}
+        onBack={() => setScreenshot(null)}
         results={result}
       />
     );
   }
-
-  for (const comparisonResult of result.screenshots.additional) {
-    if (comparisonResult.device.name === device) {
-      return (
-        <SingleScreenshot
-          screenshotName={name}
-          story={story}
-          screenshotResults={comparisonResult}
-          acceptScreenshot={acceptScreenshot}
-          onBack={() => setDevice(null)}
-          results={result}
-        />
-      );
-    }
-  }
-
-  const screenshotList: ScreenshotResult[] = [];
 
   const primary = result.screenshots.primary;
 
@@ -62,7 +46,7 @@ export const ScreenshotGallery: React.FC<Props> = ({
     return <span>Given screenshot is missing</span>;
   }
 
-  screenshotList.push(primaryScreenshot);
+  const screenshotList: ScreenshotResult[] = [primaryScreenshot];
 
   for (const comparisonResult of result.screenshots.additional) {
     const additionalScreenshot = pickScreenshot(name, comparisonResult);
@@ -79,7 +63,7 @@ export const ScreenshotGallery: React.FC<Props> = ({
           <GalleryItem
             key={screenshot.result.actual}
             onClick={() => {
-              setDevice(screenshot.deviceName);
+              setScreenshot(screenshot);
             }}
           >
             <GalleryImage

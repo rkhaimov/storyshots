@@ -61,13 +61,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
           action={(e) => {
             e.stopPropagation();
 
-            run(
-              [story],
-              selection.config.devices,
-              props.routerParams.type === 'story'
-                ? props.routerParams.presets
-                : {},
-            );
+            run([story], selection.config.devices, props.routerParams.presets);
           }}
           icon={
             <PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />
@@ -80,9 +74,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
             runComplete(
               [story],
               selection.config.devices,
-              props.routerParams.type === 'story'
-                ? props.routerParams.presets
-                : {},
+              props.routerParams.presets,
             );
           }}
           icon={<PlayCircleOutlined style={{ color: blue[6], fontSize: 16 }} />}

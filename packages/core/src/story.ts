@@ -1,4 +1,5 @@
 import { ActionMeta } from './actions';
+import { Brand } from './brand';
 import { IntermediateNode, LeafNode, LeafNodeID } from './tree';
 
 export type StoryID = LeafNodeID;
@@ -16,7 +17,10 @@ export type PureGroup = IntermediateNode<
 export type PureStoryTree = PureGroup | PureStory;
 
 export type PurePresetGroup = {
-  name: string;
-  default: string;
-  additional: string[];
+  name: PresetConfigName;
+  default: PresetName;
+  additional: PresetName[];
 };
+
+export type PresetConfigName = Brand<string, 'PresetConfigName'>;
+export type PresetName = Brand<string, 'PresetName'>;

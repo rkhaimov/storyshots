@@ -6,6 +6,7 @@ import { Props } from '../types';
 import {
   assertNotEmpty,
   isNil,
+  ScreenshotName,
   SelectedPresets,
   StoryID,
   TreeOP,
@@ -53,32 +54,34 @@ function useParsedParams(props: Props) {
   const search = useSearch();
 
   return useMemo((): URLParsedParams => {
+    const params = new URLSearchParams(search);
+    const presets: SelectedPresets = JSON.parse(
+      params.get('presets') ?? 'null',
+    );
+
     if (isNil(story)) {
-      return { type: 'no-selection' };
+      return { type: 'no-selection', presets };
     }
 
     const id = TreeOP.ensureIsLeafID(story);
-    const params = new URLSearchParams(search);
     const mode = params.get('mode');
 
     if (mode === Mode.Records) {
       return {
         type: 'records',
         id,
+        presets,
       };
     }
 
     if (mode === Mode.Screenshot) {
       return {
         type: 'screenshot',
-        name: params.get('screenshot') ?? undefined,
+        name: (params.get('screenshot') as ScreenshotName) ?? undefined,
         id,
+        presets,
       };
     }
-
-    const presets: SelectedPresets = JSON.parse(
-      params.get('presets') ?? 'null',
-    );
 
     return {
       type: 'story',
@@ -88,24 +91,24 @@ function useParsedParams(props: Props) {
   }, [story, search]);
 }
 
-export type URLParsedParams =
+export type URLParsedParams = { presets: SelectedPresets } & (
   | {
       type: 'no-selection';
     }
   | {
       type: 'story';
       id: StoryID;
-      presets: SelectedPresets;
     }
   | {
       type: 'screenshot';
       id: StoryID;
-      name: string | undefined;
+      name: ScreenshotName | undefined;
     }
   | {
       type: 'records';
       id: StoryID;
-    };
+    }
+);
 
 enum Mode {
   Records = 'records',

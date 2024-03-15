@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  CustomPresetGroup,
-  DevicePresets,
-  IntermediateNode,
-  LeafNode,
-} from '@storyshots/core';
+import { DevicePresets, IntermediateNode, LeafNode } from '@storyshots/core';
 import { Actor } from './actor/types';
 import { Journal } from './journal/types';
 
@@ -34,4 +29,15 @@ export type ClientConfig<TExternals> = {
 
 export type Props = ClientConfig<unknown> & {
   stories: StoryTree[];
+};
+
+export type CustomPreset<TExternals> = {
+  name: string;
+  prepare(externals: TExternals): TExternals;
+};
+
+export type CustomPresetGroup<TExternals> = {
+  name: string;
+  default: CustomPreset<TExternals>;
+  additional: CustomPreset<TExternals>[];
 };

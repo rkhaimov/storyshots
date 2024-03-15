@@ -5,10 +5,11 @@ import {
   PureStoryTree,
   TreeOP,
   PurePresetGroup,
-  CustomPresetGroup,
+  PresetConfigName,
+  PresetName,
 } from '@storyshots/core';
 import { createActor } from './actor';
-import { Props, StoryTree } from './types';
+import { CustomPresetGroup, Props, StoryTree } from './types';
 
 export function useManagerState(props: Props) {
   return useMemo(() => {
@@ -39,9 +40,11 @@ function toPurePresets(
 ): PurePresetGroup[] {
   return presets.map((presetGroup) => {
     return {
-      name: presetGroup.name,
-      default: presetGroup.default.name,
-      additional: presetGroup.additional.map((preset) => preset.name),
+      name: presetGroup.name as PresetConfigName,
+      default: presetGroup.default.name as PresetName,
+      additional: presetGroup.additional.map(
+        (preset) => preset.name as PresetName,
+      ),
     };
   });
 }

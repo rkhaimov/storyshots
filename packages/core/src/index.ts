@@ -9,11 +9,11 @@ export type {
   PureStoryTree,
   StoryID,
   PurePresetGroup,
+  PresetConfigName,
+  PresetName,
 } from './story';
 export type {
   CompleteDeviceConfig,
-  CustomPreset,
-  CustomPresetGroup,
   Device,
   DevicePresets,
   ViewPortOnlyDeviceConfig,

@@ -5,6 +5,7 @@ import { Spinner } from '../reusables/Spinner';
 import { isNil } from '@storyshots/core';
 import { SingleScreenshot } from './SingleScreenshot';
 import { ScreenshotGallery } from './ScreenshotGallery';
+import { pickScreenshot } from './utils';
 
 type ScreenshotSelection = Extract<
   UseBehaviourProps['selection'],
@@ -49,11 +50,19 @@ export const Screenshot: React.FC<Props> = ({
     );
   }
 
+  const primaryScreenshot = pickScreenshot(
+    selection.name,
+    result.screenshots.primary,
+  );
+
+  if (isNil(primaryScreenshot)) {
+    return <span>Given screenshot is missing</span>;
+  }
+
   return (
     <SingleScreenshot
-      screenshotName={selection.name}
+      screenshot={primaryScreenshot}
       story={selection.story}
-      screenshotResults={result.screenshots.primary}
       acceptScreenshot={acceptScreenshot}
       results={result}
     />
