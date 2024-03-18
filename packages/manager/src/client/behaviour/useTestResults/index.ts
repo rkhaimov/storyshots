@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { ScreenshotPath } from '../../../reusables/types';
 import { useDriver } from '../../driver';
-import { createRunTestResult } from './createRunTestResult';
+import { createResult } from './createRunTestResult';
 import {
   RecordsComparisonResult,
   ScreenshotComparisonResult,
   ScreenshotsComparisonResultsByMode,
   SuccessTestResult,
+  TestResult,
   TestResults,
 } from './types';
 import {
@@ -125,13 +126,37 @@ export function useTestResults() {
     presets: SelectedPresets,
   ) {
     for (const story of stories) {
-      const result = await createRunTestResult(
+      const resultData = await createResult(
         externals,
         story,
-        devices,
+        devices.primary,
         presets,
-        false,
       );
+
+      if (resultData.type === 'error') {
+        setResults(
+          (curr) =>
+            new Map(
+              curr.set(story.id, {
+                running: false,
+                type: 'error',
+                message: resultData.message,
+              }),
+            ),
+        );
+
+        return;
+      }
+
+      const result: TestResult = {
+        running: false,
+        type: 'success',
+        records: resultData.data[1],
+        screenshots: {
+          primary: resultData.data[0],
+          additional: [],
+        },
+      };
 
       setResults((curr) => new Map(curr.set(story.id, result)));
     }
@@ -143,15 +168,74 @@ export function useTestResults() {
     presets: SelectedPresets,
   ) {
     for (const story of stories) {
-      const result = await createRunTestResult(
+      const resultData = await createResult(
         externals,
         story,
-        devices,
+        devices.primary,
         presets,
-        true,
       );
+
+      if (resultData.type === 'error') {
+        setResults(
+          (curr) =>
+            new Map(
+              curr.set(story.id, {
+                running: false,
+                type: 'error',
+                message: resultData.message,
+              }),
+            ),
+        );
+
+        return;
+      }
+
+      const additionalResults: ScreenshotsComparisonResultsByMode[] = [];
+
+      for (const device of devices.additional) {
+        const resultData = await createResult(
+          externals,
+          story,
+          device,
+          presets,
+        );
+
+        if (resultData.type === 'error') {
+          setResults(
+            (curr) =>
+              new Map(
+                curr.set(story.id, {
+                  running: false,
+                  type: 'error',
+                  message: resultData.message,
+                }),
+              ),
+          );
+
+          return;
+        }
+
+        additionalResults.push(resultData.data[0]);
+      }
+
+      const result: TestResult = {
+        running: false,
+        type: 'success',
+        records: resultData.data[1],
+        screenshots: {
+          primary: resultData.data[0],
+          additional: additionalResults,
+        },
+      };
 
       setResults((curr) => new Map(curr.set(story.id, result)));
     }
   }
 }
+// функция генерирующая комбинации
+// [
+//   {
+//     device:
+//     selectedPresets
+//   }
+// ]
