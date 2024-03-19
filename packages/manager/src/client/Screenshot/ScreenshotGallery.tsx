@@ -1,34 +1,38 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Image } from './ImgViewer';
-import { pickScreenshot } from './utils';
 import { useDriver } from '../driver';
-import { SuccessTestResult } from '../behaviour/useTestResults/types';
-import { PureStory, isNil } from '@storyshots/core';
-import { ScreenshotResult } from './types';
+import {
+  SingleConfigScreenshotResult,
+  SuccessTestResult,
+} from '../behaviour/useTestResults/types';
+import { PureStory, ScreenshotName, isNil } from '@storyshots/core';
 import { UseBehaviourProps } from '../behaviour/types';
 import { SingleScreenshot } from './SingleScreenshot';
+import { presetsToString } from './utils';
 
 type Props = {
-  name: string | undefined;
+  name: ScreenshotName | undefined;
   story: PureStory;
+  screenshots: SingleConfigScreenshotResult[];
   result: SuccessTestResult;
 } & Pick<UseBehaviourProps, 'acceptScreenshot'>;
 
 export const ScreenshotGallery: React.FC<Props> = ({
-  story,
   name,
+  story,
+  screenshots,
   result,
   acceptScreenshot,
 }) => {
   const driver = useDriver();
-  const [currentScreenshot, setScreenshot] = useState<ScreenshotResult | null>(
-    null,
-  );
+  const [currentScreenshot, setScreenshot] =
+    useState<SingleConfigScreenshotResult | null>(null);
 
   if (!isNil(currentScreenshot)) {
     return (
       <SingleScreenshot
+        name={name}
         screenshot={currentScreenshot}
         story={story}
         acceptScreenshot={acceptScreenshot}
@@ -38,27 +42,13 @@ export const ScreenshotGallery: React.FC<Props> = ({
     );
   }
 
-  const primary = result.screenshots.primary;
-
-  const primaryScreenshot = pickScreenshot(name, primary);
-
-  if (isNil(primaryScreenshot)) {
-    return <span>Given screenshot is missing</span>;
-  }
-
-  const screenshotList: ScreenshotResult[] = [primaryScreenshot];
-
-  for (const comparisonResult of result.screenshots.additional) {
-    const additionalScreenshot = pickScreenshot(name, comparisonResult);
-
-    if (additionalScreenshot != undefined) {
-      screenshotList.push(additionalScreenshot);
-    }
-  }
-
   return (
     <Wrapper>
-      {screenshotList.map((screenshot) => {
+      {screenshots.map((screenshot) => {
+        const name = `${screenshot.device.name} — ${presetsToString(
+          screenshot.presets,
+        )}`;
+
         return (
           <GalleryItem
             key={screenshot.result.actual}
@@ -68,10 +58,10 @@ export const ScreenshotGallery: React.FC<Props> = ({
           >
             <GalleryImage
               $type={screenshot.result.type}
-              alt={screenshot.deviceName}
+              alt={name}
               src={driver.createScreenshotPath(screenshot.result.actual)}
             />
-            <span>{screenshot.deviceName}</span>
+            <span>{name}</span>
           </GalleryItem>
         );
       })}

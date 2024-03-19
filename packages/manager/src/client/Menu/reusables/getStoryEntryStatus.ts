@@ -1,7 +1,7 @@
 import { UseBehaviourProps } from '../../behaviour/types';
 import {
   RecordsComparisonResult,
-  ScreenshotsComparisonResultsByMode,
+  SingleConfigScreenshotResult,
   TestResults,
 } from '../../behaviour/useTestResults/types';
 
@@ -34,8 +34,10 @@ export function getStoryEntryStatus(
 
   const statuses: ComparisonStatus[] = [
     comparison.records.type,
-    ...screenshotsToStatuses(comparison.screenshots.primary),
-    ...comparison.screenshots.additional.flatMap(screenshotsToStatuses),
+    ...screenshotsToStatuses(comparison.screenshots.final),
+    ...comparison.screenshots.others.flatMap((it) =>
+      screenshotsToStatuses(it.configs),
+    ),
   ];
 
   if (statuses.includes('fail')) {
@@ -50,12 +52,9 @@ export function getStoryEntryStatus(
 }
 
 function screenshotsToStatuses(
-  screenshots: ScreenshotsComparisonResultsByMode,
+  screenshots: SingleConfigScreenshotResult[],
 ): ComparisonStatus[] {
-  return [
-    screenshots.results.final.type,
-    ...screenshots.results.others.map((it) => it.result.type),
-  ];
+  return screenshots.map((it) => it.result.type);
 }
 
 type ComparisonStatus = RecordsComparisonResult['type'];

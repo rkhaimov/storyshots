@@ -1,29 +1,25 @@
-import { isNil } from '@storyshots/core';
-import { ScreenshotsComparisonResultsByMode } from '../behaviour/useTestResults/types';
-import { ScreenshotResult } from './types';
+import { ScreenshotName, SelectedPresets, isNil } from '@storyshots/core';
+import {
+  SingleConfigScreenshotResult,
+  SuccessTestResult,
+} from '../behaviour/useTestResults/types';
 
-export function pickScreenshot(
-  name: string | undefined,
-  comparisonResult: ScreenshotsComparisonResultsByMode,
-): ScreenshotResult | undefined {
+export function pickScreenshots(
+  name: ScreenshotName | undefined,
+  result: SuccessTestResult,
+): SingleConfigScreenshotResult[] | undefined {
   if (isNil(name)) {
-    return {
-      name: undefined,
-      deviceName: comparisonResult.device.name,
-      result: comparisonResult.results.final,
-    };
+    return result.screenshots.final;
   }
 
-  const screenshot = comparisonResult.results.others.find(
-    (it) => it.name === name,
-  );
+  return result.screenshots.others.find((group) => group.name === name)
+    ?.configs;
+}
 
-  if (isNil(screenshot)) {
-    return undefined;
-  }
-
-  return {
-    deviceName: comparisonResult.device.name,
-    ...screenshot,
-  };
+export function presetsToString(presets: SelectedPresets) {
+  return presets
+    ? Object.entries(presets)
+        .map((pair) => pair.join(': '))
+        .join(' - ')
+    : '';
 }

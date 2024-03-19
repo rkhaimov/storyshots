@@ -4,20 +4,25 @@ import { ActionAccept } from '../Workspace/Accept';
 import { DiffImgViewer } from './DiffImgViewer';
 import { ImgViewer } from './ImgViewer';
 import { ActionBack } from '../Workspace/Back';
-import { SuccessTestResult } from '../behaviour/useTestResults/types';
+import {
+  SingleConfigScreenshotResult,
+  SuccessTestResult,
+} from '../behaviour/useTestResults/types';
 import { UseBehaviourProps } from '../behaviour/types';
-import { PureStory } from '@storyshots/core';
+import { PureStory, ScreenshotName } from '@storyshots/core';
 import { useDriver } from '../driver';
-import { ScreenshotResult } from './types';
+import { presetsToString } from './utils';
 
 type Props = {
-  screenshot: ScreenshotResult;
+  name: ScreenshotName | undefined;
+  screenshot: SingleConfigScreenshotResult;
   story: PureStory;
   results: SuccessTestResult;
   onBack?: () => void;
 } & Pick<UseBehaviourProps, 'acceptScreenshot'>;
 
 export const SingleScreenshot: React.FC<Props> = ({
+  name,
   screenshot,
   story,
   results,
@@ -27,8 +32,15 @@ export const SingleScreenshot: React.FC<Props> = ({
   const driver = useDriver();
   const actionBack = onBack && <ActionBack onAction={onBack} />;
 
-  const { result, deviceName, name } = screenshot;
-  const title = `${story.payload.title} — ${name ?? 'FINAL'}`;
+  const { result } = screenshot;
+  const title = [
+    story.payload.title,
+    screenshot.device.name,
+    presetsToString(screenshot.presets),
+    name ?? 'FINAL',
+  ]
+    .filter((it) => it !== '')
+    .join(' — ');
 
   switch (result.type) {
     case 'fresh':
@@ -39,13 +51,7 @@ export const SingleScreenshot: React.FC<Props> = ({
           actions={
             <ActionAccept
               onAction={() =>
-                acceptScreenshot(
-                  story,
-                  name,
-                  deviceName,
-                  result.actual,
-                  results,
-                )
+                acceptScreenshot(story, name, result.actual, results)
               }
             />
           }
@@ -73,13 +79,7 @@ export const SingleScreenshot: React.FC<Props> = ({
           actions={
             <ActionAccept
               onAction={() =>
-                acceptScreenshot(
-                  story,
-                  name,
-                  deviceName,
-                  result.actual,
-                  results,
-                )
+                acceptScreenshot(story, name, result.actual, results)
               }
             />
           }

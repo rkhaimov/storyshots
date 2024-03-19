@@ -74,7 +74,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
             runComplete(
               [story],
               selection.config.devices,
-              props.routerParams.presets,
+              selection.config.presets,
             );
           }}
           icon={<PlayCircleOutlined style={{ color: blue[6], fontSize: 16 }} />}

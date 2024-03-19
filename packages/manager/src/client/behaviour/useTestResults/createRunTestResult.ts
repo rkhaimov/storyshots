@@ -9,7 +9,6 @@ import {
   RecordsComparisonResult,
   ScreenshotComparisonResult,
   ScreenshotsComparisonResults,
-  ScreenshotsComparisonResultsByMode,
 } from './types';
 import {
   Device,
@@ -26,9 +25,7 @@ export async function createResult(
   device: Device,
   presets: SelectedPresets,
 ): Promise<
-  WithPossibleError<
-    [ScreenshotsComparisonResultsByMode, RecordsComparisonResult]
-  >
+  WithPossibleError<[ScreenshotsComparisonResults, RecordsComparisonResult]>
 > {
   const actualResults = await driver.actOnServerSide(story.id, {
     actions: story.payload.actions,
@@ -43,19 +40,16 @@ export async function createResult(
   return {
     type: 'success',
     data: [
-      {
-        device,
-        results: await createScreenshotsComparisonResults(
-          driver,
-          story.id,
-          {
-            actions: story.payload.actions,
-            device,
-            presets,
-          },
-          actualResults.data.screenshots,
-        ),
-      },
+      await createScreenshotsComparisonResults(
+        driver,
+        story.id,
+        {
+          actions: story.payload.actions,
+          device,
+          presets,
+        },
+        actualResults.data.screenshots,
+      ),
       await createRecordsComparisonResult(
         driver,
         story.id,

@@ -70,9 +70,7 @@ export const GroupEntry: React.FC<
               others.runComplete(
                 TreeOP.toLeafsArray(group.children),
                 selection.config.devices,
-                props.routerParams.type === 'story'
-                  ? props.routerParams.presets
-                  : {},
+                selection.config.presets,
               );
             }}
           />
