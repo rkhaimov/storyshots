@@ -18,14 +18,14 @@ import {
 } from '@storyshots/core';
 
 export async function createScreenshotsBaseline(config: ServerConfig) {
-  const actualResultsDir = path.join(config.tempDirPath, 'actual');
+  const actualResultsDir = path.join(config.paths.temp, 'actual');
 
   if (not(await exists(actualResultsDir))) {
     await mkdir(actualResultsDir);
   }
 
-  if (not(await exists(config.screenshotsPath))) {
-    await mkdir(config.screenshotsPath);
+  if (not(await exists(config.paths.screenshots))) {
+    await mkdir(config.paths.screenshots);
   }
 
   return {
@@ -55,13 +55,13 @@ export async function createScreenshotsBaseline(config: ServerConfig) {
       name: ScreenshotName | undefined,
     ): Promise<ScreenshotPath | undefined> => {
       const image = constructScreenshotFileName(id, name, presets);
-      const file = path.join(config.screenshotsPath, device.name, image);
+      const file = path.join(config.paths.screenshots, device.name, image);
 
       return (await exists(file)) ? (file as ScreenshotPath) : undefined;
     },
     readScreenshot: (path: ScreenshotPath): Promise<Buffer> => read(path),
     acceptScreenshot: async (screenshot: ScreenshotPath): Promise<void> => {
-      const to = screenshot.replace(actualResultsDir, config.screenshotsPath);
+      const to = screenshot.replace(actualResultsDir, config.paths.screenshots);
       const dir = path.dirname(to);
 
       if (not(await exists(dir))) {

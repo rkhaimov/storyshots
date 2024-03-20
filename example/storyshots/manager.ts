@@ -1,13 +1,16 @@
+import { run } from '@storyshots/manager';
+import { createBundler } from '@storyshots/webpack-bundler';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import path from 'path';
-import { run } from '@storyshots/manager';
 
 run({
-  previewEntry: path.join(__dirname, 'preview', 'index.ts'),
-  screenshotsPath: path.join(process.cwd(), 'screenshots'),
-  recordsPath: path.join(process.cwd(), 'records'),
-  tempDirPath: path.join(process.cwd(), 'temp'),
-  overridePreviewBuildConfig: (config) => {
+  paths: {
+    preview: path.join(__dirname, 'preview', 'index.ts'),
+    screenshots: path.join(process.cwd(), 'screenshots'),
+    records: path.join(process.cwd(), 'records'),
+    temp: path.join(process.cwd(), 'temp'),
+  },
+  bundler: createBundler((config) => {
     config.module = {
       rules: [
         {
@@ -47,5 +50,5 @@ run({
     config.plugins?.push(new ForkTsCheckerWebpackPlugin({ async: true }));
 
     return config;
-  },
+  }),
 });

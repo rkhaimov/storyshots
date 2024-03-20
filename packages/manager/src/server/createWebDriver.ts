@@ -18,7 +18,7 @@ async function openAppAndGetPage(config: ServerConfig): Promise<Page> {
     headless: false,
     defaultViewport: null,
     args: [`--app=${MANAGER_INDEX}`, '--start-maximized', '--test-type=gpu'],
-    userDataDir: path.join(config.tempDirPath, 'chrome-data'),
+    userDataDir: path.join(config.paths.temp, 'chrome-data'),
   });
 
   const [page] = await browser.pages();

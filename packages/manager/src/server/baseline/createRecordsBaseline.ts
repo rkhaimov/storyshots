@@ -5,8 +5,8 @@ import { exists, mkdir, mkfile, read } from './utils';
 import { JournalRecord, not, StoryID, TreeOP } from '@storyshots/core';
 
 export async function createRecordsBaseline(config: ServerConfig) {
-  if (not(await exists(config.recordsPath))) {
-    await mkdir(config.recordsPath);
+  if (not(await exists(config.paths.records))) {
+    await mkdir(config.paths.records);
   }
 
   return {
@@ -26,7 +26,7 @@ export async function createRecordsBaseline(config: ServerConfig) {
 
   async function getRecordsMapByStoryId(id: StoryID): Promise<RecordsMap> {
     const name = getRecordsMapFileNameById(id);
-    const fullPath = path.join(config.recordsPath, name);
+    const fullPath = path.join(config.paths.records, name);
 
     if (not(await exists(fullPath))) {
       return {};
@@ -40,7 +40,7 @@ export async function createRecordsBaseline(config: ServerConfig) {
     records: RecordsMap,
   ): Promise<void> {
     const name = getRecordsMapFileNameById(id);
-    const file = path.join(config.recordsPath, name);
+    const file = path.join(config.paths.records, name);
 
     return mkfile(file, JSON.stringify(records, null, 2));
   }

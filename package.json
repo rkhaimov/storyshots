@@ -24,6 +24,7 @@
   "workspaces": [
     "packages/core",
     "packages/manager",
+    "packages/bundler/webpack",
     "packages/preview/react"
   ],
   "engines": {

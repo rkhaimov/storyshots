@@ -1,5 +1,5 @@
 import wsify, { WebsocketRequestHandler } from 'express-ws';
-import { Compiler } from 'webpack';
+import { Compiler } from '../reusables/types';
 
 export function createPreviewWatcher(
   app: wsify.Application,
@@ -7,9 +7,7 @@ export function createPreviewWatcher(
 ) {
   let clients: Parameters<WebsocketRequestHandler>[0][] = [];
 
-  preview.hooks.done.tap('PreviewUpdate', (stats) =>
-    clients.forEach((it) => it.send(stats.hash)),
-  );
+  preview.onUpdate((hash) => clients.forEach((it) => it.send(hash)));
 
   app.ws('/', (ws) => {
     clients.push(ws);
