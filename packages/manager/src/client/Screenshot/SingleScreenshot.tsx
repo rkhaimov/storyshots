@@ -42,19 +42,18 @@ export const SingleScreenshot: React.FC<Props> = ({
     .filter((it) => it !== '')
     .join(' — ');
 
+  const onAccept = () => {
+    acceptScreenshot(story, name, result.actual, results);
+    onBack && onBack();
+  };
+
   switch (result.type) {
     case 'fresh':
       return (
         <Workspace
           title={title}
           firstAction={actionBack}
-          actions={
-            <ActionAccept
-              onAction={() =>
-                acceptScreenshot(story, name, result.actual, results)
-              }
-            />
-          }
+          actions={<ActionAccept onAction={onAccept} />}
         >
           <ImgViewer
             type="fresh"
@@ -76,13 +75,7 @@ export const SingleScreenshot: React.FC<Props> = ({
         <Workspace
           title={title}
           firstAction={actionBack}
-          actions={
-            <ActionAccept
-              onAction={() =>
-                acceptScreenshot(story, name, result.actual, results)
-              }
-            />
-          }
+          actions={<ActionAccept onAction={onAccept} />}
         >
           <DiffImgViewer {...result} />
         </Workspace>
