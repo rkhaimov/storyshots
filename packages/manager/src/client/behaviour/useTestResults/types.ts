@@ -7,6 +7,11 @@ import {
   StoryID,
 } from '@storyshots/core';
 
+export type TestConfig = {
+  device: Device;
+  presets: SelectedPresets;
+};
+
 export type TestResults = Map<StoryID, TestResult>;
 
 export type SuccessTestResult = {

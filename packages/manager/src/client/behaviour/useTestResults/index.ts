@@ -8,6 +8,7 @@ import {
   ScreenshotGroupResult,
   SingleConfigScreenshotResult,
   SuccessTestResult,
+  TestConfig,
   TestResult,
   TestResults,
 } from './types';
@@ -125,12 +126,10 @@ export function useTestResults() {
     presets: SelectedPresets,
   ) {
     for (const story of stories) {
-      const results = await createResult(
-        externals,
-        story,
-        devices.primary,
+      const results = await createResult(externals, story, {
+        device: devices.primary,
         presets,
-      );
+      });
 
       if (results.type === 'error') {
         setResults(
@@ -191,12 +190,7 @@ export function useTestResults() {
       let records: RecordsComparisonResult | null = null;
 
       for (const config of allConfigs) {
-        const results = await createResult(
-          externals,
-          story,
-          config.device,
-          config.presets,
-        );
+        const results = await createResult(externals, story, config);
 
         if (results.type === 'error') {
           setResults(
@@ -273,21 +267,16 @@ export function useTestResults() {
   }
 }
 
-//TODO: TestConfig переиспользовать
-type SingleConfig = {
-  device: Device;
-  presets: SelectedPresets;
-};
-
 function generateConfigs(
   devices: DevicePresets,
   presets: PurePresetGroup[],
-): SingleConfig[] {
-  const initialConfigs: SingleConfig[] = toFlatDevices(devices).map(
-    (device) => ({ device, presets: {} }),
-  );
+): TestConfig[] {
+  const initialConfigs: TestConfig[] = toFlatDevices(devices).map((device) => ({
+    device,
+    presets: {},
+  }));
 
-  return presets.reduce<SingleConfig[]>((configs, presetGroup) => {
+  return presets.reduce<TestConfig[]>((configs, presetGroup) => {
     return toFlatPresets(presetGroup).flatMap((preset) => {
       return configs.map((config) => ({
         ...config,

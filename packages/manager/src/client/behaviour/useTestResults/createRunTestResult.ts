@@ -9,28 +9,21 @@ import {
   RecordsComparisonResult,
   ScreenshotComparisonResult,
   ScreenshotsComparisonResults,
+  TestConfig,
 } from './types';
-import {
-  Device,
-  isNil,
-  JournalRecord,
-  PureStory,
-  SelectedPresets,
-  StoryID,
-} from '@storyshots/core';
+import { isNil, JournalRecord, PureStory, StoryID } from '@storyshots/core';
 
 export async function createResult(
   driver: IWebDriver,
   story: PureStory,
-  device: Device,
-  presets: SelectedPresets,
+  config: TestConfig,
 ): Promise<
   WithPossibleError<[ScreenshotsComparisonResults, RecordsComparisonResult]>
 > {
   const actualResults = await driver.actOnServerSide(story.id, {
     actions: story.payload.actions,
-    device,
-    presets,
+    device: config.device,
+    presets: config.presets,
   });
 
   if (actualResults.type === 'error') {
@@ -45,8 +38,8 @@ export async function createResult(
         story.id,
         {
           actions: story.payload.actions,
-          device,
-          presets,
+          device: config.device,
+          presets: config.presets,
         },
         actualResults.data.screenshots,
       ),
