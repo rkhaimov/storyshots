@@ -3,98 +3,52 @@ import {
   ActualScreenshots,
   IWebDriver,
   ScreenshotPath,
+  WithPossibleError,
 } from '../../../reusables/types';
 import {
   RecordsComparisonResult,
   ScreenshotComparisonResult,
   ScreenshotsComparisonResults,
-  ScreenshotsComparisonResultsByMode,
-  TestResult,
+  TestConfig,
 } from './types';
-import {
-  DevicePresets,
-  isNil,
-  JournalRecord,
-  PureStory,
-  SelectedPresets,
-  StoryID,
-} from '@storyshots/core';
+import { isNil, JournalRecord, PureStory, StoryID } from '@storyshots/core';
 
-export async function createRunTestResult(
+export async function createResult(
   driver: IWebDriver,
   story: PureStory,
-  devices: DevicePresets,
-  presets: SelectedPresets,
-  includeAdditional: boolean,
-): Promise<TestResult> {
+  config: TestConfig,
+): Promise<
+  WithPossibleError<[ScreenshotsComparisonResults, RecordsComparisonResult]>
+> {
   const actualResults = await driver.actOnServerSide(story.id, {
     actions: story.payload.actions,
-    device: devices.primary,
-    presets,
+    device: config.device,
+    presets: config.presets,
   });
 
   if (actualResults.type === 'error') {
-    return {
-      running: false,
-      type: 'error',
-      message: actualResults.message,
-    };
-  }
-
-  const additionalResults: ScreenshotsComparisonResultsByMode[] = [];
-
-  if (includeAdditional) {
-    for (const device of devices.additional) {
-      const result = await driver.actOnServerSide(story.id, {
-        actions: story.payload.actions,
-        device,
-        presets,
-      });
-
-      if (result.type === 'error') {
-        return {
-          running: false,
-          type: 'error',
-          message: result.message,
-        };
-      }
-
-      additionalResults.push({
-        device,
-        results: await createScreenshotsComparisonResults(
-          driver,
-          story.id,
-          { actions: story.payload.actions, device, presets },
-          result.data.screenshots,
-        ),
-      });
-    }
+    return actualResults;
   }
 
   return {
-    running: false,
     type: 'success',
-    records: await createRecordsComparisonResult(
-      driver,
-      story.id,
-      actualResults.data.records,
-    ),
-    screenshots: {
-      primary: {
-        device: devices.primary,
-        results: await createScreenshotsComparisonResults(
-          driver,
-          story.id,
-          {
-            actions: story.payload.actions,
-            device: devices.primary,
-            presets,
-          },
-          actualResults.data.screenshots,
-        ),
-      },
-      additional: additionalResults,
-    },
+    data: [
+      await createScreenshotsComparisonResults(
+        driver,
+        story.id,
+        {
+          actions: story.payload.actions,
+          device: config.device,
+          presets: config.presets,
+        },
+        actualResults.data.screenshots,
+      ),
+      await createRecordsComparisonResult(
+        driver,
+        story.id,
+        actualResults.data.records,
+      ),
+    ],
   };
 }
 
@@ -149,7 +103,7 @@ async function createScreenshotComparisonResult(
   return { type: 'fail', actual: left, expected: right };
 }
 
-async function createRecordsComparisonResult(
+export async function createRecordsComparisonResult(
   driver: IWebDriver,
   id: StoryID,
   actual: JournalRecord[],

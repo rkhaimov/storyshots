@@ -3,8 +3,14 @@ import {
   Device,
   JournalRecord,
   ScreenshotName,
+  SelectedPresets,
   StoryID,
 } from '@storyshots/core';
+
+export type TestConfig = {
+  device: Device;
+  presets: SelectedPresets;
+};
 
 export type TestResults = Map<StoryID, TestResult>;
 
@@ -13,14 +19,20 @@ export type SuccessTestResult = {
   type: 'success';
   records: RecordsComparisonResult;
   screenshots: {
-    primary: ScreenshotsComparisonResultsByMode;
-    additional: ScreenshotsComparisonResultsByMode[];
+    final: SingleConfigScreenshotResult[];
+    others: ScreenshotGroupResult[];
   };
 };
 
-export type ScreenshotsComparisonResultsByMode = {
+export type ScreenshotGroupResult = {
+  name: ScreenshotName;
+  configs: SingleConfigScreenshotResult[];
+};
+
+export type SingleConfigScreenshotResult = {
   device: Device;
-  results: ScreenshotsComparisonResults;
+  presets: SelectedPresets;
+  result: ScreenshotComparisonResult;
 };
 
 export type ErrorTestResult = {

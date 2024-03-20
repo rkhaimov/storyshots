@@ -8,6 +8,7 @@ import {
   createPreviewConnection,
   PreviewState,
   PureStory,
+  ScreenshotName,
   TreeOP,
 } from '@storyshots/core';
 
@@ -93,7 +94,7 @@ export type AutoPlaySelection =
     }
   | {
       type: 'screenshot';
-      name: string | undefined;
+      name: ScreenshotName | undefined;
       story: PureStory;
       config: PreviewState;
     };

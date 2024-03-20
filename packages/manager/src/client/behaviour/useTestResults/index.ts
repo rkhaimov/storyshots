@@ -1,18 +1,24 @@
 import { useState } from 'react';
 import { ScreenshotPath } from '../../../reusables/types';
 import { useDriver } from '../../driver';
-import { createRunTestResult } from './createRunTestResult';
+import { createResult } from './createRunTestResult';
 import {
   RecordsComparisonResult,
   ScreenshotComparisonResult,
-  ScreenshotsComparisonResultsByMode,
+  ScreenshotGroupResult,
+  SingleConfigScreenshotResult,
   SuccessTestResult,
+  TestConfig,
+  TestResult,
   TestResults,
 } from './types';
 import {
+  assertNotEmpty,
+  Device,
   DevicePresets,
   isNil,
   JournalRecord,
+  PurePresetGroup,
   PureStory,
   ScreenshotName,
   SelectedPresets,
@@ -31,16 +37,16 @@ export function useTestResults() {
     ) => {
       setChosenAsRunning(stories);
 
-      runSetTestResults(stories, devices, presets);
+      runSetPrimaryTestResults(stories, devices, presets);
     },
     runComplete: async (
       stories: PureStory[],
       devices: DevicePresets,
-      presets: SelectedPresets,
+      presets: PurePresetGroup[],
     ) => {
       setChosenAsRunning(stories);
 
-      runCompleteSetTestResults(stories, devices, presets);
+      runSetCompleteTestResults(stories, devices, presets);
     },
     // TODO: Logic duplication
     acceptRecords: async (
@@ -64,7 +70,6 @@ export function useTestResults() {
     acceptScreenshot: async (
       story: PureStory,
       name: ScreenshotName | undefined,
-      device: string | undefined,
       path: ScreenshotPath,
       ready: SuccessTestResult,
     ) => {
@@ -73,40 +78,36 @@ export function useTestResults() {
       const pass: ScreenshotComparisonResult = { type: 'pass', actual: path };
 
       function deriveScreenshotResults(
-        results: ScreenshotsComparisonResultsByMode,
-      ) {
-        return {
-          device: results.device,
-          results: {
-            final: name === undefined ? pass : results.results.final,
-            others: results.results.others.map((other) =>
-              other.name === name ? { name, result: pass } : other,
-            ),
-          },
-        };
+        result: SingleConfigScreenshotResult[],
+      ): SingleConfigScreenshotResult[] {
+        return result.map((config) =>
+          config.result.actual === path
+            ? {
+                ...config,
+                result: pass,
+              }
+            : config,
+        );
       }
 
-      setResults(
-        new Map(
-          results.set(story.id, {
-            ...ready,
-            screenshots: {
-              primary:
-                isNil(device) ||
-                ready.screenshots.primary.device.name === device
-                  ? deriveScreenshotResults(ready.screenshots.primary)
-                  : ready.screenshots.primary,
-              additional: ready.screenshots.additional.map((additional) => {
-                if (additional.device.name !== device) {
-                  return additional;
+      const newResults: SuccessTestResult = {
+        ...ready,
+        screenshots: {
+          final: isNil(name)
+            ? deriveScreenshotResults(ready.screenshots.final)
+            : ready.screenshots.final,
+          others: ready.screenshots.others.map((screenshotResult) =>
+            screenshotResult.name === name
+              ? {
+                  ...screenshotResult,
+                  configs: deriveScreenshotResults(screenshotResult.configs),
                 }
+              : screenshotResult,
+          ),
+        },
+      };
 
-                return deriveScreenshotResults(additional);
-              }),
-            },
-          }),
-        ),
-      );
+      setResults(new Map(results.set(story.id, newResults)));
     },
   };
 
@@ -119,39 +120,179 @@ export function useTestResults() {
     );
   }
 
-  async function runSetTestResults(
+  async function runSetPrimaryTestResults(
     stories: PureStory[],
     devices: DevicePresets,
     presets: SelectedPresets,
   ) {
     for (const story of stories) {
-      const result = await createRunTestResult(
-        externals,
-        story,
-        devices,
+      const results = await createResult(externals, story, {
+        device: devices.primary,
         presets,
-        false,
-      );
+      });
+
+      if (results.type === 'error') {
+        setResults(
+          (curr) =>
+            new Map(
+              curr.set(story.id, {
+                running: false,
+                type: 'error',
+                message: results.message,
+              }),
+            ),
+        );
+
+        continue;
+      }
+
+      const [screenshots, records] = results.data;
+
+      const result: TestResult = {
+        running: false,
+        type: 'success',
+        records,
+        screenshots: {
+          final: [
+            {
+              device: devices.primary,
+              presets,
+              result: screenshots.final,
+            },
+          ],
+          others: screenshots.others.map((it) => ({
+            name: it.name,
+            configs: [
+              {
+                device: devices.primary,
+                presets,
+                result: it.result,
+              },
+            ],
+          })),
+        },
+      };
 
       setResults((curr) => new Map(curr.set(story.id, result)));
     }
   }
 
-  async function runCompleteSetTestResults(
+  async function runSetCompleteTestResults(
     stories: PureStory[],
     devices: DevicePresets,
-    presets: SelectedPresets,
+    presets: PurePresetGroup[],
   ) {
+    const allConfigs = generateConfigs(devices, presets);
+
     for (const story of stories) {
-      const result = await createRunTestResult(
-        externals,
-        story,
-        devices,
-        presets,
-        true,
-      );
+      let final: SingleConfigScreenshotResult[] = [];
+      let others: ScreenshotGroupResult[] = [];
+      let records: RecordsComparisonResult | null = null;
+
+      for (const config of allConfigs) {
+        const results = await createResult(externals, story, config);
+
+        if (results.type === 'error') {
+          setResults(
+            (curr) =>
+              new Map(
+                curr.set(story.id, {
+                  running: false,
+                  type: 'error',
+                  message: results.message,
+                }),
+              ),
+          );
+
+          return;
+        }
+
+        const [screenshots, resultRecords] = results.data;
+
+        if (records === null) {
+          records = resultRecords;
+        }
+
+        final = [
+          ...final,
+          {
+            device: config.device,
+            presets: config.presets,
+            result: screenshots.final,
+          },
+        ];
+
+        for (const configResult of screenshots.others) {
+          const index = others.findIndex(
+            (value) => value.name === configResult.name,
+          );
+
+          const screenshotResult = {
+            device: config.device,
+            presets: config.presets,
+            result: configResult.result,
+          };
+
+          if (index === -1) {
+            others = [
+              ...others,
+              {
+                name: configResult.name,
+                configs: [screenshotResult],
+              },
+            ];
+          } else {
+            others[index].configs = [
+              ...others[index].configs,
+              screenshotResult,
+            ];
+          }
+        }
+      }
+
+      assertNotEmpty(records);
+
+      const result: TestResult = {
+        running: false,
+        type: 'success',
+        records,
+        screenshots: {
+          final,
+          others,
+        },
+      };
 
       setResults((curr) => new Map(curr.set(story.id, result)));
     }
   }
+}
+
+function generateConfigs(
+  devices: DevicePresets,
+  presets: PurePresetGroup[],
+): TestConfig[] {
+  const initialConfigs: TestConfig[] = toFlatDevices(devices).map((device) => ({
+    device,
+    presets: {},
+  }));
+
+  return presets.reduce<TestConfig[]>((configs, presetGroup) => {
+    return toFlatPresets(presetGroup).flatMap((preset) => {
+      return configs.map((config) => ({
+        ...config,
+        presets: {
+          ...config.presets,
+          [presetGroup.name]: preset,
+        },
+      }));
+    });
+  }, initialConfigs);
+}
+
+function toFlatDevices(devices: DevicePresets): Device[] {
+  return [devices.primary, ...devices.additional];
+}
+
+function toFlatPresets(presets: PurePresetGroup): string[] {
+  return [presets.default, ...presets.additional];
 }

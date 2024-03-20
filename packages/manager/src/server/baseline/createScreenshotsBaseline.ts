@@ -1,16 +1,10 @@
 import path from 'path';
 import { ScreenshotPath } from '../../reusables/types';
 import { ServerConfig } from '../reusables/types';
-import {
-  constructScreenshotFileName,
-  copy,
-  exists,
-  mkdir,
-  mkfile,
-  read,
-} from './utils';
+import { copy, exists, mkdir, mkfile, read } from './utils';
 import {
   Device,
+  isNil,
   not,
   ScreenshotName,
   SelectedPresets,
@@ -36,13 +30,16 @@ export async function createScreenshotsBaseline(config: ServerConfig) {
       name: ScreenshotName | undefined,
       content: Buffer,
     ): Promise<ScreenshotPath> => {
-      const dir = path.join(actualResultsDir, device.name);
+      const dir = path.join(
+        actualResultsDir,
+        constructScreenshotDirName(device.name, presets),
+      );
 
       if (not(await exists(dir))) {
         await mkdir(dir);
       }
 
-      const at = path.join(dir, constructScreenshotFileName(id, name, presets));
+      const at = path.join(dir, constructScreenshotFileName(id, name));
 
       await mkfile(at, content);
 
@@ -54,8 +51,12 @@ export async function createScreenshotsBaseline(config: ServerConfig) {
       presets: SelectedPresets,
       name: ScreenshotName | undefined,
     ): Promise<ScreenshotPath | undefined> => {
-      const image = constructScreenshotFileName(id, name, presets);
-      const file = path.join(config.paths.screenshots, device.name, image);
+      const image = constructScreenshotFileName(id, name);
+      const file = path.join(
+        config.paths.screenshots,
+        constructScreenshotDirName(device.name, presets),
+        image,
+      );
 
       return (await exists(file)) ? (file as ScreenshotPath) : undefined;
     },
@@ -71,4 +72,22 @@ export async function createScreenshotsBaseline(config: ServerConfig) {
       return copy(screenshot, to);
     },
   };
+}
+
+function constructScreenshotDirName(
+  deviceName: string,
+  presets: SelectedPresets,
+) {
+  const presetsName = Object.entries(presets ?? {})
+    .map((entry) => entry.join('-'))
+    .join('_');
+
+  return presetsName == '' ? deviceName : `${deviceName}_${presetsName}`;
+}
+
+function constructScreenshotFileName(
+  id: StoryID,
+  name: ScreenshotName | undefined,
+): string {
+  return isNil(name) ? `${id}.png` : `${id}_${name}.png`;
 }

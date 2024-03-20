@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import {
   ScreenshotComparisonResult,
+  SingleConfigScreenshotResult,
   SuccessTestResult,
 } from '../../behaviour/useTestResults/types';
 import { ActiveEntryHeader } from '../reusables/EntryHeader';
@@ -24,7 +25,7 @@ export const ScreenshotsEntry: React.FC<Props> = ({
   selection,
   setScreenshot,
 }) => {
-  const screenshots = invertTestResultsByScreenshotName(results);
+  const screenshots = flattenTestResults(results);
 
   return (
     <ScreenshotsList>
@@ -57,15 +58,11 @@ export const ScreenshotsEntry: React.FC<Props> = ({
   );
 
   function aggregateStatus(
-    results: ScreenshotNamedGroup,
+    results: MenuScreenshotGroup,
   ): ScreenshotComparisonResult['type'] {
-    const statuses: ScreenshotComparisonResult['type'][] = [];
-
-    statuses.push(results.devices.primary.result.type);
-
-    for (const device of results.devices.additional) {
-      statuses.push(device.result.type);
-    }
+    const statuses: ScreenshotComparisonResult['type'][] = results.configs.map(
+      (config) => config.result.type,
+    );
 
     if (statuses.includes('fail')) {
       return 'fail';
@@ -92,53 +89,14 @@ const ScreenshotsList = styled.ul`
   text-decoration: none;
 `;
 
-type ScreenshotNamedGroup = {
+type MenuScreenshotGroup = {
   name: ScreenshotName | undefined;
-  devices: {
-    primary: DeviceScreenshotResult;
-    additional: DeviceScreenshotResult[];
-  };
+  configs: SingleConfigScreenshotResult[];
 };
 
-type DeviceScreenshotResult = {
-  name: string;
-  result: ScreenshotComparisonResult;
-};
-
-function invertTestResultsByScreenshotName(
-  results: SuccessTestResult,
-): ScreenshotNamedGroup[] {
-  const groups: ScreenshotNamedGroup[] = [];
-
-  results.screenshots.primary.results.others.map((screenshot, index) => {
-    groups.push({
-      name: screenshot.name,
-      devices: {
-        primary: {
-          name: results.screenshots.primary.device.name,
-          result: screenshot.result,
-        },
-        additional: results.screenshots.additional.map((device) => ({
-          name: device.device.name,
-          result: device.results.others[index].result,
-        })),
-      },
-    });
-  });
-
-  groups.push({
-    name: undefined,
-    devices: {
-      primary: {
-        name: results.screenshots.primary.device.name,
-        result: results.screenshots.primary.results.final,
-      },
-      additional: results.screenshots.additional.map((device) => ({
-        name: device.device.name,
-        result: device.results.final,
-      })),
-    },
-  });
-
-  return groups;
+function flattenTestResults(results: SuccessTestResult): MenuScreenshotGroup[] {
+  return [
+    ...results.screenshots.others,
+    { name: undefined, configs: results.screenshots.final },
+  ];
 }
