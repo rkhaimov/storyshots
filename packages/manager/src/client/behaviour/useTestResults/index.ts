@@ -1,11 +1,15 @@
 import { useState } from 'react';
-import { ScreenshotPath } from '../../../reusables/types';
+import {
+  PossibleError,
+  PossibleSuccess,
+  ScreenshotPath,
+  WithPossibleError,
+} from '../../../reusables/types';
 import { useDriver } from '../../driver';
-import { createResult } from './createRunTestResult';
+import { ActualResult, createResult } from './createRunTestResult';
 import {
   RecordsComparisonResult,
   ScreenshotComparisonResult,
-  ScreenshotGroupResult,
   SingleConfigScreenshotResult,
   SuccessTestResult,
   TestConfig,
@@ -13,7 +17,6 @@ import {
   TestResults,
 } from './types';
 import {
-  assertNotEmpty,
   Device,
   DevicePresets,
   isNil,
@@ -146,7 +149,7 @@ export function useTestResults() {
         continue;
       }
 
-      const [screenshots, records] = results.data;
+      const { screenshots, records } = results.data;
 
       const result: TestResult = {
         running: false,
@@ -185,82 +188,66 @@ export function useTestResults() {
     const allConfigs = generateConfigs(devices, presets);
 
     for (const story of stories) {
-      let final: SingleConfigScreenshotResult[] = [];
-      let others: ScreenshotGroupResult[] = [];
-      let records: RecordsComparisonResult | null = null;
+      const results: WithPossibleError<ActualResult>[] = [];
 
       for (const config of allConfigs) {
-        const results = await createResult(externals, story, config);
-
-        if (results.type === 'error') {
-          setResults(
-            (curr) =>
-              new Map(
-                curr.set(story.id, {
-                  running: false,
-                  type: 'error',
-                  message: results.message,
-                }),
-              ),
-          );
-
-          return;
-        }
-
-        const [screenshots, resultRecords] = results.data;
-
-        if (records === null) {
-          records = resultRecords;
-        }
-
-        final = [
-          ...final,
-          {
-            device: config.device,
-            presets: config.presets,
-            result: screenshots.final,
-          },
-        ];
-
-        for (const configResult of screenshots.others) {
-          const index = others.findIndex(
-            (value) => value.name === configResult.name,
-          );
-
-          const screenshotResult = {
-            device: config.device,
-            presets: config.presets,
-            result: configResult.result,
-          };
-
-          if (index === -1) {
-            others = [
-              ...others,
-              {
-                name: configResult.name,
-                configs: [screenshotResult],
-              },
-            ];
-          } else {
-            others[index].configs = [
-              ...others[index].configs,
-              screenshotResult,
-            ];
-          }
-        }
+        results.push(await createResult(externals, story, config));
       }
 
-      assertNotEmpty(records);
+      const failedResults = results.filter(
+        (it): it is PossibleError => it.type === 'error',
+      );
 
-      const result: TestResult = {
-        running: false,
-        type: 'success',
-        records,
-        screenshots: {
-          final,
-          others,
-        },
-      };
+      if (failedResults.length > 0) {
+        return failedResults[0];
+      }
+
+      const successResults = results
+        .filter(
+          (it): it is PossibleSuccess<ActualResult> => it.type === 'success',
+        )
+        .map((it) => it.data);
+
+      const result: SuccessTestResult =
+        successResults.reduce<SuccessTestResult>(
+          (prev, { screenshots, config }): SuccessTestResult => {
+            return {
+              ...prev,
+              screenshots: {
+                final: [
+                  ...prev.screenshots.final,
+                  {
+                    device: config.device,
+                    presets: config.presets,
+                    result: screenshots.final,
+                  },
+                ],
+                others: screenshots.others.map((it, index) => {
+                  return {
+                    name: it.name,
+                    configs: [
+                      ...(prev.screenshots.others[index]?.configs ?? []),
+                      {
+                        device: config.device,
+                        presets: config.presets,
+                        result: it.result,
+                      },
+                    ],
+                  };
+                }),
+              },
+            };
+          },
+          {
+            running: false,
+            type: 'success',
+            records: successResults[0].records,
+            screenshots: {
+              final: [],
+              others: [],
+            },
+          } as SuccessTestResult,
+        );
 
       setResults((curr) => new Map(curr.set(story.id, result)));
     }
