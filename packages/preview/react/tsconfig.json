@@ -4,6 +4,7 @@
   "compilerOptions": {
     "jsx": "preserve",
     "outDir": "./lib",
-    "declaration": true
+    "declaration": true,
+    "declarationMap": true
   }
 }
