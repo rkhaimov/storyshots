@@ -13,90 +13,56 @@ import {
 } from '@storyshots/core';
 
 export function useBehaviourRouter(props: Props) {
+  const [pathname] = useLocation();
+  const search = useSearch();
   const navigate = useNavigation();
   const params = useParsedParams(props);
 
   return {
     params,
     setStory: (id: StoryID) => {
-      doNavigate(
-        {
-          type: 'story',
-          id,
-          presets: params.presets,
-        },
-        navigate,
-      );
+      navigate(`/${id}`, new URLSearchParams(), params.presets);
     },
     setRecords: (id: StoryID) => {
-      doNavigate(
-        {
-          type: 'records',
-          id,
-          presets: params.presets,
-        },
-        navigate,
+      navigate(
+        `/${id}`,
+        new URLSearchParams({ mode: Mode.Records }),
+        params.presets,
       );
     },
     setScreenshot: (id: StoryID, name: string | undefined) => {
-      doNavigate(
-        {
-          type: 'screenshot',
-          id,
-          name: name as ScreenshotName | undefined,
-          presets: params.presets,
-        },
-        navigate,
+      const screenshot = isNil(name) ? '' : `&screenshot=${name}`;
+
+      navigate(
+        `/${id}`,
+        new URLSearchParams({
+          mode: Mode.Screenshot,
+          name: screenshot,
+        }),
+        params.presets,
       );
     },
     setPresets: (presets: SelectedPresets) => {
-      doNavigate(
-        {
-          ...params,
-          presets,
-        },
-        navigate,
-      );
+      navigate(pathname, new URLSearchParams(search), presets);
     },
   };
-}
-
-function doNavigate(params: URLParsedParams, navigate: (url: string) => void) {
-  const presetParam = `presets=${encodeURIComponent(
-    JSON.stringify(params.presets),
-  )}`;
-
-  switch (params.type) {
-    case 'no-selection':
-      return navigate(`/?${presetParam}`);
-    case 'story':
-      return navigate(`/${params.id}?${presetParam}`);
-    case 'screenshot': {
-      const screenshot = isNil(params.name) ? '' : `&screenshot=${params.name}`;
-      return navigate(
-        `/${params.id}?${presetParam}&mode=${Mode.Screenshot}${screenshot}`,
-      );
-    }
-    case 'records':
-      return navigate(`/${params.id}?${presetParam}&mode=${Mode.Records}`);
-  }
 }
 
 function useNavigation() {
   const search = useSearch();
   const [, navigate] = useLocation();
 
-  return (url: string) => {
+  return (url: string, query: URLSearchParams, presets: SelectedPresets) => {
     const params = new URLSearchParams(search);
     const secret = params.get('manager');
 
     assertNotEmpty(secret);
 
-    navigate(
-      url.includes('?')
-        ? `${url}&manager=${secret}`
-        : `${url}?manager=${secret}`,
-    );
+    query.append('manager', secret);
+    query.delete('presets');
+    query.append('presets', JSON.stringify(presets));
+
+    navigate(`${url}?${query}`);
   };
 }
 
