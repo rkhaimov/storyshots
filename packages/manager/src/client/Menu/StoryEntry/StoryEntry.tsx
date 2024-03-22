@@ -20,7 +20,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
         $level={props.level}
         $active={isActive()}
         $color={blue[0]}
-        onClick={() => props.setStory(props.story.id, {})}
+        onClick={() => props.setStory(props.story.id)}
       >
         <EntryTitle
           left={

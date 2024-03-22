@@ -14,21 +14,72 @@ import {
 
 export function useBehaviourRouter(props: Props) {
   const navigate = useNavigation();
+  const params = useParsedParams(props);
 
   return {
-    params: useParsedParams(props),
-    setStory: (id: StoryID, presets: SelectedPresets) => {
-      navigate(`/${id}?presets=${encodeURIComponent(JSON.stringify(presets))}`);
+    params,
+    setStory: (id: StoryID) => {
+      doNavigate(
+        {
+          type: 'story',
+          id,
+          presets: params.presets,
+        },
+        navigate,
+      );
     },
     setRecords: (id: StoryID) => {
-      navigate(`/${id}?mode=${Mode.Records}`);
+      doNavigate(
+        {
+          type: 'records',
+          id,
+          presets: params.presets,
+        },
+        navigate,
+      );
     },
     setScreenshot: (id: StoryID, name: string | undefined) => {
-      const screenshot = isNil(name) ? '' : `&screenshot=${name}`;
-
-      navigate(`/${id}?mode=${Mode.Screenshot}${screenshot}`);
+      doNavigate(
+        {
+          type: 'screenshot',
+          id,
+          name: name as ScreenshotName | undefined,
+          presets: params.presets,
+        },
+        navigate,
+      );
+    },
+    setPresets: (presets: SelectedPresets) => {
+      doNavigate(
+        {
+          ...params,
+          presets,
+        },
+        navigate,
+      );
     },
   };
+}
+
+function doNavigate(params: URLParsedParams, navigate: (url: string) => void) {
+  const presetParam = `presets=${encodeURIComponent(
+    JSON.stringify(params.presets),
+  )}`;
+
+  switch (params.type) {
+    case 'no-selection':
+      return navigate(`/?${presetParam}`);
+    case 'story':
+      return navigate(`/${params.id}?${presetParam}`);
+    case 'screenshot': {
+      const screenshot = isNil(params.name) ? '' : `&screenshot=${params.name}`;
+      return navigate(
+        `/${params.id}?${presetParam}&mode=${Mode.Screenshot}${screenshot}`,
+      );
+    }
+    case 'records':
+      return navigate(`/${params.id}?${presetParam}&mode=${Mode.Records}`);
+  }
 }
 
 function useNavigation() {
