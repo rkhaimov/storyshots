@@ -1,5 +1,5 @@
 import React from 'react';
-import { Collapse, Select } from 'antd';
+import { Collapse, Radio, Select } from 'antd';
 import styled from 'styled-components';
 
 import { AutoPlaySelectionInitialized } from '../../behaviour/useAutoPlaySelection';
@@ -34,30 +34,46 @@ export const Presets: React.FC<Props> = ({
           children: (
             <PresetList>
               {selection.config.presets.map((preset) => {
+                const id = `select-${preset.name}`;
+                const onChange = (name: string) =>
+                  handleChange(preset.name, name);
+                const value =
+                  selection.selectedPresets &&
+                  selection.selectedPresets[preset.name]
+                    ? selection.selectedPresets[preset.name]
+                    : preset.default;
+                const options = [
+                  {
+                    value: preset.default,
+                    label: preset.default,
+                  },
+                  ...preset.additional.map((presetName) => {
+                    return {
+                      value: presetName,
+                      label: presetName,
+                    };
+                  }),
+                ];
+
                 return (
                   <PresetItem key={preset.name}>
-                    <span>{preset.name}</span>
-                    <Select
-                      onChange={(name) => handleChange(preset.name, name)}
-                      value={
-                        selection.selectedPresets &&
-                        selection.selectedPresets[preset.name]
-                          ? selection.selectedPresets[preset.name]
-                          : preset.default
-                      }
-                      options={[
-                        {
-                          value: preset.default,
-                          label: <span>{preset.default}</span>,
-                        },
-                        ...preset.additional.map((presetName) => {
-                          return {
-                            value: presetName,
-                            label: <span>{presetName}</span>,
-                          };
-                        }),
-                      ]}
-                    />
+                    <PresetLabel htmlFor={id}>{preset.name}</PresetLabel>
+                    {options.length > 2 ? (
+                      <PresetSelect
+                        id={id}
+                        onChange={onChange}
+                        value={value}
+                        options={options}
+                      />
+                    ) : (
+                      <PresetRadio
+                        options={options}
+                        onChange={(e) => onChange(e.target.value)}
+                        value={value}
+                        optionType="button"
+                        buttonStyle="solid"
+                      />
+                    )}
                   </PresetItem>
                 );
               })}
@@ -81,4 +97,36 @@ const PresetItem = styled.li`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
+`;
+
+const PresetLabel = styled.label`
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 30%;
+  display: inline-block;
+`;
+
+const PresetSelect = styled(Select)`
+  max-width: 70%;
+`;
+
+const PresetRadio = styled(Radio.Group)`
+  overflow: hidden;
+  display: flex;
+  width: 70%;
+
+  label {
+    width: 50%;
+
+    span:last-child {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 100%;
+      display: inline-block;
+      text-align: center;
+    }
+  }
 `;
