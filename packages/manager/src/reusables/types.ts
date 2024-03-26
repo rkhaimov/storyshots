@@ -8,6 +8,7 @@ import {
   SelectedPresets,
   StoryID,
 } from '@storyshots/core';
+import { TestConfig } from '../client/behaviour/useTestResults/types';
 
 export interface IWebDriver {
   actOnClientSide(action: ActionMeta[]): Promise<WithPossibleError<void>>;
@@ -43,12 +44,19 @@ export type PossibleSuccess<T> = {
   data: T;
 };
 
-export type WithPossibleError<T> = PossibleError | PossibleSuccess<T>;
+export type WithPossibleError<T> =
+  | {
+      type: 'error';
+      message: string;
+    }
+  | {
+      type: 'success';
+      data: T;
+    };
 
 export type ActionsOnDevice = {
   actions: ActionMeta[];
-  device: Device;
-  presets: SelectedPresets;
+  config: TestConfig;
 };
 
 export type ScreenshotToAccept = {

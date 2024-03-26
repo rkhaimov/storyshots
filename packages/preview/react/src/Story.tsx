@@ -13,7 +13,7 @@ import { Props } from './types';
 
 export const Story: React.FC<
   { id: StoryID } & ManagerState & { config: Props }
-> = ({ id, presets, config }) => {
+> = ({ id, presets, config, screenshotting }) => {
   const { createExternals, createJournalExternals, stories } = config;
   const story = TreeOP.find(stories, id);
 
@@ -31,10 +31,10 @@ export const Story: React.FC<
       : specified.prepare(externals);
   }, createExternals());
 
-  const arranged = story.payload.arrange(configured, journal);
+  const arranged = story.payload.arrange(configured, journal, screenshotting);
   const journaled = createJournalExternals(arranged, journal);
 
   setRecords(journal.read);
 
-  return story.payload.render(journaled);
+  return story.payload.render(journaled, screenshotting);
 };

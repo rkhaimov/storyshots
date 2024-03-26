@@ -45,8 +45,8 @@ export const ScreenshotGallery: React.FC<Props> = ({
   return (
     <Wrapper>
       {screenshots.map((screenshot) => {
-        const name = `${screenshot.device.name} — ${presetsToString(
-          screenshot.presets,
+        const name = `${screenshot.config.device.name} — ${presetsToString(
+          screenshot.config.presets,
         )}`;
 
         return (

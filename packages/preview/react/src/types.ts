@@ -14,9 +14,13 @@ export type Group = IntermediateNode<
 
 export type Story<TExternals = unknown> = LeafNode<{
   title: string;
-  arrange(externals: TExternals, journal: Journal): TExternals;
+  arrange(
+    externals: TExternals,
+    journal: Journal,
+    screenshotting: boolean,
+  ): TExternals;
   act(actor: Actor): Actor;
-  render(externals: TExternals): React.ReactNode;
+  render(externals: TExternals, screenshotting: boolean): React.ReactNode;
 }>;
 
 export type ClientConfig<TExternals> = {
@@ -24,7 +28,6 @@ export type ClientConfig<TExternals> = {
   presets: CustomPresetGroup<TExternals>[];
   createExternals(): TExternals;
   createJournalExternals(externals: TExternals, journal: Journal): TExternals;
-  renderScreenshotTimeEnv(app: React.ReactNode): React.ReactNode;
 };
 
 export type Props = ClientConfig<unknown> & {

@@ -13,7 +13,7 @@ export function pickScreenshots(
   }
 
   return result.screenshots.others.find((group) => group.name === name)
-    ?.configs;
+    ?.results;
 }
 
 export function presetsToString(presets: SelectedPresets) {

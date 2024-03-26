@@ -1,6 +1,8 @@
-import { run } from '@storyshots/manager';
+import { run } from '../../packages/manager/src';
 import { createBundler } from '@storyshots/webpack-bundler';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import webpack from 'webpack';
 import path from 'path';
 
 run({
@@ -10,8 +12,22 @@ run({
     records: path.join(process.cwd(), 'records'),
     temp: path.join(process.cwd(), 'temp'),
   },
-  bundler: createBundler((config) => {
-    config.module = {
+  bundler: createBundler((config) => ({
+    mode: 'development',
+    bail: false,
+    devtool: 'cheap-module-source-map',
+    entry: config.entry,
+    stats: {
+      errorDetails: true,
+    },
+    output: {
+      path: config.output.path,
+      pathinfo: true,
+      filename: 'static/js/bundle.js',
+      assetModuleFilename: 'static/media/[name].[hash][ext]',
+      publicPath: config.output.publicPath,
+    },
+    module: {
       rules: [
         {
           oneOf: [
@@ -40,15 +56,16 @@ run({
           ],
         },
       ],
-    };
-
-    config.resolve = {
-      ...config.resolve,
+    },
+    resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
-    };
-
-    config.plugins?.push(new ForkTsCheckerWebpackPlugin({ async: true }));
-
-    return config;
-  }),
+    },
+    plugins: [
+      new HtmlWebpackPlugin(),
+      new ForkTsCheckerWebpackPlugin({ async: true }),
+      new webpack.DefinePlugin({
+        'process.env': { NODE_ENV: '"development"' },
+      }),
+    ],
+  })),
 });

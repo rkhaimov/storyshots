@@ -35,8 +35,8 @@ export const SingleScreenshot: React.FC<Props> = ({
   const { result } = screenshot;
   const title = [
     story.payload.title,
-    screenshot.device.name,
-    presetsToString(screenshot.presets),
+    screenshot.config.device.name,
+    presetsToString(screenshot.config.presets),
     name ?? 'FINAL',
   ]
     .filter((it) => it !== '')

@@ -6,9 +6,8 @@
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
   "scripts": {
-    "start": "cross-env STORYSHOTS_BUILD_MODE=development npm run example",
-    "build": "npm run build --workspaces",
-    "example": "ts-node ./example/storyshots/manager.ts"
+    "start": "cross-env STORYSHOTS_BUILD_MODE=development ts-node ./example/storyshots/manager.ts",
+    "build": "npm run build --workspaces"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.12.0",

@@ -13,7 +13,7 @@ export function createExpectedScreenshotsHandler(
 ) {
   app.post('/api/screenshot/expected/:id', async (request, response) => {
     const id = TreeOP.ensureIsLeafID(request.params.id);
-    const { actions, device, presets }: ActionsOnDevice = request.body;
+    const { actions, config }: ActionsOnDevice = request.body;
 
     const others: Screenshot[] = [];
     for (const action of actions) {
@@ -23,8 +23,7 @@ export function createExpectedScreenshotsHandler(
 
       const path = await baseline.getExpectedScreenshot(
         id,
-        device,
-        presets,
+        config,
         action.payload.name,
       );
 
@@ -41,8 +40,7 @@ export function createExpectedScreenshotsHandler(
     const result: ExpectedScreenshots = {
       final: await baseline.getExpectedScreenshot(
         id,
-        device,
-        presets,
+        config,
         undefined,
       ),
       others,

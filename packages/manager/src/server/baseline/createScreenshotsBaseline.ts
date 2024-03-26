@@ -1,38 +1,37 @@
-import path from 'path';
-import { ScreenshotPath } from '../../reusables/types';
-import { ServerConfig } from '../reusables/types';
-import { copy, exists, mkdir, mkfile, read } from './utils';
 import {
-  Device,
   isNil,
   not,
   ScreenshotName,
   SelectedPresets,
   StoryID,
 } from '@storyshots/core';
+import path from 'path';
+import { TestConfig } from '../../client/behaviour/useTestResults/types';
+import { ScreenshotPath } from '../../reusables/types';
+import { ServerConfig } from '../reusables/types';
+import { copy, exists, mkdir, mkfile, read } from './utils';
 
-export async function createScreenshotsBaseline(config: ServerConfig) {
-  const actualResultsDir = path.join(config.paths.temp, 'actual');
+export async function createScreenshotsBaseline(env: ServerConfig) {
+  const actualResultsDir = path.join(env.paths.temp, 'actual');
 
   if (not(await exists(actualResultsDir))) {
     await mkdir(actualResultsDir);
   }
 
-  if (not(await exists(config.paths.screenshots))) {
-    await mkdir(config.paths.screenshots);
+  if (not(await exists(env.paths.screenshots))) {
+    await mkdir(env.paths.screenshots);
   }
 
   return {
     createActualScreenshot: async (
       id: StoryID,
-      device: Device,
-      presets: SelectedPresets,
+      config: TestConfig,
       name: ScreenshotName | undefined,
       content: Buffer,
     ): Promise<ScreenshotPath> => {
       const dir = path.join(
         actualResultsDir,
-        constructScreenshotDirName(device.name, presets),
+        constructScreenshotDirName(config.device.name, config.presets),
       );
 
       if (not(await exists(dir))) {
@@ -47,14 +46,13 @@ export async function createScreenshotsBaseline(config: ServerConfig) {
     },
     getExpectedScreenshot: async (
       id: StoryID,
-      device: Device,
-      presets: SelectedPresets,
+      config: TestConfig,
       name: ScreenshotName | undefined,
     ): Promise<ScreenshotPath | undefined> => {
       const image = constructScreenshotFileName(id, name);
       const file = path.join(
-        config.paths.screenshots,
-        constructScreenshotDirName(device.name, presets),
+        env.paths.screenshots,
+        constructScreenshotDirName(config.device.name, config.presets),
         image,
       );
 
@@ -62,7 +60,7 @@ export async function createScreenshotsBaseline(config: ServerConfig) {
     },
     readScreenshot: (path: ScreenshotPath): Promise<Buffer> => read(path),
     acceptScreenshot: async (screenshot: ScreenshotPath): Promise<void> => {
-      const to = screenshot.replace(actualResultsDir, config.paths.screenshots);
+      const to = screenshot.replace(actualResultsDir, env.paths.screenshots);
       const dir = path.dirname(to);
 
       if (not(await exists(dir))) {

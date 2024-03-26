@@ -6,6 +6,9 @@
   "license": "MIT",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "build": "rimraf ./lib && tsc -b tsconfig.json"
   },

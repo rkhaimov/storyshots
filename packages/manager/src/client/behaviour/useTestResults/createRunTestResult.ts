@@ -19,19 +19,18 @@ export type ActualResult = {
   config: TestConfig;
 };
 
-export async function createResult(
+export async function createActualResult(
   driver: IWebDriver,
   story: PureStory,
   config: TestConfig,
 ): Promise<WithPossibleError<ActualResult>> {
-  const actualResults = await driver.actOnServerSide(story.id, {
+  const actual = await driver.actOnServerSide(story.id, {
     actions: story.payload.actions,
-    device: config.device,
-    presets: config.presets,
+    config,
   });
 
-  if (actualResults.type === 'error') {
-    return actualResults;
+  if (actual.type === 'error') {
+    return actual;
   }
 
   return {
@@ -42,15 +41,14 @@ export async function createResult(
         story.id,
         {
           actions: story.payload.actions,
-          device: config.device,
-          presets: config.presets,
+          config,
         },
-        actualResults.data.screenshots,
+        actual.data.screenshots,
       ),
       records: await createRecordsComparisonResult(
         driver,
         story.id,
-        actualResults.data.records,
+        actual.data.records,
       ),
       config,
     },

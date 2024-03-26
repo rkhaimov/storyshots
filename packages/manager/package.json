@@ -6,6 +6,10 @@
   "description": "Contains all core parts (bundler, runner and UI)",
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
+  "files": [
+    "lib",
+    "react-devtools"
+  ],
   "scripts": {
     "build": "rimraf ./lib && ts-node precompile.ts && tsc -b tsconfig.build.json"
   },

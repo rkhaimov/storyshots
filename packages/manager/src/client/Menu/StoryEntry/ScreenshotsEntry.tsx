@@ -60,8 +60,8 @@ export const ScreenshotsEntry: React.FC<Props> = ({
   function aggregateStatus(
     results: MenuScreenshotGroup,
   ): ScreenshotComparisonResult['type'] {
-    const statuses: ScreenshotComparisonResult['type'][] = results.configs.map(
-      (config) => config.result.type,
+    const statuses: ScreenshotComparisonResult['type'][] = results.results.map(
+      ({ result }) => result.type,
     );
 
     if (statuses.includes('fail')) {
@@ -91,12 +91,12 @@ const ScreenshotsList = styled.ul`
 
 type MenuScreenshotGroup = {
   name: ScreenshotName | undefined;
-  configs: SingleConfigScreenshotResult[];
+  results: SingleConfigScreenshotResult[];
 };
 
 function flattenTestResults(results: SuccessTestResult): MenuScreenshotGroup[] {
   return [
     ...results.screenshots.others,
-    { name: undefined, configs: results.screenshots.final },
+    { name: undefined, results: results.screenshots.final },
   ];
 }

@@ -2,6 +2,10 @@ export function wait(ms: number): Promise<void> {
   return new Promise<void>((resolve) => setTimeout(resolve, ms));
 }
 
+export function assertIsNever(input: never) {
+  throw new Error('Should never be called');
+}
+
 export function assertNotEmpty<T>(
   input: T | undefined | null,
   message = 'Expected to be defined',

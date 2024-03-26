@@ -1,3 +1,5 @@
+import './connect-devtools';
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { describe, it } from './factories';
@@ -9,17 +11,27 @@ export function createPreviewApp<TExternals>(config: ClientConfig<TExternals>) {
     describe: describe,
     it: it<TExternals>,
     run: (stories: StoryTree[]) => {
-      const div = document.createElement('div');
-
-      div.setAttribute('id', 'root');
-
-      document.body.appendChild(div);
-
-      ReactDOM.createRoot(div).render(
+      ReactDOM.createRoot(createRootElement()).render(
         <Preview {...config} stories={stories} />,
       );
     },
   };
+}
+
+function createRootElement(): Element {
+  const found = document.querySelector('#root');
+
+  if (found) {
+    return found;
+  }
+
+  const div = document.createElement('div');
+
+  div.setAttribute('id', 'root');
+
+  document.body.appendChild(div);
+
+  return div;
 }
 
 export {

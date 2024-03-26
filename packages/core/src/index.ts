@@ -1,4 +1,4 @@
-export type { ScreenshotAction, ActionMeta } from './actions';
+export type { ScreenshotAction, ActionMeta, ClickOptions, FillOptions, ScrollAction } from './actions';
 export type { ChildBrand, Brand } from './brand';
 export type { FinderMeta, Selector } from './finder';
 export type { JournalRecord } from './journal';
@@ -38,4 +38,4 @@ export type {
   Channel,
 } from './channel';
 
-export { wait, assert, assertNotEmpty, not, isNil } from './utils';
+export { wait, assert, assertNotEmpty, not, isNil, assertIsNever } from './utils';

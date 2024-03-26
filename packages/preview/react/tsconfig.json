@@ -2,7 +2,7 @@
   "extends": "../../../tsconfig",
   "include": ["./src/index.tsx"],
   "compilerOptions": {
-    "jsx": "preserve",
+    "jsx": "react",
     "outDir": "./lib",
     "declaration": true,
     "declarationMap": true

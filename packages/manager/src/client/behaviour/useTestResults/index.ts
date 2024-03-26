@@ -1,21 +1,3 @@
-import { useState } from 'react';
-import {
-  PossibleError,
-  PossibleSuccess,
-  ScreenshotPath,
-  WithPossibleError,
-} from '../../../reusables/types';
-import { useDriver } from '../../driver';
-import { ActualResult, createResult } from './createRunTestResult';
-import {
-  RecordsComparisonResult,
-  ScreenshotComparisonResult,
-  SingleConfigScreenshotResult,
-  SuccessTestResult,
-  TestConfig,
-  TestResult,
-  TestResults,
-} from './types';
 import {
   Device,
   DevicePresets,
@@ -26,6 +8,20 @@ import {
   ScreenshotName,
   SelectedPresets,
 } from '@storyshots/core';
+import { useState } from 'react';
+import { ScreenshotPath, WithPossibleError } from '../../../reusables/types';
+import { useDriver } from '../../driver';
+import { ActualResult, createActualResult } from './createRunTestResult';
+import {
+  RecordsComparisonResult,
+  ScreenshotComparisonResult,
+  ScreenshotGroupResult,
+  SingleConfigScreenshotResult,
+  SuccessTestResult,
+  TestConfig,
+  TestResult,
+  TestResults,
+} from './types';
 
 export function useTestResults() {
   const externals = useDriver();
@@ -103,7 +99,7 @@ export function useTestResults() {
             screenshotResult.name === name
               ? {
                   ...screenshotResult,
-                  configs: deriveScreenshotResults(screenshotResult.configs),
+                  results: deriveScreenshotResults(screenshotResult.results),
                 }
               : screenshotResult,
           ),
@@ -129,10 +125,12 @@ export function useTestResults() {
     presets: SelectedPresets,
   ) {
     for (const story of stories) {
-      const results = await createResult(externals, story, {
+      const config: TestConfig = {
         device: devices.primary,
         presets,
-      });
+      };
+
+      const results = await createActualResult(externals, story, config);
 
       if (results.type === 'error') {
         setResults(
@@ -158,17 +156,15 @@ export function useTestResults() {
         screenshots: {
           final: [
             {
-              device: devices.primary,
-              presets,
+              config,
               result: screenshots.final,
             },
           ],
           others: screenshots.others.map((it) => ({
             name: it.name,
-            configs: [
+            results: [
               {
-                device: devices.primary,
-                presets,
+                config,
                 result: it.result,
               },
             ],
@@ -185,76 +181,106 @@ export function useTestResults() {
     devices: DevicePresets,
     presets: PurePresetGroup[],
   ) {
-    const allConfigs = generateConfigs(devices, presets);
+    const configs = createAllPossibleConfigs(devices, presets);
 
     for (const story of stories) {
       const results: WithPossibleError<ActualResult>[] = [];
 
-      for (const config of allConfigs) {
-        results.push(await createResult(externals, story, config));
+      for (const config of configs) {
+        results.push(await createActualResult(externals, story, config));
       }
 
-      const failedResults = results.filter(
-        (it): it is PossibleError => it.type === 'error',
-      );
+      const result = toAllSuccessOrAnyError(results);
 
-      if (failedResults.length > 0) {
-        return failedResults[0];
-      }
-
-      const successResults = results
-        .filter(
-          (it): it is PossibleSuccess<ActualResult> => it.type === 'success',
-        )
-        .map((it) => it.data);
-
-      const result: SuccessTestResult =
-        successResults.reduce<SuccessTestResult>(
-          (prev, { screenshots, config }): SuccessTestResult => {
-            return {
-              ...prev,
-              screenshots: {
-                final: [
-                  ...prev.screenshots.final,
-                  {
-                    device: config.device,
-                    presets: config.presets,
-                    result: screenshots.final,
-                  },
-                ],
-                others: screenshots.others.map((it, index) => {
-                  return {
-                    name: it.name,
-                    configs: [
-                      ...(prev.screenshots.others[index]?.configs ?? []),
-                      {
-                        device: config.device,
-                        presets: config.presets,
-                        result: it.result,
-                      },
-                    ],
-                  };
-                }),
-              },
-            };
-          },
-          {
-            running: false,
-            type: 'success',
-            records: successResults[0].records,
-            screenshots: {
-              final: [],
-              others: [],
-            },
-          } as SuccessTestResult,
+      if (result.type === 'error') {
+        setResults(
+          (curr) =>
+            new Map(
+              curr.set(story.id, {
+                running: false,
+                type: 'error',
+                message: result.message,
+              }),
+            ),
         );
 
-      setResults((curr) => new Map(curr.set(story.id, result)));
+        continue;
+      }
+
+      setResults(
+        (curr) =>
+          new Map(
+            curr.set(story.id, {
+              running: false,
+              type: 'success',
+              records: result.data[0].records,
+              screenshots: toTestResults(result.data),
+            }),
+          ),
+      );
     }
   }
 }
 
-function generateConfigs(
+function toTestResults(
+  results: ActualResult[],
+): SuccessTestResult['screenshots'] {
+  return {
+    final: results.map((it) => ({
+      config: it.config,
+      result: it.screenshots.final,
+    })),
+    others: groupByName(
+      results.flatMap((it) =>
+        it.screenshots.others.map(
+          (other): ScreenshotGroupResult => ({
+            name: other.name,
+            results: [{ config: it.config, result: other.result }],
+          }),
+        ),
+      ),
+    ),
+  };
+}
+
+function groupByName(
+  screenshots: ScreenshotGroupResult[],
+): ScreenshotGroupResult[] {
+  const grouped = screenshots.reduce(
+    (all, screenshot) => {
+      all[screenshot.name] = [...(all[screenshot.name] ?? []), screenshot];
+
+      return all;
+    },
+    {} as Record<ScreenshotName, ScreenshotGroupResult[]>,
+  );
+
+  return Object.entries(grouped).map(([name, results]) => ({
+    name: name as ScreenshotName,
+    results: results.flatMap((it) => it.results),
+  }));
+}
+
+function toAllSuccessOrAnyError(
+  results: WithPossibleError<ActualResult>[],
+): WithPossibleError<ActualResult[]> {
+  const result: WithPossibleError<ActualResult[]> = {
+    type: 'success',
+    data: [],
+  };
+
+  for (const it of results) {
+    if (it.type === 'error') {
+      return it;
+    }
+
+    result.data.push(it.data);
+  }
+
+  return result;
+}
+
+function createAllPossibleConfigs(
   devices: DevicePresets,
   presets: PurePresetGroup[],
 ): TestConfig[] {

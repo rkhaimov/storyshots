@@ -36,7 +36,7 @@ export function getStoryEntryStatus(
     comparison.records.type,
     ...screenshotsToStatuses(comparison.screenshots.final),
     ...comparison.screenshots.others.flatMap((it) =>
-      screenshotsToStatuses(it.configs),
+      screenshotsToStatuses(it.results),
     ),
   ];
 

@@ -26,12 +26,11 @@ export type SuccessTestResult = {
 
 export type ScreenshotGroupResult = {
   name: ScreenshotName;
-  configs: SingleConfigScreenshotResult[];
+  results: SingleConfigScreenshotResult[];
 };
 
 export type SingleConfigScreenshotResult = {
-  device: Device;
-  presets: SelectedPresets;
+  config: TestConfig;
   result: ScreenshotComparisonResult;
 };
 

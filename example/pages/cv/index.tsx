@@ -61,8 +61,6 @@ export const CV: React.FC = () => {
         height: '100%',
         width: '100%',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
       }}
     >
       <Form
@@ -91,7 +89,7 @@ export const CV: React.FC = () => {
         }}
         form={form}
         name="register"
-        style={{ maxWidth: 600 }}
+        style={{ maxWidth: 600, margin: 'auto' }}
       >
         <Form.Item
           name="email"

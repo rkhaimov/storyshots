@@ -1,8 +1,3 @@
-import { useMemo } from 'react';
-import { useLocation } from 'wouter';
-import { useSearch } from 'wouter/use-location';
-
-import { Props } from '../types';
 import {
   assertNotEmpty,
   isNil,
@@ -11,6 +6,11 @@ import {
   StoryID,
   TreeOP,
 } from '@storyshots/core';
+import { useMemo } from 'react';
+import { useLocation } from 'wouter';
+import { useSearch } from 'wouter/use-location';
+
+import { Props } from '../types';
 
 export function useBehaviourRouter(props: Props) {
   const [pathname] = useLocation();
@@ -31,16 +31,15 @@ export function useBehaviourRouter(props: Props) {
       );
     },
     setScreenshot: (id: StoryID, name: string | undefined) => {
-      const screenshot = isNil(name) ? '' : `&screenshot=${name}`;
+      const query = new URLSearchParams({
+        mode: Mode.Screenshot,
+      });
 
-      navigate(
-        `/${id}`,
-        new URLSearchParams({
-          mode: Mode.Screenshot,
-          name: screenshot,
-        }),
-        params.presets,
-      );
+      if (typeof name === 'string') {
+        query.append('screenshot', name);
+      }
+
+      navigate(`/${id}`, query, params.presets);
     },
     setPresets: (presets: SelectedPresets) => {
       navigate(pathname, new URLSearchParams(search), presets);

@@ -24,6 +24,10 @@ finder https://github.com/antonmedv/finder
 * introduce manager/preview arch
 * exhaustive check on story arrange
 * implement filter and status pane like playwright
+* device and preset permutations filter
+* display all errors with specific test config info
+* impl animation settle function
+* add accept all
 
 move devices to manager
 simplify ambient types from package usage
@@ -37,3 +41,4 @@ ui-play
 * implement dev scripts
 * divide manager and preview build modes (if possible)
 * create solution diagram (with all SRP decisions described)
+* add semantic module type meta to npm
