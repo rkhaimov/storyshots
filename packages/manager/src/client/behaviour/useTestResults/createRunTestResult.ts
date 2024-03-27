@@ -13,13 +13,17 @@ import {
 } from './types';
 import { isNil, JournalRecord, PureStory, StoryID } from '@storyshots/core';
 
+export type ActualResult = {
+  screenshots: ScreenshotsComparisonResults;
+  records: RecordsComparisonResult;
+  config: TestConfig;
+};
+
 export async function createResult(
   driver: IWebDriver,
   story: PureStory,
   config: TestConfig,
-): Promise<
-  WithPossibleError<[ScreenshotsComparisonResults, RecordsComparisonResult]>
-> {
+): Promise<WithPossibleError<ActualResult>> {
   const actualResults = await driver.actOnServerSide(story.id, {
     actions: story.payload.actions,
     device: config.device,
@@ -32,8 +36,8 @@ export async function createResult(
 
   return {
     type: 'success',
-    data: [
-      await createScreenshotsComparisonResults(
+    data: {
+      screenshots: await createScreenshotsComparisonResults(
         driver,
         story.id,
         {
@@ -43,12 +47,13 @@ export async function createResult(
         },
         actualResults.data.screenshots,
       ),
-      await createRecordsComparisonResult(
+      records: await createRecordsComparisonResult(
         driver,
         story.id,
         actualResults.data.records,
       ),
-    ],
+      config,
+    },
   };
 }
 

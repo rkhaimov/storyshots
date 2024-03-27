@@ -9,6 +9,7 @@ import {
   PreviewState,
   PureStory,
   ScreenshotName,
+  SelectedPresets,
   TreeOP,
 } from '@storyshots/core';
 
@@ -38,7 +39,11 @@ export function useAutoPlaySelection(params: URLParsedParams) {
     });
 
     if (params.type === 'no-selection') {
-      return setSelection({ type: 'no-selection', config });
+      return setSelection({
+        type: 'no-selection',
+        config,
+        selectedPresets: params.presets,
+      });
     }
 
     const story = TreeOP.find(config.stories, params.id);
@@ -46,7 +51,12 @@ export function useAutoPlaySelection(params: URLParsedParams) {
     assertNotEmpty(story);
 
     if (params.type === 'records') {
-      return setSelection({ type: 'records', story, config });
+      return setSelection({
+        type: 'records',
+        story,
+        config,
+        selectedPresets: params.presets,
+      });
     }
 
     if (params.type === 'screenshot') {
@@ -55,14 +65,28 @@ export function useAutoPlaySelection(params: URLParsedParams) {
         story,
         config,
         name: params.name,
+        selectedPresets: params.presets,
       });
     }
 
-    setSelection({ type: 'story', story, config, playing: true });
+    setSelection({
+      type: 'story',
+      story,
+      config,
+      playing: true,
+      selectedPresets: params.presets,
+    });
 
     const result = await driver.actOnClientSide(story.payload.actions);
 
-    setSelection({ type: 'story', story, config, playing: false, result });
+    setSelection({
+      type: 'story',
+      story,
+      config,
+      playing: false,
+      result,
+      selectedPresets: params.presets,
+    });
   }
 }
 
@@ -70,15 +94,20 @@ export type AutoPlaySelection =
   | {
       type: 'initializing';
     }
+  | AutoPlaySelectionInitialized;
+
+export type AutoPlaySelectionInitialized =
   | {
       type: 'no-selection';
       config: PreviewState;
+      selectedPresets: SelectedPresets;
     }
   | {
       type: 'story';
       story: PureStory;
       config: PreviewState;
       playing: true;
+      selectedPresets: SelectedPresets;
     }
   | {
       type: 'story';
@@ -86,15 +115,18 @@ export type AutoPlaySelection =
       config: PreviewState;
       playing: false;
       result: WithPossibleError<void>;
+      selectedPresets: SelectedPresets;
     }
   | {
       type: 'records';
       story: PureStory;
       config: PreviewState;
+      selectedPresets: SelectedPresets;
     }
   | {
       type: 'screenshot';
       name: ScreenshotName | undefined;
       story: PureStory;
       config: PreviewState;
+      selectedPresets: SelectedPresets;
     };

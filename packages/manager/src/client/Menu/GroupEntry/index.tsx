@@ -56,7 +56,7 @@ export const GroupEntry: React.FC<
               others.run(
                 TreeOP.toLeafsArray(group.children),
                 selection.config.devices,
-                props.routerParams.presets,
+                selection.selectedPresets,
               );
             }}
           />

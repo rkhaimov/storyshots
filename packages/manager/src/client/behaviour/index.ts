@@ -14,9 +14,9 @@ export function useBehaviour(props: Props) {
     ...expand,
     ...test,
     ...play,
-    routerParams: router.params,
     setStory: router.setStory,
     setRecords: router.setRecords,
     setScreenshot: router.setScreenshot,
+    setPresets: router.setPresets,
   };
 }

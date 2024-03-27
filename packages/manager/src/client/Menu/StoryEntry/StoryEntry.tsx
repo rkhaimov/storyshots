@@ -20,7 +20,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
         $level={props.level}
         $active={isActive()}
         $color={blue[0]}
-        onClick={() => props.setStory(props.story.id, {})}
+        onClick={() => props.setStory(props.story.id)}
       >
         <EntryTitle
           left={
@@ -61,7 +61,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
           action={(e) => {
             e.stopPropagation();
 
-            run([story], selection.config.devices, props.routerParams.presets);
+            run([story], selection.config.devices, selection.selectedPresets);
           }}
           icon={
             <PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />
