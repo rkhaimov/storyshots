@@ -20,7 +20,7 @@ export const Presets: React.FC<Props> = ({
 
   const handleChange = (presetName: string, presetValue: string) => {
     setPresets({
-      ...selection.selectedPresets,
+      ...selection.presets,
       [presetName]: presetValue,
     });
   };
@@ -38,10 +38,8 @@ export const Presets: React.FC<Props> = ({
                 const onChange = (name: string) =>
                   handleChange(preset.name, name);
                 const value =
-                  selection.selectedPresets &&
-                  selection.selectedPresets[preset.name]
-                    ? selection.selectedPresets[preset.name]
-                    : preset.default;
+                  selection.presets?.[preset.name] ?? preset.default;
+
                 const options = [
                   {
                     value: preset.default,

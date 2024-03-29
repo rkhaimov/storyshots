@@ -41,7 +41,7 @@ export function useAutoPlaySelection(params: URLParsedParams) {
       return setSelection({
         type: 'no-selection',
         config,
-        selectedPresets: params.presets,
+        presets: params.presets,
       });
     }
 
@@ -54,7 +54,7 @@ export function useAutoPlaySelection(params: URLParsedParams) {
         type: 'records',
         story,
         config,
-        selectedPresets: params.presets,
+        presets: params.presets,
       });
     }
 
@@ -64,7 +64,7 @@ export function useAutoPlaySelection(params: URLParsedParams) {
         story,
         config,
         name: params.name,
-        selectedPresets: params.presets,
+        presets: params.presets,
       });
     }
 
@@ -73,7 +73,7 @@ export function useAutoPlaySelection(params: URLParsedParams) {
       story,
       config,
       playing: true,
-      selectedPresets: params.presets,
+      presets: params.presets,
     });
 
     const result = await driver.actOnClientSide(story.payload.actions);
@@ -84,7 +84,7 @@ export function useAutoPlaySelection(params: URLParsedParams) {
       config,
       playing: false,
       result,
-      selectedPresets: params.presets,
+      presets: params.presets,
     });
   }
 }
@@ -99,14 +99,14 @@ export type AutoPlaySelectionInitialized =
   | {
       type: 'no-selection';
       config: PreviewState;
-      selectedPresets: SelectedPresets;
+      presets: SelectedPresets;
     }
   | {
       type: 'story';
       story: PureStory;
       config: PreviewState;
       playing: true;
-      selectedPresets: SelectedPresets;
+      presets: SelectedPresets;
     }
   | {
       type: 'story';
@@ -114,18 +114,18 @@ export type AutoPlaySelectionInitialized =
       config: PreviewState;
       playing: false;
       result: WithPossibleError<void>;
-      selectedPresets: SelectedPresets;
+      presets: SelectedPresets;
     }
   | {
       type: 'records';
       story: PureStory;
       config: PreviewState;
-      selectedPresets: SelectedPresets;
+      presets: SelectedPresets;
     }
   | {
       type: 'screenshot';
       name: ScreenshotName | undefined;
       story: PureStory;
       config: PreviewState;
-      selectedPresets: SelectedPresets;
+      presets: SelectedPresets;
     };

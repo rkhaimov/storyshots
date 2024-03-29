@@ -62,7 +62,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
           action={(e) => {
             e.stopPropagation();
 
-            run([story], selection.config.devices, selection.selectedPresets);
+            run([story], selection.config.devices, selection.presets);
           }}
           icon={
             <PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />
