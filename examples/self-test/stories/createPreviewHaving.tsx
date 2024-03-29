@@ -4,7 +4,10 @@ import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { IExternals } from '../../../packages/manager/src/client/externals/types';
 import { App } from '../../../packages/preview/react/src/App';
 import { describe, it } from '../../../packages/preview/react/src/factories';
-import { ClientConfig, StoryTree } from '../../../packages/preview/react/src/types';
+import {
+  ClientConfig,
+  StoryTree,
+} from '../../../packages/preview/react/src/types';
 
 export const createPreviewHavingStories = (
   createConfig: (factories: Factories<null>) => StoryTree[],

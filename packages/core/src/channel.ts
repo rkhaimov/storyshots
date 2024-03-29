@@ -1,8 +1,14 @@
-import { PurePresetGroup, PureStoryTree, StoryID } from './story';
+import {
+  PresetConfigName,
+  PresetName,
+  PurePresetGroup,
+  PureStoryTree,
+  StoryID,
+} from './story';
 import { DevicePresets } from './test-presets';
 
 export type SelectedPresets = null | {
-  [key: string]: string;
+  [key: PresetConfigName]: PresetName;
 };
 
 export type PreviewState = {

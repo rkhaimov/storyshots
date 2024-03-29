@@ -2,6 +2,7 @@ import {
   assertNotEmpty,
   Channel,
   ManagerState,
+  SelectedPresets,
   StoryID,
   TreeOP,
 } from '@storyshots/core';
@@ -21,7 +22,9 @@ export const Story: React.FC<
 
   const configured = config.presets.reduce((externals, preset) => {
     const specified = preset.additional.find(
-      (it) => it.name === (presets ?? {})[preset.name],
+      (it) =>
+        it.name ===
+        (presets ?? ({} as NonNullable<SelectedPresets>))[preset.name],
     );
 
     return specified?.configure(externals) ?? externals;

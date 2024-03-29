@@ -1,5 +1,11 @@
 import React from 'react';
-import { DevicePresets, IntermediateNode, LeafNode } from '@storyshots/core';
+import {
+  DevicePresets,
+  IntermediateNode,
+  LeafNode,
+  PresetConfigName,
+  PresetName,
+} from '@storyshots/core';
 import { Actor } from './actor/types';
 import { IExternals } from './externals/types';
 import { Journal } from './journal/types';
@@ -26,7 +32,14 @@ export type Story<TExternals = unknown> = LeafNode<{
 
 export type ClientConfig<TExternals> = {
   devices: DevicePresets;
-  presets: CustomPresetGroup<TExternals>[];
+  presets: PresetGroup<TExternals>[];
+  createExternals(): TExternals;
+  createJournalExternals(externals: TExternals, journal: Journal): TExternals;
+};
+
+export type UserClientConfig<TExternals> = {
+  devices: DevicePresets;
+  presets: UserPresetGroup<TExternals>[];
   createExternals(): TExternals;
   createJournalExternals(externals: TExternals, journal: Journal): TExternals;
 };
@@ -36,13 +49,24 @@ export type Props = ClientConfig<unknown> & {
   externals: IExternals;
 };
 
-export type CustomPreset<TExternals> = {
+export type Preset<TExternals> = {
+  name: PresetName;
+  configure(externals: TExternals): TExternals;
+};
+
+export type PresetGroup<TExternals> = {
+  name: PresetConfigName;
+  default: PresetName;
+  additional: Preset<TExternals>[];
+};
+
+export type UserPreset<TExternals> = {
   name: string;
   configure(externals: TExternals): TExternals;
 };
 
-export type CustomPresetGroup<TExternals> = {
+export type UserPresetGroup<TExternals> = {
   name: string;
   default: string;
-  additional: CustomPreset<TExternals>[];
+  additional: UserPreset<TExternals>[];
 };

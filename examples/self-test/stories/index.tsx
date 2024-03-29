@@ -5,6 +5,8 @@ import {
   createPreviewHaving,
   createPreviewHavingStories,
 } from './createPreviewHaving';
+import { PresetConfigName } from '@storyshots/core';
+import { PresetName } from '@storyshots/core/src';
 
 export const stories = [
   describe('General', [
@@ -74,28 +76,28 @@ export const stories = [
           ],
           presets: [
             {
-              name: 'Theme',
-              default: 'Light',
+              name: 'Theme' as PresetConfigName,
+              default: 'Light' as PresetName,
               additional: [
                 {
-                  name: 'Dark',
+                  name: 'Dark' as PresetName,
                   configure: (externals) => ({ ...externals, theme: 'Dark' }),
                 },
               ],
             },
             {
-              name: 'Language',
-              default: 'Russian',
+              name: 'Language' as PresetConfigName,
+              default: 'Russian' as PresetName,
               additional: [
                 {
-                  name: 'English',
+                  name: 'English' as PresetName,
                   configure: (externals) => ({
                     ...externals,
                     language: 'English',
                   }),
                 },
                 {
-                  name: 'Chinese',
+                  name: 'Chinese' as PresetName,
                   configure: (externals) => ({
                     ...externals,
                     language: 'Chinese',
