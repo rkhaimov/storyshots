@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
 import { RouteComponentProps } from 'wouter';
+import { useExternals } from './externals/context';
 import { Story } from './Story';
 import { useSearch } from 'wouter/use-location';
-import { createPreviewConnection, TreeOP } from '@storyshots/core';
+import { TreeOP } from '@storyshots/core';
 import { SelectedPresets } from '@storyshots/core';
 
 type Props = RouteComponentProps<{
@@ -10,6 +11,7 @@ type Props = RouteComponentProps<{
 }>;
 
 export const ForChromiumOnly: React.FC<Props> = (props) => {
+  const { preview } = useExternals();
   const search = useSearch();
 
   useMemo(() => {
@@ -19,7 +21,7 @@ export const ForChromiumOnly: React.FC<Props> = (props) => {
       params.get('presets') ?? 'null',
     );
 
-    createPreviewConnection({
+    preview.createPreviewConnection({
       id: TreeOP.ensureIsLeafID(props.params.story),
       screenshotting: true,
       presets,

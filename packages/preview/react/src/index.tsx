@@ -2,8 +2,9 @@ import './connect-devtools';
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { externals } from './externals';
 import { describe, it } from './factories';
-import { Preview } from './Preview';
+import { App } from './App';
 import { ClientConfig, StoryTree } from './types';
 
 export function createPreviewApp<TExternals>(config: ClientConfig<TExternals>) {
@@ -12,7 +13,7 @@ export function createPreviewApp<TExternals>(config: ClientConfig<TExternals>) {
     it: it<TExternals>,
     run: (stories: StoryTree[]) => {
       ReactDOM.createRoot(createRootElement()).render(
-        <Preview {...config} stories={stories} />,
+        <App {...config} stories={stories} externals={externals} />,
       );
     },
   };

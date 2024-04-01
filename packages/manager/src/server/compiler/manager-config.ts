@@ -4,7 +4,7 @@ import { root } from './manager-root';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 
-export const config: Configuration = {
+const config: Configuration = {
   mode: 'development',
   bail: false,
   devtool: 'cheap-module-source-map',
@@ -57,6 +57,8 @@ export const config: Configuration = {
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: '"development"' },
     }),
-    new ForkTsCheckerWebpackPlugin({ async: true }),
+    new ForkTsCheckerWebpackPlugin({ async: false }),
   ],
 };
+
+export default config;

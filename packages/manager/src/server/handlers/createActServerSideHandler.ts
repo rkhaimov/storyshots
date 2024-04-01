@@ -118,7 +118,7 @@ async function interactWithPageAndMakeShots(
   const final = await createFinalScreenshot(baseline, page, id, config);
 
   const records = await preview.evaluate(() =>
-    (window as unknown as Channel).records(),
+    (window as never as Channel).records(),
   );
 
   return {

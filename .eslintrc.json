@@ -10,6 +10,7 @@
   ],
   "root": true,
   "rules": {
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "@typescript-eslint/no-unnecessary-type-constraint": "off"
   }
 }

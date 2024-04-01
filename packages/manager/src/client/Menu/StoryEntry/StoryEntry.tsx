@@ -21,6 +21,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
         $active={isActive()}
         $color={blue[0]}
         onClick={() => props.setStory(props.story.id)}
+        role="link"
       >
         <EntryTitle
           left={

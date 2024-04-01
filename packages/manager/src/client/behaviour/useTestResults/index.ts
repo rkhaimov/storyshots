@@ -10,7 +10,8 @@ import {
 } from '@storyshots/core';
 import { useState } from 'react';
 import { ScreenshotPath, WithPossibleError } from '../../../reusables/types';
-import { useDriver } from '../../driver';
+
+import { useExternals } from '../../externals/context';
 import { ActualResult, createActualResult } from './createRunTestResult';
 import {
   RecordsComparisonResult,
@@ -24,7 +25,7 @@ import {
 } from './types';
 
 export function useTestResults() {
-  const externals = useDriver();
+  const { driver } = useExternals();
   const [results, setResults] = useState<TestResults>(new Map());
 
   return {
@@ -53,7 +54,7 @@ export function useTestResults() {
       records: JournalRecord[],
       ready: SuccessTestResult,
     ) => {
-      await externals.acceptRecords(story.id, records);
+      await driver.acceptRecords(story.id, records);
 
       const pass: RecordsComparisonResult = { type: 'pass', actual: records };
 
@@ -72,7 +73,7 @@ export function useTestResults() {
       path: ScreenshotPath,
       ready: SuccessTestResult,
     ) => {
-      await externals.acceptScreenshot({ actual: path });
+      await driver.acceptScreenshot({ actual: path });
 
       const pass: ScreenshotComparisonResult = { type: 'pass', actual: path };
 
@@ -130,7 +131,7 @@ export function useTestResults() {
         presets,
       };
 
-      const results = await createActualResult(externals, story, config);
+      const results = await createActualResult(driver, story, config);
 
       if (results.type === 'error') {
         setResults(
@@ -187,7 +188,7 @@ export function useTestResults() {
       const results: WithPossibleError<ActualResult>[] = [];
 
       for (const config of configs) {
-        results.push(await createActualResult(externals, story, config));
+        results.push(await createActualResult(driver, story, config));
       }
 
       const result = toAllSuccessOrAnyError(results);

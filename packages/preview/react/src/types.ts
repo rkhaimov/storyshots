@@ -1,6 +1,7 @@
 import React from 'react';
 import { DevicePresets, IntermediateNode, LeafNode } from '@storyshots/core';
 import { Actor } from './actor/types';
+import { IExternals } from './externals/types';
 import { Journal } from './journal/types';
 
 export type StoryTree = Group | Story;
@@ -32,15 +33,16 @@ export type ClientConfig<TExternals> = {
 
 export type Props = ClientConfig<unknown> & {
   stories: StoryTree[];
+  externals: IExternals;
 };
 
 export type CustomPreset<TExternals> = {
   name: string;
-  prepare(externals: TExternals): TExternals;
+  configure(externals: TExternals): TExternals;
 };
 
 export type CustomPresetGroup<TExternals> = {
   name: string;
-  default: CustomPreset<TExternals>;
+  default: string;
   additional: CustomPreset<TExternals>[];
 };

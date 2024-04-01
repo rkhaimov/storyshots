@@ -1,28 +1,24 @@
-import { useMemo } from 'react';
 import {
-  assertNotEmpty,
-  createManagerConnection,
-  PureStoryTree,
-  TreeOP,
-  PurePresetGroup,
   PresetConfigName,
   PresetName,
+  PurePresetGroup,
+  PureStoryTree,
+  TreeOP,
 } from '@storyshots/core';
+import { useMemo } from 'react';
 import { createActor } from './actor';
 import { CustomPresetGroup, Props, StoryTree } from './types';
 
 export function useManagerState(props: Props) {
-  return useMemo(() => {
-    const top = window.top;
-
-    assertNotEmpty(top, 'Preview should be wrapped in manager');
-
-    return createManagerConnection(top, {
-      stories: toPureStories(props.stories),
-      devices: props.devices,
-      presets: toPurePresets(props.presets),
-    });
-  }, [props.stories]);
+  return useMemo(
+    () =>
+      props.externals.createManagerConnection({
+        stories: toPureStories(props.stories),
+        devices: props.devices,
+        presets: toPurePresets(props.presets),
+      }),
+    [props.stories],
+  );
 }
 
 function toPureStories(nodes: StoryTree[]): PureStoryTree[] {
@@ -38,13 +34,9 @@ function toPureStories(nodes: StoryTree[]): PureStoryTree[] {
 function toPurePresets(
   presets: CustomPresetGroup<unknown>[],
 ): PurePresetGroup[] {
-  return presets.map((presetGroup) => {
-    return {
-      name: presetGroup.name as PresetConfigName,
-      default: presetGroup.default.name as PresetName,
-      additional: presetGroup.additional.map(
-        (preset) => preset.name as PresetName,
-      ),
-    };
-  });
+  return presets.map((group) => ({
+    name: group.name as PresetConfigName,
+    default: group.default as PresetName,
+    additional: group.additional.map((preset) => preset.name as PresetName),
+  }));
 }

@@ -1,5 +1,4 @@
 import {
-  assertNotEmpty,
   isNil,
   ScreenshotName,
   SelectedPresets,
@@ -48,16 +47,10 @@ export function useBehaviourRouter(props: Props) {
 }
 
 function useNavigation() {
-  const search = useSearch();
   const [, navigate] = useLocation();
 
   return (url: string, query: URLSearchParams, presets: SelectedPresets) => {
-    const params = new URLSearchParams(search);
-    const secret = params.get('manager');
-
-    assertNotEmpty(secret);
-
-    query.append('manager', secret);
+    query.append('manager', 'SECRET');
     query.delete('presets');
     query.append('presets', JSON.stringify(presets));
 

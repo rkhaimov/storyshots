@@ -1,4 +1,5 @@
 import React from 'react';
+import { useExternals } from '../externals/context';
 import { Workspace } from '../Workspace';
 import { ActionAccept } from '../Workspace/Accept';
 import { DiffImgViewer } from './DiffImgViewer';
@@ -10,7 +11,6 @@ import {
 } from '../behaviour/useTestResults/types';
 import { UseBehaviourProps } from '../behaviour/types';
 import { PureStory, ScreenshotName } from '@storyshots/core';
-import { useDriver } from '../driver';
 import { presetsToString } from './utils';
 
 type Props = {
@@ -29,7 +29,7 @@ export const SingleScreenshot: React.FC<Props> = ({
   acceptScreenshot,
   onBack,
 }): React.ReactElement => {
-  const driver = useDriver();
+  const { driver } = useExternals();
   const actionBack = onBack && <ActionBack onAction={onBack} />;
 
   const { result } = screenshot;

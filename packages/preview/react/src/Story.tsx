@@ -1,13 +1,11 @@
-import React from 'react';
-
 import {
   assertNotEmpty,
-  isNil,
+  Channel,
   ManagerState,
-  setRecords,
   StoryID,
   TreeOP,
 } from '@storyshots/core';
+import React from 'react';
 import { createJournal } from './journal';
 import { Props } from './types';
 
@@ -26,15 +24,13 @@ export const Story: React.FC<
       (it) => it.name === (presets ?? {})[preset.name],
     );
 
-    return isNil(specified)
-      ? preset.default.prepare(externals)
-      : specified.prepare(externals);
+    return specified?.configure(externals) ?? externals;
   }, createExternals());
 
   const arranged = story.payload.arrange(configured, journal, screenshotting);
   const journaled = createJournalExternals(arranged, journal);
 
-  setRecords(journal.read);
+  (window as never as Channel).records = journal.read;
 
   return story.payload.render(journaled, screenshotting);
 };

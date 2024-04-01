@@ -139,6 +139,7 @@ function withUniqueIDs<TNode, TLeaf>(
         return {
           ...child,
           id: `${parent}__${child.id}` as IntermediateNodeID,
+          children: withUniqueIDs(parent, child.children),
         };
       case 'leaf':
         return {

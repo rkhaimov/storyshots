@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import ReactCompareImage from 'react-compare-image';
 import styled from 'styled-components';
 import { ScreenshotPath } from '../../reusables/types';
-import { useDriver } from '../driver';
+import { useExternals } from '../externals/context';
 
 enum ViewerMode {
   TwoUp = 'twoup',
@@ -16,7 +16,7 @@ type Props = {
 };
 
 export const DiffImgViewer: React.FC<Props> = (props) => {
-  const driver = useDriver();
+  const { driver } = useExternals();
   const [mode, setMode] = useState<ViewerMode>(ViewerMode.TwoUp);
 
   function render2Up() {

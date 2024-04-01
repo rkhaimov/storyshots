@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useExternals } from '../externals/context';
 import { Image } from './ImgViewer';
-import { useDriver } from '../driver';
 import {
   SingleConfigScreenshotResult,
   SuccessTestResult,
@@ -25,7 +25,7 @@ export const ScreenshotGallery: React.FC<Props> = ({
   result,
   acceptScreenshot,
 }) => {
-  const driver = useDriver();
+  const { driver } = useExternals();
   const [currentScreenshot, setScreenshot] =
     useState<SingleConfigScreenshotResult | null>(null);
 

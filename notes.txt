@@ -28,6 +28,9 @@ finder https://github.com/antonmedv/finder
 * display all errors with specific test config info
 * impl animation settle function
 * add accept all
+* getByRole is exact by default (should be not exact optionally)
+* all text based queries should be non exact by default
+* it (todo type?)
 
 move devices to manager
 simplify ambient types from package usage
@@ -42,3 +45,5 @@ ui-play
 * divide manager and preview build modes (if possible)
 * create solution diagram (with all SRP decisions described)
 * add semantic module type meta to npm
+* how to test antd selector
+* implement actor extensions for antd lib

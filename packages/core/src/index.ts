@@ -26,11 +26,6 @@ export type {
   LeafNode,
   Tree,
 } from './tree';
-export {
-  createManagerConnection,
-  createPreviewConnection,
-  setRecords,
-} from './channel';
 export type {
   SelectedPresets,
   PreviewState,

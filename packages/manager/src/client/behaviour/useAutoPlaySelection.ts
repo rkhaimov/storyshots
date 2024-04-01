@@ -1,22 +1,21 @@
-import { useEffect, useState } from 'react';
-import { WithPossibleError } from '../../reusables/types';
-import { useDriver } from '../driver';
-import { URLParsedParams } from './useBehaviourRouter';
-import { usePreviewBuildHash } from './usePreviewBuildHash';
 import {
   assertNotEmpty,
-  createPreviewConnection,
   PreviewState,
   PureStory,
   ScreenshotName,
   SelectedPresets,
   TreeOP,
 } from '@storyshots/core';
+import { useEffect, useState } from 'react';
+import { WithPossibleError } from '../../reusables/types';
+
+import { useExternals } from '../externals/context';
+import { URLParsedParams } from './useBehaviourRouter';
 
 // TODO: Solve cancellation problem
 export function useAutoPlaySelection(params: URLParsedParams) {
-  const driver = useDriver();
-  const hash = usePreviewBuildHash();
+  const { driver, preview } = useExternals();
+  const hash = preview.usePreviewBuildHash();
 
   const [selection, setSelection] = useState<AutoPlaySelection>({
     type: 'initializing',
@@ -32,7 +31,7 @@ export function useAutoPlaySelection(params: URLParsedParams) {
   };
 
   async function selectAndPlay() {
-    const config = await createPreviewConnection({
+    const config = await preview.createPreviewConnection({
       id: params.type === 'no-selection' ? undefined : params.id,
       screenshotting: false,
       presets: params.type === 'story' ? params.presets : {},

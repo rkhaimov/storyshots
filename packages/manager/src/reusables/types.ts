@@ -1,11 +1,9 @@
 import {
   ActionMeta,
   Brand,
-  Device,
   IntermediateNodeID,
   JournalRecord,
   ScreenshotName,
-  SelectedPresets,
   StoryID,
 } from '@storyshots/core';
 import { TestConfig } from '../client/behaviour/useTestResults/types';

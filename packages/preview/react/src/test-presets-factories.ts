@@ -33,8 +33,9 @@ export function createMobileDevice(
   };
 }
 
-type PartialDeviceConfig = Pick<CompleteDeviceConfig['config'], 'userAgent'> &
-  Pick<
-    CompleteDeviceConfig['config']['viewport'],
-    'width' | 'height' | 'deviceScaleFactor' | 'isLandscape'
-  >;
+type PartialDeviceConfig = {
+  userAgent: string;
+  width: number;
+  height: number;
+  deviceScaleFactor?: number;
+};
