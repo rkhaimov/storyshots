@@ -32,16 +32,6 @@ export interface IWebDriver {
   createScreenshotPath(path: ScreenshotPath): string;
 }
 
-export type PossibleError = {
-  type: 'error';
-  message: string;
-};
-
-export type PossibleSuccess<T> = {
-  type: 'success';
-  data: T;
-};
-
 export type WithPossibleError<T> =
   | {
       type: 'error';
