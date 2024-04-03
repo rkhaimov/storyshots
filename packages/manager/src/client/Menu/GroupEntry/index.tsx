@@ -10,7 +10,7 @@ import { EntryStatus } from '../reusables/EntryStatus';
 import { EntryTitle } from '../reusables/EntryTitle';
 import { Props } from '../types';
 import { getGroupEntryStatus } from './getGroupEntryStatus';
-import { PureGroup, TreeOP } from '@storyshots/core';
+import { LeafNodeID, PureGroup, TreeOP } from '@storyshots/core';
 
 export const GroupEntry: React.FC<
   Props & {
@@ -45,7 +45,7 @@ export const GroupEntry: React.FC<
           title={group.payload.title}
           style={{ fontSize: 16, fontWeight: 600 }}
         />
-        <EntryActions>
+        <EntryActions waiting={isPlayingOrRunning()}>
           <EntryAction
             icon={
               <PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />
@@ -86,6 +86,31 @@ export const GroupEntry: React.FC<
       )}
     </li>
   );
+
+  function isPlayingOrRunning() {
+    const { results, selection, group } = props;
+
+    const ids = collectLeafNodeIds(group.children);
+
+    const playing =
+      selection.type === 'story' &&
+      ids.includes(selection.story.id) &&
+      selection.playing;
+
+    return playing || ids.some((it) => results.get(it)?.running ?? false);
+
+    function collectLeafNodeIds(
+      groupChildren: PureGroup['children'],
+    ): LeafNodeID[] {
+      return groupChildren.flatMap((it) => {
+        if (it.type === 'leaf') {
+          return it.id;
+        } else {
+          return collectLeafNodeIds(it.children);
+        }
+      });
+    }
+  }
 };
 
 const Fold = styled(UpOutlined)`
