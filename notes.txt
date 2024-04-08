@@ -47,3 +47,7 @@ ui-play
 * add semantic module type meta to npm
 * how to test antd selector
 * implement actor extensions for antd lib
+* quick action on screenshot image and records
+* display unhandled exceptions in preview
+* more info about error
+    * what selector has been failed
