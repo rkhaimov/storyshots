@@ -51,3 +51,6 @@ ui-play
 * display unhandled exceptions in preview
 * more info about error
     * what selector has been failed
+* add mobile view for preview (and scales as well)
+* test ability for using multi entry points
+* add device argument for arrange and act
