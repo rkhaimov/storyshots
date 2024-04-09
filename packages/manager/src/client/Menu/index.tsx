@@ -15,7 +15,11 @@ export const Menu: React.FC<UseBehaviourProps> = (props) => {
   return (
     <Sidebar>
       <div>
-        <TopBar {...props} stories={props.selection.config.stories} />
+        <TopBar
+          {...props}
+          selection={props.selection}
+          stories={props.selection.config.stories}
+        />
         <MenuHavingStories
           {...props}
           stories={props.selection.config.stories}

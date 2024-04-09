@@ -13,6 +13,7 @@ import {
 
 export type Props = UseBehaviourProps & {
   stories: PureStoryTree[];
+  selection: AutoPlaySelectionInitialized;
 };
 
 export const TopBar: React.FC<Props> = ({
@@ -22,10 +23,6 @@ export const TopBar: React.FC<Props> = ({
   selection,
   results,
 }): React.ReactNode => {
-  if (selection.type === 'initializing') {
-    return;
-  }
-
   const waiting = isPlayingOrRunning(selection, results);
 
   const items: MenuProps['items'] = [
@@ -51,14 +48,7 @@ export const TopBar: React.FC<Props> = ({
     },
   ];
 
-  const allStories = stories.flatMap((it) => {
-    switch (it.type) {
-      case 'node':
-        return TreeOP.toLeafsArray(it.children);
-      case 'leaf':
-        return [it];
-    }
-  });
+  const allStories = TreeOP.toLeafsArray(stories);
 
   return (
     <Wrapper>

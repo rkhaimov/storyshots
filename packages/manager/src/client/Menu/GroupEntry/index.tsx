@@ -10,7 +10,7 @@ import { EntryStatus } from '../reusables/EntryStatus';
 import { EntryTitle } from '../reusables/EntryTitle';
 import { Props } from '../types';
 import { getGroupEntryStatus } from './getGroupEntryStatus';
-import { LeafNodeID, PureGroup, TreeOP } from '@storyshots/core';
+import { PureGroup, TreeOP } from '@storyshots/core';
 
 export const GroupEntry: React.FC<
   Props & {
@@ -92,7 +92,7 @@ export const GroupEntry: React.FC<
   function isPlayingOrRunning() {
     const { results, selection, group } = props;
 
-    const ids = collectLeafNodeIds(group.children);
+    const ids = TreeOP.toLeafsArray(group.children).map((it) => it.id);
 
     const playing =
       selection.type === 'story' &&
@@ -100,18 +100,6 @@ export const GroupEntry: React.FC<
       selection.playing;
 
     return playing || ids.some((it) => results.get(it)?.running ?? false);
-
-    function collectLeafNodeIds(
-      groupChildren: PureGroup['children'],
-    ): LeafNodeID[] {
-      return groupChildren.flatMap((it) => {
-        if (it.type === 'leaf') {
-          return it.id;
-        } else {
-          return collectLeafNodeIds(it.children);
-        }
-      });
-    }
   }
 };
 
