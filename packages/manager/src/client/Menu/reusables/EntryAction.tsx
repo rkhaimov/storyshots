@@ -3,16 +3,18 @@ import { Button } from 'antd';
 import styled from 'styled-components';
 
 type Props = {
+  label: string;
   icon: React.ReactNode;
   action?: React.MouseEventHandler<HTMLElement>;
 };
 
-export const EntryAction: React.FC<Props> = ({ action, icon }) => (
+export const EntryAction: React.FC<Props> = ({ label, action, icon }) => (
   <ActionButtonStyled
     shape="circle"
     size="small"
     onClick={action}
     icon={icon}
+    aria-label={label}
   />
 );
 

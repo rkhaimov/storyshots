@@ -1,3 +1,4 @@
+import { ConfigProvider } from 'antd';
 import {
   createDesktopDevice,
   createPreviewApp,
@@ -26,7 +27,11 @@ const {
 const it = (title: Parameters<typeof _it>[0], config: RenderBoundConfig) =>
   _it(title, {
     ...config,
-    render: (externals) => <App externals={externals} />,
+    render: (externals) => (
+      <ConfigProvider theme={{ token: { motion: false } }}>
+        <App externals={externals} />
+      </ConfigProvider>
+    ),
   });
 
 type RenderBoundConfig = Omit<Parameters<typeof _it>[1], 'render'>;

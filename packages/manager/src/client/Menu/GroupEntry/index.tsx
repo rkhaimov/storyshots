@@ -47,6 +47,7 @@ export const GroupEntry: React.FC<
         />
         <EntryActions waiting={isPlayingOrRunning()}>
           <EntryAction
+            label="Run"
             icon={
               <PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />
             }
@@ -61,6 +62,7 @@ export const GroupEntry: React.FC<
             }}
           />
           <EntryAction
+            label="Run with all presets"
             icon={
               <PlayCircleOutlined style={{ color: blue[6], fontSize: 16 }} />
             }

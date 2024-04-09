@@ -73,7 +73,7 @@ export const TopBar: React.FC<Props> = ({
         }
         disabled={waiting}
       >
-        {!waiting && <CaretRightOutlined />}
+        {!waiting && <CaretRightOutlined aria-label="Run all" />}
       </DropdownButton>
     </Wrapper>
   );

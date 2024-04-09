@@ -126,6 +126,64 @@ export const stories = [
           .click(finder.getByRole('combobox', { name: 'Language' }))
           .click(finder.getBySelector('.rc-virtual-list').getByText('Russian')),
     }),
+    it('allows to run all stories', {
+      arrange: (externals) => {
+        const runStories = createPreviewHavingStories((f) => [
+          f.describe('Cats', [
+            f.it('in general are small', {
+              render: () => <h1>Image showing that cats are small</h1>,
+            }),
+          ]),
+          f.describe('Dogs', [
+            f.it('loves to play with toys', {
+              render: () => <h1>Dogs playground</h1>,
+            }),
+          ]),
+        ]);
+
+        return runStories({
+          ...externals,
+          driver: {
+            ...externals.driver,
+            actOnServerSide: () => new Promise<never>(() => {}),
+          },
+        });
+      },
+      act: (actor) =>
+        actor.click(finder.getByRole('button', { name: 'Run all' })),
+    }),
+    it('allows to run a single story', {
+      arrange: (externals) => {
+        const runStories = createPreviewHavingStories((f) => [
+          f.describe('Cats', [
+            f.it('in general are small', {
+              render: () => <h1>Image showing that cats are small</h1>,
+            }),
+          ]),
+          f.describe('Dogs', [
+            f.it('loves to play with toys', {
+              render: () => <h1>Dogs playground</h1>,
+            }),
+          ]),
+        ]);
+
+        return runStories({
+          ...externals,
+          driver: {
+            ...externals.driver,
+            actOnServerSide: () => new Promise<never>(() => {}),
+          },
+        });
+      },
+      act: (actor) =>
+        actor
+          .click(finder.getByText('Cats'))
+          .click(
+            finder
+              .getByRole('link', { name: 'in general are small' })
+              .getByRole('button', { name: 'Run' }),
+          ),
+    }),
     // it('allows to customize externals', {}),
   ]),
   // describe('Records', [
