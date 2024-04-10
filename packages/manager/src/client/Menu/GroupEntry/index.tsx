@@ -45,8 +45,9 @@ export const GroupEntry: React.FC<
           title={group.payload.title}
           style={{ fontSize: 16, fontWeight: 600 }}
         />
-        <EntryActions>
+        <EntryActions waiting={isPlayingOrRunning()}>
           <EntryAction
+            label="Run"
             icon={
               <PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />
             }
@@ -56,11 +57,12 @@ export const GroupEntry: React.FC<
               others.run(
                 TreeOP.toLeafsArray(group.children),
                 selection.config.devices,
-                selection.selectedPresets,
+                selection.presets,
               );
             }}
           />
           <EntryAction
+            label="Run with all presets"
             icon={
               <PlayCircleOutlined style={{ color: blue[6], fontSize: 16 }} />
             }
@@ -86,6 +88,19 @@ export const GroupEntry: React.FC<
       )}
     </li>
   );
+
+  function isPlayingOrRunning() {
+    const { results, selection, group } = props;
+
+    const ids = TreeOP.toLeafsArray(group.children).map((it) => it.id);
+
+    const playing =
+      selection.type === 'story' &&
+      ids.includes(selection.story.id) &&
+      selection.playing;
+
+    return playing || ids.some((it) => results.get(it)?.running ?? false);
+  }
 };
 
 const Fold = styled(UpOutlined)`

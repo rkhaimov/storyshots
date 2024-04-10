@@ -3,5 +3,49 @@
   "general__shows_select_story_by_default_for_no_stories": [],
   "general__show_select_story_by_default_when_there_are_stories": [],
   "general__allows_to_group_stories_into_groups": [],
-  "general__allows_to_select_presets_when_they_are_defined": []
+  "general__allows_to_select_presets_when_they_are_defined": [],
+  "general__allows_to_run_all_stories": [
+    {
+      "method": "actOnServerSide",
+      "args": [
+        "cats__in_general_are_small",
+        {
+          "actions": [],
+          "config": {
+            "device": {
+              "type": "viewport-only",
+              "name": "desktop",
+              "viewport": {
+                "width": 1480,
+                "height": 920
+              }
+            },
+            "presets": null
+          }
+        }
+      ]
+    }
+  ],
+  "general__allows_to_run_a_single_story": [
+    {
+      "method": "actOnServerSide",
+      "args": [
+        "cats__in_general_are_small",
+        {
+          "actions": [],
+          "config": {
+            "device": {
+              "type": "viewport-only",
+              "name": "desktop",
+              "viewport": {
+                "width": 1480,
+                "height": 920
+              }
+            },
+            "presets": null
+          }
+        }
+      ]
+    }
+  ]
 }

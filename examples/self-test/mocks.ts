@@ -1,3 +1,4 @@
+import { Journal } from '@storyshots/react-preview';
 import { IExternals } from '../../packages/manager/src/client/externals/types';
 
 export function createExternalsDefaultMocks(): IExternals {
@@ -20,8 +21,20 @@ export function createExternalsDefaultMocks(): IExternals {
   };
 }
 
-export function createExternalsJournal(externals: IExternals) {
-  return externals;
+export function createExternalsJournal(
+  externals: IExternals,
+  journal: Journal,
+): IExternals {
+  return {
+    ...externals,
+    driver: {
+      ...externals.driver,
+      actOnServerSide: journal.record(
+        'actOnServerSide',
+        externals.driver.actOnServerSide,
+      ),
+    },
+  };
 }
 
 function shouldNeverBeCalled(): never {

@@ -22,6 +22,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
         $color={blue[0]}
         onClick={() => props.setStory(props.story.id)}
         role="link"
+        aria-label={props.story.payload.title}
       >
         <EntryTitle
           left={
@@ -59,16 +60,18 @@ export const StoryEntry: React.FC<Props> = (props) => {
     return (
       <>
         <EntryAction
+          label="Run"
           action={(e) => {
             e.stopPropagation();
 
-            run([story], selection.config.devices, selection.selectedPresets);
+            run([story], selection.config.devices, selection.presets);
           }}
           icon={
             <PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />
           }
         />
         <EntryAction
+          label="Run with all presets"
           action={(e) => {
             e.stopPropagation();
 
