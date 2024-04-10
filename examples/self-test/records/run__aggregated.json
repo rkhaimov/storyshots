@@ -1,0 +1,6 @@
+{
+  "run__aggregated__allows_to_run_all_stories_in_a_group": [],
+  "run__aggregated__allows_to_run_all_stories": [],
+  "run__aggregated__shows_waiting": [],
+  "run__aggregated__shows_errors": []
+}

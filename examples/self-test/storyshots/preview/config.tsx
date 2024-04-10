@@ -1,14 +1,11 @@
-import { ConfigProvider } from 'antd';
 import {
   createDesktopDevice,
   createPreviewApp,
 } from '@storyshots/react-preview';
+import { ConfigProvider } from 'antd';
 import React from 'react';
 import { App } from '../../../../packages/manager/src/client/App';
-import {
-  createExternalsDefaultMocks,
-  createExternalsJournal,
-} from '../../mocks';
+import { createExternalsMock, createJournaledExternals } from '../../mocks';
 
 const {
   run,
@@ -20,8 +17,8 @@ const {
     additional: [],
   },
   presets: [],
-  createExternals: createExternalsDefaultMocks,
-  createJournalExternals: createExternalsJournal,
+  createExternals: createExternalsMock,
+  createJournalExternals: createJournaledExternals,
 });
 
 const it = (title: Parameters<typeof _it>[0], config: RenderBoundConfig) =>

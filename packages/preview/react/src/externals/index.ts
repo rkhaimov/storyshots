@@ -9,4 +9,7 @@ export const externals: IExternals = {
 
     return (parent as never as Channel).state(preview);
   },
+  setRecordsSource: (records) => {
+    (window as never as Channel).records = records;
+  },
 };

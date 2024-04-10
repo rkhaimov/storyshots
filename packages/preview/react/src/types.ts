@@ -32,14 +32,7 @@ export type Story<TExternals = unknown> = LeafNode<{
 
 export type ClientConfig<TExternals> = {
   devices: DevicePresets;
-  presets: PresetGroup<TExternals>[];
-  createExternals(): TExternals;
-  createJournalExternals(externals: TExternals, journal: Journal): TExternals;
-};
-
-export type UserClientConfig<TExternals> = {
-  devices: DevicePresets;
-  presets: UserPresetGroup<TExternals>[];
+  presets: UserDefinedPresetGroup<TExternals>[];
   createExternals(): TExternals;
   createJournalExternals(externals: TExternals, journal: Journal): TExternals;
 };
@@ -60,13 +53,13 @@ export type PresetGroup<TExternals> = {
   additional: Preset<TExternals>[];
 };
 
-export type UserPreset<TExternals> = {
+export type UserDefinedPreset<TExternals> = {
   name: string;
   configure(externals: TExternals): TExternals;
 };
 
-export type UserPresetGroup<TExternals> = {
+export type UserDefinedPresetGroup<TExternals> = {
   name: string;
   default: string;
-  additional: UserPreset<TExternals>[];
+  additional: UserDefinedPreset<TExternals>[];
 };

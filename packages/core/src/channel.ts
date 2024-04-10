@@ -6,6 +6,7 @@ import {
   StoryID,
 } from './story';
 import { DevicePresets } from './test-presets';
+import { JournalRecord } from './journal';
 
 export type SelectedPresets = null | {
   [key: PresetConfigName]: PresetName;
@@ -26,5 +27,5 @@ export type ManagerState = {
 export interface Channel {
   state(preview: PreviewState): ManagerState;
 
-  records(): import('./journal').JournalRecord[];
+  records(): JournalRecord[];
 }

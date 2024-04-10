@@ -1,0 +1,63 @@
+{
+  "run__records__records_marked_methods_calls_even_when_empty": [
+    {
+      "method": "acceptRecords",
+      "args": [
+        "cats__can_be_pet",
+        []
+      ]
+    }
+  ],
+  "run__records__records_non_empty_method_calls": [
+    {
+      "method": "actOnClientSide",
+      "args": [
+        []
+      ]
+    },
+    {
+      "method": "acceptRecords",
+      "args": [
+        "cats__can_be_pet",
+        [
+          {
+            "method": "pet",
+            "args": [
+              "Tom"
+            ]
+          }
+        ]
+      ]
+    }
+  ],
+  "run__records__compares_records_between_and_when_they_are_equal": [
+    {
+      "method": "actOnClientSide",
+      "args": [
+        []
+      ]
+    }
+  ],
+  "run__records__shows_difference_between_records_when_there_is_one": [
+    {
+      "method": "actOnClientSide",
+      "args": [
+        []
+      ]
+    },
+    {
+      "method": "acceptRecords",
+      "args": [
+        "cats__can_be_pet",
+        [
+          {
+            "method": "pet",
+            "args": [
+              "Tom"
+            ]
+          }
+        ]
+      ]
+    }
+  ]
+}

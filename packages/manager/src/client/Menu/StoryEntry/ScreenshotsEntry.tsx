@@ -30,9 +30,13 @@ export const ScreenshotsEntry: React.FC<Props> = ({
   return (
     <ScreenshotsList>
       {screenshots.map((it) => {
+        const title = it.name ?? 'FINAL';
+
         return (
           <li
             key={it.name ?? 'final'}
+            role="menuitem"
+            aria-label={title}
             onClick={() => setScreenshot(story.id, it.name)}
           >
             <ActiveEntryHeader
@@ -48,7 +52,7 @@ export const ScreenshotsEntry: React.FC<Props> = ({
                     <PictureOutlined style={{ marginRight: 4 }} />
                   </>
                 }
-                title={it.name ?? 'FINAL'}
+                title={title}
               />
             </ActiveEntryHeader>
           </li>

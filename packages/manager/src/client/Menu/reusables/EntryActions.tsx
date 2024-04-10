@@ -16,6 +16,6 @@ const _EntryActions: React.FC<Props> = (props) => {
 };
 
 export const EntryActions = styled(_EntryActions)`
-  opacity: 0;
   display: flex;
+  gap: 4px;
 `;

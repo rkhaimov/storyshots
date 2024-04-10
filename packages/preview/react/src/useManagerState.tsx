@@ -7,7 +7,7 @@ import {
 } from '@storyshots/core';
 import { useMemo } from 'react';
 import { createActor } from './actor';
-import { PresetGroup, Props, StoryTree } from './types';
+import { Props, StoryTree, UserDefinedPresetGroup } from './types';
 
 export function useManagerState(props: Props) {
   return useMemo(
@@ -31,7 +31,9 @@ function toPureStories(nodes: StoryTree[]): PureStoryTree[] {
   });
 }
 
-function toPurePresets(presets: PresetGroup<unknown>[]): PurePresetGroup[] {
+function toPurePresets(
+  presets: UserDefinedPresetGroup<unknown>[],
+): PurePresetGroup[] {
   return presets.map((group) => ({
     name: group.name as PresetConfigName,
     default: group.default as PresetName,

@@ -1,15 +1,12 @@
-import { Dropdown, MenuProps } from 'antd';
+import { PureStoryTree, TreeOP } from '@storyshots/core';
 import React from 'react';
 import styled from 'styled-components';
 import { UseBehaviourProps } from '../../behaviour/types';
-import { PureStoryTree, TreeOP } from '@storyshots/core';
 import { AutoPlaySelectionInitialized } from '../../behaviour/useAutoPlaySelection';
-import { TestResults } from '../../behaviour/useTestResults/types';
-import {
-  CaretRightOutlined,
-  DownOutlined,
-  ForwardOutlined,
-} from '@ant-design/icons';
+import { EntryActions } from '../reusables/EntryActions';
+import { EntryTitle } from '../reusables/EntryTitle';
+import { RunAction } from '../reusables/RunAction';
+import { RunCompleteAction } from '../reusables/RunCompleteAction';
 
 export type Props = UseBehaviourProps & {
   stories: PureStoryTree[];
@@ -22,76 +19,38 @@ export const TopBar: React.FC<Props> = ({
   stories,
   selection,
   results,
-}): React.ReactNode => {
-  const waiting = isPlayingOrRunning(selection, results);
-
-  const items: MenuProps['items'] = [
-    {
-      label: 'Run all stories',
-      key: '1',
-      icon: <CaretRightOutlined />,
-      onClick: () =>
-        run(allStories, selection.config.devices, selection.presets),
-      disabled: waiting,
-    },
-    {
-      label: 'Run all with all presets',
-      key: '2',
-      icon: <ForwardOutlined />,
-      onClick: () =>
-        runComplete(
-          allStories,
-          selection.config.devices,
-          selection.config.presets,
-        ),
-      disabled: waiting,
-    },
-  ];
-
-  const allStories = TreeOP.toLeafsArray(stories);
+}) => {
+  const nodes = TreeOP.toLeafsArray(stories);
 
   return (
-    <Wrapper>
-      <Label>Stories</Label>
-      <DropdownButton
-        size="small"
-        icon={<DownOutlined />}
-        menu={{ items }}
-        loading={waiting}
-        onClick={() =>
-          run(allStories, selection.config.devices, selection.presets)
-        }
-        disabled={waiting}
-      >
-        {!waiting && <CaretRightOutlined aria-label="Run all" />}
-      </DropdownButton>
-    </Wrapper>
+    <StatusHeader>
+      <EntryTitle
+        left={<></>}
+        title="Stories"
+        style={{ fontSize: 16, fontWeight: 600 }}
+      />
+      <EntryActions waiting={isPlayingOrRunning()}>
+        <RunAction stories={nodes} selection={selection} run={run} />
+        <RunCompleteAction
+          stories={nodes}
+          selection={selection}
+          runComplete={runComplete}
+        />
+      </EntryActions>
+    </StatusHeader>
   );
+
+  function isPlayingOrRunning() {
+    if (selection.type === 'story' && selection.playing) {
+      return true;
+    }
+
+    return [...results.entries()].some(([, test]) => test.running);
+  }
 };
 
-const Wrapper = styled.div`
-  margin: 8px;
+const StatusHeader = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  padding: 5px 2px 5px 8px;
 `;
-
-const DropdownButton = styled(Dropdown.Button)`
-  width: fit-content;
-`;
-
-const Label = styled.span`
-  font-size: 16px;
-  font-weight: 600;
-`;
-
-function isPlayingOrRunning(
-  selection: AutoPlaySelectionInitialized,
-  results: TestResults,
-) {
-  if (selection.type === 'story' && selection.playing) {
-    return true;
-  }
-
-  return [...results.entries()].some((it) => it[1].running);
-}

@@ -26,6 +26,8 @@ export const RecordsEntry: React.FC<Props> = ({
         $offset={24}
         $active={isActive()}
         $color={blue[0]}
+        role="menuitem"
+        aria-label="Records"
         onClick={() => setRecords(story.id)}
       >
         <EntryTitle

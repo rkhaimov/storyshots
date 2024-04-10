@@ -1,8 +1,7 @@
 import {
   assertNotEmpty,
-  Channel,
   ManagerState,
-  SelectedPresets,
+  PresetConfigName,
   StoryID,
   TreeOP,
 } from '@storyshots/core';
@@ -22,18 +21,18 @@ export const Story: React.FC<
 
   const configured = config.presets.reduce((externals, preset) => {
     const specified = preset.additional.find(
-      (it) =>
-        it.name ===
-        (presets ?? ({} as NonNullable<SelectedPresets>))[preset.name],
+      (it) => it.name === (presets ?? {})[preset.name as PresetConfigName],
     );
 
     return specified?.configure(externals) ?? externals;
   }, createExternals());
 
   const arranged = story.payload.arrange(configured, journal, screenshotting);
-  const journaled = createJournalExternals(arranged, journal);
 
-  (window as never as Channel).records = journal.read;
+  config.externals.setRecordsSource(journal.read);
 
-  return story.payload.render(journaled, screenshotting);
+  return story.payload.render(
+    createJournalExternals(arranged, journal),
+    screenshotting,
+  );
 };

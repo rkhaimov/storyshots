@@ -1,16 +1,16 @@
-import { blue, green } from '@ant-design/colors';
-import { PlayCircleOutlined } from '@ant-design/icons';
+import { blue } from '@ant-design/colors';
+import { isNil } from '@storyshots/core';
 import React from 'react';
-import { EntryAction } from '../reusables/EntryAction';
 import { EntryActions } from '../reusables/EntryActions';
 import { ActiveEntryHeader } from '../reusables/EntryHeader';
 import { EntryStatus } from '../reusables/EntryStatus';
 import { EntryTitle } from '../reusables/EntryTitle';
 import { getStoryEntryStatus } from '../reusables/getStoryEntryStatus';
+import { RunAction } from '../reusables/RunAction';
+import { RunCompleteAction } from '../reusables/RunCompleteAction';
 import { RecordsEntry } from './RecordsEntry';
 import { ScreenshotsEntry } from './ScreenshotsEntry';
 import { Props } from './types';
-import { isNil } from '@storyshots/core';
 
 export const StoryEntry: React.FC<Props> = (props) => {
   return (
@@ -21,7 +21,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
         $active={isActive()}
         $color={blue[0]}
         onClick={() => props.setStory(props.story.id)}
-        role="link"
+        role="menuitem"
         aria-label={props.story.payload.title}
       >
         <EntryTitle
@@ -59,29 +59,11 @@ export const StoryEntry: React.FC<Props> = (props) => {
 
     return (
       <>
-        <EntryAction
-          label="Run"
-          action={(e) => {
-            e.stopPropagation();
-
-            run([story], selection.config.devices, selection.presets);
-          }}
-          icon={
-            <PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />
-          }
-        />
-        <EntryAction
-          label="Run with all presets"
-          action={(e) => {
-            e.stopPropagation();
-
-            runComplete(
-              [story],
-              selection.config.devices,
-              selection.config.presets,
-            );
-          }}
-          icon={<PlayCircleOutlined style={{ color: blue[6], fontSize: 16 }} />}
+        <RunAction stories={[story]} selection={selection} run={run} />
+        <RunCompleteAction
+          stories={[story]}
+          selection={selection}
+          runComplete={runComplete}
         />
       </>
     );

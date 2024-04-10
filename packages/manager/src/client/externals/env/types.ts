@@ -1,8 +1,8 @@
 import { ManagerState, PreviewState } from '@storyshots/core';
-import React, { IframeHTMLAttributes } from 'react';
+import React from 'react';
 
 export interface IPreview {
-  Frame: React.FC<IframeHTMLAttributes<unknown>>;
+  Frame: React.FC<{ src: string; id: string; hidden: boolean }>;
 
   usePreviewBuildHash(): string;
 

@@ -29,5 +29,16 @@ export const preview: IPreview = {
           return manager;
         }),
     ),
-  Frame: (props) => <iframe {...props} />,
+  Frame: ({ id, src, hidden }) => (
+    <iframe
+      id={id}
+      src={src}
+      style={{
+        display: 'block',
+        height: hidden ? 0 : '100%',
+        width: hidden ? 0 : '100%',
+        border: 'none',
+      }}
+    />
+  ),
 };

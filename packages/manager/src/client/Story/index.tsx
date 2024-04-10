@@ -2,7 +2,7 @@ import React from 'react';
 import { useExternals } from '../externals/context';
 
 type Props = {
-  hidden?: boolean;
+  hidden: boolean;
 };
 
 export const Story: React.FC<Props> = (props) => {
@@ -13,12 +13,7 @@ export const Story: React.FC<Props> = (props) => {
     <Frame
       id="preview"
       src="http://localhost:6006"
-      style={{
-        display: 'block',
-        height: props.hidden ? 0 : '100%',
-        width: props.hidden ? 0 : '100%',
-        border: 'none',
-      }}
+      hidden={props.hidden}
     />
   );
 };

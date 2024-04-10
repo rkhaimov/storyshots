@@ -49,6 +49,7 @@ export const createActor = (): Actor => {
 
       return actor;
     },
+    do: (transform) => transform(actor),
     toMeta: () => meta,
   };
 

@@ -2,6 +2,8 @@ import { ActionMeta, ClickOptions, FillOptions } from '@storyshots/core';
 
 import { Finder } from '../finder/types';
 
+export type ActorTransformer = (actor: Actor) => Actor;
+
 export type Actor = {
   hover(on: Finder): Actor;
   click(on: Finder, options?: ClickOptions): Actor;
@@ -10,5 +12,6 @@ export type Actor = {
   screenshot(name: string): Actor;
   scrollTo(to: Finder): Actor;
   scroll(amount: number, on?: Finder): Actor;
+  do(transformer: ActorTransformer): Actor;
   toMeta(): ActionMeta[];
 };

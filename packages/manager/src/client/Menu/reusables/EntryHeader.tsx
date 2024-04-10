@@ -12,14 +12,17 @@ export const EntryHeader = styled.div<Props>`
   height: 25px;
   display: flex;
   align-items: center;
-  transition: 0.2s ease-in-out;
   padding-right: 2px;
   padding-left: ${(props) => `${props.$level * 24 + props.$offset}px`};
+  
+  ${EntryActions} {
+    display: none;
+  }
 
   &:hover,
   &:focus {
     ${EntryActions} {
-      opacity: 1;
+      display: inherit;
     }
   }
 `;

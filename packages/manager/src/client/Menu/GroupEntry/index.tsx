@@ -1,16 +1,16 @@
-import { green, blue } from '@ant-design/colors';
-import { PlayCircleOutlined, UpOutlined } from '@ant-design/icons';
+import { UpOutlined } from '@ant-design/icons';
+import { PureGroup, TreeOP } from '@storyshots/core';
 import React from 'react';
 import styled from 'styled-components';
 import { MenuHavingStories } from '../MenuHavingStories';
-import { EntryAction } from '../reusables/EntryAction';
 import { EntryActions } from '../reusables/EntryActions';
 import { EntryHeader } from '../reusables/EntryHeader';
 import { EntryStatus } from '../reusables/EntryStatus';
 import { EntryTitle } from '../reusables/EntryTitle';
+import { RunAction } from '../reusables/RunAction';
+import { RunCompleteAction } from '../reusables/RunCompleteAction';
 import { Props } from '../types';
 import { getGroupEntryStatus } from './getGroupEntryStatus';
-import { PureGroup, TreeOP } from '@storyshots/core';
 
 export const GroupEntry: React.FC<
   Props & {
@@ -30,6 +30,8 @@ export const GroupEntry: React.FC<
         $offset={8}
         $level={others.level}
         onClick={() => others.toggleGroupExpanded(group)}
+        role="menuitem"
+        aria-label={group.payload.title}
       >
         <Fold open={expanded} />
         <EntryTitle
@@ -46,35 +48,15 @@ export const GroupEntry: React.FC<
           style={{ fontSize: 16, fontWeight: 600 }}
         />
         <EntryActions waiting={isPlayingOrRunning()}>
-          <EntryAction
-            label="Run"
-            icon={
-              <PlayCircleOutlined style={{ color: green[6], fontSize: 16 }} />
-            }
-            action={(e) => {
-              e.stopPropagation();
-
-              others.run(
-                TreeOP.toLeafsArray(group.children),
-                selection.config.devices,
-                selection.presets,
-              );
-            }}
+          <RunAction
+            stories={TreeOP.toLeafsArray(group.children)}
+            selection={selection}
+            run={others.run}
           />
-          <EntryAction
-            label="Run with all presets"
-            icon={
-              <PlayCircleOutlined style={{ color: blue[6], fontSize: 16 }} />
-            }
-            action={(e) => {
-              e.stopPropagation();
-
-              others.runComplete(
-                TreeOP.toLeafsArray(group.children),
-                selection.config.devices,
-                selection.config.presets,
-              );
-            }}
+          <RunCompleteAction
+            stories={TreeOP.toLeafsArray(group.children)}
+            selection={selection}
+            runComplete={others.runComplete}
           />
         </EntryActions>
       </EntryHeader>
@@ -106,5 +88,4 @@ export const GroupEntry: React.FC<
 const Fold = styled(UpOutlined)`
   margin-right: 2px;
   transform: rotate(${({ open }) => `${open ? '180' : '90'}deg`});
-  transition: 0.2s;
 `;

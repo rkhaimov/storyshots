@@ -1,0 +1,30 @@
+{
+  "menu__shows_preloader_skeleton_when_preview_is_loading": [],
+  "menu__shows_select_story_by_default_for_no_stories": [],
+  "menu__show_select_story_by_default_when_there_are_stories": [
+    {
+      "method": "actOnClientSide",
+      "args": [
+        []
+      ]
+    },
+    {
+      "method": "actOnClientSide",
+      "args": [
+        []
+      ]
+    },
+    {
+      "method": "actOnClientSide",
+      "args": [
+        []
+      ]
+    },
+    {
+      "method": "actOnClientSide",
+      "args": [
+        []
+      ]
+    }
+  ]
+}
