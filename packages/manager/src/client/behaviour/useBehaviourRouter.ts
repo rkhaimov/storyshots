@@ -1,9 +1,11 @@
 import {
+  Device,
   isNil,
   ScreenshotName,
   SelectedPresets,
   StoryID,
   TreeOP,
+  DeviceName,
 } from '@storyshots/core';
 import { useMemo } from 'react';
 import { useLocation } from 'wouter';
@@ -20,28 +22,26 @@ export function useBehaviourRouter(props: Props) {
   return {
     params,
     setStory: (id: StoryID) => {
-      navigate(`/${id}`, new URLSearchParams(), params.presets);
+      navigate(`/${id}`, new URLSearchParams(), params.config);
     },
-    setRecords: (id: StoryID) => {
+    setRecords: (id: StoryID, device: Device) => {
       navigate(
         `/${id}`,
-        new URLSearchParams({ mode: Mode.Records }),
-        params.presets,
+        new URLSearchParams({ mode: Mode.Records, device: device.name }),
+        params.config,
       );
     },
-    setScreenshot: (id: StoryID, name: string | undefined) => {
+    setScreenshot: (id: StoryID, name: ScreenshotName, device: Device) => {
       const query = new URLSearchParams({
         mode: Mode.Screenshot,
+        screenshot: name,
+        device: device.name,
       });
 
-      if (typeof name === 'string') {
-        query.append('screenshot', name);
-      }
-
-      navigate(`/${id}`, query, params.presets);
+      navigate(`/${id}`, query, params.config);
     },
-    setPresets: (presets: SelectedPresets) => {
-      navigate(pathname, new URLSearchParams(search), presets);
+    setConfig: (config: RunPreviewConfig) => {
+      navigate(pathname, new URLSearchParams(search), config);
     },
   };
 }
@@ -49,10 +49,14 @@ export function useBehaviourRouter(props: Props) {
 function useNavigation() {
   const [, navigate] = useLocation();
 
-  return (url: string, query: URLSearchParams, presets: SelectedPresets) => {
+  return (
+    url: string,
+    query: URLSearchParams,
+    config: Partial<RunPreviewConfig>,
+  ) => {
     query.append('manager', 'SECRET');
-    query.delete('presets');
-    query.append('presets', JSON.stringify(presets));
+    query.delete('config');
+    query.append('config', JSON.stringify(config));
 
     navigate(`${url}?${query}`);
   };
@@ -64,43 +68,63 @@ function useParsedParams(props: Props) {
 
   return useMemo((): URLParsedParams => {
     const params = new URLSearchParams(search);
-    const presets: SelectedPresets = JSON.parse(
-      params.get('presets') ?? 'null',
+
+    const config: Partial<RunPreviewConfig> = JSON.parse(
+      params.get('config') ?? '{}',
     );
 
     if (isNil(story)) {
-      return { type: 'no-selection', presets };
+      return { type: 'no-selection', config };
     }
 
     const id = TreeOP.ensureIsLeafID(story);
+    const device = params.get('device') as DeviceName | null;
+
+    if (isNil(device)) {
+      return {
+        type: 'story',
+        id,
+        config,
+      };
+    }
+
     const mode = params.get('mode');
 
     if (mode === Mode.Records) {
       return {
         type: 'records',
         id,
-        presets,
+        config,
+        device,
       };
     }
 
-    if (mode === Mode.Screenshot) {
+    const name = params.get('screenshot') as ScreenshotName | null;
+
+    if (mode === Mode.Screenshot && name) {
       return {
         type: 'screenshot',
-        name: (params.get('screenshot') as ScreenshotName) ?? undefined,
+        name,
         id,
-        presets,
+        config,
+        device,
       };
     }
 
     return {
       type: 'story',
       id,
-      presets,
+      config,
     };
   }, [story, search]);
 }
 
-export type URLParsedParams = { presets: SelectedPresets } & (
+export type RunPreviewConfig = {
+  device: Device & { emulated: boolean };
+  presets: SelectedPresets;
+};
+
+export type URLParsedParams = { config: Partial<RunPreviewConfig> } & (
   | {
       type: 'no-selection';
     }
@@ -111,11 +135,13 @@ export type URLParsedParams = { presets: SelectedPresets } & (
   | {
       type: 'screenshot';
       id: StoryID;
-      name: ScreenshotName | undefined;
+      name: ScreenshotName;
+      device: DeviceName;
     }
   | {
       type: 'records';
       id: StoryID;
+      device: DeviceName;
     }
 );
 

@@ -1,10 +1,15 @@
-import { ActorTransformer, finder } from '@storyshots/react-preview';
+import { finder } from '@storyshots/react-preview';
 import React from 'react';
+import {
+  acceptActiveRecordOrScreenshot,
+  openGroup,
+  openScreenshot,
+  runStoryOrGroup,
+} from '../../reusables/actor-transformers';
+import { arranger } from '../../arranger';
 import { createStoriesStub } from '../../arranger/createStoriesStub';
 import { fromActionsToScreenshots } from '../../mocks/screenshot';
 import { describe, it } from '../../storyshots/preview/config';
-import { arranger } from '../../arranger';
-import { accept, openGroup, runStory } from '../../actor-transformers';
 
 export const runScreenshotsStories = describe('Screenshots', [
   it('captures all user defined screenshots', {
@@ -21,11 +26,11 @@ export const runScreenshotsStories = describe('Screenshots', [
     act: (actor) =>
       actor
         .do(openGroup('Cats'))
-        .do(runStory('in general are small'))
+        .do(runStoryOrGroup('in general are small'))
         .screenshot('Ran')
         .do(openScreenshot('Additional'))
         .screenshot('Preview')
-        .do(accept()),
+        .do(acceptActiveRecordOrScreenshot()),
   }),
   it('compares screenshots when they have equal baseline', {
     arrange: arranger()
@@ -40,7 +45,7 @@ export const runScreenshotsStories = describe('Screenshots', [
     act: (actor) =>
       actor
         .do(openGroup('Cats'))
-        .do(runStory('in general are small'))
+        .do(runStoryOrGroup('in general are small'))
         .screenshot('Ran')
         .do(openScreenshot('FINAL')),
   }),
@@ -57,17 +62,13 @@ export const runScreenshotsStories = describe('Screenshots', [
     act: (actor) =>
       actor
         .do(openGroup('Cats'))
-        .do(runStory('in general are small'))
+        .do(runStoryOrGroup('in general are small'))
         .screenshot('Ran')
         .do(openScreenshot('FINAL'))
         .screenshot('2UP')
         .click(finder.getByRole('LabelText').has(finder.getByText('Swipe')))
         .screenshot('Onion')
-        .do(accept()),
+        .do(acceptActiveRecordOrScreenshot()),
   }),
 ]);
 
-const openScreenshot =
-  (name: string): ActorTransformer =>
-  (actor) =>
-    actor.click(finder.getByRole('menuitem', { name }));

@@ -15,18 +15,16 @@ export const Workspace: React.FC<Props> = ({
   firstAction,
   actions,
   title,
-}) => {
-  return (
-    <Layout>
-      <TopPanel>
-        <FirstAction>{firstAction}</FirstAction>
-        <Title>{title}</Title>
-        <Actions>{actions}</Actions>
-      </TopPanel>
-      <Content>{children}</Content>
-    </Layout>
-  );
-};
+}) => (
+  <Layout>
+    <TopPanel>
+      <FirstAction>{firstAction}</FirstAction>
+      <Title>{title}</Title>
+      <Actions>{actions}</Actions>
+    </TopPanel>
+    <Content>{children}</Content>
+  </Layout>
+);
 
 const TopPanel = styled(Header)`
   display: flex;

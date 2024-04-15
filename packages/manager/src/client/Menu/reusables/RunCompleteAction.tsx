@@ -21,7 +21,7 @@ export const RunCompleteAction: React.FC<Props> = ({
     action={(e) => {
       e.stopPropagation();
 
-      runComplete(stories, selection.config.devices, selection.config.presets);
+      runComplete(stories, selection.preview);
     }}
   />
 );

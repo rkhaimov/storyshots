@@ -47,12 +47,16 @@ async function _select(
     const element = elements[0];
 
     if (not(await element.isVisible())) {
+      console.warn('Element is not visible yet. Retrying...');
+
       await wait(100);
 
       continue;
     }
 
     if (not(await element.isIntersectingViewport({ threshold: 0 }))) {
+      console.warn('Element is not in viewport. Scrolling...');
+
       await element.scrollIntoView();
       await wait(100);
 
@@ -63,6 +67,8 @@ async function _select(
     const second = await getBoundingBox(element);
 
     if (not(equals(first, second))) {
+      console.warn('Element is not stable. Settling...');
+
       await wait(100);
 
       continue;

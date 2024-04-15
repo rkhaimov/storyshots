@@ -1,4 +1,4 @@
-import { finder } from '../../../../packages/preview/react/src';
+import { finder } from '@storyshots/react-preview';
 import { describe, it } from '../../storyshots/preview/config';
 
 export const balanceStories = describe('Balance', [

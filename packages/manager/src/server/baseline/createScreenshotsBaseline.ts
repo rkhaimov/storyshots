@@ -1,44 +1,26 @@
-import {
-  isNil,
-  not,
-  ScreenshotName,
-  SelectedPresets,
-  StoryID,
-} from '@storyshots/core';
+import { not, ScreenshotName, StoryID, TestConfig } from '@storyshots/core';
 import path from 'path';
-import { TestConfig } from '../../client/behaviour/useTestResults/types';
 import { ScreenshotPath } from '../../reusables/types';
 import { ServerConfig } from '../reusables/types';
 import { copy, exists, mkdir, mkfile, read } from './utils';
 
 export async function createScreenshotsBaseline(env: ServerConfig) {
   const actualResultsDir = path.join(env.paths.temp, 'actual');
-
-  if (not(await exists(actualResultsDir))) {
-    await mkdir(actualResultsDir);
-  }
-
-  if (not(await exists(env.paths.screenshots))) {
-    await mkdir(env.paths.screenshots);
-  }
+  const expectedResultsDir = env.paths.screenshots;
 
   return {
     createActualScreenshot: async (
       id: StoryID,
       config: TestConfig,
-      name: ScreenshotName | undefined,
+      name: ScreenshotName,
       content: Buffer,
     ): Promise<ScreenshotPath> => {
-      const dir = path.join(
-        actualResultsDir,
-        constructScreenshotDirName(config.device.name, config.presets),
-      );
+      const dir = path.join(actualResultsDir, createConcreteConfigPath(config));
+      const at = path.join(dir, constructScreenshotFileName(id, name));
 
       if (not(await exists(dir))) {
         await mkdir(dir);
       }
-
-      const at = path.join(dir, constructScreenshotFileName(id, name));
 
       await mkfile(at, content);
 
@@ -47,45 +29,46 @@ export async function createScreenshotsBaseline(env: ServerConfig) {
     getExpectedScreenshot: async (
       id: StoryID,
       config: TestConfig,
-      name: ScreenshotName | undefined,
+      name: ScreenshotName,
     ): Promise<ScreenshotPath | undefined> => {
       const image = constructScreenshotFileName(id, name);
       const file = path.join(
-        env.paths.screenshots,
-        constructScreenshotDirName(config.device.name, config.presets),
+        expectedResultsDir,
+        createConcreteConfigPath(config),
         image,
       );
 
       return (await exists(file)) ? (file as ScreenshotPath) : undefined;
     },
     readScreenshot: (path: ScreenshotPath): Promise<Buffer> => read(path),
-    acceptScreenshot: async (screenshot: ScreenshotPath): Promise<void> => {
-      const to = screenshot.replace(actualResultsDir, env.paths.screenshots);
-      const dir = path.dirname(to);
+    acceptScreenshot: async (temp: ScreenshotPath): Promise<void> => {
+      const baseline = temp.replace(actualResultsDir, expectedResultsDir);
+      const dir = path.dirname(baseline);
 
       if (not(await exists(dir))) {
         await mkdir(dir);
       }
 
-      return copy(screenshot, to);
+      return copy(temp, baseline);
     },
   };
 }
 
-function constructScreenshotDirName(
-  deviceName: string,
-  presets: SelectedPresets,
-) {
-  const presetsName = Object.entries(presets ?? {})
-    .map((entry) => entry.join('-'))
-    .join('_');
+function createConcreteConfigPath(config: TestConfig) {
+  const presetDir = Object.entries(config.presets)
+    .map(([name, value]) => `${name}-${value}`)
+    .join('__');
 
-  return presetsName == '' ? deviceName : `${deviceName}_${presetsName}`;
+  if (presetDir === '') {
+    return config.device.name;
+  }
+
+  return path.join(config.device.name, presetDir);
 }
 
 function constructScreenshotFileName(
   id: StoryID,
-  name: ScreenshotName | undefined,
+  name: ScreenshotName,
 ): string {
-  return isNil(name) ? `${id}.png` : `${id}_${name}.png`;
+  return `${id}_${name}.png`;
 }

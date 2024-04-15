@@ -5,25 +5,53 @@
     {
       "method": "actOnClientSide",
       "args": [
-        []
+        [
+          {
+            "action": "screenshot",
+            "payload": {
+              "name": "FINAL"
+            }
+          }
+        ]
       ]
     },
     {
       "method": "actOnClientSide",
       "args": [
-        []
+        [
+          {
+            "action": "screenshot",
+            "payload": {
+              "name": "FINAL"
+            }
+          }
+        ]
       ]
     },
     {
       "method": "actOnClientSide",
       "args": [
-        []
+        [
+          {
+            "action": "screenshot",
+            "payload": {
+              "name": "FINAL"
+            }
+          }
+        ]
       ]
     },
     {
       "method": "actOnClientSide",
       "args": [
-        []
+        [
+          {
+            "action": "screenshot",
+            "payload": {
+              "name": "FINAL"
+            }
+          }
+        ]
       ]
     }
   ]

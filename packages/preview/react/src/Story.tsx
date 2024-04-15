@@ -4,15 +4,17 @@ import {
   PresetConfigName,
   StoryID,
   TreeOP,
+  createJournal,
+  Device,
 } from '@storyshots/core';
 import React from 'react';
-import { createJournal } from './journal';
 import { Props } from './types';
 
 export const Story: React.FC<
   { id: StoryID } & ManagerState & { config: Props }
-> = ({ id, presets, config, screenshotting }) => {
+> = ({ id, presets, config, screenshotting, device }) => {
   const { createExternals, createJournalExternals, stories } = config;
+  const devices = config.devices as Device[];
   const story = TreeOP.find(stories, id);
 
   assertNotEmpty(story);
@@ -27,7 +29,12 @@ export const Story: React.FC<
     return specified?.configure(externals) ?? externals;
   }, createExternals());
 
-  const arranged = story.payload.arrange(configured, journal, screenshotting);
+  const arranged = story.payload.arrange(
+    configured,
+    journal,
+    // TODO: There might be a problem of disync, should be tested
+    device ?? devices[0],
+  );
 
   config.externals.setRecordsSource(journal.read);
 

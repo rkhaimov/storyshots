@@ -4,7 +4,7 @@ import { useBehaviour } from './behaviour';
 import { Menu } from './Menu';
 import { Records } from './Records';
 import { Screenshot } from './Screenshot';
-import { Story } from './Story';
+import { EmulatedPreviewFrame } from './EmulatedPreviewFrame';
 import { Props } from './types';
 
 const { Sider } = Layout;
@@ -24,6 +24,7 @@ export const Manager: React.FC<Props> = (props) => {
           style={{
             background: colorBgContainer,
             overflowY: 'auto',
+            overflowX: 'hidden',
             borderRight: '1px solid #cecece',
           }}
         >
@@ -33,17 +34,11 @@ export const Manager: React.FC<Props> = (props) => {
           style={{
             width: '100%',
             backgroundColor: 'white',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            position: 'relative',
           }}
         >
-          <Story
+          <EmulatedPreviewFrame
+            selection={behaviour.selection}
             key={behaviour.identity}
-            hidden={
-              behaviour.selection.type === 'screenshot' ||
-              behaviour.selection.type === 'records'
-            }
           />
           {behaviour.selection.type === 'screenshot' && (
             <Screenshot

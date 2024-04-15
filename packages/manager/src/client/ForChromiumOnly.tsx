@@ -1,10 +1,9 @@
+import { SelectedPresets, TreeOP } from '@storyshots/core';
 import React, { useMemo } from 'react';
 import { RouteComponentProps } from 'wouter';
-import { useExternals } from './externals/context';
-import { Story } from './Story';
 import { useSearch } from 'wouter/use-location';
-import { TreeOP } from '@storyshots/core';
-import { SelectedPresets } from '@storyshots/core';
+import { useExternals } from './externals/context';
+import { PreviewFrame } from './PreviewFrame';
 
 type Props = RouteComponentProps<{
   story: string;
@@ -28,5 +27,5 @@ export const ForChromiumOnly: React.FC<Props> = (props) => {
     });
   }, []);
 
-  return <Story hidden={false} />;
+  return <PreviewFrame hidden={false} />;
 };

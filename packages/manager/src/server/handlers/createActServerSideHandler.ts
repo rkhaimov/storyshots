@@ -3,17 +3,16 @@ import {
   Device,
   ScreenshotAction,
   StoryID,
+  TestConfig,
   TreeOP,
 } from '@storyshots/core';
 import { Application } from 'express-serve-static-core';
 import { Frame, Page } from 'puppeteer';
 import { Cluster } from 'puppeteer-cluster';
-import { TestConfig } from '../../client/behaviour/useTestResults/types';
 import {
-  ActionsOnDevice,
+  ActionsAndConfig,
   ActualServerSideResult,
   Screenshot,
-  ScreenshotPath,
   WithPossibleError,
 } from '../../reusables/types';
 import { act } from '../reusables/act';
@@ -24,7 +23,7 @@ import { handlePossibleErrors } from './reusables/handlePossibleErrors';
 
 type ActPayload = {
   id: StoryID;
-  payload: ActionsOnDevice;
+  payload: ActionsAndConfig;
 };
 
 export async function createActServerSideHandler(
@@ -51,7 +50,7 @@ export async function createActServerSideHandler(
 
   app.post('/api/server/act/:id', async (request, response) => {
     const id = TreeOP.ensureIsLeafID(request.params.id);
-    const payload: ActionsOnDevice = request.body;
+    const payload: ActionsAndConfig = request.body;
 
     response.json(await cluster.execute({ id, payload }));
   });
@@ -61,7 +60,7 @@ async function createServerResultByDevice(
   baseline: Baseline,
   page: Page,
   id: StoryID,
-  payload: ActionsOnDevice,
+  payload: ActionsAndConfig,
 ) {
   await configurePageByMode(payload.config.device, page);
 
@@ -92,10 +91,13 @@ async function createServerResultByDevice(
 
 async function configurePageByMode(device: Device, page: Page) {
   switch (device.type) {
-    case 'viewport-only':
-      return page.setViewport(device.viewport);
-    case 'complete':
-      return page.emulate(device.config);
+    case 'size-only':
+      return page.setViewport(device.config);
+    case 'emulated':
+      return page.emulate({
+        viewport: device.config,
+        userAgent: device.config.userAgent,
+      });
   }
 }
 
@@ -104,18 +106,18 @@ async function interactWithPageAndMakeShots(
   page: Page,
   preview: Frame,
   id: StoryID,
-  { actions, config }: ActionsOnDevice,
+  { actions, config }: ActionsAndConfig,
 ): Promise<ActualServerSideResult> {
-  const others: Screenshot[] = [];
+  const screenshots: Screenshot[] = [];
   for (const action of actions) {
     if (action.action === 'screenshot') {
-      others.push(await createScreenshot(baseline, page, id, action, config));
+      screenshots.push(
+        await createScreenshot(baseline, page, id, action, config),
+      );
     } else {
       await act(preview, action);
     }
   }
-
-  const final = await createFinalScreenshot(baseline, page, id, config);
 
   const records = await preview.evaluate(() =>
     (window as never as Channel).records(),
@@ -123,10 +125,7 @@ async function interactWithPageAndMakeShots(
 
   return {
     records,
-    screenshots: {
-      final,
-      others,
-    },
+    screenshots,
   };
 }
 
@@ -148,18 +147,4 @@ async function createScreenshot(
     name: action.payload.name,
     path,
   };
-}
-
-async function createFinalScreenshot(
-  baseline: Baseline,
-  page: Page,
-  id: StoryID,
-  config: TestConfig,
-): Promise<ScreenshotPath> {
-  return baseline.createActualScreenshot(
-    id,
-    config,
-    undefined,
-    await page.screenshot({ type: 'png' }),
-  );
 }

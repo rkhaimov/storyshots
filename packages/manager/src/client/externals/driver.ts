@@ -25,8 +25,14 @@ export const driver: IWebDriver = {
         'Content-Type': 'application/json',
       },
     }).then((response) => response.json()),
-  getExpectedRecords: (at) =>
-    fetch(`/api/record/expected/${at}`).then((response) => response.json()),
+  getExpectedRecords: (at, device) =>
+    fetch(`/api/record/expected/${at}`, {
+      method: 'POST',
+      body: JSON.stringify(device),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => response.json()),
   areScreenshotsEqual: (screenshots) =>
     fetch('/api/screenshot/equals', {
       method: 'POST',
@@ -44,10 +50,10 @@ export const driver: IWebDriver = {
       },
     });
   },
-  acceptRecords: async (at, records) => {
+  acceptRecords: async (at, payload) => {
     await fetch(`/api/record/accept/${at}`, {
       method: 'POST',
-      body: JSON.stringify(records),
+      body: JSON.stringify(payload),
       headers: {
         'Content-Type': 'application/json',
       },

@@ -1,5 +1,54 @@
 {
-  "run__aggregated__allows_to_run_all_stories_in_a_group": [],
+  "run__aggregated__allows_to_run_all_stories_in_a_group": [
+    {
+      "method": "acceptRecords",
+      "args": [
+        "cats__in_general_are_small",
+        [],
+        {
+          "type": "size-only",
+          "name": "desktop",
+          "config": {
+            "width": 1480,
+            "height": 920
+          },
+          "emulated": false
+        }
+      ]
+    },
+    {
+      "method": "acceptRecords",
+      "args": [
+        "cats__daily__during_day_cats_love_to_play_around",
+        [],
+        {
+          "type": "size-only",
+          "name": "desktop",
+          "config": {
+            "width": 1480,
+            "height": 920
+          },
+          "emulated": false
+        }
+      ]
+    },
+    {
+      "method": "acceptScreenshot",
+      "args": [
+        {
+          "actual": "{\"at\":\"cats__in_general_are_small\",\"name\":\"actual FINAL\",\"config\":{\"presets\":{},\"device\":{\"type\":\"size-only\",\"name\":\"desktop\",\"config\":{\"width\":1480,\"height\":920},\"emulated\":false}}}"
+        }
+      ]
+    },
+    {
+      "method": "acceptScreenshot",
+      "args": [
+        {
+          "actual": "{\"at\":\"cats__daily__during_day_cats_love_to_play_around\",\"name\":\"actual FINAL\",\"config\":{\"presets\":{},\"device\":{\"type\":\"size-only\",\"name\":\"desktop\",\"config\":{\"width\":1480,\"height\":920},\"emulated\":false}}}"
+        }
+      ]
+    }
+  ],
   "run__aggregated__allows_to_run_all_stories": [],
   "run__aggregated__shows_waiting": [],
   "run__aggregated__shows_errors": []

@@ -1,36 +1,45 @@
 import {
   ActionMeta,
   Brand,
+  Device,
   IntermediateNodeID,
   JournalRecord,
   ScreenshotName,
   StoryID,
+  TestConfig,
 } from '@storyshots/core';
-import { TestConfig } from '../client/behaviour/useTestResults/types';
 
 export interface IWebDriver {
   actOnClientSide(action: ActionMeta[]): Promise<WithPossibleError<void>>;
 
   actOnServerSide(
     at: StoryID,
-    payload: ActionsOnDevice,
+    payload: ActionsAndConfig,
   ): Promise<WithPossibleError<ActualServerSideResult>>;
 
   getExpectedScreenshots(
     at: StoryID,
-    payload: ActionsOnDevice,
-  ): Promise<ExpectedScreenshots>;
+    payload: ActionsAndConfig,
+  ): Promise<Screenshot[]>;
 
-  getExpectedRecords(at: StoryID): Promise<JournalRecord[] | null>;
+  getExpectedRecords(
+    at: StoryID,
+    device: Device,
+  ): Promise<JournalRecord[] | null>;
 
   acceptScreenshot(screenshot: ScreenshotToAccept): Promise<void>;
 
-  acceptRecords(at: StoryID, records: JournalRecord[]): Promise<void>;
+  acceptRecords(at: StoryID, payload: DeviceAndRecord): Promise<void>;
 
   areScreenshotsEqual(screenshots: ScreenshotsToCompare): Promise<boolean>;
 
   createScreenshotPath(path: ScreenshotPath): string;
 }
+
+export type DeviceAndRecord = {
+  records: JournalRecord[];
+  device: Device;
+};
 
 export type WithPossibleError<T> =
   | {
@@ -42,7 +51,7 @@ export type WithPossibleError<T> =
       data: T;
     };
 
-export type ActionsOnDevice = {
+export type ActionsAndConfig = {
   actions: ActionMeta[];
   config: TestConfig;
 };
@@ -58,17 +67,7 @@ export type ScreenshotsToCompare = {
 
 export type ActualServerSideResult = {
   records: JournalRecord[];
-  screenshots: ActualScreenshots;
-};
-
-export type ActualScreenshots = {
-  final: ScreenshotPath;
-  others: Screenshot[];
-};
-
-export type ExpectedScreenshots = {
-  final: ScreenshotPath | undefined;
-  others: Screenshot[];
+  screenshots: Screenshot[];
 };
 
 export type Screenshot = {

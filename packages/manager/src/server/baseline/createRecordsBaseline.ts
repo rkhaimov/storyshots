@@ -1,31 +1,38 @@
+import { Device, JournalRecord, not, StoryID, TreeOP } from '@storyshots/core';
 import path from 'path';
+import { DeviceAndRecord } from '../../reusables/types';
 
 import { ServerConfig } from '../reusables/types';
 import { exists, mkdir, mkfile, read } from './utils';
-import { JournalRecord, not, StoryID, TreeOP } from '@storyshots/core';
 
 export async function createRecordsBaseline(config: ServerConfig) {
-  if (not(await exists(config.paths.records))) {
-    await mkdir(config.paths.records);
-  }
-
   return {
     getExpectedRecords: async (
       id: StoryID,
+      device: Device,
     ): Promise<JournalRecord[] | undefined> => {
-      const records = await getRecordsMapByStoryId(id);
+      const records = await getRecordsMap(id, device);
 
       return records[id];
     },
-    acceptRecords: async (id: StoryID, actual: JournalRecord[]) => {
-      const records = await getRecordsMapByStoryId(id);
+    acceptRecords: async (
+      id: StoryID,
+      { records, device }: DeviceAndRecord,
+    ) => {
+      const baseline = await getRecordsMap(id, device);
 
-      return updateRecordsMapByStoryId(id, { ...records, [id]: actual });
+      return updateRecordsMap(id, device, {
+        ...baseline,
+        [id]: records,
+      });
     },
   };
 
-  async function getRecordsMapByStoryId(id: StoryID): Promise<RecordsMap> {
-    const name = getRecordsMapFileNameById(id);
+  async function getRecordsMap(
+    id: StoryID,
+    device: Device,
+  ): Promise<StoryIDToRecords> {
+    const name = getRecordsMapFileName(id, device);
     const fullPath = path.join(config.paths.records, name);
 
     if (not(await exists(fullPath))) {
@@ -35,23 +42,29 @@ export async function createRecordsBaseline(config: ServerConfig) {
     return JSON.parse((await read(fullPath)).toString());
   }
 
-  async function updateRecordsMapByStoryId(
+  async function updateRecordsMap(
     id: StoryID,
-    records: RecordsMap,
+    device: Device,
+    records: StoryIDToRecords,
   ): Promise<void> {
-    const name = getRecordsMapFileNameById(id);
+    const name = getRecordsMapFileName(id, device);
     const file = path.join(config.paths.records, name);
+    const dir = path.dirname(file);
+
+    if (not(await exists(dir))) {
+      await mkdir(dir);
+    }
 
     return mkfile(file, JSON.stringify(records, null, 2));
   }
 }
 
-function getRecordsMapFileNameById(id: StoryID): string {
+function getRecordsMapFileName(id: StoryID, device: Device): string {
   const parents = TreeOP.parseInterNodeIDsChain(id);
 
   const last = parents[parents.length - 1];
 
-  return `${last ?? id}.json`;
+  return path.join(device.name, `${last ?? id}.json`);
 }
 
-type RecordsMap = Record<StoryID, JournalRecord[]>;
+type StoryIDToRecords = Record<StoryID, JournalRecord[]>;

@@ -1,4 +1,3 @@
-import { ScreenshotPath } from '../../../reusables/types';
 import {
   Device,
   JournalRecord,
@@ -6,31 +5,29 @@ import {
   SelectedPresets,
   StoryID,
 } from '@storyshots/core';
-
-export type TestConfig = {
-  device: Device;
-  presets: SelectedPresets;
-};
+import { ScreenshotPath } from '../../../reusables/types';
 
 export type TestResults = Map<StoryID, TestResult>;
 
 export type SuccessTestResult = {
   running: false;
   type: 'success';
+  details: TestResultDetails[];
+};
+
+export type TestResultDetails = {
+  device: Device;
   records: RecordsComparisonResult;
-  screenshots: {
-    final: SingleConfigScreenshotResult[];
-    others: ScreenshotGroupResult[];
-  };
+  screenshots: ScreenshotResult[];
 };
 
-export type ScreenshotGroupResult = {
+export type ScreenshotResult = {
   name: ScreenshotName;
-  results: SingleConfigScreenshotResult[];
+  results: PresetScreenshotResult[];
 };
 
-export type SingleConfigScreenshotResult = {
-  config: TestConfig;
+export type PresetScreenshotResult = {
+  presets: SelectedPresets;
   result: ScreenshotComparisonResult;
 };
 
@@ -47,12 +44,9 @@ export type TestResult =
   | SuccessTestResult
   | ErrorTestResult;
 
-export type ScreenshotsComparisonResults = {
-  final: ScreenshotComparisonResult;
-  others: Array<{
-    name: ScreenshotName;
-    result: ScreenshotComparisonResult;
-  }>;
+export type ScreenshotsComparisonResult = {
+  name: ScreenshotName;
+  result: ScreenshotComparisonResult;
 };
 
 export type ScreenshotComparisonResult =
@@ -60,12 +54,12 @@ export type ScreenshotComparisonResult =
       type: 'fresh';
       actual: ScreenshotPath;
     }
-  | { type: 'pass'; actual: ScreenshotPath }
   | {
       type: 'fail';
       actual: ScreenshotPath;
       expected: ScreenshotPath;
-    };
+    }
+  | { type: 'pass'; actual: ScreenshotPath };
 
 export type RecordsComparisonResult =
   | {
@@ -73,11 +67,11 @@ export type RecordsComparisonResult =
       actual: JournalRecord[];
     }
   | {
-      type: 'pass';
-      actual: JournalRecord[];
-    }
-  | {
       type: 'fail';
       actual: JournalRecord[];
       expected: JournalRecord[];
+    }
+  | {
+      type: 'pass';
+      actual: JournalRecord[];
     };

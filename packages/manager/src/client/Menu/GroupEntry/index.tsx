@@ -1,8 +1,9 @@
-import { UpOutlined } from '@ant-design/icons';
+import { CheckOutlined, UpOutlined } from '@ant-design/icons';
 import { PureGroup, TreeOP } from '@storyshots/core';
 import React from 'react';
 import styled from 'styled-components';
 import { MenuHavingStories } from '../MenuHavingStories';
+import { EntryAction } from '../reusables/EntryAction';
 import { EntryActions } from '../reusables/EntryActions';
 import { EntryHeader } from '../reusables/EntryHeader';
 import { EntryStatus } from '../reusables/EntryStatus';
@@ -24,6 +25,12 @@ export const GroupEntry: React.FC<
     return;
   }
 
+  const status = getGroupEntryStatus(
+    props.results,
+    props.selection,
+    group.children,
+  );
+
   return (
     <li>
       <EntryHeader
@@ -35,19 +42,12 @@ export const GroupEntry: React.FC<
       >
         <Fold open={expanded} />
         <EntryTitle
-          left={
-            <EntryStatus
-              status={getGroupEntryStatus(
-                props.results,
-                props.selection,
-                group.children,
-              )}
-            />
-          }
+          left={<EntryStatus status={status?.type} />}
           title={group.payload.title}
           style={{ fontSize: 16, fontWeight: 600 }}
         />
         <EntryActions waiting={isPlayingOrRunning()}>
+          {renderAcceptAllAction()}
           <RunAction
             stories={TreeOP.toLeafsArray(group.children)}
             selection={selection}
@@ -82,6 +82,28 @@ export const GroupEntry: React.FC<
       selection.playing;
 
     return playing || ids.some((it) => results.get(it)?.running ?? false);
+  }
+
+  function renderAcceptAllAction() {
+    if (status?.type === 'fresh' || status?.type === 'fail') {
+      return (
+        <EntryAction
+          label="Accept all"
+          icon={<CheckOutlined />}
+          action={async (e) => {
+            e.stopPropagation();
+
+            for (const record of status.records) {
+              await props.acceptRecords(record);
+            }
+
+            for (const screenshot of status.screenshots) {
+              await props.acceptScreenshot(screenshot);
+            }
+          }}
+        />
+      );
+    }
   }
 };
 

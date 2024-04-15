@@ -1,11 +1,10 @@
+import { isNil } from '@storyshots/core';
 import React from 'react';
 
 import { UseBehaviourProps } from '../behaviour/types';
 import { Spinner } from '../reusables/Spinner';
-import { isNil } from '@storyshots/core';
-import { SingleScreenshot } from './SingleScreenshot';
 import { ScreenshotGallery } from './ScreenshotGallery';
-import { pickScreenshots } from './utils';
+import { SingleScreenshot } from './SingleScreenshot';
 
 type ScreenshotSelection = Extract<
   UseBehaviourProps['selection'],
@@ -39,19 +38,29 @@ export const Screenshot: React.FC<Props> = ({
     );
   }
 
-  const screenshots = pickScreenshots(selection.name, result);
+  const details = result.details.find(
+    (it) => it.device.name === selection.device,
+  );
 
-  if (isNil(screenshots)) {
+  if (isNil(details)) {
+    return <span>Screenshots are not generated yet, for a given device</span>;
+  }
+
+  const screenshot = details.screenshots.find(
+    (it) => it.name === selection.name,
+  );
+
+  if (isNil(screenshot)) {
     return <span>Given screenshot is missing</span>;
   }
 
-  if (screenshots.length > 1) {
+  if (screenshot.results.length > 1) {
     return (
       <ScreenshotGallery
-        screenshots={screenshots}
+        screenshots={screenshot.results}
         story={selection.story}
         acceptScreenshot={acceptScreenshot}
-        result={result}
+        details={details}
         name={selection.name}
       />
     );
@@ -60,10 +69,10 @@ export const Screenshot: React.FC<Props> = ({
   return (
     <SingleScreenshot
       name={selection.name}
-      screenshot={screenshots[0]}
+      screenshot={screenshot.results[0]}
       story={selection.story}
       acceptScreenshot={acceptScreenshot}
-      results={result}
+      details={details}
     />
   );
 };

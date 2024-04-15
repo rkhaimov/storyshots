@@ -19,14 +19,15 @@ ui-play - self-explanatory
   * When current test config is not supported by story, it should be grayed out
 * Decide how bulk run should react on error
   * It should not stop, probably
-* Add accept all button
-* Add device preview
-  * It should be integrated with existing presets config
-  * Mobile preview should also be supported (emulate size and agent)
-  * Story factories should accept test config as their argument
 * Handle non serializable entities for recorder
   * Examine how jest handles them
 * Errors should say implicitly that element was not visible, that is why timeout has been triggered
+* Fill method can not change input value (ref to puppeteer-core\src\api\locators\locators.ts#472)
+* React-devtool duplicates roots
+* Stop button
+* Slight changes on global components make a lot of tests to fail
+  * Maybe there is a way of determining similar kinds of change?
+  * Pixels areas might be used
 
 ## Low priority
 
@@ -37,6 +38,11 @@ ui-play - self-explanatory
 * Add actor a function to wait while all page animations are done
 * Add todo meta function to `it` factory
 * Implement antd actor extensions package
+* Implement stale test results indicators
+  * Allows to cache results
+  * Content hash might be used as relevancy key
+* Rename story or group utility
+  * It is relatively hard to rename them manually
 
 ## Questionable
 
@@ -45,10 +51,15 @@ ui-play - self-explanatory
 
 # Structural improvements
 
+* Hide behind preview facade @core dependency from clients
+  * It is very likely that packages structure will change in future
 * Explain package level architecture
 * Move devtools extension to react-preview
 * Obtain more control under public interface
   * api extractor
+* Solve broken self testing
+  * Testing env references actual code but not bundled
+* Develop a general strategy of test writing that ensures there are no duplicated or missed tests
 
 ## Low priority
 

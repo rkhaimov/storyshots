@@ -1,9 +1,11 @@
-import { run } from '@storyshots/manager';
-import { createBundler } from '@storyshots/webpack-bundler';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
+import dev from 'webpack-dev-middleware';
+import { createBundler } from '../../../packages/bundler/webpack/src';
+import { run } from '../../../packages/manager/src/run';
+import config from '../../../packages/manager/src/server/compiler/manager-config';
 
 run({
   paths: {
@@ -83,10 +85,24 @@ run({
     },
     plugins: [
       new HtmlWebpackPlugin(),
-      new ForkTsCheckerWebpackPlugin({ async: true }),
+      new ForkTsCheckerWebpackPlugin({
+        async: true,
+        typescript: {
+          configOverwrite: {
+            compilerOptions: {
+              paths: {
+                '@storyshots/core': ['./packages/core/src'],
+                '@storyshots/react-preview': ['./packages/preview/react/src'],
+                '@storyshots/manager': ['./packages/manager/src'],
+              },
+            },
+          },
+        },
+      }),
       new webpack.DefinePlugin({
         'process.env': { NODE_ENV: '"development"' },
       }),
     ],
   })),
+  createManagerCompiler: () => dev(webpack(config)),
 });

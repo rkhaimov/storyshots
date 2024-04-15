@@ -1,0 +1,35 @@
+{
+  "balance__shows_current_salary": [],
+  "balance__provides_ability_to_work_hard": [
+    {
+      "method": "log",
+      "args": [
+        "worked hard"
+      ]
+    }
+  ],
+  "balance__lets_user_to_relax_and_spend_money": [
+    {
+      "method": "log",
+      "args": [
+        "worked hard"
+      ]
+    },
+    {
+      "method": "log",
+      "args": [
+        "relaxed a little"
+      ]
+    }
+  ],
+  "balance__shows_spinner_when_balance_is_not_retrieved_yet": [],
+  "balance__balance_can_be_different_by_default": [],
+  "balance__provides_correct_date_when_retrieving_current_balance": [
+    {
+      "method": "getInitialValue",
+      "args": [
+        1705136400000
+      ]
+    }
+  ]
+}

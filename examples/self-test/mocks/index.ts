@@ -18,7 +18,7 @@ export function createExternalsMock(): IExternals {
         },
       }),
       getExpectedRecords: async () => null,
-      getExpectedScreenshots: async () => ({ final: undefined, others: [] }),
+      getExpectedScreenshots: async () => [],
       areScreenshotsEqual: shouldNeverBeCalled,
     },
     preview: {
@@ -52,4 +52,3 @@ export function createJournaledExternals(
     },
   };
 }
-

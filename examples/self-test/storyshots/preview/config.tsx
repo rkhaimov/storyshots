@@ -1,7 +1,4 @@
-import {
-  createDesktopDevice,
-  createPreviewApp,
-} from '@storyshots/react-preview';
+import { createPreviewApp } from '@storyshots/react-preview';
 import { ConfigProvider } from 'antd';
 import React from 'react';
 import { App } from '../../../../packages/manager/src/client/App';
@@ -12,10 +9,13 @@ const {
   it: _it,
   describe,
 } = createPreviewApp({
-  devices: {
-    primary: createDesktopDevice('desktop', { width: 1480, height: 920 }),
-    additional: [],
-  },
+  devices: [
+    {
+      type: 'size-only',
+      name: 'desktop',
+      config: { width: 1480, height: 920 },
+    },
+  ],
   presets: [],
   createExternals: createExternalsMock,
   createJournalExternals: createJournaledExternals,

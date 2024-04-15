@@ -1,15 +1,26 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { App } from '../../../packages/preview/react/src/App';
+import { Props } from './types';
 
-type Props = React.ComponentProps<typeof App> & { hidden: boolean };
+export const IFrameEmulatedPreview: React.FC<Props & { hidden: boolean }> = (
+  props,
+) => {
+  if (props.hidden) {
+    return (
+      <Delay>
+        <div style={{ display: 'none' }}>
+          <App {...props} />
+        </div>
+      </Delay>
+    );
+  }
 
-export const IFrameEmulatedPreview: React.FC<Props> = (props) => (
-  <Delay>
-    <div style={{ display: props.hidden ? 'none' : 'initial' }}>
+  return (
+    <Delay>
       <App {...props} />
-    </div>
-  </Delay>
-);
+    </Delay>
+  );
+};
 
 const Delay: React.FC<PropsWithChildren> = ({ children }) => {
   const [done, setDone] = useState(false);

@@ -1,10 +1,10 @@
+import { isNil } from '@storyshots/core';
 import React from 'react';
 import { UseBehaviourProps } from '../behaviour/types';
 import { Spinner } from '../reusables/Spinner';
 import { Workspace } from '../Workspace';
 import { ActionAccept } from '../Workspace/Accept';
 import { DiffReader } from './DiffReader';
-import { isNil } from '@storyshots/core';
 
 type RecordsSelection = Extract<
   UseBehaviourProps['selection'],
@@ -39,7 +39,15 @@ export const Records: React.FC<Props> = ({
     );
   }
 
-  const records = result.records;
+  const details = result.details.find(
+    (it) => it.device.name === selection.device,
+  );
+
+  if (isNil(details)) {
+    return <span>Records are not generated yet, for given device</span>;
+  }
+
+  const { records } = details;
 
   if (records.type === 'fresh') {
     return (
@@ -48,7 +56,11 @@ export const Records: React.FC<Props> = ({
         actions={
           <ActionAccept
             onAction={() =>
-              acceptRecords(selection.story, records.actual, result)
+              acceptRecords({
+                result: records,
+                details,
+                id: selection.story.id,
+              })
             }
           />
         }
@@ -86,7 +98,11 @@ export const Records: React.FC<Props> = ({
       actions={
         <ActionAccept
           onAction={() =>
-            acceptRecords(selection.story, records.actual, result)
+            acceptRecords({
+              result: records,
+              details,
+              id: selection.story.id,
+            })
           }
         />
       }

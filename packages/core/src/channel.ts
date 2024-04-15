@@ -1,27 +1,18 @@
-import {
-  PresetConfigName,
-  PresetName,
-  PurePresetGroup,
-  PureStoryTree,
-  StoryID,
-} from './story';
-import { DevicePresets } from './test-presets';
-import { JournalRecord } from './journal';
-
-export type SelectedPresets = null | {
-  [key: PresetConfigName]: PresetName;
-};
+import { JournalRecord } from './journal/types';
+import { PureStoryTree, StoryID } from './story';
+import { Device, PresetGroup, SelectedPresets } from './test-config';
 
 export type PreviewState = {
   stories: PureStoryTree[];
-  devices: DevicePresets;
-  presets: PurePresetGroup[];
+  devices: Device[];
+  presets: PresetGroup[];
 };
 
 export type ManagerState = {
   id?: StoryID;
   screenshotting: boolean;
   presets: SelectedPresets;
+  device?: Device;
 };
 
 export interface Channel {

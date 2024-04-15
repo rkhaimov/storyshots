@@ -60,6 +60,15 @@ run({
       ],
     },
     resolve: {
+      alias: {
+        '@storyshots/react-preview': path.join(
+          process.cwd(),
+          'packages',
+          'preview',
+          'react',
+          'src',
+        ),
+      },
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
     },
     plugins: [

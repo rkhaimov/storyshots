@@ -1,42 +1,45 @@
+import { isNil, PureStoryTree, TreeOP } from '@storyshots/core';
 import { UseBehaviourProps } from '../../behaviour/types';
 import { TestResults } from '../../behaviour/useTestResults/types';
 import { EntryStatus } from '../reusables/EntryStatus/types';
 import { getStoryEntryStatus } from '../reusables/getStoryEntryStatus';
-import { PureStoryTree, TreeOP } from '@storyshots/core';
 
 export function getGroupEntryStatus(
   results: TestResults,
   selection: UseBehaviourProps['selection'],
   children: PureStoryTree[],
-): EntryStatus {
+) {
   const statuses = TreeOP.toLeafsArray(children).map((story) =>
     getStoryEntryStatus(results, selection, story),
   );
 
-  const error = statuses.find((it) => it?.type === 'error');
+  return statuses.reduce(merge, undefined);
+}
 
-  if (error) {
-    return {
-      type: 'error',
-      message: 'One or more stories contain errors. Please, check insides',
-    };
+function merge(left: EntryStatus, right: EntryStatus): EntryStatus {
+  if (isNil(left)) {
+    return right;
   }
 
-  const fail = statuses.find((it) => it?.type === 'fail');
-
-  if (fail) {
-    return fail;
+  if (isNil(right)) {
+    return left;
   }
 
-  const fresh = statuses.find((it) => it?.type === 'fresh');
-
-  if (fresh) {
-    return fresh;
+  if (left.type === 'error' || right.type === 'error') {
+    return { type: 'error' };
   }
 
-  if (statuses.length > 0 && statuses.every((it) => it?.type === 'pass')) {
-    return { type: 'pass' };
+  if (left.type === 'pass') {
+    return right;
   }
 
-  return null;
+  if (right.type === 'pass') {
+    return left;
+  }
+
+  return {
+    type: left.type === 'fail' ? 'fail' : right.type,
+    records: [...left.records, ...right.records],
+    screenshots: [...left.screenshots, ...right.screenshots],
+  };
 }

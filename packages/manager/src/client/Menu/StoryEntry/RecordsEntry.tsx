@@ -1,13 +1,13 @@
 import { blue } from '@ant-design/colors';
 import { ProfileOutlined } from '@ant-design/icons';
 import React from 'react';
-import { SuccessTestResult } from '../../behaviour/useTestResults/types';
+import { TestResultDetails } from '../../behaviour/useTestResults/types';
 import { ActiveEntryHeader } from '../reusables/EntryHeader';
 import { EntryStatus } from '../reusables/EntryStatus';
 import { EntryTitle } from '../reusables/EntryTitle';
 import { Props as ParentProps } from './types';
 
-type Props = { results: SuccessTestResult } & Pick<
+type Props = { details: TestResultDetails } & Pick<
   ParentProps,
   'setRecords' | 'story' | 'level' | 'selection'
 >;
@@ -16,7 +16,7 @@ export const RecordsEntry: React.FC<Props> = ({
   story,
   selection,
   level,
-  results,
+  details,
   setRecords,
 }) => {
   return (
@@ -28,12 +28,12 @@ export const RecordsEntry: React.FC<Props> = ({
         $color={blue[0]}
         role="menuitem"
         aria-label="Records"
-        onClick={() => setRecords(story.id)}
+        onClick={() => setRecords(story.id, details.device)}
       >
         <EntryTitle
           left={
             <>
-              <EntryStatus status={{ type: results.records.type }} />
+              <EntryStatus status={details.records.type} />
               <ProfileOutlined style={{ marginRight: 4 }} />
             </>
           }
@@ -44,6 +44,10 @@ export const RecordsEntry: React.FC<Props> = ({
   );
 
   function isActive() {
-    return selection.type === 'records' && selection.story.id === story.id;
+    return (
+      selection.type === 'records' &&
+      selection.story.id === story.id &&
+      selection.device === details.device.name
+    );
   }
 };

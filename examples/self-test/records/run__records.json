@@ -4,7 +4,16 @@
       "method": "acceptRecords",
       "args": [
         "cats__can_be_pet",
-        []
+        [],
+        {
+          "type": "size-only",
+          "name": "desktop",
+          "config": {
+            "width": 1480,
+            "height": 920
+          },
+          "emulated": false
+        }
       ]
     }
   ],
@@ -12,7 +21,14 @@
     {
       "method": "actOnClientSide",
       "args": [
-        []
+        [
+          {
+            "action": "screenshot",
+            "payload": {
+              "name": "FINAL"
+            }
+          }
+        ]
       ]
     },
     {
@@ -26,7 +42,16 @@
               "Tom"
             ]
           }
-        ]
+        ],
+        {
+          "type": "size-only",
+          "name": "desktop",
+          "config": {
+            "width": 1480,
+            "height": 920
+          },
+          "emulated": false
+        }
       ]
     }
   ],
@@ -34,7 +59,14 @@
     {
       "method": "actOnClientSide",
       "args": [
-        []
+        [
+          {
+            "action": "screenshot",
+            "payload": {
+              "name": "FINAL"
+            }
+          }
+        ]
       ]
     }
   ],
@@ -42,7 +74,14 @@
     {
       "method": "actOnClientSide",
       "args": [
-        []
+        [
+          {
+            "action": "screenshot",
+            "payload": {
+              "name": "FINAL"
+            }
+          }
+        ]
       ]
     },
     {
@@ -56,7 +95,16 @@
               "Tom"
             ]
           }
-        ]
+        ],
+        {
+          "type": "size-only",
+          "name": "desktop",
+          "config": {
+            "width": 1480,
+            "height": 920
+          },
+          "emulated": false
+        }
       ]
     }
   ]

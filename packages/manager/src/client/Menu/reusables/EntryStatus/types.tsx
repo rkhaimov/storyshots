@@ -1,8 +1,16 @@
-export type Props = { status: EntryStatus };
+import {
+  AcceptableRecord,
+  AcceptableScreenshot,
+} from '../../../reusables/types';
+
+export type Props = { status?: NonNullable<EntryStatus>['type'] };
 
 export type EntryStatus =
-  | { type: 'fresh' }
+  | {
+      type: 'fresh' | 'fail';
+      records: AcceptableRecord[];
+      screenshots: AcceptableScreenshot[];
+    }
   | { type: 'pass' }
-  | { type: 'fail' }
-  | { type: 'error'; message: string }
-  | null;
+  | { type: 'error' }
+  | undefined;

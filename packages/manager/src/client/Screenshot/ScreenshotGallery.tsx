@@ -1,53 +1,51 @@
+import { PureStory, ScreenshotName } from '@storyshots/core';
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { UseBehaviourProps } from '../behaviour/types';
+import {
+  PresetScreenshotResult,
+  TestResultDetails,
+} from '../behaviour/useTestResults/types';
 import { useExternals } from '../externals/context';
 import { Image } from './ImgViewer';
-import {
-  SingleConfigScreenshotResult,
-  SuccessTestResult,
-} from '../behaviour/useTestResults/types';
-import { PureStory, ScreenshotName, isNil } from '@storyshots/core';
-import { UseBehaviourProps } from '../behaviour/types';
 import { SingleScreenshot } from './SingleScreenshot';
-import { presetsToString } from './utils';
 
 type Props = {
-  name: ScreenshotName | undefined;
+  name: ScreenshotName;
   story: PureStory;
-  screenshots: SingleConfigScreenshotResult[];
-  result: SuccessTestResult;
+  screenshots: PresetScreenshotResult[];
+  details: TestResultDetails;
 } & Pick<UseBehaviourProps, 'acceptScreenshot'>;
 
 export const ScreenshotGallery: React.FC<Props> = ({
   name,
   story,
   screenshots,
-  result,
+  details,
   acceptScreenshot,
 }) => {
   const { driver } = useExternals();
-  const [currentScreenshot, setScreenshot] =
-    useState<SingleConfigScreenshotResult | null>(null);
+  const [active, setScreenshot] = useState<PresetScreenshotResult>();
 
-  if (!isNil(currentScreenshot)) {
+  if (active) {
     return (
       <SingleScreenshot
         name={name}
-        screenshot={currentScreenshot}
+        screenshot={active}
         story={story}
         acceptScreenshot={acceptScreenshot}
-        onBack={() => setScreenshot(null)}
-        results={result}
+        onBack={() => setScreenshot(undefined)}
+        details={details}
       />
     );
   }
 
   return (
-    <Wrapper>
+    <Gallery>
       {screenshots.map((screenshot) => {
-        const name = `${screenshot.config.device.name} — ${presetsToString(
-          screenshot.config.presets,
-        )}`;
+        const name = Object.entries(screenshot.presets)
+          .map(([name, value]) => `${name}-${value}`)
+          .join('__');
 
         return (
           <GalleryItem
@@ -65,11 +63,11 @@ export const ScreenshotGallery: React.FC<Props> = ({
           </GalleryItem>
         );
       })}
-    </Wrapper>
+    </Gallery>
   );
 };
 
-const Wrapper = styled.div`
+const Gallery = styled.div`
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-auto-rows: minmax(0, 300px);
@@ -77,7 +75,7 @@ const Wrapper = styled.div`
   gap: 20px;
 `;
 
-const GalleryItem = styled.button`
+const GalleryItem = styled.div`
   display: flex;
   gap: 5px;
   text-align: center;

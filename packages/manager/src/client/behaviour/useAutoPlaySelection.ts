@@ -1,16 +1,17 @@
 import {
   assertNotEmpty,
+  createActor,
+  DeviceName,
   PreviewState,
   PureStory,
   ScreenshotName,
-  SelectedPresets,
   TreeOP,
 } from '@storyshots/core';
 import { useEffect, useState } from 'react';
 import { WithPossibleError } from '../../reusables/types';
 
 import { useExternals } from '../externals/context';
-import { URLParsedParams } from './useBehaviourRouter';
+import { RunPreviewConfig, URLParsedParams } from './useBehaviourRouter';
 
 // TODO: Solve cancellation problem
 export function useAutoPlaySelection(params: URLParsedParams) {
@@ -31,21 +32,39 @@ export function useAutoPlaySelection(params: URLParsedParams) {
   };
 
   async function selectAndPlay() {
-    const config = await preview.createPreviewConnection({
+    const state = await preview.createPreviewConnection({
       id: params.type === 'no-selection' ? undefined : params.id,
       screenshotting: false,
-      presets: params.type === 'story' ? params.presets : {},
+      // TODO: There is a general problem of misconfiguration between url params and actual preview config
+      presets: params.config.presets ?? {},
+      device: params.config.device?.emulated ? params.config.device : undefined,
     });
+
+    const config: RunPreviewConfig = {
+      presets:
+        params.config.presets ??
+        state.presets.reduce(
+          (acc, it) => ({
+            ...acc,
+            [it.name]: it.default,
+          }),
+          {},
+        ),
+      device: params.config.device ?? {
+        ...state.devices[0],
+        emulated: false,
+      },
+    };
 
     if (params.type === 'no-selection') {
       return setSelection({
         type: 'no-selection',
-        config,
-        presets: params.presets,
+        preview: state,
+        config: config,
       });
     }
 
-    const story = TreeOP.find(config.stories, params.id);
+    const story = TreeOP.find(state.stories, params.id);
 
     assertNotEmpty(story);
 
@@ -53,8 +72,9 @@ export function useAutoPlaySelection(params: URLParsedParams) {
       return setSelection({
         type: 'records',
         story,
-        config,
-        presets: params.presets,
+        preview: state,
+        config: config,
+        device: params.device,
       });
     }
 
@@ -62,29 +82,32 @@ export function useAutoPlaySelection(params: URLParsedParams) {
       return setSelection({
         type: 'screenshot',
         story,
-        config,
+        preview: state,
         name: params.name,
-        presets: params.presets,
+        config: config,
+        device: params.device,
       });
     }
 
     setSelection({
       type: 'story',
       story,
-      config,
+      preview: state,
       playing: true,
-      presets: params.presets,
+      config: config,
     });
 
-    const result = await driver.actOnClientSide(story.payload.actions);
+    const actions = story.payload.act(createActor(), config.device).toMeta();
+
+    const result = await driver.actOnClientSide(actions);
 
     setSelection({
       type: 'story',
       story,
-      config,
+      preview: state,
       playing: false,
       result,
-      presets: params.presets,
+      config: config,
     });
   }
 }
@@ -95,37 +118,36 @@ export type AutoPlaySelection =
     }
   | AutoPlaySelectionInitialized;
 
-export type AutoPlaySelectionInitialized =
-  | {
-      type: 'no-selection';
-      config: PreviewState;
-      presets: SelectedPresets;
-    }
-  | {
-      type: 'story';
-      story: PureStory;
-      config: PreviewState;
-      playing: true;
-      presets: SelectedPresets;
-    }
-  | {
-      type: 'story';
-      story: PureStory;
-      config: PreviewState;
-      playing: false;
-      result: WithPossibleError<void>;
-      presets: SelectedPresets;
-    }
-  | {
-      type: 'records';
-      story: PureStory;
-      config: PreviewState;
-      presets: SelectedPresets;
-    }
-  | {
-      type: 'screenshot';
-      name: ScreenshotName | undefined;
-      story: PureStory;
-      config: PreviewState;
-      presets: SelectedPresets;
-    };
+export type AutoPlaySelectionInitialized = StateAndConfig &
+  (
+    | {
+        type: 'no-selection';
+      }
+    | {
+        type: 'story';
+        story: PureStory;
+        playing: true;
+      }
+    | {
+        type: 'story';
+        story: PureStory;
+        playing: false;
+        result: WithPossibleError<void>;
+      }
+    | {
+        type: 'records';
+        story: PureStory;
+        device: DeviceName;
+      }
+    | {
+        type: 'screenshot';
+        name: ScreenshotName;
+        story: PureStory;
+        device: DeviceName;
+      }
+  );
+
+type StateAndConfig = {
+  preview: PreviewState;
+  config: RunPreviewConfig;
+};

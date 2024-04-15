@@ -1,5 +1,4 @@
-import { TreeOP } from '@storyshots/core';
-import { createActor } from './actor';
+import { createActor, TreeOP } from '@storyshots/core';
 import { Group, Story } from './types';
 
 export function describe(title: string, children: Group['children']): Group {

@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { UseBehaviourProps } from '../behaviour/types';
 import { MenuHavingStories } from './MenuHavingStories';
 import { MenuWaitingStories } from './MenuWaitingStories';
-import { Presets } from './Presets';
 import { TopBar } from './TopBar';
 
 export const Menu: React.FC<UseBehaviourProps> = (props) => {
@@ -14,19 +13,16 @@ export const Menu: React.FC<UseBehaviourProps> = (props) => {
 
   return (
     <Sidebar>
-      <div>
-        <TopBar
-          {...props}
-          selection={props.selection}
-          stories={props.selection.config.stories}
-        />
-        <MenuHavingStories
-          {...props}
-          stories={props.selection.config.stories}
-          level={0}
-        />
-      </div>
-      <Presets selection={props.selection} setPresets={props.setPresets} />
+      <TopBar
+        {...props}
+        selection={props.selection}
+        stories={props.selection.preview.stories}
+      />
+      <MenuHavingStories
+        {...props}
+        stories={props.selection.preview.stories}
+        level={0}
+      />
     </Sidebar>
   );
 };
@@ -34,6 +30,5 @@ export const Menu: React.FC<UseBehaviourProps> = (props) => {
 const Sidebar = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   height: 100%;
 `;

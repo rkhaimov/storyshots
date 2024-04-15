@@ -5,68 +5,59 @@ import styled from 'styled-components';
 
 import {
   ScreenshotComparisonResult,
-  SingleConfigScreenshotResult,
-  SuccessTestResult,
+  ScreenshotResult,
+  TestResultDetails,
 } from '../../behaviour/useTestResults/types';
 import { ActiveEntryHeader } from '../reusables/EntryHeader';
 import { EntryStatus } from '../reusables/EntryStatus';
 import { EntryTitle } from '../reusables/EntryTitle';
 import { Props as ParentProps } from './types';
-import { ScreenshotName } from '@storyshots/core';
 
 type Props = {
-  results: SuccessTestResult;
+  details: TestResultDetails;
 } & Pick<ParentProps, 'setScreenshot' | 'story' | 'level' | 'selection'>;
 
 export const ScreenshotsEntry: React.FC<Props> = ({
   story,
   level,
-  results,
+  details,
   selection,
   setScreenshot,
 }) => {
-  const screenshots = flattenTestResults(results);
-
   return (
     <ScreenshotsList>
-      {screenshots.map((it) => {
-        const title = it.name ?? 'FINAL';
-
-        return (
-          <li
-            key={it.name ?? 'final'}
-            role="menuitem"
-            aria-label={title}
-            onClick={() => setScreenshot(story.id, it.name)}
+      {details.screenshots.map((it) => (
+        <li
+          key={it.name}
+          role="menuitem"
+          aria-label={it.name}
+          onClick={() => setScreenshot(story.id, it.name, details.device)}
+        >
+          <ActiveEntryHeader
+            $level={level}
+            $offset={24}
+            $color={blue[0]}
+            $active={isActive(it)}
           >
-            <ActiveEntryHeader
-              $level={level}
-              $offset={24}
-              $color={blue[0]}
-              $active={isActive(it.name)}
-            >
-              <EntryTitle
-                left={
-                  <>
-                    <EntryStatus status={{ type: aggregateStatus(it) }} />
-                    <PictureOutlined style={{ marginRight: 4 }} />
-                  </>
-                }
-                title={title}
-              />
-            </ActiveEntryHeader>
-          </li>
-        );
-      })}
+            <EntryTitle
+              left={
+                <>
+                  <EntryStatus status={renderStatus(it)} />
+                  <PictureOutlined style={{ marginRight: 4 }} />
+                </>
+              }
+              title={it.name}
+            />
+          </ActiveEntryHeader>
+        </li>
+      ))}
     </ScreenshotsList>
   );
 
-  function aggregateStatus(
-    results: MenuScreenshotGroup,
+  function renderStatus(
+    screenshot: ScreenshotResult,
   ): ScreenshotComparisonResult['type'] {
-    const statuses: ScreenshotComparisonResult['type'][] = results.results.map(
-      ({ result }) => result.type,
-    );
+    const statuses = screenshot.results.map(({ result }) => result.type);
 
     if (statuses.includes('fail')) {
       return 'fail';
@@ -79,11 +70,12 @@ export const ScreenshotsEntry: React.FC<Props> = ({
     return 'pass';
   }
 
-  function isActive(name: ScreenshotName | undefined) {
+  function isActive(screenshot: ScreenshotResult) {
     return (
       selection.type === 'screenshot' &&
       selection.story.id === story.id &&
-      selection.name === name
+      selection.device === details.device.name &&
+      selection.name === screenshot.name
     );
   }
 };
@@ -92,15 +84,3 @@ const ScreenshotsList = styled.ul`
   padding: 0;
   text-decoration: none;
 `;
-
-type MenuScreenshotGroup = {
-  name: ScreenshotName | undefined;
-  results: SingleConfigScreenshotResult[];
-};
-
-function flattenTestResults(results: SuccessTestResult): MenuScreenshotGroup[] {
-  return [
-    ...results.screenshots.others,
-    { name: undefined, results: results.screenshots.final },
-  ];
-}

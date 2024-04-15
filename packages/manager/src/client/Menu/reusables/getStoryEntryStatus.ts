@@ -1,12 +1,12 @@
+import { isNil, PureStory } from '@storyshots/core';
 import { UseBehaviourProps } from '../../behaviour/types';
 import {
-  RecordsComparisonResult,
-  SingleConfigScreenshotResult,
+  TestResultDetails,
   TestResults,
 } from '../../behaviour/useTestResults/types';
+import { AcceptableRecord, AcceptableScreenshot } from '../../reusables/types';
 
 import { EntryStatus } from './EntryStatus/types';
-import { isNil, PureStory } from '@storyshots/core';
 
 export function getStoryEntryStatus(
   results: TestResults,
@@ -19,42 +19,66 @@ export function getStoryEntryStatus(
     selection.playing === false &&
     selection.result.type === 'error'
   ) {
-    return { type: 'error', message: selection.result.message };
+    return { type: 'error' };
   }
 
   const comparison = results.get(story.id);
 
   if (isNil(comparison) || comparison.running) {
-    return null;
+    return;
   }
 
   if (comparison.type === 'error') {
-    return { type: 'error', message: comparison.message };
+    return { type: 'error' };
   }
 
-  const statuses: ComparisonStatus[] = [
-    comparison.records.type,
-    ...screenshotsToStatuses(comparison.screenshots.final),
-    ...comparison.screenshots.others.flatMap((it) =>
-      screenshotsToStatuses(it.results),
-    ),
-  ];
+  const records = getAcceptableRecords(story, comparison.details);
+  const screenshots = getAcceptableScreenshots(comparison.details);
 
-  if (statuses.includes('fail')) {
-    return { type: 'fail' };
+  if (records.length === 0 && screenshots.length === 0) {
+    return { type: 'pass' };
   }
 
-  if (statuses.includes('fresh')) {
-    return { type: 'fresh' };
-  }
-
-  return { type: 'pass' };
+  return {
+    type: liftFailWhenPresented(records, screenshots),
+    records,
+    screenshots,
+  };
 }
 
-function screenshotsToStatuses(
-  screenshots: SingleConfigScreenshotResult[],
-): ComparisonStatus[] {
-  return screenshots.map((it) => it.result.type);
+function liftFailWhenPresented(
+  records: AcceptableRecord[],
+  screenshots: AcceptableScreenshot[],
+): 'fresh' | 'fail' {
+  return [
+    ...records.map((it) => it.result.type),
+    ...screenshots.map((it) => it.result.type),
+  ].includes('fail')
+    ? 'fail'
+    : 'fresh';
 }
 
-type ComparisonStatus = RecordsComparisonResult['type'];
+function getAcceptableRecords(
+  story: PureStory,
+  details: TestResultDetails[],
+): AcceptableRecord[] {
+  return details
+    .filter((it) => it.records.type !== 'pass')
+    .map((it) => ({
+      id: story.id,
+      details: it,
+      result: it.records as never,
+    }));
+}
+
+function getAcceptableScreenshots(
+  details: TestResultDetails[],
+): AcceptableScreenshot[] {
+  return details.flatMap((detail) =>
+    detail.screenshots
+      .flatMap((it) => it.results)
+      .map((it) => it.result)
+      .filter((it): it is AcceptableScreenshot['result'] => it.type !== 'pass')
+      .map((it) => ({ details: detail, result: it })),
+  );
+}

@@ -1,11 +1,7 @@
-import { Application } from 'express-serve-static-core';
-import {
-  ActionsOnDevice,
-  ExpectedScreenshots,
-  Screenshot,
-} from '../../reusables/types';
-import { Baseline } from '../reusables/baseline';
 import { isNil, TreeOP } from '@storyshots/core';
+import { Application } from 'express-serve-static-core';
+import { ActionsAndConfig, Screenshot } from '../../reusables/types';
+import { Baseline } from '../reusables/baseline';
 
 export function createExpectedScreenshotsHandler(
   app: Application,
@@ -13,9 +9,9 @@ export function createExpectedScreenshotsHandler(
 ) {
   app.post('/api/screenshot/expected/:id', async (request, response) => {
     const id = TreeOP.ensureIsLeafID(request.params.id);
-    const { actions, config }: ActionsOnDevice = request.body;
+    const { actions, config }: ActionsAndConfig = request.body;
 
-    const others: Screenshot[] = [];
+    const screenshots: Screenshot[] = [];
     for (const action of actions) {
       if (action.action !== 'screenshot') {
         continue;
@@ -31,21 +27,12 @@ export function createExpectedScreenshotsHandler(
         continue;
       }
 
-      others.push({
+      screenshots.push({
         name: action.payload.name,
         path: path,
       });
     }
 
-    const result: ExpectedScreenshots = {
-      final: await baseline.getExpectedScreenshot(
-        id,
-        config,
-        undefined,
-      ),
-      others,
-    };
-
-    response.json(result);
+    response.json(screenshots);
   });
 }

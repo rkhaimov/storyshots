@@ -1,10 +1,20 @@
-import { finder } from '../../../../packages/preview/react/src';
+import { finder } from '@storyshots/react-preview';
 import { describe, it } from '../../storyshots/preview/config';
 
 export const cvStories = describe('CV', [
   it('renders all fields as empty by default', {
-    act: (actor) =>
-      actor.click(finder.getByRole('button', { name: 'Navigate' }).at(1)),
+    act: (actor, device) => {
+      if (device.name === 'mobile') {
+        return actor
+          .click(finder.getByRole('button', { name: 'Navigate' }).at(1))
+          .screenshot('Top')
+          .scrollTo(finder.getByRole('button', { name: 'Register' }));
+      }
+
+      return actor.click(
+        finder.getByRole('button', { name: 'Navigate' }).at(1),
+      );
+    },
   }),
   it('lets all of its fields to be filled', {
     act: (actor) =>

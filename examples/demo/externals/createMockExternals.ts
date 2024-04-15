@@ -1,5 +1,5 @@
 import { IExternals } from './types';
-import { Journal } from '../../../packages/preview/react/src';
+import { Journal } from '@storyshots/react-preview';
 
 export function createMockExternals(): IExternals {
   return {

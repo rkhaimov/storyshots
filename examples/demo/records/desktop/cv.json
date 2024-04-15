@@ -1,0 +1,34 @@
+{
+  "cv__renders_all_fields_as_empty_by_default": [],
+  "cv__lets_all_of_its_fields_to_be_filled": [
+    {
+      "method": "applyCV",
+      "args": [
+        {
+          "email": "hello@world.com",
+          "password": "123pppq@33p",
+          "confirm": "123pppq@33p",
+          "nickname": "ha4ker",
+          "residence": [
+            "zhejiang",
+            "hangzhou",
+            "xihu"
+          ],
+          "prefix": "86",
+          "phone": "(800) 555-35-35",
+          "suffix": "USD",
+          "donation": 300,
+          "website": "hello.com",
+          "intro": "A little about myself",
+          "gender": "other",
+          "captcha": "not a robot",
+          "agreement": true
+        }
+      ]
+    }
+  ],
+  "cv__checks_validity_of_an_email_that_was_entered": [],
+  "cv__ensures_entered_passwords_match": [],
+  "cv__lets_to_select_residence": [],
+  "cv__provides_certain_tips": []
+}

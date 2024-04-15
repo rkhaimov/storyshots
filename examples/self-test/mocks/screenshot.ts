@@ -1,28 +1,25 @@
 import { ScreenshotAction, StoryID } from '@storyshots/core';
 import {
-  ActionsOnDevice,
-  ActualScreenshots,
+  ActionsAndConfig,
+  Screenshot,
   ScreenshotPath,
 } from '../../../packages/manager/src/reusables/types';
 
 export function fromActionsToScreenshots(
   at: StoryID,
-  payload: ActionsOnDevice,
+  payload: ActionsAndConfig,
   mode: string,
-): ActualScreenshots {
-  return {
-    final: createMeta({ at, config: payload.config, name: `${mode} FINAL` }),
-    others: payload.actions
-      .filter((it): it is ScreenshotAction => it.action === 'screenshot')
-      .map((it) => ({
-        name: it.payload.name,
-        path: createMeta({
-          at,
-          name: `${mode} ${it.payload.name}`,
-          config: payload.config,
-        }),
-      })),
-  };
+): Screenshot[] {
+  return payload.actions
+    .filter((it): it is ScreenshotAction => it.action === 'screenshot')
+    .map((it) => ({
+      name: it.payload.name,
+      path: createMeta({
+        at,
+        name: `${mode} ${it.payload.name}`,
+        config: payload.config,
+      }),
+    }));
 }
 
 export function fromMetaToImage(path: string) {
@@ -69,11 +66,16 @@ export function fromMetaToImage(path: string) {
   device.setAttribute('dominant-baseline', 'middle');
   device.setAttribute('text-anchor', 'middle');
 
-  device.appendChild(document.createTextNode(JSON.stringify(config.device, null, 2)));
+  device.appendChild(
+    document.createTextNode(JSON.stringify(config.device, null, 2)),
+  );
 
   svg.appendChild(device);
 
-  const presets = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  const presets = document.createElementNS(
+    'http://www.w3.org/2000/svg',
+    'text',
+  );
 
   presets.setAttribute('font-size', '22px');
   presets.setAttribute('fill', 'white');
@@ -82,7 +84,9 @@ export function fromMetaToImage(path: string) {
   presets.setAttribute('dominant-baseline', 'middle');
   presets.setAttribute('text-anchor', 'middle');
 
-  presets.appendChild(document.createTextNode(JSON.stringify(config.presets, null, 2)));
+  presets.appendChild(
+    document.createTextNode(JSON.stringify(config.presets, null, 2)),
+  );
 
   svg.appendChild(presets);
 
@@ -95,8 +99,8 @@ function createMeta(meta: Meta) {
   return JSON.stringify(meta) as ScreenshotPath;
 }
 
-type Meta = {
+export type Meta = {
   at: StoryID;
-  config: ActionsOnDevice['config'];
+  config: ActionsAndConfig['config'];
   name: string;
 };

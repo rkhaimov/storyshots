@@ -1,31 +1,30 @@
+import { PureStory, ScreenshotName } from '@storyshots/core';
 import React from 'react';
+import { UseBehaviourProps } from '../behaviour/types';
+import {
+  PresetScreenshotResult,
+  TestResultDetails,
+} from '../behaviour/useTestResults/types';
 import { useExternals } from '../externals/context';
 import { Workspace } from '../Workspace';
 import { ActionAccept } from '../Workspace/Accept';
+import { ActionBack } from '../Workspace/Back';
 import { DiffImgViewer } from './DiffImgViewer';
 import { ImgViewer } from './ImgViewer';
-import { ActionBack } from '../Workspace/Back';
-import {
-  SingleConfigScreenshotResult,
-  SuccessTestResult,
-} from '../behaviour/useTestResults/types';
-import { UseBehaviourProps } from '../behaviour/types';
-import { PureStory, ScreenshotName } from '@storyshots/core';
-import { presetsToString } from './utils';
 
 type Props = {
-  name: ScreenshotName | undefined;
-  screenshot: SingleConfigScreenshotResult;
+  name: ScreenshotName;
+  screenshot: PresetScreenshotResult;
   story: PureStory;
-  results: SuccessTestResult;
+  details: TestResultDetails;
   onBack?: () => void;
 } & Pick<UseBehaviourProps, 'acceptScreenshot'>;
 
 export const SingleScreenshot: React.FC<Props> = ({
   name,
+  details,
   screenshot,
   story,
-  results,
   acceptScreenshot,
   onBack,
 }): React.ReactElement => {
@@ -33,19 +32,9 @@ export const SingleScreenshot: React.FC<Props> = ({
   const actionBack = onBack && <ActionBack onAction={onBack} />;
 
   const { result } = screenshot;
-  const title = [
-    story.payload.title,
-    screenshot.config.device.name,
-    presetsToString(screenshot.config.presets),
-    name ?? 'FINAL',
-  ]
+  const title = [story.payload.title, name ?? 'FINAL']
     .filter((it) => it !== '')
     .join(' — ');
-
-  const onAccept = () => {
-    acceptScreenshot(story, name, result.actual, results);
-    onBack && onBack();
-  };
 
   switch (result.type) {
     case 'fresh':
@@ -53,7 +42,15 @@ export const SingleScreenshot: React.FC<Props> = ({
         <Workspace
           title={title}
           firstAction={actionBack}
-          actions={<ActionAccept onAction={onAccept} />}
+          actions={
+            <ActionAccept
+              onAction={() => {
+                acceptScreenshot({ result, details });
+
+                onBack && onBack();
+              }}
+            />
+          }
         >
           <ImgViewer
             type="fresh"
@@ -75,7 +72,15 @@ export const SingleScreenshot: React.FC<Props> = ({
         <Workspace
           title={title}
           firstAction={actionBack}
-          actions={<ActionAccept onAction={onAccept} />}
+          actions={
+            <ActionAccept
+              onAction={() => {
+                acceptScreenshot({ result, details });
+
+                onBack && onBack();
+              }}
+            />
+          }
         >
           <DiffImgViewer {...result} />
         </Workspace>

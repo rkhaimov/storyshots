@@ -1,0 +1,119 @@
+{
+  "presetconfig__allows_to_configure_presets_for_preview": [
+    {
+      "method": "actOnClientSide",
+      "args": [
+        [
+          {
+            "action": "screenshot",
+            "payload": {
+              "name": "FINAL"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "method": "actOnClientSide",
+      "args": [
+        [
+          {
+            "action": "screenshot",
+            "payload": {
+              "name": "FINAL"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "method": "actOnClientSide",
+      "args": [
+        [
+          {
+            "action": "screenshot",
+            "payload": {
+              "name": "FINAL"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "method": "acceptScreenshot",
+      "args": [
+        {
+          "actual": "{\"at\":\"cats__in_general_are_small\",\"name\":\"actual FINAL\",\"config\":{\"presets\":{\"Language\":\"Chinese\",\"Theme\":\"Dark\"},\"device\":{\"type\":\"size-only\",\"name\":\"desktop\",\"config\":{\"width\":1480,\"height\":920},\"emulated\":false}}}"
+        }
+      ]
+    }
+  ],
+  "presetconfig__runs_screenshots_for_all_presets_permutations": [
+    {
+      "method": "acceptScreenshot",
+      "args": [
+        {
+          "actual": "{\"at\":\"cats__in_general_are_small\",\"name\":\"actual FINAL\",\"config\":{\"device\":{\"type\":\"size-only\",\"name\":\"desktop\",\"config\":{\"width\":1480,\"height\":920}},\"presets\":{\"Theme\":\"Light\",\"Language\":\"Russian\"}}}"
+        }
+      ]
+    },
+    {
+      "method": "acceptRecords",
+      "args": [
+        "cats__in_general_are_small",
+        [],
+        {
+          "type": "size-only",
+          "name": "desktop",
+          "config": {
+            "width": 1480,
+            "height": 920
+          }
+        }
+      ]
+    },
+    {
+      "method": "acceptScreenshot",
+      "args": [
+        {
+          "actual": "{\"at\":\"cats__in_general_are_small\",\"name\":\"actual FINAL\",\"config\":{\"device\":{\"type\":\"size-only\",\"name\":\"desktop\",\"config\":{\"width\":1480,\"height\":920}},\"presets\":{\"Theme\":\"Dark\",\"Language\":\"Russian\"}}}"
+        }
+      ]
+    },
+    {
+      "method": "acceptScreenshot",
+      "args": [
+        {
+          "actual": "{\"at\":\"cats__in_general_are_small\",\"name\":\"actual FINAL\",\"config\":{\"device\":{\"type\":\"size-only\",\"name\":\"desktop\",\"config\":{\"width\":1480,\"height\":920}},\"presets\":{\"Theme\":\"Light\",\"Language\":\"Chinese\"}}}"
+        }
+      ]
+    },
+    {
+      "method": "acceptScreenshot",
+      "args": [
+        {
+          "actual": "{\"at\":\"cats__in_general_are_small\",\"name\":\"actual FINAL\",\"config\":{\"device\":{\"type\":\"size-only\",\"name\":\"desktop\",\"config\":{\"width\":1480,\"height\":920}},\"presets\":{\"Theme\":\"Dark\",\"Language\":\"Chinese\"}}}"
+        }
+      ]
+    },
+    {
+      "method": "acceptScreenshot",
+      "args": [
+        {
+          "actual": "{\"at\":\"cats__in_general_are_small\",\"name\":\"actual FINAL\",\"config\":{\"device\":{\"type\":\"size-only\",\"name\":\"desktop\",\"config\":{\"width\":1480,\"height\":920}},\"presets\":{\"Theme\":\"Light\",\"Language\":\"English\"}}}"
+        }
+      ]
+    },
+    {
+      "method": "acceptScreenshot",
+      "args": [
+        {
+          "actual": "{\"at\":\"cats__in_general_are_small\",\"name\":\"actual FINAL\",\"config\":{\"device\":{\"type\":\"size-only\",\"name\":\"desktop\",\"config\":{\"width\":1480,\"height\":920}},\"presets\":{\"Theme\":\"Dark\",\"Language\":\"English\"}}}"
+        }
+      ]
+    }
+  ],
+  "presetconfig__marks_story_as_accepted_when_all_screenshots_are_valid": [],
+  "presetconfig__marks_story_as_unaccepted_when_at_least_one_screenshot_is_invalid": [],
+  "presetconfig__records_are_not_split_for_each_preset": []
+}

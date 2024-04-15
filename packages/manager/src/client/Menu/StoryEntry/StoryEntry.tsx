@@ -1,8 +1,11 @@
 import { blue } from '@ant-design/colors';
+import { CheckOutlined } from '@ant-design/icons';
 import { isNil } from '@storyshots/core';
 import React from 'react';
+import styled from 'styled-components';
+import { EntryAction } from '../reusables/EntryAction';
 import { EntryActions } from '../reusables/EntryActions';
-import { ActiveEntryHeader } from '../reusables/EntryHeader';
+import { ActiveEntryHeader, EntryHeader } from '../reusables/EntryHeader';
 import { EntryStatus } from '../reusables/EntryStatus';
 import { EntryTitle } from '../reusables/EntryTitle';
 import { getStoryEntryStatus } from '../reusables/getStoryEntryStatus';
@@ -13,6 +16,12 @@ import { ScreenshotsEntry } from './ScreenshotsEntry';
 import { Props } from './types';
 
 export const StoryEntry: React.FC<Props> = (props) => {
+  const status = getStoryEntryStatus(
+    props.results,
+    props.selection,
+    props.story,
+  );
+
   return (
     <li>
       <ActiveEntryHeader
@@ -25,15 +34,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
         aria-label={props.story.payload.title}
       >
         <EntryTitle
-          left={
-            <EntryStatus
-              status={getStoryEntryStatus(
-                props.results,
-                props.selection,
-                props.story,
-              )}
-            />
-          }
+          left={<EntryStatus status={status?.type} />}
           title={props.story.payload.title}
         />
         <EntryActions waiting={isPlayingOrRunning()}>
@@ -59,6 +60,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
 
     return (
       <>
+        {renderAcceptAllAction()}
         <RunAction stories={[story]} selection={selection} run={run} />
         <RunCompleteAction
           stories={[story]}
@@ -67,6 +69,28 @@ export const StoryEntry: React.FC<Props> = (props) => {
         />
       </>
     );
+  }
+
+  function renderAcceptAllAction() {
+    if (status?.type === 'fresh' || status?.type === 'fail') {
+      return (
+        <EntryAction
+          label="Accept all"
+          icon={<CheckOutlined />}
+          action={async (e) => {
+            e.stopPropagation();
+
+            for (const record of status.records) {
+              await props.acceptRecords(record);
+            }
+
+            for (const screenshot of status.screenshots) {
+              await props.acceptScreenshot(screenshot);
+            }
+          }}
+        />
+      );
+    }
   }
 
   function renderResultEntries() {
@@ -80,12 +104,24 @@ export const StoryEntry: React.FC<Props> = (props) => {
       return;
     }
 
-    return (
-      <>
-        <RecordsEntry {...props} results={results} />
-        <ScreenshotsEntry {...props} results={results} />
-      </>
-    );
+    if (results.details.length === 1) {
+      return (
+        <>
+          <RecordsEntry {...props} details={results.details[0]} />
+          <ScreenshotsEntry {...props} details={results.details[0]} />
+        </>
+      );
+    }
+
+    return results.details.map((detail) => (
+      <li>
+        <DeviceEntryHeader $level={props.level} $offset={8}>
+          <EntryTitle title={detail.device.name} left={<></>} />
+        </DeviceEntryHeader>
+        <RecordsEntry {...props} details={detail} />
+        <ScreenshotsEntry {...props} details={detail} />
+      </li>
+    ));
   }
 
   function isActive() {
@@ -109,3 +145,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
     return playing || running;
   }
 };
+
+const DeviceEntryHeader = styled(EntryHeader)`
+  font-style: italic;
+`;

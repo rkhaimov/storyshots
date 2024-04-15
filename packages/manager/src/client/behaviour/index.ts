@@ -17,6 +17,6 @@ export function useBehaviour(props: Props) {
     setStory: router.setStory,
     setRecords: router.setRecords,
     setScreenshot: router.setScreenshot,
-    setPresets: router.setPresets,
+    setConfig: router.setConfig,
   };
 }

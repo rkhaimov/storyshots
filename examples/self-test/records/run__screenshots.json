@@ -4,7 +4,7 @@
       "method": "acceptScreenshot",
       "args": [
         {
-          "actual": "{\"at\":\"cats__in_general_are_small\",\"name\":\"actual Additional\",\"config\":{\"device\":{\"type\":\"viewport-only\",\"name\":\"desktop\",\"viewport\":{\"width\":1480,\"height\":920}},\"presets\":null}}"
+          "actual": "{\"at\":\"cats__in_general_are_small\",\"name\":\"actual Additional\",\"config\":{\"presets\":{},\"device\":{\"type\":\"size-only\",\"name\":\"desktop\",\"config\":{\"width\":1480,\"height\":920},\"emulated\":false}}}"
         }
       ]
     }
@@ -15,7 +15,7 @@
       "method": "acceptScreenshot",
       "args": [
         {
-          "actual": "{\"at\":\"cats__in_general_are_small\",\"config\":{\"device\":{\"type\":\"viewport-only\",\"name\":\"desktop\",\"viewport\":{\"width\":1480,\"height\":920}},\"presets\":null},\"name\":\"actual FINAL\"}"
+          "actual": "{\"at\":\"cats__in_general_are_small\",\"name\":\"actual FINAL\",\"config\":{\"presets\":{},\"device\":{\"type\":\"size-only\",\"name\":\"desktop\",\"config\":{\"width\":1480,\"height\":920},\"emulated\":false}}}"
         }
       ]
     }

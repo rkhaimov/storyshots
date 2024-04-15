@@ -2,6 +2,7 @@ import { assertNotEmpty, ManagerState, PreviewState } from '@storyshots/core';
 import React from 'react';
 import { IExternals } from '../../../packages/manager/src/client/externals/types';
 import type { App } from '../../../packages/preview/react/src/App';
+import { Props } from './types';
 
 export function createChannelHandler() {
   let channel:
@@ -16,9 +17,7 @@ export function createChannelHandler() {
         createPreviewConnection,
       },
     }),
-    onPreviewProps: (
-      props: React.ComponentProps<typeof App>,
-    ): React.ComponentProps<typeof App> => ({
+    onPreviewProps: (props: Props): Props => ({
       ...props,
       externals: {
         ...props.externals,

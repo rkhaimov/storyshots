@@ -1,0 +1,44 @@
+{
+  "previewconfig__allows_to_select_preview_device_mode": [
+    {
+      "method": "actOnClientSide",
+      "args": [
+        [
+          {
+            "action": "screenshot",
+            "payload": {
+              "name": "FINAL"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "method": "actOnClientSide",
+      "args": [
+        [
+          {
+            "action": "screenshot",
+            "payload": {
+              "name": "FINAL"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "method": "actOnClientSide",
+      "args": [
+        [
+          {
+            "action": "screenshot",
+            "payload": {
+              "name": "FINAL"
+            }
+          }
+        ]
+      ]
+    }
+  ],
+  "previewconfig__runs_by_default_only_selected_device": []
+}
