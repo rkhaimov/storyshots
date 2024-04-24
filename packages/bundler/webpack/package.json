@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/webpack-bundler",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Preview webpack bundler",
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "html-webpack-plugin": "^5.5.3",
-    "@storyshots/manager": "0.0.0",
+    "@storyshots/manager": "0.0.1",
     "webpack-dev-middleware": "^7.0.0",
     "webpack": "^5.89.0"
   }

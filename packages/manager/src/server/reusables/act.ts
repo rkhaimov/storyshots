@@ -1,13 +1,7 @@
-import {
-  ActionMeta,
-  assertIsNever,
-  isNil,
-  ScreenshotAction,
-  ScrollAction,
-  wait,
-} from '@storyshots/core';
-import { Frame } from 'puppeteer';
+import { ActionMeta, assertIsNever, isNil, wait } from '@storyshots/core';
+import { ElementHandle, Frame } from 'puppeteer';
 import { select } from './select';
+import { ScreenshotAction } from './types';
 
 export async function act(
   preview: Frame,
@@ -29,7 +23,7 @@ export async function act(
     case 'hover':
       return element.hover();
     case 'fill':
-      return element.type(action.payload.text, action.payload.options);
+      return fill(element, action);
     case 'scroll-to':
       return element.scrollIntoView();
   }
@@ -37,7 +31,22 @@ export async function act(
   assertIsNever(action);
 }
 
-async function scroll(preview: Frame, action: ScrollAction): Promise<void> {
+async function fill(
+  element: ElementHandle,
+  action: Extract<ActionMeta, { action: 'fill' }>,
+) {
+  await (element as ElementHandle<HTMLInputElement>).evaluate((input) => {
+    if (input.isContentEditable) {
+      input.innerText = '';
+    } else {
+      input.value = '';
+    }
+  });
+
+  return element.type(action.payload.text, action.payload.options);
+}
+
+async function scroll(preview: Frame, action: Extract<ActionMeta, { action: 'scroll' }>): Promise<void> {
   const selector = action.payload.on;
 
   if (isNil(selector)) {

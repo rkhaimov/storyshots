@@ -4,6 +4,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
 import dev from 'webpack-dev-middleware';
+import { devtools } from '../../../packages/preview/react/devtools';
 import { run } from '../../../packages/manager/src/run';
 import config from '../../../packages/manager/src/server/compiler/manager-config';
 
@@ -61,6 +62,7 @@ run({
     },
     resolve: {
       alias: {
+        '@storyshots/core': path.join(process.cwd(), 'packages', 'core', 'src'),
         '@storyshots/react-preview': path.join(
           process.cwd(),
           'packages',
@@ -80,4 +82,5 @@ run({
     ],
   })),
   createManagerCompiler: () => dev(webpack(config)),
+  devtools,
 });

@@ -1,5 +1,5 @@
+import { Journal } from '@storyshots/core';
 import { IExternals } from '@storyshots/manager/src/client/externals/types';
-import { Journal } from '@storyshots/react-preview';
 import { shouldNeverBeCalled } from '../reusables/shouldNeverBeCalled';
 import { fromActionsToScreenshots, fromMetaToImage } from './screenshot';
 

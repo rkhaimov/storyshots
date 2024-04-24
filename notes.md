@@ -14,6 +14,8 @@ ui-play - self-explanatory
   * Add retry button
 * Implement single text matching strategy
   * All selectors should match by substring by default
+* Implement non-strict matching strategy
+  * Accept non visible elements
 * Implement story filter
   * Each story should be able to describe on which env it is able to run (`only` predicate)
   * When current test config is not supported by story, it should be grayed out
@@ -22,7 +24,6 @@ ui-play - self-explanatory
 * Handle non serializable entities for recorder
   * Examine how jest handles them
 * Errors should say implicitly that element was not visible, that is why timeout has been triggered
-* Fill method can not change input value (ref to puppeteer-core\src\api\locators\locators.ts#472)
 * React-devtool duplicates roots
 * Stop button
 * Slight changes on global components make a lot of tests to fail
@@ -34,7 +35,6 @@ ui-play - self-explanatory
 * Add baseline read button
 * Add configuration for chrome pool
 * Support HMR
-* Implement STOP button
 * Add actor a function to wait while all page animations are done
 * Add todo meta function to `it` factory
 * Implement antd actor extensions package
@@ -43,6 +43,7 @@ ui-play - self-explanatory
   * Content hash might be used as relevancy key
 * Rename story or group utility
   * It is relatively hard to rename them manually
+* Add port for manager configuration
 
 ## Questionable
 

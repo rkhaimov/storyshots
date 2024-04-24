@@ -1,4 +1,4 @@
-import { ActorTransformer, finder } from '@storyshots/react-preview';
+import { ActorTransformer, finder } from '@storyshots/core';
 
 export const openGroup =
   (title: string): ActorTransformer =>
@@ -29,8 +29,10 @@ export const openScreenshot =
   (actor) =>
     actor.click(finder.getByRole('menuitem', { name }).at(at));
 
-export const openRecords = (at = 0): ActorTransformer => (actor) =>
-  actor.click(finder.getByRole('menuitem', { name: 'Records' }).at(at));
+export const openRecords =
+  (at = 0): ActorTransformer =>
+  (actor) =>
+    actor.click(finder.getByRole('menuitem', { name: 'Records' }).at(at));
 
 export const runCompleteStoryOrGroup =
   (title: string): ActorTransformer =>

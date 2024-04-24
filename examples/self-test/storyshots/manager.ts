@@ -3,6 +3,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
 import dev from 'webpack-dev-middleware';
+import { devtools } from 'packages/preview/react/devtools';
 import { createBundler } from '../../../packages/bundler/webpack/src';
 import { run } from '../../../packages/manager/src/run';
 import config from '../../../packages/manager/src/server/compiler/manager-config';
@@ -104,5 +105,6 @@ run({
       }),
     ],
   })),
+  devtools,
   createManagerCompiler: () => dev(webpack(config)),
 });

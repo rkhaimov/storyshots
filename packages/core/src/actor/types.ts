@@ -63,7 +63,7 @@ type ScrollToAction = {
   };
 };
 
-export type ScrollAction = {
+type ScrollAction = {
   action: 'scroll';
   payload: {
     on?: FinderMeta;
@@ -72,7 +72,7 @@ export type ScrollAction = {
   };
 };
 
-export type ScreenshotAction = {
+type ScreenshotAction = {
   action: 'screenshot';
   payload: {
     name: ScreenshotName;

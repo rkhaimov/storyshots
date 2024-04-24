@@ -1,3 +1,4 @@
+import { ActionMeta } from '@storyshots/core';
 import { Application } from 'express-serve-static-core';
 
 export type Compiler = {
@@ -20,4 +21,7 @@ export type ServerConfig = {
     temp: string;
   };
   bundler: PreviewBundler;
+  devtools: string;
 };
+
+export type ScreenshotAction = Extract<ActionMeta, { action: 'screenshot' }>;

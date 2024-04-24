@@ -1,4 +1,4 @@
-import { ScreenshotAction, StoryID } from '@storyshots/core';
+import { ActionMeta, StoryID } from '@storyshots/core';
 import {
   ActionsAndConfig,
   Screenshot,
@@ -11,7 +11,10 @@ export function fromActionsToScreenshots(
   mode: string,
 ): Screenshot[] {
   return payload.actions
-    .filter((it): it is ScreenshotAction => it.action === 'screenshot')
+    .filter(
+      (it): it is Extract<ActionMeta, { action: 'screenshot' }> =>
+        it.action === 'screenshot',
+    )
     .map((it) => ({
       name: it.payload.name,
       path: createMeta({

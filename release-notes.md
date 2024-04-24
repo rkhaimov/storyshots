@@ -7,6 +7,7 @@
     * Mobile emulation also replaces user agent value
     * Story factory functions like arrange and act now accept additional device argument
 * Actions were replaced to fix hover jumps
+* Fill method now clears previous value before entering next one
 * Other minor visual fixes
 
 ## Structure

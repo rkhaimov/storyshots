@@ -4,15 +4,17 @@
       "method": "acceptRecords",
       "args": [
         "cats__in_general_are_small",
-        [],
         {
-          "type": "size-only",
-          "name": "desktop",
-          "config": {
-            "width": 1480,
-            "height": 920
-          },
-          "emulated": false
+          "records": [],
+          "device": {
+            "type": "size-only",
+            "name": "desktop",
+            "config": {
+              "width": 1480,
+              "height": 920
+            },
+            "emulated": false
+          }
         }
       ]
     },
@@ -20,15 +22,17 @@
       "method": "acceptRecords",
       "args": [
         "cats__daily__during_day_cats_love_to_play_around",
-        [],
         {
-          "type": "size-only",
-          "name": "desktop",
-          "config": {
-            "width": 1480,
-            "height": 920
-          },
-          "emulated": false
+          "records": [],
+          "device": {
+            "type": "size-only",
+            "name": "desktop",
+            "config": {
+              "width": 1480,
+              "height": 920
+            },
+            "emulated": false
+          }
         }
       ]
     },

@@ -4,15 +4,17 @@
       "method": "acceptRecords",
       "args": [
         "cats__can_be_pet",
-        [],
         {
-          "type": "size-only",
-          "name": "desktop",
-          "config": {
-            "width": 1480,
-            "height": 920
-          },
-          "emulated": false
+          "records": [],
+          "device": {
+            "type": "size-only",
+            "name": "desktop",
+            "config": {
+              "width": 1480,
+              "height": 920
+            },
+            "emulated": false
+          }
         }
       ]
     }
@@ -35,22 +37,24 @@
       "method": "acceptRecords",
       "args": [
         "cats__can_be_pet",
-        [
-          {
-            "method": "pet",
-            "args": [
-              "Tom"
-            ]
-          }
-        ],
         {
-          "type": "size-only",
-          "name": "desktop",
-          "config": {
-            "width": 1480,
-            "height": 920
-          },
-          "emulated": false
+          "records": [
+            {
+              "method": "pet",
+              "args": [
+                "Tom"
+              ]
+            }
+          ],
+          "device": {
+            "type": "size-only",
+            "name": "desktop",
+            "config": {
+              "width": 1480,
+              "height": 920
+            },
+            "emulated": false
+          }
         }
       ]
     }
@@ -88,22 +92,24 @@
       "method": "acceptRecords",
       "args": [
         "cats__can_be_pet",
-        [
-          {
-            "method": "pet",
-            "args": [
-              "Tom"
-            ]
-          }
-        ],
         {
-          "type": "size-only",
-          "name": "desktop",
-          "config": {
-            "width": 1480,
-            "height": 920
-          },
-          "emulated": false
+          "records": [
+            {
+              "method": "pet",
+              "args": [
+                "Tom"
+              ]
+            }
+          ],
+          "device": {
+            "type": "size-only",
+            "name": "desktop",
+            "config": {
+              "width": 1480,
+              "height": 920
+            },
+            "emulated": false
+          }
         }
       ]
     }

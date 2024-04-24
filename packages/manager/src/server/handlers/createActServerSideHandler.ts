@@ -1,11 +1,4 @@
-import {
-  Channel,
-  Device,
-  ScreenshotAction,
-  StoryID,
-  TestConfig,
-  TreeOP,
-} from '@storyshots/core';
+import { Channel, Device, StoryID, TestConfig, TreeOP } from '@storyshots/core';
 import { Application } from 'express-serve-static-core';
 import { Frame, Page } from 'puppeteer';
 import { Cluster } from 'puppeteer-cluster';
@@ -18,6 +11,7 @@ import {
 import { act } from '../reusables/act';
 import { Baseline } from '../reusables/baseline';
 import { toPreviewFrame } from '../reusables/toPreviewFrame';
+import { ScreenshotAction } from '../reusables/types';
 import { createPathToStory } from '../router';
 import { handlePossibleErrors } from './reusables/handlePossibleErrors';
 

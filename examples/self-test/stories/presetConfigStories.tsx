@@ -1,5 +1,5 @@
 import { PresetConfigName } from '@storyshots/core';
-import { finder } from '@storyshots/react-preview';
+import { finder } from '@storyshots/core';
 import React from 'react';
 import { arranger } from '../arranger';
 import { createStoriesStub } from '../arranger/createStoriesStub';

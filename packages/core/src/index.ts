@@ -32,8 +32,6 @@ export type {
 } from './test-config';
 export type {
   ActionMeta,
-  ScreenshotAction,
-  ScrollAction,
   FillOptions,
   ClickOptions,
   Actor,

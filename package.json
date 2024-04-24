@@ -9,7 +9,8 @@
     "start": "ts-node examples/demo/storyshots/manager.ts",
     "debug": "node --inspect-brk ./node_modules/ts-node/dist/bin.js examples/demo/storyshots/manager.ts",
     "build": "npm run build --workspaces",
-    "storyshots": "ts-node examples/self-test/storyshots/manager.ts"
+    "storyshots": "ts-node examples/self-test/storyshots/manager.ts",
+    "pack": "npm pack --workspaces"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.12.0",

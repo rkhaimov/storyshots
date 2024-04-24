@@ -45,6 +45,3 @@ function createRootElement(): Element {
 
   return div;
 }
-
-export type { Journal, ActorTransformer } from '@storyshots/core';
-export { finder } from '@storyshots/core';

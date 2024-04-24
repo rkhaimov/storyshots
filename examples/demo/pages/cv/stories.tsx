@@ -1,4 +1,4 @@
-import { finder } from '@storyshots/react-preview';
+import { finder } from '@storyshots/core';
 import { describe, it } from '../../storyshots/preview/config';
 
 export const cvStories = describe('CV', [
@@ -55,7 +55,10 @@ export const cvStories = describe('CV', [
     act: (actor) =>
       actor
         .click(finder.getByRole('button', { name: 'Navigate' }).at(1))
-        .fill(finder.getByPlaceholder('example@site.com'), 'hello@'),
+        .fill(finder.getByPlaceholder('example@site.com'), 'hello@')
+        .screenshot('NoDomain')
+        .fill(finder.getByPlaceholder('example@site.com'), 'hello@world')
+        .screenshot('NoLang'),
   }),
   it('ensures entered passwords match', {
     act: (actor) =>

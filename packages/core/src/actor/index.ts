@@ -1,5 +1,5 @@
 import { ScreenshotName } from '../screenshot';
-import { assert } from '../utils';
+import { assert, not } from '../utils';
 import { ActionMeta, Actor } from './types';
 
 export const createActor = (): Actor => {
@@ -43,8 +43,6 @@ export const createActor = (): Actor => {
       return actor;
     },
     screenshot: (name) => {
-      assert(name !== 'FINAL', 'name `FINAL` is reserved');
-
       meta.push({
         action: 'screenshot',
         payload: { name: name as ScreenshotName },
@@ -54,14 +52,39 @@ export const createActor = (): Actor => {
     },
     do: (transform) => transform(actor),
     toMeta: () => {
-      meta.push({
-        action: 'screenshot',
-        payload: { name: 'FINAL' as ScreenshotName },
-      });
+      assertAllScreenshotsAreUniq(meta);
 
-      return meta;
+      const last: ActionMeta | undefined = meta[meta.length - 1];
+
+      if (last !== undefined && last.action === 'screenshot') {
+        return meta;
+      }
+
+      return [
+        ...meta,
+        {
+          action: 'screenshot',
+          payload: { name: 'FINAL' as ScreenshotName },
+        },
+      ];
     },
   };
 
   return actor;
 };
+
+function assertAllScreenshotsAreUniq(meta: ActionMeta[]) {
+  const shots = meta
+    .filter(
+      (it): it is Extract<ActionMeta, { action: 'screenshot' }> =>
+        it.action === 'screenshot',
+    )
+    .map((it) => it.payload.name);
+
+  assert(
+    new Set<ScreenshotName>(shots).size === shots.length,
+    'There can not be two or more screenshots with the same label',
+  );
+
+  assert(not(shots.includes('FINAL' as ScreenshotName)), 'FINAL is a reserved word');
+}

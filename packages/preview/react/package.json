@@ -1,13 +1,15 @@
 {
   "name": "@storyshots/react-preview",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "CSR react adapter",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
   "files": [
-    "lib"
+    "lib",
+    "react-devtools",
+    "devtools.js"
   ],
   "scripts": {
     "build": "rimraf ./lib && tsc -b tsconfig.json"
@@ -15,7 +17,7 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@storyshots/core": "0.0.0"
+    "@storyshots/core": "0.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.38",

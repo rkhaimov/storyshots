@@ -19,14 +19,8 @@ export const runCompleteScreenshotsStories = describe('Screenshots', [
         .do(openScreenshot('DesktopScreenshot'))
         .screenshot('Desktop')
         .do(acceptActiveRecordOrScreenshot())
-        .do(openScreenshot('FINAL'))
-        .screenshot('DesktopFinal')
-        .do(acceptActiveRecordOrScreenshot())
         .do(openScreenshot('MobileScreenshot'))
         .screenshot('Mobile')
-        .do(acceptActiveRecordOrScreenshot())
-        .do(openScreenshot('FINAL', 1))
-        .screenshot('MobileFinal')
         .do(acceptActiveRecordOrScreenshot()),
   }),
   it('compares all user defined screenshots from different devices', {
@@ -49,8 +43,6 @@ export const runCompleteScreenshotsStories = describe('Screenshots', [
         .screenshot('Ran')
         .do(openScreenshot('DesktopScreenshot'))
         .screenshot('Comparison')
-        .do(acceptActiveRecordOrScreenshot())
-        .do(openScreenshot('FINAL'))
         .do(acceptActiveRecordOrScreenshot()),
   }),
 ]);

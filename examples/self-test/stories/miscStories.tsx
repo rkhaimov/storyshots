@@ -1,6 +1,3 @@
-import { StoryID } from '@storyshots/core';
-import { driver } from '@storyshots/manager/src/client/externals/driver';
-import { ActionsAndConfig } from '@storyshots/manager/src/reusables/types';
 import { arranger } from '../arranger';
 import { createStoriesStub } from '../arranger/createStoriesStub';
 import {
@@ -36,6 +33,6 @@ export const miscStories = describe('Misc', [
         .do(openGroup('Cats'))
         .do(runStoryOrGroup('in general are small'))
         .do(openScreenshot('FINAL'))
-          .do(runStoryOrGroup('in general are small')),
+        .do(runStoryOrGroup('in general are small')),
   }),
 ]);

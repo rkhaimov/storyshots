@@ -1,5 +1,5 @@
+import { Journal } from '@storyshots/core';
 import { IExternals } from './types';
-import { Journal } from '@storyshots/react-preview';
 
 export function createMockExternals(): IExternals {
   return {
