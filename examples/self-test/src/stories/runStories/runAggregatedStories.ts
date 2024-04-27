@@ -1,7 +1,7 @@
 import { finder } from '@storyshots/core';
 import { arranger } from '../../arranger';
 import { createStoriesStub } from '../../arranger/createStoriesStub';
-import { describe, it } from '../../storyshots/preview/config';
+import { describe, it } from '../../../storyshots/preview/config';
 import {
   openGroup,
   openRecords,

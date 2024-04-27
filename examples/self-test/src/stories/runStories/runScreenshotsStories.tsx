@@ -9,7 +9,7 @@ import {
 import { arranger } from '../../arranger';
 import { createStoriesStub } from '../../arranger/createStoriesStub';
 import { fromActionsToScreenshots } from '../../mocks/screenshot';
-import { describe, it } from '../../storyshots/preview/config';
+import { describe, it } from '../../../storyshots/preview/config';
 
 export const runScreenshotsStories = describe('Screenshots', [
   it('captures all user defined screenshots', {

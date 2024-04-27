@@ -2,7 +2,7 @@ import { createPreviewApp } from '@storyshots/react-preview';
 import { ConfigProvider } from 'antd';
 import React from 'react';
 import { App } from '../../../../packages/manager/src/client/App';
-import { createExternalsMock, createJournaledExternals } from '../../mocks';
+import { createExternalsMock, createJournaledExternals } from '../../src/mocks';
 
 const {
   run,

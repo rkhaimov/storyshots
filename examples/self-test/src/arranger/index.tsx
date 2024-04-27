@@ -1,7 +1,7 @@
 import { ClientConfig } from '@storyshots/react-preview/lib/types';
 import React, { memo } from 'react';
-import { IWebDriver } from '../../../packages/manager/src/reusables/types';
-import { describe, it } from '../../../packages/preview/react/src/factories';
+import { IWebDriver } from '../../../../packages/manager/src/reusables/types';
+import { describe, it } from '../../../../packages/preview/react/src/factories';
 import { shouldNeverBeCalled } from '../reusables/shouldNeverBeCalled';
 import { createChannelHandler } from './createChannelHandler';
 import { createRecordsHandler } from './createRecordsHandler';

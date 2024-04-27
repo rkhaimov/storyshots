@@ -1,5 +1,5 @@
 import { JournalRecord } from '@storyshots/core';
-import { IExternals } from '../../../packages/manager/src/client/externals/types';
+import { IExternals } from '../../../../packages/manager/src/client/externals/types';
 import { Props } from './types';
 
 export function createRecordsHandler() {

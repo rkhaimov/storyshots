@@ -13,7 +13,7 @@ import {
   runStoryOrGroup,
   selectStory,
 } from '../reusables/actor-transformers';
-import { describe, it } from '../storyshots/preview/config';
+import { describe, it } from '../../storyshots/preview/config';
 
 export const presetConfigStories = describe('PresetConfig', [
   it('allows to configure presets for preview', {

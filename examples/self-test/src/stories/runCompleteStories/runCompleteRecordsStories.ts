@@ -5,7 +5,7 @@ import {
 } from '../../reusables/actor-transformers';
 import { arranger } from '../../arranger';
 import { createStoriesStub } from '../../arranger/createStoriesStub';
-import { describe, it } from '../../storyshots/preview/config';
+import { describe, it } from '../../../storyshots/preview/config';
 
 export const runCompleteRecordsStories = describe('Records', [
   it('records calls unique to a given device', {

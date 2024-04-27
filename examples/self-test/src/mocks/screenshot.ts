@@ -3,7 +3,7 @@ import {
   ActionsAndConfig,
   Screenshot,
   ScreenshotPath,
-} from '../../../packages/manager/src/reusables/types';
+} from '../../../../packages/manager/src/reusables/types';
 
 export function fromActionsToScreenshots(
   at: StoryID,

@@ -1,0 +1,10 @@
+{
+  "extends": "../../../tsconfig",
+  "include": [
+    "./devtools.ts"
+  ],
+  "compilerOptions": {
+    "module": "CommonJS",
+    "declaration": true,
+  }
+}

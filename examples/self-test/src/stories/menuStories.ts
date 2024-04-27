@@ -1,5 +1,5 @@
 import { createStoriesStub } from '../arranger/createStoriesStub';
-import { describe, it } from '../storyshots/preview/config';
+import { describe, it } from '../../storyshots/preview/config';
 import { arranger } from '../arranger';
 import { openGroup, selectStory } from '../reusables/actor-transformers';
 

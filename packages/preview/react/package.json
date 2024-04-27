@@ -9,10 +9,11 @@
   "files": [
     "lib",
     "react-devtools",
-    "devtools.js"
+    "devtools.js",
+    "devtools.d.ts"
   ],
   "scripts": {
-    "build": "rimraf ./lib && tsc -b tsconfig.json"
+    "build": "rimraf ./lib && tsc -b tsconfig.json && tsc -b tsconfig.devtools.json"
   },
   "dependencies": {
     "react": "^18.2.0",

@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { App } from '../../../packages/preview/react/src/App';
+import { App } from '../../../../packages/preview/react/src/App';
 import { Props } from './types';
 
 export const IFrameEmulatedPreview: React.FC<Props & { hidden: boolean }> = (

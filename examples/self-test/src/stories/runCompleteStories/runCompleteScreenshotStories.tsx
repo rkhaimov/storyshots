@@ -6,7 +6,7 @@ import {
     openGroup,
     openScreenshot, runCompleteStoryOrGroup,
 } from '../../reusables/actor-transformers';
-import { describe, it } from '../../storyshots/preview/config';
+import { describe, it } from '../../../storyshots/preview/config';
 
 export const runCompleteScreenshotsStories = describe('Screenshots', [
   it('captures all user defined screenshots unique to device', {

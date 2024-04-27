@@ -1,15 +1,15 @@
-import type { App } from '../../../packages/preview/react/src/App';
+import type { App } from '../../../../packages/preview/react/src/App';
 import React from 'react';
-import { IExternals } from '../../../packages/manager/src/client/externals/types';
-import { IWebDriver } from '../../../packages/manager/src/reusables/types';
+import { IExternals } from '../../../../packages/manager/src/client/externals/types';
+import { IWebDriver } from '../../../../packages/manager/src/reusables/types';
 import type {
   describe,
   it,
-} from '../../../packages/preview/react/src/factories';
+} from '../../../../packages/preview/react/src/factories';
 import {
   ClientConfig,
   StoryTree,
-} from '../../../packages/preview/react/src/types';
+} from '../../../../packages/preview/react/src/types';
 
 export type Arranger<TExternals> = {
   stories(create: StoryFactory<TExternals>): Arranger<TExternals>;

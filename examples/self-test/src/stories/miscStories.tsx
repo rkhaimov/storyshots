@@ -5,7 +5,7 @@ import {
   openScreenshot,
   runStoryOrGroup,
 } from '../reusables/actor-transformers';
-import { describe, it } from '../storyshots/preview/config';
+import { describe, it } from '../../storyshots/preview/config';
 
 export const miscStories = describe('Misc', [
   it('spinner on screenshots allows clicking menu', {

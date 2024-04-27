@@ -1,4 +1,4 @@
-import { StoryTree } from '../../../packages/preview/react/src/types';
+import { StoryTree } from '../../../../packages/preview/react/src/types';
 import React from 'react';
 import { Factories } from './types';
 

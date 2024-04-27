@@ -1,7 +1,5 @@
 import { assertNotEmpty, ManagerState, PreviewState } from '@storyshots/core';
-import React from 'react';
-import { IExternals } from '../../../packages/manager/src/client/externals/types';
-import type { App } from '../../../packages/preview/react/src/App';
+import { IExternals } from '../../../../packages/manager/src/client/externals/types';
 import { Props } from './types';
 
 export function createChannelHandler() {
