@@ -42,25 +42,4 @@ export const runAggregatedStories = describe('Aggregated', [
       .build(),
     act: (actor) => actor.click(finder.getByRole('button', { name: 'Run' })),
   }),
-  it('shows errors', {
-    arrange: arranger()
-      .stories(createStoriesStub)
-      .driver((driver) => ({
-        ...driver,
-        actOnServerSide: async (at) => ({
-          type: 'error',
-          message: `Error has been occurred running ${at}`,
-        }),
-      }))
-      .build(),
-    act: (actor) =>
-      actor
-        .click(finder.getByRole('button', { name: 'Run' }))
-        .do(openGroup('Cats'))
-        .do(openGroup('Daily'))
-        .do(openGroup('Nightly'))
-        .do(openGroup('Dogs')),
-  }),
 ]);
-
-// TODO: Test case for error message

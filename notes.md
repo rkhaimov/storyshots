@@ -4,8 +4,12 @@ vcheck - visual check, refers to main function of this library
 
 ui-play - self-explanatory
 
+press-play - that is a good name
+
 # Functional improvements
 
+* Add story search
+  * Should work like live filter on groups and story contents
 * Add more info when failed (by which selectors was unable to find an element, on what action)
   * Probably requires to develop separate error pane
   * Error should be linked to specific test config
@@ -58,9 +62,11 @@ ui-play - self-explanatory
 * Move devtools extension to react-preview
 * Obtain more control under public interface
   * api extractor
-* Solve broken self testing
-  * Testing env references actual code but not bundled
 * Develop a general strategy of test writing that ensures there are no duplicated or missed tests
+* Add separate test cases for
+  * Aggregate fresh updates
+  * Aggregate fail updates
+  * RunAll stories
 
 ## Low priority
 

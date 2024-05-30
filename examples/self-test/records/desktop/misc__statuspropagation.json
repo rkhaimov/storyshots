@@ -1,0 +1,6 @@
+{
+  "misc__statuspropagation__fresh_is_shown_even_when_not_all_are_done": [],
+  "misc__statuspropagation__failure_is_shown_even_when_not_all_are_done": [],
+  "misc__statuspropagation__error_is_shown_even_when_not_all_are_done": [],
+  "misc__statuspropagation__checkmark_is_not_shown_until_all_running_are_done": []
+}

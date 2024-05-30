@@ -6,8 +6,7 @@ import { MenuHavingStories } from '../MenuHavingStories';
 import { EntryAction } from '../reusables/EntryAction';
 import { EntryActions } from '../reusables/EntryActions';
 import { EntryHeader } from '../reusables/EntryHeader';
-import { EntryStatus } from '../reusables/EntryStatus';
-import { EntryTitle } from '../reusables/EntryTitle';
+import { HighlightableEntry } from '../reusables/EntryStatus';
 import { RunAction } from '../reusables/RunAction';
 import { RunCompleteAction } from '../reusables/RunCompleteAction';
 import { Props } from '../types';
@@ -25,7 +24,7 @@ export const GroupEntry: React.FC<
     return;
   }
 
-  const status = getGroupEntryStatus(
+  const { status, running } = getGroupEntryStatus(
     props.results,
     props.selection,
     group.children,
@@ -41,12 +40,12 @@ export const GroupEntry: React.FC<
         aria-label={group.payload.title}
       >
         <Fold open={expanded} />
-        <EntryTitle
-          left={<EntryStatus status={status?.type} />}
+        <HighlightableEntry
+          status={status?.type}
           title={group.payload.title}
           style={{ fontSize: 16, fontWeight: 600 }}
         />
-        <EntryActions waiting={isPlayingOrRunning()}>
+        <EntryActions waiting={running}>
           {renderAcceptAllAction()}
           <RunAction
             stories={TreeOP.toLeafsArray(group.children)}
@@ -70,19 +69,6 @@ export const GroupEntry: React.FC<
       )}
     </li>
   );
-
-  function isPlayingOrRunning() {
-    const { results, selection, group } = props;
-
-    const ids = TreeOP.toLeafsArray(group.children).map((it) => it.id);
-
-    const playing =
-      selection.type === 'story' &&
-      ids.includes(selection.story.id) &&
-      selection.playing;
-
-    return playing || ids.some((it) => results.get(it)?.running ?? false);
-  }
 
   function renderAcceptAllAction() {
     if (status?.type === 'fresh' || status?.type === 'fail') {

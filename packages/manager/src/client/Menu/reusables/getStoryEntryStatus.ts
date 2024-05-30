@@ -13,23 +13,28 @@ export function getStoryEntryStatus(
   selection: UseBehaviourProps['selection'],
   story: PureStory,
 ): EntryStatus {
-  if (
-    selection.type === 'story' &&
-    selection.story.id === story.id &&
-    selection.playing === false &&
-    selection.result.type === 'error'
-  ) {
-    return { type: 'error' };
+  if (selection.type === 'story' && selection.story.id === story.id) {
+    if (selection.playing) {
+      return { type: 'running' };
+    }
+
+    if (selection.result.type === 'error') {
+      return { type: 'error', message: selection.result.message };
+    }
   }
 
   const comparison = results.get(story.id);
 
-  if (isNil(comparison) || comparison.running) {
+  if (isNil(comparison)) {
     return;
   }
 
+  if (comparison.running) {
+    return { type: 'running' };
+  }
+
   if (comparison.type === 'error') {
-    return { type: 'error' };
+    return comparison;
   }
 
   const records = getAcceptableRecords(story, comparison.details);

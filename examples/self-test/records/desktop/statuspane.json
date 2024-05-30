@@ -1,0 +1,32 @@
+{
+  "statuspane__allows_to_examine_error_descriptions": [
+    {
+      "method": "actOnClientSide",
+      "args": [
+        [
+          {
+            "action": "screenshot",
+            "payload": {
+              "name": "FINAL"
+            }
+          }
+        ]
+      ]
+    }
+  ],
+  "statuspane__allows_to_see_all_failed_stories": [
+    {
+      "method": "actOnClientSide",
+      "args": [
+        [
+          {
+            "action": "screenshot",
+            "payload": {
+              "name": "FINAL"
+            }
+          }
+        ]
+      ]
+    }
+  ]
+}

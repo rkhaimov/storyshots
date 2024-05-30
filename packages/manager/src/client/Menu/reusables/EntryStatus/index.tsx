@@ -1,13 +1,24 @@
-import {
-  CheckOutlined,
-  CloseOutlined,
-  ExclamationOutlined,
-} from '@ant-design/icons';
+import { CheckOutlined, CloseOutlined, ExclamationOutlined } from '@ant-design/icons';
 import { Badge } from 'antd';
 import React from 'react';
+import { EntryTitle } from '../EntryTitle';
 import { Props } from './types';
 
-export const EntryStatus: React.FC<Props> = ({ status }) => {
+export const HighlightableEntry: React.FC<Props> = (props) => {
+  return (
+    <EntryTitle
+      {...props}
+      left={
+        <>
+          {renderStatusIcon(props)}
+          {props.left}
+        </>
+      }
+    />
+  );
+};
+
+function renderStatusIcon({ status }: Props) {
   if (status === 'pass') {
     return <CheckOutlined style={{ color: '#389e0d' }} />;
   }
@@ -33,4 +44,4 @@ export const EntryStatus: React.FC<Props> = ({ status }) => {
   }
 
   return null;
-};
+}

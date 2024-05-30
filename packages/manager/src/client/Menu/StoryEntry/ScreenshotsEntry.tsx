@@ -9,8 +9,7 @@ import {
   TestResultDetails,
 } from '../../behaviour/useTestResults/types';
 import { ActiveEntryHeader } from '../reusables/EntryHeader';
-import { EntryStatus } from '../reusables/EntryStatus';
-import { EntryTitle } from '../reusables/EntryTitle';
+import { HighlightableEntry } from '../reusables/EntryStatus';
 import { Props as ParentProps } from './types';
 
 type Props = {
@@ -39,13 +38,9 @@ export const ScreenshotsEntry: React.FC<Props> = ({
             $color={blue[0]}
             $active={isActive(it)}
           >
-            <EntryTitle
-              left={
-                <>
-                  <EntryStatus status={renderStatus(it)} />
-                  <PictureOutlined style={{ marginRight: 4 }} />
-                </>
-              }
+            <HighlightableEntry
+              status={renderStatus(it)}
+              left={<PictureOutlined style={{ marginRight: 4 }} />}
               title={it.name}
             />
           </ActiveEntryHeader>

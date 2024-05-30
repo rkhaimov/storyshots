@@ -1,10 +1,10 @@
+import { run } from '@storyshots/manager';
+import devtools from '@storyshots/react-preview/devtools';
+import { createBundler } from '@storyshots/webpack-bundler';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
-import { run } from '@storyshots/manager';
-import { createBundler } from '@storyshots/webpack-bundler';
-import devtools from '@storyshots/react-preview/devtools';
 
 run({
   paths: {
@@ -60,10 +60,22 @@ run({
     },
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      alias: {
+        '@storyshots/core': path.join(
+          process.cwd(),
+          '..',
+          '..',
+          'packages',
+          'core',
+          'src',
+        ),
+      },
     },
     plugins: [
       new HtmlWebpackPlugin(),
-      new ForkTsCheckerWebpackPlugin({ async: true }),
+      new ForkTsCheckerWebpackPlugin({
+        async: true,
+      }),
       new webpack.DefinePlugin({
         'process.env': { NODE_ENV: '"development"' },
       }),

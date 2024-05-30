@@ -1,9 +1,15 @@
+import { ComponentProps } from 'react';
 import {
   AcceptableRecord,
   AcceptableScreenshot,
 } from '../../../reusables/types';
+import { EntryTitle } from '../EntryTitle';
 
-export type Props = { status?: NonNullable<EntryStatus>['type'] };
+export type Props = ComponentProps<typeof EntryTitle> & {
+  status?: NonNullable<EntryStatus>['type'];
+};
+
+export type EntryErrorStatus = { type: 'error'; message: string };
 
 export type EntryStatus =
   | {
@@ -12,5 +18,6 @@ export type EntryStatus =
       screenshots: AcceptableScreenshot[];
     }
   | { type: 'pass' }
-  | { type: 'error' }
+  | EntryErrorStatus
+  | { type: 'running' }
   | undefined;

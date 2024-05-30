@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { EntryAction } from '../reusables/EntryAction';
 import { EntryActions } from '../reusables/EntryActions';
 import { ActiveEntryHeader, EntryHeader } from '../reusables/EntryHeader';
-import { EntryStatus } from '../reusables/EntryStatus';
+import { HighlightableEntry } from '../reusables/EntryStatus';
 import { EntryTitle } from '../reusables/EntryTitle';
 import { getStoryEntryStatus } from '../reusables/getStoryEntryStatus';
 import { RunAction } from '../reusables/RunAction';
@@ -33,11 +33,11 @@ export const StoryEntry: React.FC<Props> = (props) => {
         role="menuitem"
         aria-label={props.story.payload.title}
       >
-        <EntryTitle
-          left={<EntryStatus status={status?.type} />}
+        <HighlightableEntry
+          status={status?.type}
           title={props.story.payload.title}
         />
-        <EntryActions waiting={isPlayingOrRunning()}>
+        <EntryActions waiting={status?.type === 'running'}>
           {renderStoryActions()}
         </EntryActions>
       </ActiveEntryHeader>
@@ -116,7 +116,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
     return results.details.map((detail) => (
       <li>
         <DeviceEntryHeader $level={props.level} $offset={8}>
-          <EntryTitle title={detail.device.name} left={<></>} />
+          <EntryTitle title={detail.device.name} />
         </DeviceEntryHeader>
         <RecordsEntry {...props} details={detail} />
         <ScreenshotsEntry {...props} details={detail} />
@@ -129,20 +129,6 @@ export const StoryEntry: React.FC<Props> = (props) => {
       props.selection.type === 'story' &&
       props.selection.story.id === props.story.id
     );
-  }
-
-  function isPlayingOrRunning() {
-    const { story, results, selection } = props;
-    const comparison = results.get(story.id);
-
-    const playing =
-      selection.type === 'story' &&
-      selection.story.id === story.id &&
-      selection.playing;
-
-    const running = comparison && comparison.running;
-
-    return playing || running;
   }
 };
 

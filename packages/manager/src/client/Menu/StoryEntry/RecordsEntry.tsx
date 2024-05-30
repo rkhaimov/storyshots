@@ -3,8 +3,7 @@ import { ProfileOutlined } from '@ant-design/icons';
 import React from 'react';
 import { TestResultDetails } from '../../behaviour/useTestResults/types';
 import { ActiveEntryHeader } from '../reusables/EntryHeader';
-import { EntryStatus } from '../reusables/EntryStatus';
-import { EntryTitle } from '../reusables/EntryTitle';
+import { HighlightableEntry } from '../reusables/EntryStatus';
 import { Props as ParentProps } from './types';
 
 type Props = { details: TestResultDetails } & Pick<
@@ -30,14 +29,10 @@ export const RecordsEntry: React.FC<Props> = ({
         aria-label="Records"
         onClick={() => setRecords(story.id, details.device)}
       >
-        <EntryTitle
-          left={
-            <>
-              <EntryStatus status={details.records.type} />
-              <ProfileOutlined style={{ marginRight: 4 }} />
-            </>
-          }
+        <HighlightableEntry
           title="Records"
+          left={<ProfileOutlined style={{ marginRight: 4 }} />}
+          status={details.records.type}
         />
       </ActiveEntryHeader>
     </>

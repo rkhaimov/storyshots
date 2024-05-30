@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 type Props = {
   title: string;
-  left: React.ReactNode;
+  left?: React.ReactNode;
   style?: CSSProperties | undefined;
 };
 

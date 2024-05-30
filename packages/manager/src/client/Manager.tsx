@@ -2,6 +2,7 @@ import { Layout, theme } from 'antd';
 import React from 'react';
 import { useBehaviour } from './behaviour';
 import { Menu } from './Menu';
+import { StatusPane } from './StatusPane';
 import { Records } from './Records';
 import { Screenshot } from './Screenshot';
 import { EmulatedPreviewFrame } from './EmulatedPreviewFrame';
@@ -17,8 +18,8 @@ export const Manager: React.FC<Props> = (props) => {
   const behaviour = useBehaviour(props);
 
   return (
-    <>
-      <Layout hasSider style={{ height: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Layout hasSider style={{ flex: 1 }}>
         <Sider
           width={250}
           style={{
@@ -56,6 +57,7 @@ export const Manager: React.FC<Props> = (props) => {
           )}
         </main>
       </Layout>
-    </>
+      <StatusPane {...behaviour} />
+    </div>
   );
 };

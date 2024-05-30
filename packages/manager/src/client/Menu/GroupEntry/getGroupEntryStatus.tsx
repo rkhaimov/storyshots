@@ -1,4 +1,4 @@
-import { isNil, PureStoryTree, TreeOP } from '@storyshots/core';
+import { PureStoryTree, TreeOP } from '@storyshots/core';
 import { UseBehaviourProps } from '../../behaviour/types';
 import { TestResults } from '../../behaviour/useTestResults/types';
 import { EntryStatus } from '../reusables/EntryStatus/types';
@@ -13,33 +13,46 @@ export function getGroupEntryStatus(
     getStoryEntryStatus(results, selection, story),
   );
 
-  return statuses.reduce(merge, undefined);
+  return {
+    status: fold(statuses),
+    running: statuses.some((it) => it?.type === 'running'),
+  };
 }
 
-function merge(left: EntryStatus, right: EntryStatus): EntryStatus {
-  if (isNil(left)) {
-    return right;
+function fold(statuses: EntryStatus[]): EntryStatus {
+  if (statuses.some((it) => it?.type === 'error')) {
+    return { type: 'error', message: 'One or more stories contain errors' };
   }
 
-  if (isNil(right)) {
-    return left;
+  if (statuses.some((it) => it?.type === 'fail')) {
+    return {
+      type: 'fail',
+      records: statuses.flatMap((it) =>
+        it?.type === 'fail' ? it.records : [],
+      ),
+      screenshots: statuses.flatMap((it) =>
+        it?.type === 'fail' ? it.screenshots : [],
+      ),
+    };
   }
 
-  if (left.type === 'error' || right.type === 'error') {
-    return { type: 'error' };
+  if (statuses.some((it) => it?.type === 'fresh')) {
+    return {
+      type: 'fresh',
+      records: statuses.flatMap((it) =>
+        it?.type === 'fresh' ? it.records : [],
+      ),
+      screenshots: statuses.flatMap((it) =>
+        it?.type === 'fresh' ? it.screenshots : [],
+      ),
+    };
   }
 
-  if (left.type === 'pass') {
-    return right;
+  if (statuses.some((it) => it?.type === 'running')) {
+    return { type: 'running' };
   }
 
-  if (right.type === 'pass') {
-    return left;
+  if (statuses.some((it) => it?.type === 'pass')) {
+    return { type: 'pass' };
   }
-
-  return {
-    type: left.type === 'fail' ? 'fail' : right.type,
-    records: [...left.records, ...right.records],
-    screenshots: [...left.screenshots, ...right.screenshots],
-  };
 }

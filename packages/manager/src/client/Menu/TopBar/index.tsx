@@ -11,9 +11,10 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { UseBehaviourProps } from '../../behaviour/types';
 import { AutoPlaySelectionInitialized } from '../../behaviour/useAutoPlaySelection';
+import { getGroupEntryStatus } from '../GroupEntry/getGroupEntryStatus';
 import { EntryAction } from '../reusables/EntryAction';
 import { EntryActions } from '../reusables/EntryActions';
-import { EntryTitle } from '../reusables/EntryTitle';
+import { getStoryEntryStatus } from '../reusables/getStoryEntryStatus';
 import { RunAction } from '../reusables/RunAction';
 import { RunCompleteAction } from '../reusables/RunCompleteAction';
 
@@ -29,6 +30,7 @@ export const TopBar: React.FC<Props> = ({
   selection,
   results,
   setConfig,
+  toggleStatusPane,
 }) => {
   const [opened, setOpened] = useState(false);
   const nodes = TreeOP.toLeafsArray(stories);
@@ -37,12 +39,17 @@ export const TopBar: React.FC<Props> = ({
   return (
     <div>
       <StatusEntryHeader>
-        <EntryTitle
-          left={<></>}
-          title="Stories"
-          style={{ fontSize: 16, fontWeight: 600 }}
-        />
-        <EntryActions waiting={isPlayingOrRunning()}>
+        <a
+          href="#"
+          aria-label="Status"
+          style={{ flex: 1 }}
+          onClick={toggleStatusPane}
+        >
+          {renderStatusText(results, selection, stories)}
+        </a>
+        <EntryActions
+          waiting={getGroupEntryStatus(results, selection, stories).running}
+        >
           <RunAction stories={nodes} selection={selection} run={run} />
           <RunCompleteAction
             stories={nodes}
@@ -135,15 +142,25 @@ export const TopBar: React.FC<Props> = ({
       )}
     </div>
   );
-
-  function isPlayingOrRunning() {
-    if (selection.type === 'story' && selection.playing) {
-      return true;
-    }
-
-    return [...results.entries()].some(([, test]) => test.running);
-  }
 };
+
+function renderStatusText(
+  results: Props['results'],
+  selection: Props['selection'],
+  stories: Props['stories'],
+): string {
+  const total = results.size;
+
+  if (total === 0) {
+    return 'Press play';
+  }
+
+  const passed = TreeOP.toLeafsArray(stories)
+    .map((story) => getStoryEntryStatus(results, selection, story))
+    .filter((status) => status?.type === 'pass').length;
+
+  return `${passed}/${total} passed (${((passed / total) * 100).toFixed()}%)`;
+}
 
 const StatusEntryHeader = styled.div`
   display: flex;
@@ -179,7 +196,7 @@ const PreviewConfigForm = styled(Form)`
   background-color: #f7f7f7;
   padding: 8px;
   border-bottom: 1px solid rgb(206, 206, 206);
-  
+
   .ant-form-item {
     margin-bottom: 10px;
   }
