@@ -2,7 +2,7 @@
   "name": "@storyshots/manager",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Contains all core parts (bundler, runner and UI)",
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
