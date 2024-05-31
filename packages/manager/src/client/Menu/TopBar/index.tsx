@@ -152,7 +152,7 @@ function renderStatusText(
   const total = results.size;
 
   if (total === 0) {
-    return 'Press play';
+    return 'Status';
   }
 
   const passed = TreeOP.toLeafsArray(stories)

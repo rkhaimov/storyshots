@@ -1,38 +1,94 @@
-import { BoundingBox, ElementHandle, Frame } from 'puppeteer';
 import { FinderMeta, isNil, not, wait } from '@storyshots/core';
+import { BoundingBox, ElementHandle, Frame } from 'puppeteer';
 
 export async function select(
   frame: Frame,
   by: FinderMeta,
 ): Promise<ElementHandle> {
   const controller = new AbortController();
+  const selecting = _select(frame, by);
+  let last: undefined | SelectionsOutcome = undefined;
 
   return Promise.race([
-    _select(frame, by, controller.signal),
+    drain(controller.signal, selecting, (step) => (last = step)),
     wait(TIMEOUT)
       .then(() => controller.abort())
       .then(() =>
         Promise.reject(
           new Error(
-            `Element was not found within given time interval (${TIMEOUT} ms)`,
+            `${createErrorMessage()} Selector used ${selectorToString(by)}`,
           ),
         ),
       ),
   ]);
+
+  function createErrorMessage(): string {
+    switch (last) {
+      case undefined:
+        return `No attempts were made during provided time interval ${TIMEOUT} ms. It is probably due to engine slow start, try to rerun by pressing F5.`;
+      case 'not_found':
+        return `Element was not found during provided time interval ${TIMEOUT} ms.`;
+      case 'not_visible':
+        return `Element was found but did not become visible during provided interval ${TIMEOUT} ms. It has happened most likely due to element having zero area.`;
+      case 'outside_viewport':
+        return `Element happens to be outside of current viewport. Storyshots library scrolls to element automatically but it was not able to do it during provided interval ${TIMEOUT} ms. Try to use separate scroll action when auto-scroll does not work.`;
+      case 'not_stable':
+        return `Matched element appears to be not stable. It did not stop moving during provided interval ${TIMEOUT} ms. Try to disable animations with stubs.`;
+    }
+  }
+
+  function selectorToString(by: FinderMeta): string {
+    return `${by.beginning.on} ${by.consequent
+      .map((it): string => {
+        switch (it.type) {
+          case 'selector':
+            return it.on;
+          case 'index':
+            return `[${it.at}]`;
+          case 'filter':
+            return `has(${selectorToString(it.has)})`;
+        }
+      })
+      .join(' ')}`;
+  }
 }
 
-async function _select(
-  frame: Frame,
-  by: FinderMeta,
+async function drain(
   signal: AbortSignal,
+  generator: AsyncGenerator<SelectionsOutcome, ElementHandle, void>,
+  onStep: (outcome: SelectionsOutcome) => void,
 ): Promise<ElementHandle> {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     signal.throwIfAborted();
 
+    const step = await generator.next();
+
+    if (step.done) {
+      return step.value;
+    }
+
+    onStep(step.value);
+  }
+}
+
+type SelectionsOutcome =
+  | 'not_found'
+  | 'not_visible'
+  | 'outside_viewport'
+  | 'not_stable';
+
+async function* _select(
+  frame: Frame,
+  by: FinderMeta,
+): AsyncGenerator<SelectionsOutcome, ElementHandle, void> {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
     const elements = await begin(frame, by);
 
     if (elements.length === 0) {
+      yield 'not_found';
+
       await wait(100);
 
       continue;
@@ -47,7 +103,7 @@ async function _select(
     const element = elements[0];
 
     if (not(await element.isVisible())) {
-      console.warn('Element is not visible yet. Retrying...');
+      yield 'not_visible';
 
       await wait(100);
 
@@ -55,7 +111,7 @@ async function _select(
     }
 
     if (not(await element.isIntersectingViewport({ threshold: 0 }))) {
-      console.warn('Element is not in viewport. Scrolling...');
+      yield 'outside_viewport';
 
       await element.scrollIntoView();
       await wait(100);
@@ -67,7 +123,7 @@ async function _select(
     const second = await getBoundingBox(element);
 
     if (not(equals(first, second))) {
-      console.warn('Element is not stable. Settling...');
+      yield 'not_stable';
 
       await wait(100);
 
