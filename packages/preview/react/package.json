@@ -16,9 +16,11 @@
     "build": "rimraf ./lib && tsc -b tsconfig.json && tsc -b tsconfig.devtools.json"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "@storyshots/core": "0.0.1"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*"
   },
   "devDependencies": {
     "@types/react": "^18.2.38",

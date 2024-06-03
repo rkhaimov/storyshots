@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import { App } from './App';
 import { externals } from './externals';
 
@@ -9,4 +9,4 @@ div.setAttribute('id', 'root');
 
 document.body.appendChild(div);
 
-ReactDOM.createRoot(div).render(<App externals={externals} />);
+ReactDOM.render(<App externals={externals} />, div);

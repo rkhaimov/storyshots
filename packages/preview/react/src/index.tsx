@@ -2,7 +2,7 @@ import './connect-devtools';
 import { assert } from '@storyshots/core';
 
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import { App } from './App';
 import { externals } from './externals';
 import { describe, it } from './factories';
@@ -23,8 +23,9 @@ export function createPreviewApp<TExternals>(config: ClientConfig<TExternals>) {
     describe: describe,
     it: it<TExternals>,
     run: (stories: StoryTree[]) => {
-      ReactDOM.createRoot(createRootElement()).render(
+      ReactDOM.render(
         <App {...config} stories={stories} externals={externals} />,
+        createRootElement(),
       );
     },
   };
