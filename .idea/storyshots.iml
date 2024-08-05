@@ -13,6 +13,7 @@
       <excludeFolder url="file://$MODULE_DIR$/packages/bundler/webpack/lib" />
       <excludeFolder url="file://$MODULE_DIR$/packages/manager/react-devtools" />
       <excludeFolder url="file://$MODULE_DIR$/packages/preview/react/react-devtools" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/bundler/proxy/lib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

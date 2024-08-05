@@ -1,10 +1,11 @@
-import webpack, { Configuration } from 'webpack';
-import path from 'path';
-import { root } from './manager-root';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import path from 'path';
+import webpack, { Configuration } from 'webpack';
+import { createManagerRequest } from '../../reusables/createManagerRequest';
+import { root } from './manager-root';
 
-const config: Configuration = {
+const config = {
   mode: 'development',
   bail: false,
   devtool: 'cheap-module-source-map',
@@ -13,11 +14,11 @@ const config: Configuration = {
     errorDetails: true,
   },
   output: {
-    path: path.join(root, 'lib', 'manager'),
+    path: path.join(root, 'lib', 'client'),
     pathinfo: true,
-    filename: 'static/js/bundle.js',
+    filename: createManagerRequest('static/js/bundle.js'),
     assetModuleFilename: 'static/media/[name].[hash][ext]',
-    publicPath: '/manager',
+    publicPath: '/',
   },
   module: {
     rules: [
@@ -59,6 +60,6 @@ const config: Configuration = {
     }),
     new ForkTsCheckerWebpackPlugin({ async: false }),
   ],
-};
+} satisfies Configuration;
 
 export default config;

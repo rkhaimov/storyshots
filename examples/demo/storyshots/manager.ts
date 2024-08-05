@@ -1,34 +1,31 @@
 import devtools from '@storyshots/react-preview/devtools';
-import { createBundler } from '../../../packages/bundler/webpack/src';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
 import dev from 'webpack-dev-middleware';
+import { createWebpackBundler } from '../../../packages/bundler/webpack/src';
 import { run } from '../../../packages/manager/src/run';
 import config from '../../../packages/manager/src/server/compiler/manager-config';
 
 run({
   paths: {
-    preview: path.join(__dirname, 'preview', 'index.ts'),
     screenshots: path.join(process.cwd(), 'examples', 'demo', 'screenshots'),
     records: path.join(process.cwd(), 'examples', 'demo', 'records'),
     temp: path.join(process.cwd(), 'temp'),
   },
-  bundler: createBundler((config) => ({
+  preview: createWebpackBundler({
     mode: 'development',
     bail: false,
+    entry: path.join(__dirname, 'preview', 'index.ts'),
     devtool: 'cheap-module-source-map',
-    entry: config.entry,
     stats: {
       errorDetails: true,
     },
     output: {
-      path: config.output.path,
       pathinfo: true,
       filename: 'static/js/bundle.js',
       assetModuleFilename: 'static/media/[name].[hash][ext]',
-      publicPath: config.output.publicPath,
     },
     module: {
       rules: [
@@ -80,7 +77,7 @@ run({
         'process.env': { NODE_ENV: '"development"' },
       }),
     ],
-  })),
+  }),
   createManagerCompiler: () => dev(webpack(config)),
   devtools,
 });

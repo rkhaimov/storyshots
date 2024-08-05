@@ -12,7 +12,7 @@ import { act } from '../reusables/act';
 import { Baseline } from '../reusables/baseline';
 import { toPreviewFrame } from '../reusables/toPreviewFrame';
 import { ScreenshotAction } from '../reusables/types';
-import { createPathToStory } from '../router';
+import { createPathToStory } from '../paths';
 import { handlePossibleErrors } from './reusables/handlePossibleErrors';
 
 type ActPayload = {

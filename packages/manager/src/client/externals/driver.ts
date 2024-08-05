@@ -1,3 +1,4 @@
+import { createManagerRequest } from '../../reusables/createManagerRequest';
 import { IWebDriver } from '../../reusables/types';
 
 export const driver: IWebDriver = {
@@ -59,5 +60,7 @@ export const driver: IWebDriver = {
       },
     });
   },
-  createScreenshotPath: (path) => `/api/image/path?file=${path}`,
+    // TODO: Force all urls to be wrapped with createManagerRequest
+  createScreenshotPath: (path) =>
+    createManagerRequest(`/api/image/path?file=${path}`),
 };

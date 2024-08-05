@@ -4,7 +4,7 @@ import puppeteer, { Page } from 'puppeteer';
 import { createApiHandlers } from './handlers';
 import { createBaseline } from './reusables/baseline';
 import { ServerConfig } from './reusables/types';
-import { MANAGER_INDEX } from './router';
+import { HOST } from './paths';
 
 export async function createWebDriver(app: Application, config: ServerConfig) {
   const baseline = await createBaseline(config);
@@ -18,7 +18,7 @@ async function openAppAndGetPage(config: ServerConfig): Promise<Page> {
     headless: false,
     defaultViewport: null,
     args: [
-      `--app=${MANAGER_INDEX}`,
+      `--app=${HOST}`,
       '--start-maximized',
       '--test-type=gpu',
       `--disable-extensions-except=${config.devtools}`,

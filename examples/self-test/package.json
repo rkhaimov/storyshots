@@ -8,9 +8,9 @@
   },
   "dependencies": {
     "@storyshots/core": "./local/storyshots-core-0.0.1.tgz",
-    "@storyshots/manager": "./local/storyshots-manager-0.0.2.tgz",
-    "@storyshots/react-preview": "./local/storyshots-react-preview-0.0.1.tgz",
-    "@storyshots/webpack-bundler": "./local/storyshots-webpack-bundler-0.0.1.tgz"
+    "@storyshots/manager": "./local/storyshots-manager-0.0.3.tgz",
+    "@storyshots/react-preview": "./local/storyshots-react-preview-0.0.2.tgz",
+    "@storyshots/webpack-bundler": "./local/storyshots-webpack-bundler-0.0.4.tgz"
   },
   "keywords": [],
   "author": "",

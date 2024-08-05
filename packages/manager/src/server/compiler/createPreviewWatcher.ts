@@ -1,9 +1,9 @@
 import wsify, { WebsocketRequestHandler } from 'express-ws';
-import { Compiler } from '../reusables/types';
+import { PreviewServe } from '../reusables/types';
 
 export function createPreviewWatcher(
   app: wsify.Application,
-  preview: Compiler,
+  preview: PreviewServe,
 ) {
   let clients: Parameters<WebsocketRequestHandler>[0][] = [];
 

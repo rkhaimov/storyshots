@@ -1,7 +1,7 @@
 {
-  "name": "@storyshots/webpack-bundler",
-  "version": "0.0.4",
-  "description": "Preview webpack bundler",
+  "name": "@storyshots/proxy-bundler",
+  "version": "0.0.2",
+  "description": "Preview proxy bundler",
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
   "main": "./lib/index.js",
@@ -13,11 +13,9 @@
     "build": "rimraf ./lib && tsc -b tsconfig.json"
   },
   "dependencies": {
-    "html-webpack-plugin": "^5.5.3",
-    "webpack-dev-middleware": "^7.0.0"
+    "http-proxy-middleware": "^3.0.0"
   },
   "peerDependencies": {
-    "@storyshots/manager": "0.0.3",
-    "webpack": "^5.89.0"
+    "@storyshots/manager": "0.0.3"
   }
 }
