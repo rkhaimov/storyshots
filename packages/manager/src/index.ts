@@ -1,12 +1,14 @@
 import express from 'express';
+import path from 'path';
 import { run as _run } from './run';
-import manager from './server/compiler/manager-config';
 import { ServerConfig } from './server/reusables/types';
+import { root } from './server/compiler/manager-root';
 
 export const run = (config: ServerConfig) =>
   _run({
     ...config,
-    createManagerCompiler: () => express.static(manager.output.path),
+    createManagerCompiler: () =>
+      express.static(path.join(root, 'lib', 'client')),
   });
 
 export type { ServerConfig, PreviewServe } from './server/reusables/types';

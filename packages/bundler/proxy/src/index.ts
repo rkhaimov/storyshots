@@ -6,7 +6,6 @@ export function createProxyBundler(to: string): PreviewServe {
     handler: createProxyMiddleware({
       target: to,
       changeOrigin: true,
-      pathFilter: '**',
     }),
     // Update events are not possible by definition
     onUpdate: () => {},

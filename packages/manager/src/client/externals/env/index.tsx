@@ -1,5 +1,6 @@
 import { assert, Channel, PreviewState } from '@storyshots/core';
 import React, { useEffect, useState } from 'react';
+import { createManagerRequest } from '../../../reusables/createManagerRequest';
 import { IPreview } from './types';
 
 export const preview: IPreview = {
@@ -7,7 +8,7 @@ export const preview: IPreview = {
     const [hash, setHash] = useState('');
 
     useEffect(() => {
-      const ws = new WebSocket('ws://localhost:6006');
+      const ws = new WebSocket(createManagerRequest('ws://localhost:6006'));
 
       ws.addEventListener('message', (event) => {
         assert(typeof event.data === 'string');
