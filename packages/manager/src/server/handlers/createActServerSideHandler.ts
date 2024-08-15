@@ -1,4 +1,11 @@
-import { Channel, Device, StoryID, TestConfig, TreeOP } from '@storyshots/core';
+import {
+  Channel,
+  Device,
+  StoryID,
+  TestConfig,
+  TreeOP,
+  wait,
+} from '@storyshots/core';
 import { Application } from 'express-serve-static-core';
 import { Frame, Page } from 'puppeteer';
 import { Cluster } from 'puppeteer-cluster';
@@ -11,7 +18,7 @@ import {
 import { act } from '../reusables/act';
 import { Baseline } from '../reusables/baseline';
 import { toPreviewFrame } from '../reusables/toPreviewFrame';
-import { ScreenshotAction } from '../reusables/types';
+import { ScreenshotAction, ServerConfig } from '../reusables/types';
 import { createPathToStory } from '../paths';
 import { handlePossibleErrors } from './reusables/handlePossibleErrors';
 
@@ -23,6 +30,7 @@ type ActPayload = {
 export async function createActServerSideHandler(
   app: Application,
   baseline: Baseline,
+  config: ServerConfig,
 ) {
   const cluster: Cluster<
     ActPayload,
@@ -30,7 +38,7 @@ export async function createActServerSideHandler(
   > = await Cluster.launch({
     timeout: Math.pow(2, 31) - 1,
     concurrency: Cluster.CONCURRENCY_BROWSER,
-    maxConcurrency: 1,
+    maxConcurrency: config.optimization.agentsCount,
     puppeteerOptions: {
       headless: 'new',
     },
@@ -38,7 +46,7 @@ export async function createActServerSideHandler(
 
   await cluster.task(({ page, data }) =>
     handlePossibleErrors(() =>
-      createServerResultByDevice(baseline, page, data.id, data.payload),
+      createServerResultByDevice(baseline, page, data.id, data.payload, config),
     ),
   );
 
@@ -55,6 +63,7 @@ async function createServerResultByDevice(
   page: Page,
   id: StoryID,
   payload: ActionsAndConfig,
+  config: ServerConfig,
 ) {
   await configurePageByMode(payload.config.device, page);
 
@@ -80,7 +89,14 @@ async function createServerResultByDevice(
     `,
   });
 
-  return interactWithPageAndMakeShots(baseline, page, preview, id, payload);
+  return interactWithPageAndMakeShots(
+    baseline,
+    page,
+    preview,
+    id,
+    payload,
+    config,
+  );
 }
 
 async function configurePageByMode(device: Device, page: Page) {
@@ -101,12 +117,13 @@ async function interactWithPageAndMakeShots(
   preview: Frame,
   id: StoryID,
   { actions, config }: ActionsAndConfig,
+  server: ServerConfig,
 ): Promise<ActualServerSideResult> {
   const screenshots: Screenshot[] = [];
   for (const action of actions) {
     if (action.action === 'screenshot') {
       screenshots.push(
-        await createScreenshot(baseline, page, id, action, config),
+        await createScreenshot(baseline, page, id, action, config, server),
       );
     } else {
       await act(preview, action);
@@ -129,7 +146,10 @@ async function createScreenshot(
   id: StoryID,
   action: ScreenshotAction,
   config: TestConfig,
+  server: ServerConfig,
 ): Promise<Screenshot> {
+  await server.optimization.stabilize(page, id, action, config);
+
   const path = await baseline.createActualScreenshot(
     id,
     config,
@@ -142,3 +162,48 @@ async function createScreenshot(
     path,
   };
 }
+
+export type Stabilizer = (
+  page: Page,
+  id: StoryID,
+  action: ScreenshotAction,
+  config: TestConfig,
+) => Promise<void>;
+
+const none: Stabilizer = async () => {};
+
+type ImageStabilizerConfig = {
+  attempts: number;
+  interval(attempt: number): number;
+};
+
+const byImage = (config: ImageStabilizerConfig): Stabilizer => {
+  const stabilizer = async (
+    story: StoryID,
+    page: Page,
+    last: Buffer,
+    attempt = 0,
+  ): Promise<void> => {
+    if (attempt === config.attempts) {
+      return;
+    }
+
+    await wait(config.interval(attempt));
+
+    const curr = await page.screenshot({ type: 'png' });
+
+    if (last.equals(curr)) {
+      return;
+    }
+
+    return stabilizer(story, page, curr, attempt + 1);
+  };
+
+  return async (page, id) =>
+    stabilizer(id, page, await page.screenshot({ type: 'png' }));
+};
+
+export const STABILIZER = {
+  none,
+  byImage,
+};

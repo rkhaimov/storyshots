@@ -3,6 +3,7 @@ import {
   Device,
   isNil,
   JournalRecord,
+  PreviewState,
   PureStory,
   StoryID,
   TestConfig,
@@ -26,6 +27,30 @@ export type ActualResult = {
 };
 
 export async function createActualResult(
+  driver: IWebDriver,
+  story: PureStory,
+  config: TestConfig,
+  preview: PreviewState,
+  attempt = 0,
+): Promise<WithPossibleError<ActualResult>> {
+  const result = await _createActualResult(driver, story, config);
+
+  if (attempt === preview.retries) {
+    return result;
+  }
+
+  if (result.type === 'error') {
+    return createActualResult(driver, story, config, preview, attempt + 1);
+  }
+
+  if (result.data.screenshots.some((it) => it.result.type === 'fail')) {
+    return createActualResult(driver, story, config, preview, attempt + 1);
+  }
+
+  return result;
+}
+
+async function _createActualResult(
   driver: IWebDriver,
   story: PureStory,
   config: TestConfig,

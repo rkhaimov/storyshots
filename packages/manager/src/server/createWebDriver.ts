@@ -10,7 +10,7 @@ export async function createWebDriver(app: Application, config: ServerConfig) {
   const baseline = await createBaseline(config);
   const page = await openAppAndGetPage(config);
 
-  createApiHandlers(app, page, baseline);
+  createApiHandlers(app, page, baseline, config);
 }
 
 async function openAppAndGetPage(config: ServerConfig): Promise<Page> {

@@ -28,6 +28,7 @@ export type Story<TExternals = unknown> = LeafNode<{
 type UserDefinedDevice = Omit<Device, 'name'> & { name: string };
 
 export type ClientConfig<TExternals> = {
+  retries: number;
   devices: UserDefinedDevice[];
   presets: UserDefinedPresetGroup<TExternals>[];
   createExternals(): TExternals;

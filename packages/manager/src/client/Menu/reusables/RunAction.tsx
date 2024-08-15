@@ -17,7 +17,7 @@ export const RunAction: React.FC<Props> = ({ run, selection, stories }) => (
     action={(e) => {
       e.stopPropagation();
 
-      run(TreeOP.toLeafsArray(stories), selection.config);
+      run(TreeOP.toLeafsArray(stories), selection.config, selection.preview);
     }}
   />
 );

@@ -9,6 +9,7 @@ const {
   it: _it,
   describe,
 } = createPreviewApp({
+  retries: 3,
   devices: [
     {
       type: 'size-only',

@@ -13,6 +13,7 @@ export function useManagerState(props: Props) {
   return useMemo(
     () =>
       props.externals.createManagerConnection({
+        retries: props.retries,
         stories: toPureStories(props.stories),
         devices: props.devices as Device[],
         presets: toPurePresets(props.presets),

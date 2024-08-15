@@ -10,16 +10,18 @@ import { createScreenshotEqualHandler } from './createScreenshotEqualHandler';
 import { createImagePathHandler } from './createImagePathHandler';
 import { createExpectedRecordsHandler } from './createExpectedRecordsHandler';
 import { createAcceptRecordsHandler } from './createAcceptRecordsHandler';
+import { ServerConfig } from '../reusables/types';
 
 export function createApiHandlers(
   app: Application,
   page: Page,
   baseline: Baseline,
+  config: ServerConfig,
 ) {
   app.use(express.json());
 
   createActClientSideHandler(app, page);
-  createActServerSideHandler(app, baseline);
+  createActServerSideHandler(app, baseline, config);
   createExpectedScreenshotsHandler(app, baseline);
   createExpectedRecordsHandler(app, baseline);
   createScreenshotEqualHandler(app, baseline);

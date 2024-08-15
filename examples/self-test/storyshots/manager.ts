@@ -1,4 +1,4 @@
-import { run } from '@storyshots/manager';
+import { run, STABILIZER } from '@storyshots/manager';
 import devtools from '@storyshots/react-preview/devtools';
 import { createWebpackBundler } from '@storyshots/webpack-bundler';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
@@ -11,6 +11,13 @@ run({
     screenshots: path.join(process.cwd(), 'screenshots'),
     records: path.join(process.cwd(), 'records'),
     temp: path.join(process.cwd(), '..', '..', 'temp'),
+  },
+  optimization: {
+    agentsCount: 4,
+    stabilize: STABILIZER.byImage({
+      attempts: 3,
+      interval: () => 100,
+    }),
   },
   preview: createWebpackBundler({
     mode: 'development',

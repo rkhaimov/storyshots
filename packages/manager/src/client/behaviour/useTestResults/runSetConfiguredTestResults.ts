@@ -1,36 +1,49 @@
-import { PureStory, TestConfig } from '@storyshots/core';
+import { PreviewState, PureStory, StoryID, TestConfig } from '@storyshots/core';
 import React from 'react';
 import { IWebDriver } from '../../../reusables/types';
 import { createActualResult } from './createActualResult';
 import { TestResult, TestResults } from './types';
 
-export async function runSetConfiguredTestResults(
+export function runSetConfiguredTestResults(
   driver: IWebDriver,
   setResults: React.Dispatch<React.SetStateAction<TestResults>>,
   stories: PureStory[],
   config: TestConfig,
+  preview: PreviewState,
 ) {
-  for (const story of stories) {
-    const results = await createActualResult(driver, story, config);
+  const tasks = stories.map(async (story) => {
+    const result = await toStoryResult(story, driver, config, preview);
 
-    if (results.type === 'error') {
-      setResults(
-        (curr) =>
-          new Map(
-            curr.set(story.id, {
-              running: false,
-              type: 'error',
-              message: results.message,
-            }),
-          ),
-      );
+    setResults((curr) => new Map(curr.set(result[0], result[1])));
+  });
 
-      continue;
-    }
+  return Promise.all(tasks);
+}
 
-    const { screenshots, records } = results.data;
+async function toStoryResult(
+  story: PureStory,
+  driver: IWebDriver,
+  config: TestConfig,
+  preview: PreviewState,
+): Promise<[StoryID, TestResult]> {
+  const results = await createActualResult(driver, story, config, preview);
 
-    const result: TestResult = {
+  if (results.type === 'error') {
+    return [
+      story.id,
+      {
+        running: false,
+        type: 'error',
+        message: results.message,
+      },
+    ];
+  }
+
+  const { screenshots, records } = results.data;
+
+  return [
+    story.id,
+    {
       running: false,
       type: 'success',
       details: [
@@ -43,8 +56,6 @@ export async function runSetConfiguredTestResults(
           })),
         },
       ],
-    };
-
-    setResults((curr) => new Map(curr.set(story.id, result)));
-  }
+    },
+  ];
 }

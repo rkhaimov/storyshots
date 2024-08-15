@@ -3,6 +3,7 @@ import { PureStoryTree, StoryID } from './story';
 import { Device, PresetGroup, SelectedPresets } from './test-config';
 
 export type PreviewState = {
+  retries: number;
   stories: PureStoryTree[];
   devices: Device[];
   presets: PresetGroup[];

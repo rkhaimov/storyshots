@@ -3,11 +3,12 @@ import {
   PreviewState,
   PureStory,
   SelectedPresets,
+  StoryID,
 } from '@storyshots/core';
 import React from 'react';
 import { IWebDriver, WithPossibleError } from '../../../reusables/types';
 import { ActualResult, createActualResult } from './createActualResult';
-import { TestResultDetails, TestResults } from './types';
+import { TestResult, TestResultDetails, TestResults } from './types';
 
 export async function runSetCompleteTestResults(
   driver: IWebDriver,
@@ -15,41 +16,47 @@ export async function runSetCompleteTestResults(
   stories: PureStory[],
   preview: PreviewState,
 ) {
-  for (const story of stories) {
-    const details: WithPossibleError<TestResultDetails>[] = [];
+  const tasks = stories.map(async (story) => {
+    const result = await toStoryResult(story, driver, preview);
 
-    for (const device of preview.devices) {
-      details.push(await createDetailedResult(driver, story, device, preview));
-    }
+    setResults((curr) => new Map(curr.set(result[0], result[1])));
+  });
 
-    const result = toAllSuccessOrAnyError(details);
+  return Promise.all(tasks);
+}
 
-    if (result.type === 'error') {
-      setResults(
-        (curr) =>
-          new Map(
-            curr.set(story.id, {
-              running: false,
-              type: 'error',
-              message: result.message,
-            }),
-          ),
-      );
+async function toStoryResult(
+  story: PureStory,
+  driver: IWebDriver,
+  preview: PreviewState,
+): Promise<[StoryID, TestResult]> {
+  const details: WithPossibleError<TestResultDetails>[] = [];
 
-      continue;
-    }
-
-    setResults(
-      (curr) =>
-        new Map(
-          curr.set(story.id, {
-            running: false,
-            type: 'success',
-            details: result.data,
-          }),
-        ),
-    );
+  for (const device of preview.devices) {
+    details.push(await createDetailedResult(driver, story, device, preview));
   }
+
+  const result = toAllSuccessOrAnyError(details);
+
+  if (result.type === 'error') {
+    return [
+      story.id,
+      {
+        running: false,
+        type: 'error',
+        message: result.message,
+      },
+    ];
+  }
+
+  return [
+    story.id,
+    {
+      running: false,
+      type: 'success',
+      details: result.data,
+    },
+  ];
 }
 
 function toAllSuccessOrAnyError<T>(
@@ -101,10 +108,12 @@ async function createDetailedResult(
   > = [];
 
   for (const presets of createAllPossiblePresets(preview.presets)) {
-    const result = await createActualResult(driver, story, {
+    const config = {
       device,
       presets,
-    });
+    };
+
+    const result = await createActualResult(driver, story, config, preview);
 
     if (result.type === 'error') {
       results.push(result);

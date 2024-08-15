@@ -14,3 +14,5 @@ export const run = (config: ServerConfig) =>
 export type { ServerConfig, PreviewServe } from './server/reusables/types';
 
 export { root } from './server/compiler/manager-root';
+
+export { STABILIZER } from './server/handlers/createActServerSideHandler';

@@ -94,12 +94,6 @@ async function* _select(
       continue;
     }
 
-    if (elements.length > 1) {
-      console.warn(
-        `Found too many elements (${elements.length}). Picking first occurrence`,
-      );
-    }
-
     const element = elements[0];
 
     if (not(await element.isVisible())) {

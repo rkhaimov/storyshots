@@ -48,6 +48,7 @@ press-play - that is a good name
 * Rename story or group utility
   * It is relatively hard to rename them manually
 * Add port for manager configuration
+* Improve story bulk run - it should give quick response (now it updates in chunks, use promise pool function?)
 
 ## Questionable
 

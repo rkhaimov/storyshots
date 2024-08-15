@@ -1,5 +1,6 @@
 import { ActionMeta } from '@storyshots/core';
 import { RequestHandler } from 'express';
+import { Stabilizer } from '../handlers/createActServerSideHandler';
 
 export type PreviewServe = {
   // Handler must provide all requested static contents
@@ -17,6 +18,10 @@ export type ServerConfig = {
     temp: string;
   };
   preview: PreviewServe;
+  optimization: {
+    agentsCount: number;
+    stabilize: Stabilizer;
+  };
   devtools: string;
 };
 

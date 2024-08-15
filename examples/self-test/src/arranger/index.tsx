@@ -63,6 +63,7 @@ export function arranger<TExternals = null>() {
         setRecordsSource: shouldNeverBeCalled,
       },
       ...onConfig({
+        retries: 0,
         presets: [],
         devices: [
           {

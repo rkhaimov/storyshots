@@ -7,12 +7,20 @@ import dev from 'webpack-dev-middleware';
 import { createWebpackBundler } from '../../../packages/bundler/webpack/src';
 import { run } from '../../../packages/manager/src/run';
 import config from '../../../packages/manager/src/server/compiler/manager-config';
+import { STABILIZER } from '@storyshots/manager/src/server/handlers/createActServerSideHandler';
 
 run({
   paths: {
     screenshots: path.join(process.cwd(), 'examples', 'demo', 'screenshots'),
     records: path.join(process.cwd(), 'examples', 'demo', 'records'),
     temp: path.join(process.cwd(), 'temp'),
+  },
+  optimization: {
+    agentsCount: 4,
+    stabilize: STABILIZER.byImage({
+      attempts: 5,
+      interval: () => 1_000,
+    }),
   },
   preview: createWebpackBundler({
     mode: 'development',

@@ -18,10 +18,10 @@ export function useTestResults() {
 
   return {
     results,
-    run: (stories: PureStory[], config: TestConfig) => {
+    run: (stories: PureStory[], config: TestConfig, preview: PreviewState) => {
       setChosenAsRunning(stories);
 
-      runSetConfiguredTestResults(driver, setResults, stories, config);
+      runSetConfiguredTestResults(driver, setResults, stories, config, preview);
     },
     runComplete: (stories: PureStory[], preview: PreviewState) => {
       setChosenAsRunning(stories);
