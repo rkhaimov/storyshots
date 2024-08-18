@@ -60,7 +60,7 @@ export const driver: IWebDriver = {
       },
     });
   },
-    // TODO: Force all urls to be wrapped with createManagerRequest
+  // TODO: Force all urls to be wrapped with createManagerRequest
   createScreenshotPath: (path) =>
     createManagerRequest(`/api/image/path?file=${path}`),
 };

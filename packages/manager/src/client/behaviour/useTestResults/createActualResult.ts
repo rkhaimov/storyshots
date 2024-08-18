@@ -55,7 +55,9 @@ async function _createActualResult(
   story: PureStory,
   config: TestConfig,
 ): Promise<WithPossibleError<ActualResult>> {
-  const actions = story.payload.act(createActor(), config.device).toMeta();
+  const actions = story.payload
+    .act(createActor(), { ...config, screenshotting: true })
+    .toMeta();
 
   const actual = await driver.actOnServerSide(story.id, {
     actions,

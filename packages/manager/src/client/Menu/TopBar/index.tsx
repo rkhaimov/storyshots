@@ -1,11 +1,5 @@
 import { SlidersOutlined } from '@ant-design/icons';
-import {
-  Device,
-  not,
-  PresetName,
-  PureStoryTree,
-  TreeOP,
-} from '@storyshots/core';
+import { Device, not, PureStoryTree, TreeOP } from '@storyshots/core';
 import { Checkbox, Form, Radio, Select } from 'antd';
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -37,11 +31,11 @@ export const TopBar: React.FC<Props> = ({
   const { config, preview } = selection;
 
   return (
-    <div>
+    <div aria-label="Status">
       <StatusEntryHeader>
         <a
           href="#"
-          aria-label="Status"
+          aria-label="Progress"
           style={{ flex: 1 }}
           onClick={toggleStatusPane}
         >
@@ -119,7 +113,7 @@ export const TopBar: React.FC<Props> = ({
                   buttonStyle="solid"
                 />
               ) : (
-                <Select<PresetName, PresetOption>
+                <Select<string, PresetOption>
                   options={[preset.default, ...preset.others].map((it) => ({
                     value: it,
                     label: it,
@@ -188,8 +182,8 @@ type DeviceOption = {
 };
 
 type PresetOption = {
-  value: PresetName;
-  label: PresetName;
+  value: string;
+  label: string;
 };
 
 const PreviewConfigForm = styled(Form)`

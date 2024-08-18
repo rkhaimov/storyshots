@@ -34,18 +34,7 @@ const {
     {
       name: 'Theme',
       default: 'Light',
-      additional: [
-        {
-          name: 'Dark',
-          configure: (externals) => ({
-            ...externals,
-            options: {
-              ...externals.options,
-              getTheme: () => 'dark',
-            },
-          }),
-        },
-      ],
+      additional: ['Dark'],
     },
   ],
   createExternals: createMockExternals,
@@ -55,12 +44,7 @@ const {
 const it = (title: Parameters<typeof _it>[0], config: RenderBoundConfig) =>
   _it(title, {
     ...config,
-    render: (externals, screenshotting) => (
-      <PureApp
-        externals={externals}
-        theme={{ token: { motion: !screenshotting } }}
-      />
-    ),
+    render: (externals) => <PureApp externals={externals} />,
   });
 
 type RenderBoundConfig = Omit<Parameters<typeof _it>[1], 'render'>;

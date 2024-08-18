@@ -1,4 +1,4 @@
-import { ManagerState, PreviewState, Channel } from '@storyshots/core';
+import { Channel, ManagerState, PreviewState } from '@storyshots/core';
 
 export interface IExternals {
   createManagerConnection(preview: PreviewState): ManagerState;

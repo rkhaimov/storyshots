@@ -2,10 +2,10 @@ import { Device, JournalRecord, not, StoryID, TreeOP } from '@storyshots/core';
 import path from 'path';
 import { DeviceAndRecord } from '../../reusables/types';
 
-import { ServerConfig } from '../reusables/types';
+import { ManagerConfig } from '../reusables/types';
 import { exists, mkdir, mkfile, read } from './utils';
 
-export async function createRecordsBaseline(config: ServerConfig) {
+export async function createRecordsBaseline(config: ManagerConfig) {
   return {
     getExpectedRecords: async (
       id: StoryID,

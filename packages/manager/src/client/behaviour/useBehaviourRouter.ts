@@ -1,11 +1,11 @@
 import {
   Device,
+  DeviceName,
   isNil,
   ScreenshotName,
   SelectedPresets,
   StoryID,
   TreeOP,
-  DeviceName,
 } from '@storyshots/core';
 import { useMemo } from 'react';
 import { useLocation } from 'wouter';
@@ -58,12 +58,12 @@ function useNavigation() {
     query.delete('config');
     query.append('config', JSON.stringify(config));
 
-    navigate(`${url}?${query}`);
+    navigate(`${url}?${query.toString()}`);
   };
 }
 
 function useParsedParams(props: Props) {
-  const story = props.params.story as string | undefined;
+  const story = props.params.story;
   const search = useSearch();
 
   return useMemo((): URLParsedParams => {

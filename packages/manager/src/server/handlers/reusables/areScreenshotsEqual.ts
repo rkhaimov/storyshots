@@ -13,7 +13,14 @@ export function areScreenshotsEqual(l: Buffer, r: Buffer): boolean {
     return false;
   }
 
-  const diff = pixelmatch(left.data, right.data, null, left.width, left.height, { threshold: 0 });
+  const diff = pixelmatch(
+    left.data,
+    right.data,
+    null,
+    left.width,
+    left.height,
+    { threshold: 0 },
+  );
 
   return diff === 0;
 }

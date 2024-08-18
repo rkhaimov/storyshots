@@ -18,7 +18,7 @@ import {
 import { act } from '../reusables/act';
 import { Baseline } from '../reusables/baseline';
 import { toPreviewFrame } from '../reusables/toPreviewFrame';
-import { ScreenshotAction, ServerConfig } from '../reusables/types';
+import { ManagerConfig, ScreenshotAction } from '../reusables/types';
 import { createPathToStory } from '../paths';
 import { handlePossibleErrors } from './reusables/handlePossibleErrors';
 
@@ -30,7 +30,7 @@ type ActPayload = {
 export async function createActServerSideHandler(
   app: Application,
   baseline: Baseline,
-  config: ServerConfig,
+  config: ManagerConfig,
 ) {
   const cluster: Cluster<
     ActPayload,
@@ -56,6 +56,8 @@ export async function createActServerSideHandler(
 
     response.json(await cluster.execute({ id, payload }));
   });
+
+  return cluster.close.bind(cluster);
 }
 
 async function createServerResultByDevice(
@@ -63,11 +65,11 @@ async function createServerResultByDevice(
   page: Page,
   id: StoryID,
   payload: ActionsAndConfig,
-  config: ServerConfig,
+  config: ManagerConfig,
 ) {
   await configurePageByMode(payload.config.device, page);
 
-  await page.goto(createPathToStory(id, payload.config.presets), {
+  await page.goto(createPathToStory(id, payload.config, config), {
     waitUntil: 'networkidle0',
   });
 
@@ -80,11 +82,10 @@ async function createServerResultByDevice(
     *::before {
       transition-delay: 0s !important;
       transition-duration: 0s !important;
-      animation-delay: -0.0001s !important;
+      animation-delay: 0s !important;
       animation-duration: 0s !important;
       animation-play-state: paused !important;
       caret-color: transparent !important;
-      color-adjust: exact !important;
     }
     `,
   });
@@ -117,7 +118,7 @@ async function interactWithPageAndMakeShots(
   preview: Frame,
   id: StoryID,
   { actions, config }: ActionsAndConfig,
-  server: ServerConfig,
+  server: ManagerConfig,
 ): Promise<ActualServerSideResult> {
   const screenshots: Screenshot[] = [];
   for (const action of actions) {
@@ -146,7 +147,7 @@ async function createScreenshot(
   id: StoryID,
   action: ScreenshotAction,
   config: TestConfig,
-  server: ServerConfig,
+  server: ManagerConfig,
 ): Promise<Screenshot> {
   await server.optimization.stabilize(page, id, action, config);
 

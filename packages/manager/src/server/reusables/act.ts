@@ -2,6 +2,9 @@ import { ActionMeta, assertIsNever, isNil, wait } from '@storyshots/core';
 import { ElementHandle, Frame } from 'puppeteer';
 import { select } from './select';
 import { ScreenshotAction } from './types';
+import { ElementGuard } from './select/types';
+import { TIMEOUT } from './select/constants';
+import { isInsideViewport, isStable, isVisible } from './select/guards';
 
 export async function act(
   preview: Frame,
@@ -15,7 +18,11 @@ export async function act(
     return scroll(preview, action);
   }
 
-  const element = await select(preview, action.payload.on);
+  const element = await select(
+    preview,
+    action.payload.on,
+    actionToGuards(action),
+  );
 
   switch (action.action) {
     case 'click':
@@ -30,6 +37,51 @@ export async function act(
 
   assertIsNever(action);
 }
+
+function actionToGuards(
+  action: Extract<
+    ActionMeta,
+    { action: 'click' | 'fill' | 'hover' | 'scroll-to' | 'scroll' }
+  >,
+): ElementGuard[] {
+  switch (action.action) {
+    case 'click':
+    case 'fill':
+      return [isVisible, isInsideViewport, isStable, isEnabled];
+    case 'hover':
+    case 'scroll-to':
+    case 'scroll':
+      return [isVisible, isInsideViewport, isStable];
+  }
+}
+
+const isEnabled: ElementGuard = async (element) => {
+  const disabled = await element.evaluate((it) => {
+    const controls = [
+      'BUTTON',
+      'INPUT',
+      'SELECT',
+      'TEXTAREA',
+      'OPTION',
+      'OPTGROUP',
+    ];
+
+    if (controls.includes(it.nodeName)) {
+      return it.hasAttribute('disabled');
+    }
+
+    return false;
+  });
+
+  if (disabled) {
+    return {
+      pass: false,
+      reason: `Matched element appears to be disabled. It remained to be so during provided time interval ${TIMEOUT} ms.`,
+    };
+  }
+
+  return { pass: true };
+};
 
 async function fill(
   element: ElementHandle,
@@ -46,7 +98,10 @@ async function fill(
   return element.type(action.payload.text, action.payload.options);
 }
 
-async function scroll(preview: Frame, action: Extract<ActionMeta, { action: 'scroll' }>): Promise<void> {
+async function scroll(
+  preview: Frame,
+  action: Extract<ActionMeta, { action: 'scroll' }>,
+): Promise<void> {
   const selector = action.payload.on;
 
   if (isNil(selector)) {
@@ -61,7 +116,7 @@ async function scroll(preview: Frame, action: Extract<ActionMeta, { action: 'scr
     );
   }
 
-  const element = await select(preview, selector);
+  const element = await select(preview, selector, actionToGuards(action));
 
   return element.evaluate(
     (it, [y, x]) =>

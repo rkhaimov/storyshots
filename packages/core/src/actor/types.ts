@@ -1,4 +1,3 @@
-
 import { Finder, FinderMeta } from '../finder/types';
 import { ScreenshotName } from '../screenshot';
 

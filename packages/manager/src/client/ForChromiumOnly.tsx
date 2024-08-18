@@ -1,4 +1,4 @@
-import { SelectedPresets, TreeOP } from '@storyshots/core';
+import { TestConfig, TreeOP } from '@storyshots/core';
 import React, { useMemo } from 'react';
 import { RouteComponentProps } from 'wouter';
 import { useSearch } from 'wouter/use-location';
@@ -16,14 +16,15 @@ export const ForChromiumOnly: React.FC<Props> = (props) => {
   useMemo(() => {
     const params = new URLSearchParams(search);
 
-    const presets: SelectedPresets = JSON.parse(
-      params.get('presets') ?? 'null',
+    const config: Partial<TestConfig> | null = JSON.parse(
+      params.get('config') ?? 'null',
     );
 
     preview.createPreviewConnection({
       id: TreeOP.ensureIsLeafID(props.params.story),
       screenshotting: true,
-      presets,
+      presets: config?.presets ?? {},
+      device: config?.device,
     });
   }, []);
 

@@ -7,9 +7,9 @@ import {
   TreeOP,
 } from '@storyshots/core';
 import { useMemo } from 'react';
-import { Props, StoryTree, UserDefinedPresetGroup } from './types';
+import { PreviewProps, StoryTree, UserDefinedPresetGroup } from './types';
 
-export function useManagerState(props: Props) {
+export function useManagerState(props: PreviewProps) {
   return useMemo(
     () =>
       props.externals.createManagerConnection({
@@ -32,12 +32,10 @@ function toPureStories(nodes: StoryTree[]): PureStoryTree[] {
   });
 }
 
-function toPurePresets(
-  presets: UserDefinedPresetGroup<unknown>[],
-): PresetGroup[] {
+function toPurePresets(presets: UserDefinedPresetGroup[]): PresetGroup[] {
   return presets.map((group) => ({
     name: group.name as PresetConfigName,
     default: group.default as PresetName,
-    others: group.additional.map((preset) => preset.name as PresetName),
+    others: group.additional as PresetName[],
   }));
 }

@@ -14,6 +14,9 @@
       <excludeFolder url="file://$MODULE_DIR$/packages/manager/react-devtools" />
       <excludeFolder url="file://$MODULE_DIR$/packages/preview/react/react-devtools" />
       <excludeFolder url="file://$MODULE_DIR$/packages/bundler/proxy/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/tests/playwright-report" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/tests/test-results" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/tests/temp" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -48,7 +48,7 @@ export const balanceStories = describe('Balance', [
       actor.click(finder.getByRole('button', { name: 'Navigate' }).at(0)),
   }),
   it('provides correct date when retrieving current balance', {
-    arrange: (externals, journal) => ({
+    arrange: (externals, { journal }) => ({
       ...externals,
       business: {
         ...externals.business,

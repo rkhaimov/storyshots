@@ -1,8 +1,0 @@
-{
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "paths": {
-      "@storyshots/core": ["../../packages/core/src"],
-    }
-  }
-}

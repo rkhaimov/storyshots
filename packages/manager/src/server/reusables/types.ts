@@ -7,11 +7,10 @@ export type PreviewServe = {
   handler: RequestHandler;
   // Handle must be called each time source code of preview changes
   // Handle must be called only after new sources are compiled and accessible
-  // Hot must be set to true when state is preserved between updates
-  onUpdate(handle: (hash: string, hot: boolean) => void): void;
+  onUpdate(handle: (hash: string) => void): void;
 };
 
-export type ServerConfig = {
+export type ManagerConfig = {
   paths: {
     records: string;
     screenshots: string;
@@ -22,7 +21,8 @@ export type ServerConfig = {
     agentsCount: number;
     stabilize: Stabilizer;
   };
-  devtools: string;
+  devtools?: string;
+  port: number;
 };
 
 export type ScreenshotAction = Extract<ActionMeta, { action: 'screenshot' }>;

@@ -1,0 +1,26 @@
+[
+  [
+    {
+      "action": "screenshot",
+      "payload": {
+        "name": "FINAL"
+      }
+    }
+  ],
+  [
+    {
+      "action": "screenshot",
+      "payload": {
+        "name": "FINAL"
+      }
+    }
+  ],
+  [
+    {
+      "action": "screenshot",
+      "payload": {
+        "name": "FINAL"
+      }
+    }
+  ]
+]

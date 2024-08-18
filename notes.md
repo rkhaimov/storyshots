@@ -10,12 +10,8 @@ press-play - that is a good name
 
 * Add story search
   * Should work like live filter on groups and story contents
-* Add more info when failed (by which selectors was unable to find an element, on what action)
-  * Probably requires to develop separate error pane
-  * Error should be linked to specific test config
-* Add bulk status bar (passed, failed, running and percentage)
-* Autoplay does not work after startup
-  * Add retry button
+* Error should be linked to specific test config
+* Add retry play button
 * Implement single text matching strategy
   * All selectors should match by substring by default
 * Implement non-strict matching strategy
@@ -27,7 +23,6 @@ press-play - that is a good name
   * It should not stop, probably
 * Handle non serializable entities for recorder
   * Examine how jest handles them
-* Errors should say implicitly that element was not visible, that is why timeout has been triggered
 * React-devtool duplicates roots
 * Stop button
 * Slight changes on global components make a lot of tests to fail
@@ -37,37 +32,22 @@ press-play - that is a good name
 ## Low priority
 
 * Add baseline read button
-* Add configuration for chrome pool
 * Support HMR
 * Add actor a function to wait while all page animations are done
 * Add todo meta function to `it` factory
 * Implement antd actor extensions package
-* Implement stale test results indicators
-  * Allows to cache results
-  * Content hash might be used as relevancy key
 * Rename story or group utility
   * It is relatively hard to rename them manually
-* Add port for manager configuration
 * Improve story bulk run - it should give quick response (now it updates in chunks, use promise pool function?)
-
-## Questionable
-
-* Quick action on screenshot and records preview - why default actions are not sufficient?
-* Display unhandled preview exception - browser console already displays them with correct source maps
+* Add wait for element to hide action
+* Add wait for element to appear action
 
 # Structural improvements
 
-* Hide behind preview facade @core dependency from clients
-  * It is very likely that packages structure will change in future
 * Explain package level architecture
-* Move devtools extension to react-preview
 * Obtain more control under public interface
   * api extractor
 * Develop a general strategy of test writing that ensures there are no duplicated or missed tests
-* Add separate test cases for
-  * Aggregate fresh updates
-  * Aggregate fail updates
-  * RunAll stories
 
 ## Low priority
 

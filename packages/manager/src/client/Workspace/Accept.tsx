@@ -15,10 +15,10 @@ export const ActionAccept: React.FC<Props> = ({ onAction }) => (
 );
 
 const StyledButton = styled(Button)`
-    background-color: ${green[6]};
+  background-color: ${green[6]};
 
-    &:hover,
-    &:focus {
-        background-color: ${green[5]} !important;
-    }
+  &:hover,
+  &:focus {
+    background-color: ${green[5]} !important;
+  }
 `;

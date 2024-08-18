@@ -14,9 +14,9 @@ export const DiffReader: React.FC<Props> = (props) => {
   function renderViewer() {
     if (props.single) {
       return (
-          <WithoutFirstGutter>
-            <ReactDiffViewer {...props} />
-          </WithoutFirstGutter>
+        <WithoutFirstGutter>
+          <ReactDiffViewer {...props} />
+        </WithoutFirstGutter>
       );
     }
 

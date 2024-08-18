@@ -3,7 +3,7 @@ import { describe, it } from '../../storyshots/preview/config';
 
 export const cvStories = describe('CV', [
   it('renders all fields as empty by default', {
-    act: (actor, device) => {
+    act: (actor, { device }) => {
       if (device.name === 'mobile') {
         return actor
           .click(finder.getByRole('button', { name: 'Navigate' }).at(1))

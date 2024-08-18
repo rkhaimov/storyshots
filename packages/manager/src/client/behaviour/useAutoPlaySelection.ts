@@ -97,7 +97,9 @@ export function useAutoPlaySelection(params: URLParsedParams) {
       config: config,
     });
 
-    const actions = story.payload.act(createActor(), config.device).toMeta();
+    const actions = story.payload
+      .act(createActor(), { ...config, screenshotting: false })
+      .toMeta();
 
     const result = await driver.actOnClientSide(actions);
 
