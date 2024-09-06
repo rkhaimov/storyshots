@@ -5,7 +5,7 @@ import { StoryEntry } from './StoryEntry/StoryEntry';
 import { Props } from './types';
 
 export const MenuHavingStories: React.FC<Props> = (props) => (
-  <Entries>
+  <Entries aria-label={`Stories ${props.level}`}>
     {props.stories.map((it) => {
       switch (it.type) {
         case 'node':

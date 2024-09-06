@@ -1,7 +1,7 @@
-import { Journal } from '@storyshots/core';
-import { IExternals } from './types';
+import { JournalStoryConfig, StoryConfig } from '@storyshots/core';
+import { IExternals, ThemeName } from './types';
 
-export function createMockExternals(): IExternals {
+export function createMockExternals({ presets }: StoryConfig): IExternals {
   return {
     analytics: {
       log: () => {},
@@ -15,14 +15,14 @@ export function createMockExternals(): IExternals {
       now: () => new Date(2024, 0, 13, 12),
     },
     options: {
-      getTheme: () => 'light',
+      getTheme: () => (presets['Theme']?.toLowerCase() as ThemeName) ?? 'light',
     },
   };
 }
 
 export function createJournalExternals(
   externals: IExternals,
-  journal: Journal,
+  { journal }: JournalStoryConfig,
 ): IExternals {
   return {
     ...externals,

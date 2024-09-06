@@ -86,5 +86,8 @@ function assertAllScreenshotsAreUniq(meta: ActionMeta[]) {
     'There can not be two or more screenshots with the same label',
   );
 
-  assert(not(shots.includes('FINAL' as ScreenshotName)), 'FINAL is a reserved word');
+  assert(
+    not(shots.includes('FINAL' as ScreenshotName)),
+    'FINAL is a reserved word',
+  );
 }

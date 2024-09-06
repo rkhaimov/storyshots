@@ -1,10 +1,10 @@
 import { not, ScreenshotName, StoryID, TestConfig } from '@storyshots/core';
 import path from 'path';
 import { ScreenshotPath } from '../../reusables/types';
-import { ServerConfig } from '../reusables/types';
+import { ManagerConfig } from '../reusables/types';
 import { copy, exists, mkdir, mkfile, read } from './utils';
 
-export async function createScreenshotsBaseline(env: ServerConfig) {
+export async function createScreenshotsBaseline(env: ManagerConfig) {
   const actualResultsDir = path.join(env.paths.temp, 'actual');
   const expectedResultsDir = env.paths.screenshots;
 

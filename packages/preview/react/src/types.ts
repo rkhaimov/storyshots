@@ -2,9 +2,9 @@ import {
   Actor,
   Device,
   IntermediateNode,
-  Journal,
+  JournalStoryConfig,
   LeafNode,
-  PresetName,
+  StoryConfig,
 } from '@storyshots/core';
 import React from 'react';
 import { IExternals } from './externals/types';
@@ -20,9 +20,9 @@ export type Group = IntermediateNode<
 
 export type Story<TExternals = unknown> = LeafNode<{
   title: string;
-  arrange(externals: TExternals, journal: Journal, device: Device): TExternals;
-  act(actor: Actor, device: Device): Actor;
-  render(externals: TExternals, screenshotting: boolean): React.ReactNode;
+  arrange(externals: TExternals, config: JournalStoryConfig): TExternals;
+  act(actor: Actor, config: StoryConfig): Actor;
+  render(externals: TExternals, config: StoryConfig): React.ReactNode;
 }>;
 
 type UserDefinedDevice = Omit<Device, 'name'> & { name: string };
@@ -30,28 +30,21 @@ type UserDefinedDevice = Omit<Device, 'name'> & { name: string };
 export type ClientConfig<TExternals> = {
   retries: number;
   devices: UserDefinedDevice[];
-  presets: UserDefinedPresetGroup<TExternals>[];
-  createExternals(): TExternals;
-  createJournalExternals(externals: TExternals, journal: Journal): TExternals;
+  presets: UserDefinedPresetGroup[];
+  createExternals(config: StoryConfig): TExternals;
+  createJournalExternals(
+    externals: TExternals,
+    config: JournalStoryConfig,
+  ): TExternals;
 };
 
-export type Props = ClientConfig<unknown> & {
+export type PreviewProps = ClientConfig<unknown> & {
   stories: StoryTree[];
   externals: IExternals;
 };
 
-export type Preset<TExternals> = {
-  name: PresetName;
-  configure(externals: TExternals): TExternals;
-};
-
-export type UserDefinedPreset<TExternals> = {
-  name: string;
-  configure(externals: TExternals): TExternals;
-};
-
-export type UserDefinedPresetGroup<TExternals> = {
+export type UserDefinedPresetGroup = {
   name: string;
   default: string;
-  additional: UserDefinedPreset<TExternals>[];
+  additional: string[];
 };

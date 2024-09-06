@@ -1,4 +1,8 @@
-import { CheckOutlined, CloseOutlined, ExclamationOutlined } from '@ant-design/icons';
+import {
+  CheckOutlined,
+  CloseOutlined,
+  ExclamationOutlined,
+} from '@ant-design/icons';
 import { Badge } from 'antd';
 import React from 'react';
 import { EntryTitle } from '../EntryTitle';

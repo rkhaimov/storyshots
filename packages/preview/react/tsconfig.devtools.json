@@ -5,6 +5,6 @@
   ],
   "compilerOptions": {
     "module": "CommonJS",
-    "declaration": true,
+    "declaration": true
   }
 }

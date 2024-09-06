@@ -1,14 +1,20 @@
-import { SelectedPresets, StoryID } from '@storyshots/core';
+import { StoryID, TestConfig } from '@storyshots/core';
 import { createManagerRequest } from '../reusables/createManagerRequest';
+import { ManagerConfig } from './reusables/types';
 
-// TODO: Deduplicate constants and url matching logic (client including)
-export const PORT = 6006;
-const _HOST = `http://localhost:${PORT}`;
-export const HOST = createManagerRequest(_HOST);
+const _getHostUrl = (config: ManagerConfig) =>
+  `http://localhost:${config.port}`;
 
-export const createPathToStory = (id: StoryID, presets: SelectedPresets) =>
+export const getManagerHost = (config: ManagerConfig) =>
+  createManagerRequest(_getHostUrl(config));
+
+export const createPathToStory = (
+  id: StoryID,
+  test: TestConfig,
+  config: ManagerConfig,
+) =>
   createManagerRequest(
-    `${_HOST}/chromium/${id}?presets=${encodeURIComponent(
-      JSON.stringify(presets),
+    `${_getHostUrl(config)}/chromium/${id}?config=${encodeURIComponent(
+      JSON.stringify(test),
     )}`,
   );

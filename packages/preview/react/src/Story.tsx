@@ -1,45 +1,41 @@
 import {
   assertNotEmpty,
-  ManagerState,
-  PresetConfigName,
-  StoryID,
-  TreeOP,
   createJournal,
   Device,
+  JournalStoryConfig,
+  ManagerState,
+  StoryID,
+  TreeOP,
 } from '@storyshots/core';
 import React from 'react';
-import { Props } from './types';
+import { PreviewProps } from './types';
 
-export const Story: React.FC<
-  { id: StoryID } & ManagerState & { config: Props }
-> = ({ id, presets, config, screenshotting, device }) => {
-  const { createExternals, createJournalExternals, stories } = config;
-  const devices = config.devices as Device[];
+type Props = { id: StoryID; preview: PreviewProps; state: ManagerState };
+
+export const Story: React.FC<Props> = ({
+  id,
+  preview,
+  state: { device, presets, screenshotting },
+}) => {
+  const { createExternals, createJournalExternals, stories } = preview;
+
+  const config: JournalStoryConfig = {
+    device: device ?? (preview.devices as Device[])[0],
+    presets,
+    screenshotting,
+    journal: createJournal(),
+  };
+
   const story = TreeOP.find(stories, id);
 
   assertNotEmpty(story);
 
-  const journal = createJournal();
+  const externals = story.payload.arrange(createExternals(config), config);
 
-  const configured = config.presets.reduce((externals, preset) => {
-    const specified = preset.additional.find(
-      (it) => it.name === (presets ?? {})[preset.name as PresetConfigName],
-    );
-
-    return specified?.configure(externals) ?? externals;
-  }, createExternals());
-
-  const arranged = story.payload.arrange(
-    configured,
-    journal,
-    // TODO: There might be a problem of disync, should be tested
-    device ?? devices[0],
-  );
-
-  config.externals.setRecordsSource(journal.read);
+  preview.externals.setRecordsSource(config.journal.read);
 
   return story.payload.render(
-    createJournalExternals(arranged, journal),
-    screenshotting,
+    createJournalExternals(externals, config),
+    config,
   );
 };

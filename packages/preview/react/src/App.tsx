@@ -1,39 +1,16 @@
 import { isNil } from '@storyshots/core';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Placeholder } from './Placeholder';
 import { Story } from './Story';
-import { Props } from './types';
+import { PreviewProps } from './types';
 import { useManagerState } from './useManagerState';
 
-export const App: React.FC<Props> = (props) => {
-  const { id, screenshotting, presets, device } = useManagerState(props);
-
-  useEffect(() => {
-    if (isNil(device)) {
-      return;
-    }
-
-    if (device.type === 'size-only') {
-      return;
-    }
-
-    try {
-      Object.defineProperty(window.navigator, 'userAgent', {
-        get: () => device.config.userAgent,
-      });
-    } catch (e) { /* empty */ }
-  }, [device]);
+export const App: React.FC<PreviewProps> = (props) => {
+  const { id, ...state } = useManagerState(props);
 
   if (isNil(id)) {
     return <Placeholder />;
   }
 
-  return (
-    <Story
-      id={id}
-      screenshotting={screenshotting}
-      presets={presets}
-      config={props}
-    />
-  );
+  return <Story id={id} preview={props} state={state} />;
 };

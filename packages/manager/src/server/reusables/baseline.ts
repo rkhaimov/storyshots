@@ -1,8 +1,8 @@
 import { createScreenshotsBaseline } from '../baseline/createScreenshotsBaseline';
 import { createRecordsBaseline } from '../baseline/createRecordsBaseline';
-import { ServerConfig } from './types';
+import { ManagerConfig } from './types';
 
-export async function createBaseline(config: ServerConfig) {
+export async function createBaseline(config: ManagerConfig) {
   const screenshots = await createScreenshotsBaseline(config);
   const records = await createRecordsBaseline(config);
 

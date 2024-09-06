@@ -14,7 +14,7 @@ export const EmulatedPreviewFrame: React.FC<Props> = ({ selection }) => {
     selection.type === 'screenshot' || selection.type === 'records';
 
   const frame = (
-    <preview.Frame id="preview" src="http://localhost:6006" hidden={hidden} />
+    <preview.Frame id="preview" src={location.origin} hidden={hidden} />
   );
 
   if (selection.type === 'initializing' || hidden) {

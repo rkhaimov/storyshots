@@ -1,0 +1,22 @@
+[
+  [
+    {
+      "action": "click",
+      "payload": {
+        "on": {
+          "beginning": {
+            "type": "selector",
+            "on": "::-p-aria([role=\"button\"][name=\"Pet\"])"
+          },
+          "consequent": []
+        }
+      }
+    },
+    {
+      "action": "screenshot",
+      "payload": {
+        "name": "FINAL"
+      }
+    }
+  ]
+]

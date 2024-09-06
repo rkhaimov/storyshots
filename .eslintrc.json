@@ -2,6 +2,7 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:react/recommended"
   ],
   "parser": "@typescript-eslint/parser",
@@ -10,7 +11,17 @@
   ],
   "root": true,
   "rules": {
-    "react/prop-types": "off",
-    "@typescript-eslint/no-unnecessary-type-constraint": "off"
+    "react/prop-types": 0,
+    "@typescript-eslint/no-unnecessary-type-constraint": 0,
+    "@typescript-eslint/no-unsafe-assignment": 1,
+    "@typescript-eslint/no-misused-promises": 1,
+    "@typescript-eslint/require-await": 0,
+    "@typescript-eslint/unbound-method": 1,
+    "@typescript-eslint/no-unsafe-return": 1,
+    "@typescript-eslint/no-floating-promises": 1,
+    "@typescript-eslint/no-unsafe-argument": 1
+  },
+  "parserOptions": {
+    "project": "./tsconfig.json"
   }
 }

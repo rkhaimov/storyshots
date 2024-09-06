@@ -1,4 +1,9 @@
 import { Brand } from './brand';
+import { Journal } from './journal/types';
+
+export type StoryConfig = TestConfig & { screenshotting: boolean };
+
+export type JournalStoryConfig = StoryConfig & { journal: Journal };
 
 export type TestConfig = {
   device: Device;
@@ -41,6 +46,4 @@ export type PresetConfigName = Brand<string, 'PresetConfigName'>;
 
 export type PresetName = Brand<string, 'PresetName'>;
 
-export type SelectedPresets = {
-  [key: PresetConfigName]: PresetName;
-};
+export type SelectedPresets = Record<string, string>;

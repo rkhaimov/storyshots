@@ -29,6 +29,8 @@ export type {
   DeviceName,
   SizeOnly,
   Emulated,
+  StoryConfig,
+  JournalStoryConfig,
 } from './test-config';
 export type {
   ActionMeta,

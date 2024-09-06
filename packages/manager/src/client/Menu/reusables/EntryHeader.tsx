@@ -14,7 +14,7 @@ export const EntryHeader = styled.div<Props>`
   align-items: center;
   padding-right: 2px;
   padding-left: ${(props) => `${props.$level * 24 + props.$offset}px`};
-  
+
   ${EntryActions} {
     display: none;
   }

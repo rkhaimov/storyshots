@@ -8,7 +8,7 @@ export const preview: IPreview = {
     const [hash, setHash] = useState('');
 
     useEffect(() => {
-      const ws = new WebSocket(createManagerRequest('ws://localhost:6006'));
+      const ws = new WebSocket(createManagerRequest(`ws://${location.host}`));
 
       ws.addEventListener('message', (event) => {
         assert(typeof event.data === 'string');
