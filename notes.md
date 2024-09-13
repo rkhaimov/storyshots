@@ -1,13 +1,14 @@
 # Name suggestions
 
-vcheck - visual check, refers to main function of this library
-
-ui-play - self-explanatory
-
-press-play - that is a good name
+state-shots - that is a good name
 
 # Functional improvements
 
+* React-devtool duplicates roots
+* Presets might not be needed
+* Write docs
+* Implement true background CI (without headless hack)
+* Add wait for element to hide action (does user need to be able to determine when element was mounted on a page)
 * Add story search
   * Should work like live filter on groups and story contents
 * Error should be linked to specific test config
@@ -23,24 +24,21 @@ press-play - that is a good name
   * It should not stop, probably
 * Handle non serializable entities for recorder
   * Examine how jest handles them
-* React-devtool duplicates roots
 * Stop button
 * Slight changes on global components make a lot of tests to fail
   * Maybe there is a way of determining similar kinds of change?
   * Pixels areas might be used
+* Tests must run on compiled versions
 
 ## Low priority
 
 * Add baseline read button
 * Support HMR
-* Add actor a function to wait while all page animations are done
 * Add todo meta function to `it` factory
 * Implement antd actor extensions package
 * Rename story or group utility
   * It is relatively hard to rename them manually
 * Improve story bulk run - it should give quick response (now it updates in chunks, use promise pool function?)
-* Add wait for element to hide action
-* Add wait for element to appear action
 
 # Structural improvements
 

@@ -41,27 +41,14 @@ async function runAllTests(config: ManagerConfig) {
 
   printProgress(frame);
 
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    const element = await frame.$(
-      '::-p-aria([role="generic"][name="Status"]) ::-p-aria([role="image"][name="loading"])',
-    );
-
-    await wait(1_000);
-
-    if (element === null) {
-      break;
-    }
-  }
+  await waitForAllRunsAreDone(frame);
 
   const stories = await frame.$$(
     '::-p-aria([role="list"][name="Stories 0"]) ::-p-aria([role="menuitem"])',
   );
 
   for (const story of stories) {
-    const error = await story.$(
-      '::-p-aria([role="image"][name="exclamation"])',
-    );
+    const error = await story.$('::-p-aria([role="image"][name="exclamation"])');
 
     if (error !== null) {
       throw new Error(
@@ -75,24 +62,41 @@ async function runAllTests(config: ManagerConfig) {
       '::-p-aria([role="button"][name="Accept all"])',
     );
 
-    if (acceptAll === null) {
-      continue;
-    }
-
-    await acceptAll.click();
-
-    while (true) {
-      const done = await story.$('::-p-aria([role="image"][name="check"])');
-
-      if (done === null) {
-        await wait(100);
-      } else {
-        break;
-      }
+    if (acceptAll !== null) {
+      await acceptAll.click();
     }
   }
 
+  await waitForAllDone(frame);
+
   console.log('DONE');
+}
+
+async function waitForAllRunsAreDone(frame: Frame) {
+  while (true) {
+    const element = await frame.$(
+      '::-p-aria([role="generic"][name="Status"]) ::-p-aria([role="image"][name="loading"])',
+    );
+
+    await wait(1_000);
+
+    if (element === null) {
+      break;
+    }
+  }
+}
+
+async function waitForAllDone(frame: Frame) {
+  while (true) {
+    const fresh = await frame.$('::-p-aria([role="image"][name="fresh"])');
+    const fail = await frame.$('::-p-aria([role="image"][name="close"])');
+
+    if (fresh === null && fail === null) {
+      return;
+    }
+
+    await wait(1_000);
+  }
 }
 
 async function printProgress(frame: Frame) {

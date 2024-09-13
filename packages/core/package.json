@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/core",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Reusable entities across all projects",
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",

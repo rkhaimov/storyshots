@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/proxy-bundler",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Preview proxy bundler",
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
@@ -16,6 +16,6 @@
     "http-proxy-middleware": "^3.0.0"
   },
   "peerDependencies": {
-    "@storyshots/manager": "0.0.3"
+    "@storyshots/manager": "0.0.4"
   }
 }
