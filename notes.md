@@ -31,6 +31,9 @@ state-shots - that is a good name
     * Maybe there is a way of determining similar kinds of change?
     * Pixels areas might be used
 * Tests must run on compiled versions
+* Add recorder https://github.com/AndrewUsher/playwright-chrome-recorder https://github.com/AndrewUsher/playwright-recorder-extension
+* Accessibility checking https://github.com/abhinaba-ghosh/axe-playwright
+* AI Engine to turn text commands in playwright API https://github.com/zerostep-ai/zerostep
 
 ## Low priority
 
