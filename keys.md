@@ -7,6 +7,7 @@ Axioms:
         1. User actions
         2. Remote API state
         3. Browser env state
+        4. Any other system component
     2. Outputs
         1. Monitor screen
         2. Remote API calls
@@ -18,9 +19,11 @@ Axioms:
 Followings:
 
 * Program may be divided into subprograms (scenarios) each of which meets conditions of the aggregate
+* Dependency on any scenario component can be reversed easily via input arguments 
 * Scenario input may be strongly and statically typed
 * Scenario input may be bound, thus allowing program to be opened in a browser with desired output given as a result
 * Scenario output may be continued by a developer via act of system usage
 * Scenario output may be debugged using modern development tools (chrome devtools, library tools plugins, etc.)
 * Scenario can be developed using hot mode, where the latter being replayed after each change
 * Scenario can be represented as a test case, where output is being recorded automatically and compared later
+* Scenario input may be replaced with suitable implementors, allowing ease of testing
