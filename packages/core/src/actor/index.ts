@@ -7,32 +7,32 @@ export const createActor = (): Actor => {
 
   const actor: Actor = {
     click: (on, options) => {
-      meta.push({ action: 'click', payload: { on: on.toMeta(), options } });
+      meta.push({ action: 'click', payload: { on: on.__toMeta(), options } });
 
       return actor;
     },
     fill: (on, text, options) => {
       meta.push({
         action: 'fill',
-        payload: { on: on.toMeta(), text, options },
+        payload: { on: on.__toMeta(), text, options },
       });
 
       return actor;
     },
     hover: (on) => {
-      meta.push({ action: 'hover', payload: { on: on.toMeta() } });
+      meta.push({ action: 'hover', payload: { on: on.__toMeta() } });
 
       return actor;
     },
     scrollTo: (to) => {
-      meta.push({ action: 'scroll-to', payload: { on: to.toMeta() } });
+      meta.push({ action: 'scroll-to', payload: { on: to.__toMeta() } });
 
       return actor;
     },
     scroll: (amount, on) => {
       meta.push({
         action: 'scroll',
-        payload: { on: on?.toMeta(), x: 0, y: amount },
+        payload: { on: on?.__toMeta(), x: 0, y: amount },
       });
 
       return actor;

@@ -42,7 +42,7 @@ export type {
 
 export type { JournalRecord, Journal } from './journal/types';
 
-export type { Selector, FinderMeta } from './finder/types';
+export type { Selector, FinderMeta, FinderTransformer } from './finder/types';
 
 export { createJournal } from './journal';
 export { createActor } from './actor';
