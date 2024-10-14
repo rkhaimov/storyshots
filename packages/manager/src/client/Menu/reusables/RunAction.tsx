@@ -2,12 +2,12 @@ import { CaretRightOutlined } from '@ant-design/icons';
 import { PureStory, TreeOP } from '@storyshots/core';
 import React from 'react';
 import { UseBehaviourProps } from '../../behaviour/types';
-import { AutoPlaySelectionInitialized } from '../../behaviour/useAutoPlaySelection';
 import { EntryAction } from './EntryAction';
+import { ReadySelection } from '../../behaviour/useSelection/types';
 
 type Props = Pick<UseBehaviourProps, 'run'> & {
   stories: PureStory[];
-  selection: AutoPlaySelectionInitialized;
+  selection: ReadySelection;
 };
 
 export const RunAction: React.FC<Props> = ({ run, selection, stories }) => (
@@ -17,7 +17,11 @@ export const RunAction: React.FC<Props> = ({ run, selection, stories }) => (
     action={(e) => {
       e.stopPropagation();
 
-      run(TreeOP.toLeafsArray(stories), selection.config, selection.preview);
+      run(
+        TreeOP.toLeafsArray(stories),
+        { device: selection.config.device },
+        selection.preview,
+      );
     }}
   />
 );

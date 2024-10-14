@@ -1,27 +1,57 @@
 import {
   assertNotEmpty,
+  Channel,
   createJournal,
   Device,
   JournalStoryConfig,
-  ManagerState,
+  not,
+  PreviewConfig,
   StoryID,
   TreeOP,
 } from '@storyshots/core';
 import React from 'react';
 import { PreviewProps } from './types';
 
-type Props = { id: StoryID; preview: PreviewProps; state: ManagerState };
+type Props = { id: StoryID; preview: PreviewProps; config: PreviewConfig };
 
-export const Story: React.FC<Props> = ({
+export const Story: React.FC<Props> = (props) => {
+  const story = createStoryNode(props);
+
+  if (not(props.config.emulated)) {
+    return story;
+  }
+
+  return <Emulated {...props}>{story}</Emulated>;
+};
+
+const Emulated: React.FC<React.PropsWithChildren<Props>> = (props) => {
+  const device = props.config.device ?? (props.preview.devices as Device[])[0];
+
+  return (
+    <div style={{ width: '100%', height: '100%', display: 'flex' }}>
+      <div
+        style={{
+          height: device.config.height,
+          width: device.config.width,
+          margin: 'auto',
+          border: '1px solid rgb(206, 206, 206)',
+        }}
+      >
+        {props.children}
+      </div>
+    </div>
+  );
+};
+
+function createStoryNode({
   id,
   preview,
-  state: { device, presets, screenshotting },
-}) => {
+  config: { device, screenshotting },
+}: Props) {
   const { createExternals, createJournalExternals, stories } = preview;
 
   const config: JournalStoryConfig = {
     device: device ?? (preview.devices as Device[])[0],
-    presets,
     screenshotting,
     journal: createJournal(),
   };
@@ -32,10 +62,14 @@ export const Story: React.FC<Props> = ({
 
   const externals = story.payload.arrange(createExternals(config), config);
 
-  preview.externals.setRecordsSource(config.journal.read);
+  setRecordsSource(config.journal.read);
 
   return story.payload.render(
     createJournalExternals(externals, config),
     config,
   );
-};
+}
+
+function setRecordsSource(records: Channel['records']): void {
+  (window as never as Channel).records = records;
+}

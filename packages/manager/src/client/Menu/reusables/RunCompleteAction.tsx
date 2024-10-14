@@ -2,12 +2,12 @@ import { ForwardOutlined } from '@ant-design/icons';
 import { PureStory } from '@storyshots/core';
 import React from 'react';
 import { UseBehaviourProps } from '../../behaviour/types';
-import { AutoPlaySelectionInitialized } from '../../behaviour/useAutoPlaySelection';
 import { EntryAction } from './EntryAction';
+import {ReadySelection} from "../../behaviour/useSelection/types";
 
 type Props = Pick<UseBehaviourProps, 'runComplete'> & {
   stories: PureStory[];
-  selection: AutoPlaySelectionInitialized;
+  selection: ReadySelection;
 };
 
 export const RunCompleteAction: React.FC<Props> = ({

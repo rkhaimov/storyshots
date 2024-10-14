@@ -5,52 +5,38 @@ state-shots - that is a good name
 # Functional improvements
 
 * React-devtool duplicates roots
-* Presets might not be needed
 * Write docs
 * Implement true background CI (without headless hack)
-* Reduce preview reload times. Right now it reloads too often and easily can be decreased to update only when absolutely
-  necessary.
-* Add wait for element to hide action (does user need to be able to determine when element was mounted on a page)
 * Add story search
     * Should work like live filter on groups and story contents
-* Error should be linked to specific test config
-* Add retry play button
+* Error should be linked to specific device
 * Text matching strategy must be systematic across selectors
     * Text should match by substring by default, case-insensitive
     * Add possibility to use regexp
-* Implement non-strict matching strategy
-    * Accept non visible elements
-* Implement story filter
-    * Each story should be able to describe on which env it is able to run (`only` predicate)
-    * When current test config is not supported by story, it should be grayed out
-* Decide how bulk run should react on error
-    * It should not stop, probably
 * Handle non serializable entities for recorder
     * Examine how jest handles them
 * Stop button
-* Slight changes on global components make a lot of tests to fail
-    * Maybe there is a way of determining similar kinds of change?
-    * Pixels areas might be used
-* Tests must run on compiled versions
 * Add
   recorder https://github.com/AndrewUsher/playwright-chrome-recorder https://github.com/AndrewUsher/playwright-recorder-extension
 * Accessibility checking https://github.com/abhinaba-ghosh/axe-playwright
 * AI Engine to turn text commands in playwright API https://github.com/zerostep-ai/zerostep
-* Add strict selector elements check
 * Add action modifiers and key shortcuts
   emulation https://stackoverflow.com/questions/59575748/puppeteer-how-to-click-element-so-it-opens-in-new-tab
+* Implement true emulation in manager mode
+  * Using as detached or inline with manager
 
 ## Low priority
 
 * Add baseline read button
+* Add production build for manager
 * Support HMR
 * Add todo meta function to `it` factory
 * Implement antd actor extensions package
+* Implement antd finder extensions package
 * Rename story or group utility
     * It is relatively hard to rename them manually
 * Improve story bulk run - it should give quick response (now it updates in chunks, use promise pool function?)
-* Add plain scroll action
-* Add possibility to pass buffers as uploadFile args
+* Add action guards tests
 
 # Structural improvements
 
@@ -71,3 +57,16 @@ constant https://github.com/puppeteer/puppeteer/blob/197f00547ea402118c7db3cfaa4
 library for generating selectors https://github.com/antonmedv/finder
 
 playwright UI https://playwright.dev/docs/test-ui-mode
+
+# Hypotheses
+
+* "waitForState" action, for example to determine when an element is hidden
+    * There is always a possibility to replace any long async tasks with mocks using Externals object
+* option to configure action guards, for example to be able to click on hidden elements
+    * It is better to rely on true user experience, thus producing much more stable results
+* expected changes on cross-cut elements make a lot of tests to fail, it is hard and error-prone to verify all
+  screenshots manually
+    * Failed shots can be analyzed and grouped with "similar" kinds of change to ease this task
+    * Algorithm of comparison is a key
+    * Diff might be generated as well to make this change much more obvious
+* plain scroll is not necessary because there is scrollUntilVisible alternative

@@ -1,20 +1,20 @@
 import { SlidersOutlined } from '@ant-design/icons';
 import { Device, not, PureStoryTree, TreeOP } from '@storyshots/core';
-import { Checkbox, Form, Radio, Select } from 'antd';
+import { Checkbox, Form, Select } from 'antd';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { UseBehaviourProps } from '../../behaviour/types';
-import { AutoPlaySelectionInitialized } from '../../behaviour/useAutoPlaySelection';
 import { getGroupEntryStatus } from '../GroupEntry/getGroupEntryStatus';
 import { EntryAction } from '../reusables/EntryAction';
 import { EntryActions } from '../reusables/EntryActions';
 import { getStoryEntryStatus } from '../reusables/getStoryEntryStatus';
 import { RunAction } from '../reusables/RunAction';
 import { RunCompleteAction } from '../reusables/RunCompleteAction';
+import { ReadySelection } from '../../behaviour/useSelection/types';
 
 export type Props = UseBehaviourProps & {
   stories: PureStoryTree[];
-  selection: AutoPlaySelectionInitialized;
+  selection: ReadySelection;
 };
 
 export const TopBar: React.FC<Props> = ({
@@ -28,7 +28,7 @@ export const TopBar: React.FC<Props> = ({
 }) => {
   const [opened, setOpened] = useState(false);
   const nodes = TreeOP.toLeafsArray(stories);
-  const { config, preview } = selection;
+  const { preview, config } = selection;
 
   return (
     <div aria-label="Status">
@@ -64,11 +64,8 @@ export const TopBar: React.FC<Props> = ({
                 }
 
                 setConfig({
-                  ...config,
-                  device: {
-                    ...option.device,
-                    emulated: config.device.emulated,
-                  },
+                  device: option.device.name,
+                  emulated: config.emulated,
                 });
               }}
               options={preview.devices.map((it) => ({
@@ -80,58 +77,17 @@ export const TopBar: React.FC<Props> = ({
           </Form.Item>
           <Form.Item>
             <Checkbox
-              checked={config.device.emulated}
+              checked={config.emulated}
               onChange={(it) =>
                 setConfig({
-                  ...config,
-                  device: { ...config.device, emulated: it.target.checked },
+                  device: config.device.name,
+                  emulated: it.target.checked,
                 })
               }
             >
               Apply to preview
             </Checkbox>
           </Form.Item>
-          {preview.presets.map((preset) => (
-            <Form.Item key={preset.name} label={preset.name}>
-              {preset.others.length === 1 ? (
-                <Radio.Group
-                  options={[preset.default, ...preset.others].map((it) => ({
-                    value: it,
-                    label: it,
-                  }))}
-                  onChange={(it) =>
-                    setConfig({
-                      ...config,
-                      presets: {
-                        ...config.presets,
-                        [preset.name]: it.target.value,
-                      },
-                    })
-                  }
-                  value={config.presets[preset.name]}
-                  optionType="button"
-                  buttonStyle="solid"
-                />
-              ) : (
-                <Select<string, PresetOption>
-                  options={[preset.default, ...preset.others].map((it) => ({
-                    value: it,
-                    label: it,
-                  }))}
-                  value={config.presets[preset.name]}
-                  onChange={(it) =>
-                    setConfig({
-                      ...config,
-                      presets: {
-                        ...config.presets,
-                        [preset.name]: it,
-                      },
-                    })
-                  }
-                />
-              )}
-            </Form.Item>
-          ))}
         </PreviewConfigForm>
       )}
     </div>
@@ -179,11 +135,6 @@ type DeviceOption = {
   value: string;
   label: string;
   device: Device;
-};
-
-type PresetOption = {
-  value: string;
-  label: string;
 };
 
 const PreviewConfigForm = styled(Form)`

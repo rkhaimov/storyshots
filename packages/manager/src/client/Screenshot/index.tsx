@@ -3,7 +3,6 @@ import React from 'react';
 
 import { UseBehaviourProps } from '../behaviour/types';
 import { Spinner } from '../reusables/Spinner';
-import { ScreenshotGallery } from './ScreenshotGallery';
 import { SingleScreenshot } from './SingleScreenshot';
 
 type ScreenshotSelection = Extract<
@@ -54,22 +53,9 @@ export const Screenshot: React.FC<Props> = ({
     return <span>Given screenshot is missing</span>;
   }
 
-  if (screenshot.results.length > 1) {
-    return (
-      <ScreenshotGallery
-        screenshots={screenshot.results}
-        story={selection.story}
-        acceptScreenshot={acceptScreenshot}
-        details={details}
-        name={selection.name}
-      />
-    );
-  }
-
   return (
     <SingleScreenshot
-      name={selection.name}
-      screenshot={screenshot.results[0]}
+      screenshot={screenshot}
       story={selection.story}
       acceptScreenshot={acceptScreenshot}
       details={details}

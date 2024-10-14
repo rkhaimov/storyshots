@@ -10,7 +10,6 @@ import {
 } from '@storyshots/core';
 import {
   ActionsAndConfig,
-  IWebDriver,
   Screenshot,
   ScreenshotPath,
   WithPossibleError,
@@ -20,6 +19,7 @@ import {
   ScreenshotComparisonResult,
   ScreenshotsComparisonResult,
 } from './types';
+import { driver } from '../../externals/driver';
 
 export type ActualResult = {
   screenshots: ScreenshotsComparisonResult[];
@@ -27,31 +27,29 @@ export type ActualResult = {
 };
 
 export async function createActualResult(
-  driver: IWebDriver,
   story: PureStory,
   config: TestConfig,
   preview: PreviewState,
   attempt = 0,
 ): Promise<WithPossibleError<ActualResult>> {
-  const result = await _createActualResult(driver, story, config);
+  const result = await _createActualResult(story, config);
 
   if (attempt === preview.retries) {
     return result;
   }
 
   if (result.type === 'error') {
-    return createActualResult(driver, story, config, preview, attempt + 1);
+    return createActualResult(story, config, preview, attempt + 1);
   }
 
   if (result.data.screenshots.some((it) => it.result.type === 'fail')) {
-    return createActualResult(driver, story, config, preview, attempt + 1);
+    return createActualResult(story, config, preview, attempt + 1);
   }
 
   return result;
 }
 
 async function _createActualResult(
-  driver: IWebDriver,
   story: PureStory,
   config: TestConfig,
 ): Promise<WithPossibleError<ActualResult>> {
@@ -72,7 +70,6 @@ async function _createActualResult(
     type: 'success',
     data: {
       screenshots: await createScreenshotsComparisonResults(
-        driver,
         story.id,
         {
           actions,
@@ -81,7 +78,6 @@ async function _createActualResult(
         actual.data.screenshots,
       ),
       records: await createRecordsComparisonResult(
-        driver,
         story.id,
         actual.data.records,
         config.device,
@@ -91,7 +87,6 @@ async function _createActualResult(
 }
 
 async function createScreenshotsComparisonResults(
-  driver: IWebDriver,
   id: StoryID,
   payload: ActionsAndConfig,
   actual: Screenshot[],
@@ -106,7 +101,6 @@ async function createScreenshotsComparisonResults(
     return {
       name: actualScreenshot.name,
       result: await createScreenshotComparisonResult(
-        driver,
         actualScreenshot.path,
         matchedOther?.path,
       ),
@@ -117,7 +111,6 @@ async function createScreenshotsComparisonResults(
 }
 
 async function createScreenshotComparisonResult(
-  driver: IWebDriver,
   left: ScreenshotPath,
   right: ScreenshotPath | undefined,
 ): Promise<ScreenshotComparisonResult> {
@@ -133,7 +126,6 @@ async function createScreenshotComparisonResult(
 }
 
 async function createRecordsComparisonResult(
-  driver: IWebDriver,
   id: StoryID,
   actual: JournalRecord[],
   device: Device,
