@@ -15,8 +15,9 @@ state-shots - that is a good name
     * Should work like live filter on groups and story contents
 * Error should be linked to specific test config
 * Add retry play button
-* Implement single text matching strategy
-    * All selectors should match by substring by default
+* Text matching strategy must be systematic across selectors
+    * Text should match by substring by default, case-insensitive
+    * Add possibility to use regexp
 * Implement non-strict matching strategy
     * Accept non visible elements
 * Implement story filter
@@ -31,10 +32,13 @@ state-shots - that is a good name
     * Maybe there is a way of determining similar kinds of change?
     * Pixels areas might be used
 * Tests must run on compiled versions
-* Add recorder https://github.com/AndrewUsher/playwright-chrome-recorder https://github.com/AndrewUsher/playwright-recorder-extension
+* Add
+  recorder https://github.com/AndrewUsher/playwright-chrome-recorder https://github.com/AndrewUsher/playwright-recorder-extension
 * Accessibility checking https://github.com/abhinaba-ghosh/axe-playwright
 * AI Engine to turn text commands in playwright API https://github.com/zerostep-ai/zerostep
 * Add strict selector elements check
+* Add action modifiers and key shortcuts
+  emulation https://stackoverflow.com/questions/59575748/puppeteer-how-to-click-element-so-it-opens-in-new-tab
 
 ## Low priority
 
@@ -45,6 +49,8 @@ state-shots - that is a good name
 * Rename story or group utility
     * It is relatively hard to rename them manually
 * Improve story bulk run - it should give quick response (now it updates in chunks, use promise pool function?)
+* Add plain scroll action
+* Add possibility to pass buffers as uploadFile args
 
 # Structural improvements
 

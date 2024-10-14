@@ -2,54 +2,50 @@ import { ScreenshotName } from '../screenshot';
 import { assert, not } from '../utils';
 import { ActionMeta, Actor } from './types';
 
-export const createActor = (): Actor => {
-  const meta: ActionMeta[] = [];
-
+export const createActor = (meta: ActionMeta[] = []): Actor => {
   const actor: Actor = {
-    click: (on, options) => {
-      meta.push({ action: 'click', payload: { on: on.__toMeta(), options } });
-
-      return actor;
-    },
-    fill: (on, text, options) => {
-      meta.push({
-        action: 'fill',
-        payload: { on: on.__toMeta(), text, options },
-      });
-
-      return actor;
-    },
-    hover: (on) => {
-      meta.push({ action: 'hover', payload: { on: on.__toMeta() } });
-
-      return actor;
-    },
-    scrollTo: (to) => {
-      meta.push({ action: 'scroll-to', payload: { on: to.__toMeta() } });
-
-      return actor;
-    },
-    scroll: (amount, on) => {
-      meta.push({
-        action: 'scroll',
-        payload: { on: on?.__toMeta(), x: 0, y: amount },
-      });
-
-      return actor;
-    },
-    wait: (ms) => {
-      meta.push({ action: 'wait', payload: { ms } });
-
-      return actor;
-    },
-    screenshot: (name) => {
-      meta.push({
-        action: 'screenshot',
-        payload: { name: name as ScreenshotName },
-      });
-
-      return actor;
-    },
+    click: (on, options) =>
+      createActor([
+        ...meta,
+        { action: 'click', payload: { on: on.__toMeta(), options } },
+      ]),
+    fill: (on, text, options) =>
+      createActor([
+        ...meta,
+        {
+          action: 'fill',
+          payload: { on: on.__toMeta(), text, options },
+        },
+      ]),
+    hover: (on) =>
+      createActor([
+        ...meta,
+        { action: 'hover', payload: { on: on.__toMeta() } },
+      ]),
+    select: (on, ...values) =>
+      createActor([
+        ...meta,
+        { action: 'select', payload: { on: on.__toMeta(), values } },
+      ]),
+    uploadFile: (on, ...paths) =>
+      createActor([
+        ...meta,
+        { action: 'uploadFile', payload: { on: on.__toMeta(), paths } },
+      ]),
+    scrollTo: (to) =>
+      createActor([
+        ...meta,
+        { action: 'scrollTo', payload: { on: to.__toMeta() } },
+      ]),
+    wait: (ms) => createActor([...meta, { action: 'wait', payload: { ms } }]),
+    screenshot: (name) =>
+      createActor([
+        ...meta,
+        {
+          action: 'screenshot',
+          payload: { name: name as ScreenshotName },
+        },
+      ]),
     do: (transform) => transform(actor),
     toMeta: () => {
       assertAllScreenshotsAreUniq(meta);
