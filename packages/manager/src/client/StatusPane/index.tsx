@@ -6,7 +6,7 @@ import { UseBehaviourProps } from '../behaviour/types';
 import { EntryErrorStatus } from '../Menu/reusables/EntryStatus/types';
 import { getStoryEntryStatus } from '../Menu/reusables/getStoryEntryStatus';
 
-export const StatusPane: React.FC<UseBehaviourProps> = (props) => {
+export const StatusPaneArea: React.FC<UseBehaviourProps> = (props) => {
   const { selection, statusPaneOpen } = props;
   const [errorsAreActive, setErrorsAreActive] = useState(true);
 

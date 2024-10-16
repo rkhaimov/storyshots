@@ -7,7 +7,6 @@ import {
   StoryConfig,
 } from '@storyshots/core';
 import React from 'react';
-import { IExternals } from './externals/types';
 
 export type StoryTree = Group | Story;
 
@@ -30,7 +29,6 @@ type UserDefinedDevice = Omit<Device, 'name'> & { name: string };
 export type ClientConfig<TExternals> = {
   retries: number;
   devices: UserDefinedDevice[];
-  presets: UserDefinedPresetGroup[];
   createExternals(config: StoryConfig): TExternals;
   createJournalExternals(
     externals: TExternals,
@@ -40,11 +38,4 @@ export type ClientConfig<TExternals> = {
 
 export type PreviewProps = ClientConfig<unknown> & {
   stories: StoryTree[];
-  externals: IExternals;
-};
-
-export type UserDefinedPresetGroup = {
-  name: string;
-  default: string;
-  additional: string[];
 };

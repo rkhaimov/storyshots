@@ -10,19 +10,13 @@ export type Actor = {
   wait(ms: number): Actor;
   screenshot(name: string): Actor;
   scrollTo(to: Finder): Actor;
-  scroll(amount: number, on?: Finder): Actor;
+  select(on: Finder, ...values: string[]): Actor;
+  uploadFile(on: Finder, ...paths: string[]): Actor;
   do(transformer: ActorTransformer): Actor;
   toMeta(): ActionMeta[];
 };
 
-export type ClickOptions = Partial<{
-  button: 'left' | 'right' | 'middle' | 'back' | 'forward';
-  count: number;
-  delay: number;
-  offset: { x: number; y: number };
-}>;
-
-type ClickAction = {
+export type ClickAction = {
   action: 'click';
   payload: {
     on: FinderMeta;
@@ -30,9 +24,7 @@ type ClickAction = {
   };
 };
 
-export type FillOptions = Partial<{ delay: number }>;
-
-type FillAction = {
+export type FillAction = {
   action: 'fill';
   payload: {
     on: FinderMeta;
@@ -41,40 +33,47 @@ type FillAction = {
   };
 };
 
-type HoverAction = {
+export type HoverAction = {
   action: 'hover';
   payload: {
     on: FinderMeta;
   };
 };
 
-type WaitAction = {
+export type WaitAction = {
   action: 'wait';
   payload: {
     ms: number;
   };
 };
 
-type ScrollToAction = {
-  action: 'scroll-to';
+export type ScrollToAction = {
+  action: 'scrollTo';
   payload: {
     on: FinderMeta;
   };
 };
 
-type ScrollAction = {
-  action: 'scroll';
-  payload: {
-    on?: FinderMeta;
-    x: number;
-    y: number;
-  };
-};
-
-type ScreenshotAction = {
+export type ScreenshotAction = {
   action: 'screenshot';
   payload: {
     name: ScreenshotName;
+  };
+};
+
+export type SelectAction = {
+  action: 'select';
+  payload: {
+    on: FinderMeta;
+    values: string[];
+  };
+};
+
+export type UploadFileAction = {
+  action: 'uploadFile';
+  payload: {
+    on: FinderMeta;
+    paths: string[];
   };
 };
 
@@ -84,5 +83,15 @@ export type ActionMeta =
   | HoverAction
   | WaitAction
   | ScrollToAction
-  | ScrollAction
-  | ScreenshotAction;
+  | ScreenshotAction
+  | SelectAction
+  | UploadFileAction;
+
+type ClickOptions = Partial<{
+  button: 'left' | 'right' | 'middle' | 'back' | 'forward';
+  count: number;
+  delay: number;
+  offset: { x: number; y: number };
+}>;
+
+type FillOptions = Partial<{ delay: number }>;

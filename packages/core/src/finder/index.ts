@@ -1,109 +1,59 @@
 import { AriaRole } from 'react';
-import { Finder, FinderFactory, FinderMeta } from './types';
+import { Finder, FinderMeta } from './types';
 
-export const finder: FinderFactory = {
-  getByRole: (role, attrs) =>
-    createFinder({
-      beginning: { type: 'selector', on: createAriaSelector(role, attrs) },
-      consequent: [],
-    }),
-  getByText: (substring) =>
-    createFinder({
-      beginning: { type: 'selector', on: createTextSelector(substring) },
-      consequent: [],
-    }),
-  getByPlaceholder: (placeholder) =>
-    createFinder({
-      beginning: {
-        type: 'selector',
-        on: createPlaceholderSelector(placeholder),
-      },
-      consequent: [],
-    }),
-  getByLabel: (label) =>
-    createFinder({
-      beginning: {
-        type: 'selector',
-        on: createLabelSelector(label),
-      },
-      consequent: [],
-    }),
-  getBySelector: (selector) =>
-    createFinder({
-      beginning: { type: 'selector', on: selector },
-      consequent: [],
-    }),
-};
+export const finder = createFinder();
 
-function createFinder(meta: FinderMeta): Finder {
-  return {
-    getBySelector: (selector) =>
-      createFinder({
-        ...meta,
-        consequent: [...meta.consequent, { type: 'selector', on: selector }],
-      }),
+function createFinder(result: FinderMeta['consequent'] = []) {
+  const finder: Finder = {
     getByRole: (role, attrs) =>
-      createFinder({
-        ...meta,
-        consequent: [
-          ...meta.consequent,
-          {
-            type: 'selector',
-            on: createAriaSelector(role, attrs),
-          },
-        ],
-      }),
+      finder.getBySelector(createAriaSelector(role, attrs)),
     getByText: (substring) =>
-      createFinder({
-        ...meta,
-        consequent: [
-          ...meta.consequent,
-          {
-            type: 'selector',
-            on: createTextSelector(substring),
-          },
-        ],
-      }),
+      finder.getBySelector(createTextSelector(substring)),
     getByPlaceholder: (placeholder) =>
-      createFinder({
-        ...meta,
-        consequent: [
-          ...meta.consequent,
-          {
-            type: 'selector',
-            on: createPlaceholderSelector(placeholder),
-          },
-        ],
-      }),
-    getByLabel: (label) =>
-      createFinder({
-        ...meta,
-        consequent: [
-          ...meta.consequent,
-          {
-            type: 'selector',
-            on: createLabelSelector(label),
-          },
-        ],
-      }),
+      finder.getBySelector(createPlaceholderSelector(placeholder)),
+    getByTitle: (title) => finder.getBySelector(createTitleSelector(title)),
+    getByLabel: (label) => finder.getBySelector(createLabelSelector(label)),
+    do: (transformer) => transformer(finder),
+    getBySelector: (selector) =>
+      createFinder([...result, { type: 'selector', on: selector }]),
     has: (element) =>
-      createFinder({
-        ...meta,
-        consequent: [
-          ...meta.consequent,
-          {
-            type: 'filter',
-            has: element.toMeta(),
-          },
-        ],
-      }),
-    at: (index) =>
-      createFinder({
-        ...meta,
-        consequent: [...meta.consequent, { type: 'index', at: index }],
-      }),
-    toMeta: () => meta,
+      createFinder([
+        ...result,
+        {
+          type: 'filter',
+          has: element.__toMeta(),
+        },
+      ]),
+    and: (selector) =>
+      createFinder([
+        ...result,
+        {
+          type: 'and',
+          condition: selector.__toMeta(),
+        },
+      ]),
+    at: (index) => createFinder([...result, { type: 'index', at: index }]),
+    __toMeta: () => {
+      if (result.length === 0) {
+        throw new Error('Finder selector cannot be empty');
+      }
+
+      const [beginning, ...consequent] = result;
+
+      if (beginning.type !== 'selector') {
+        throw new Error(
+          `Finder selector must start with valid entry, ${beginning.type} was found instead`,
+        );
+      }
+
+      return {
+        beginning,
+        consequent,
+      };
+    },
   };
+
+  return finder;
 }
 
 function createAriaSelector(
@@ -125,6 +75,10 @@ function createPlaceholderSelector(placeholder: string) {
   return `[placeholder="${placeholder}"]`;
 }
 
+function createTitleSelector(title: string) {
+  return `[title="${title}"]`;
+}
+
 function createLabelSelector(label: string) {
-  return `label::-p-text(${label})`;
+  return `label::-p-text(${label}), [aria-label="${label}"]`;
 }

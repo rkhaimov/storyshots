@@ -6,14 +6,13 @@ import {
 } from '@storyshots/core';
 import { useState } from 'react';
 
-import { useExternals } from '../../externals/context';
 import { AcceptableRecord, AcceptableScreenshot } from '../../reusables/types';
 import { runSetCompleteTestResults } from './runSetCompleteTestResults';
 import { runSetConfiguredTestResults } from './runSetConfiguredTestResults';
 import { TestResults } from './types';
+import { driver } from '../../externals/driver';
 
 export function useTestResults() {
-  const { driver } = useExternals();
   const [results, setResults] = useState<TestResults>(new Map());
 
   return {
@@ -21,12 +20,12 @@ export function useTestResults() {
     run: (stories: PureStory[], config: TestConfig, preview: PreviewState) => {
       setChosenAsRunning(stories);
 
-      runSetConfiguredTestResults(driver, setResults, stories, config, preview);
+      runSetConfiguredTestResults(setResults, stories, config, preview);
     },
     runComplete: (stories: PureStory[], preview: PreviewState) => {
       setChosenAsRunning(stories);
 
-      runSetCompleteTestResults(driver, setResults, stories, preview);
+      runSetCompleteTestResults(setResults, stories, preview);
     },
     // TODO: Logic duplication
     acceptRecords: async ({ id, result, details }: AcceptableRecord) => {
@@ -45,9 +44,7 @@ export function useTestResults() {
     acceptScreenshot: async ({ result, details }: AcceptableScreenshot) => {
       await driver.acceptScreenshot({ actual: result.actual });
 
-      const inner = details.screenshots
-        .flatMap((it) => it.results)
-        .find((it) => it.result === result);
+      const inner = details.screenshots.find((it) => it.result === result);
 
       assertNotEmpty(inner);
 

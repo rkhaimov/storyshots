@@ -1,7 +1,13 @@
-import { ActionMeta, assertIsNever, isNil, wait } from '@storyshots/core';
+import {
+  ActionMeta,
+  assertIsNever,
+  FillAction,
+  ScreenshotAction,
+  wait,
+  WaitAction,
+} from '@storyshots/core';
 import { ElementHandle, Frame } from 'puppeteer';
 import { select } from './select';
-import { ScreenshotAction } from './types';
 import { ElementGuard } from './select/types';
 import { TIMEOUT } from './select/constants';
 import { isInsideViewport, isStable, isVisible } from './select/guards';
@@ -9,13 +15,9 @@ import { isInsideViewport, isStable, isVisible } from './select/guards';
 export async function act(
   preview: Frame,
   action: Exclude<ActionMeta, ScreenshotAction>,
-): Promise<void> {
+): Promise<unknown> {
   if (action.action === 'wait') {
     return wait(action.payload.ms);
-  }
-
-  if (action.action === 'scroll') {
-    return scroll(preview, action);
   }
 
   const element = await select(
@@ -31,26 +33,30 @@ export async function act(
       return element.hover();
     case 'fill':
       return fill(element, action);
-    case 'scroll-to':
+    case 'scrollTo':
       return element.scrollIntoView();
+    case 'select':
+      return element.select(...action.payload.values);
+    case 'uploadFile':
+      return (element as ElementHandle<HTMLInputElement>).uploadFile(
+        ...action.payload.paths,
+      );
   }
 
   assertIsNever(action);
 }
 
 function actionToGuards(
-  action: Extract<
-    ActionMeta,
-    { action: 'click' | 'fill' | 'hover' | 'scroll-to' | 'scroll' }
-  >,
+  action: Exclude<ActionMeta, WaitAction | ScreenshotAction>,
 ): ElementGuard[] {
   switch (action.action) {
     case 'click':
     case 'fill':
+    case 'select':
+    case 'uploadFile':
       return [isVisible, isInsideViewport, isStable, isEnabled];
     case 'hover':
-    case 'scroll-to':
-    case 'scroll':
+    case 'scrollTo':
       return [isVisible, isInsideViewport, isStable];
   }
 }
@@ -83,10 +89,7 @@ const isEnabled: ElementGuard = async (element) => {
   return { pass: true };
 };
 
-async function fill(
-  element: ElementHandle,
-  action: Extract<ActionMeta, { action: 'fill' }>,
-) {
+async function fill(element: ElementHandle, action: FillAction) {
   await (element as ElementHandle<HTMLInputElement>).evaluate((input) => {
     if (input.isContentEditable) {
       input.innerText = '';
@@ -96,35 +99,4 @@ async function fill(
   });
 
   return element.type(action.payload.text, action.payload.options);
-}
-
-async function scroll(
-  preview: Frame,
-  action: Extract<ActionMeta, { action: 'scroll' }>,
-): Promise<void> {
-  const selector = action.payload.on;
-
-  if (isNil(selector)) {
-    return preview.evaluate(
-      ([y, x]) =>
-        window.scrollBy({
-          top: y,
-          left: x,
-          behavior: 'instant',
-        }),
-      [action.payload.y, action.payload.x],
-    );
-  }
-
-  const element = await select(preview, selector, actionToGuards(action));
-
-  return element.evaluate(
-    (it, [y, x]) =>
-      it.scrollBy({
-        top: y,
-        left: x,
-        behavior: 'instant',
-      }),
-    [action.payload.y, action.payload.x],
-  );
 }

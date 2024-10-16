@@ -1,54 +1,84 @@
-import { ElementHandle, Frame } from 'puppeteer';
+import { ElementHandle } from 'puppeteer';
 import { FinderMeta, isNil } from '@storyshots/core';
 
 export async function search(
-  element: Pick<Frame, '$$'>,
+  root: Root,
   by: FinderMeta,
 ): Promise<ElementHandle[]> {
-  const elements = await element.$$(by.beginning.on);
+  const elements = await root.$$(by.beginning.on);
 
-  return narrow(elements, by.consequent);
+  return narrow(root, elements, by.consequent);
 }
 
 async function narrow(
-  elements: ElementHandle[],
-  consequent: FinderMeta['consequent'],
+  root: Root,
+  found: ElementHandle[],
+  selectors: FinderMeta['consequent'],
 ): Promise<ElementHandle[]> {
-  if (consequent.length === 0) {
-    return elements;
+  if (selectors.length === 0) {
+    return found;
   }
 
-  const [condition, ...others] = consequent;
+  const [selector, ...others] = selectors;
 
-  switch (condition.type) {
+  switch (selector.type) {
     case 'index': {
-      const found = elements[condition.at];
+      const element = found[selector.at];
 
-      return isNil(found) ? [] : narrow([found], others);
+      return isNil(element) ? [] : narrow(root, [element], others);
     }
     case 'filter': {
       const candidates: ElementHandle[] = [];
-      for await (const element of elements) {
-        const children = await search(element, condition.has);
+      for await (const element of found) {
+        const children = await search(element, selector.has);
 
         if (children.length > 0) {
           candidates.push(element);
         }
       }
 
-      return narrow(candidates, others);
+      return narrow(root, candidates, others);
+    }
+    case 'and': {
+      const additional = await search(root, selector.condition);
+
+      const candidates: ElementHandle[] = [];
+      for await (const element of found) {
+        if (await includes(element, additional)) {
+          candidates.push(element);
+        }
+      }
+
+      return narrow(root, candidates, others);
     }
     case 'selector': {
       const candidates: ElementHandle[] = [];
-      for await (const element of elements) {
-        const children = await element.$$(condition.on);
+      for await (const element of found) {
+        const children = await element.$$(selector.on);
 
-        const found = await narrow(children, others);
-
-        candidates.push(...found);
+        candidates.push(...(await narrow(root, children, others)));
       }
 
       return candidates;
     }
   }
+}
+
+type Root = Pick<ElementHandle, '$$'>;
+
+async function includes(
+  target: ElementHandle,
+  inside: ElementHandle[],
+): Promise<boolean> {
+  for await (const element of inside) {
+    if (await equals(target, element)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function equals(l: ElementHandle, r: ElementHandle): Promise<boolean> {
+  return l.evaluate((_l, _r) => _l === _r, l, r);
 }

@@ -1,23 +1,23 @@
 import { JournalRecord } from './journal/types';
 import { PureStoryTree, StoryID } from './story';
-import { Device, PresetGroup, SelectedPresets } from './test-config';
+import { Device } from './test-config';
 
 export type PreviewState = {
   retries: number;
   stories: PureStoryTree[];
   devices: Device[];
-  presets: PresetGroup[];
 };
 
-export type ManagerState = {
+export type PreviewConfig = {
   id?: StoryID;
-  screenshotting: boolean;
-  presets: SelectedPresets;
   device?: Device;
+  screenshotting: boolean;
+  emulated: boolean;
+  key: string;
 };
 
 export interface Channel {
-  state(preview: PreviewState): ManagerState;
+  state(preview: PreviewState): PreviewConfig;
 
   records(): JournalRecord[];
 }

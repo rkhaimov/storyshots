@@ -14,12 +14,15 @@ export function getStoryEntryStatus(
   story: PureStory,
 ): EntryStatus {
   if (selection.type === 'story' && selection.story.id === story.id) {
-    if (selection.playing) {
+    if (selection.state.type === 'playing') {
       return { type: 'running' };
     }
 
-    if (selection.result.type === 'error') {
-      return { type: 'error', message: selection.result.message };
+    if (
+      selection.state.type === 'played' &&
+      selection.state.result.type === 'error'
+    ) {
+      return { type: 'error', message: selection.state.result.message };
     }
   }
 
@@ -81,7 +84,6 @@ function getAcceptableScreenshots(
 ): AcceptableScreenshot[] {
   return details.flatMap((detail) =>
     detail.screenshots
-      .flatMap((it) => it.results)
       .map((it) => it.result)
       .filter((it): it is AcceptableScreenshot['result'] => it.type !== 'pass')
       .map((it) => ({ details: detail, result: it })),

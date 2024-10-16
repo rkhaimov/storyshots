@@ -61,35 +61,3 @@ export function withLotsOfStories<T>(pb: PreviewBuilder<T>) {
     ]),
   ]);
 }
-
-type PresetsExternals = {
-  lang: 'russian' | 'chinese' | 'english';
-  theme: 'light' | 'dark';
-};
-
-export function withManyPresets<T>(pb: PreviewBuilder<T>) {
-  return pb
-    .externals<PresetsExternals>(() => ({
-      createExternals: ({ presets }) => ({
-        lang:
-          (presets['Language']?.toLowerCase() as PresetsExternals['lang']) ??
-          'russian',
-        theme:
-          (presets['Theme']?.toLowerCase() as PresetsExternals['theme']) ??
-          'light',
-      }),
-      createJournalExternals: ({ lang, theme }) => ({ lang, theme }),
-    }))
-    .presets(() => [
-      {
-        name: 'Language',
-        default: 'Russian',
-        additional: ['Chinese', 'English'],
-      },
-      {
-        name: 'Theme',
-        default: 'Light',
-        additional: ['Dark'],
-      },
-    ]);
-}

@@ -1,4 +1,3 @@
-import { ActionMeta } from '@storyshots/core';
 import { RequestHandler } from 'express';
 import { Stabilizer } from '../handlers/createActServerSideHandler';
 
@@ -24,5 +23,3 @@ export type ManagerConfig = {
   devtools?: string;
   port: number;
 };
-
-export type ScreenshotAction = Extract<ActionMeta, { action: 'screenshot' }>;

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { AutoPlaySelection } from './useAutoPlaySelection';
 import { GroupID } from '../../reusables/types';
 import { PureGroup, TreeOP } from '@storyshots/core';
+import {Selection} from "./useSelection/types";
 
-export function useGroupExpand(selection: AutoPlaySelection) {
+export function useGroupExpand(selection: Selection) {
   const [expanded, setExpanded] = useState(new Set<GroupID>());
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 import {
   Channel,
   Device,
+  ScreenshotAction,
   StoryID,
   TestConfig,
   TreeOP,
@@ -18,7 +19,7 @@ import {
 import { act } from '../reusables/act';
 import { Baseline } from '../reusables/baseline';
 import { toPreviewFrame } from '../reusables/toPreviewFrame';
-import { ManagerConfig, ScreenshotAction } from '../reusables/types';
+import { ManagerConfig } from '../reusables/types';
 import { createPathToStory } from '../paths';
 import { handlePossibleErrors } from './reusables/handlePossibleErrors';
 

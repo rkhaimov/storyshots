@@ -43,6 +43,8 @@ export async function select(
             return `[${it.at}]`;
           case 'filter':
             return `has(${selectorToString(it.has)})`;
+          case 'and':
+            return `and(${selectorToString(it.condition)})`;
         }
       })
       .join(' ')}`;

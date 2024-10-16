@@ -1,14 +1,11 @@
-import { Props } from '../types';
-import { useAutoPlaySelection } from './useAutoPlaySelection';
-import { useBehaviourRouter } from './useBehaviourRouter';
+import { useSelection } from './useSelection';
 import { useGroupExpand } from './useGroupExpand';
 import { useStatusPane } from './useStatusPane';
 import { useTestResults } from './useTestResults';
 
-export function useBehaviour(props: Props) {
+export function useBehaviour() {
   const test = useTestResults();
-  const router = useBehaviourRouter(props);
-  const play = useAutoPlaySelection(router.params);
+  const play = useSelection();
   const expand = useGroupExpand(play.selection);
   const pane = useStatusPane();
 
@@ -17,6 +14,5 @@ export function useBehaviour(props: Props) {
     ...test,
     ...play,
     ...pane,
-    ...router,
   };
 }

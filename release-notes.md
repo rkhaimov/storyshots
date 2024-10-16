@@ -1,3 +1,17 @@
+# 0.0.5
+
+## Behaviour
+
+* Added new selectors, combinators and extension methods
+* Added new actions
+* Removed presets entirely
+* Improved UI performance
+
+## Structure
+
+* Added tests for selectors and actions
+
+
 # 0.0.1
 
 ## Behaviour

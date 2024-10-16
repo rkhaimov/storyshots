@@ -4,11 +4,10 @@ import { not } from '@storyshots/core';
 import { createPreviewWatcher } from '../compiler/createPreviewWatcher';
 import { createCommonApiHandlers } from '../createCommonApiHandlers';
 import { ManagerConfig } from '../reusables/types';
-import path from 'path';
-import { root } from '../compiler/manager-root';
+import { createManager } from './createManager';
 
 export async function runHeadless(config: ManagerConfig) {
-  const manager = express.static(path.join(root, 'lib', 'client'));
+  const manager = createManager();
 
   const { app } = wsify(express());
 

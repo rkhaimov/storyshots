@@ -16,7 +16,7 @@
     "build": "rimraf ./lib && tsc -b tsconfig.json && tsc -b tsconfig.devtools.json"
   },
   "dependencies": {
-    "@storyshots/core": "0.0.3"
+    "@storyshots/core": "0.0.4"
   },
   "peerDependencies": {
     "react": "*",
