@@ -2,24 +2,26 @@ import { TestConfig, TreeOP } from '@storyshots/core';
 import React from 'react';
 import { RouteComponentProps } from 'wouter';
 import { useSearch } from 'wouter/use-location';
-import { createPreviewFrame } from './reusables/PreviewFrame';
+import { Preview, usePreviewConnection } from './reusables/ConnectedPreview';
 
 type Props = RouteComponentProps<{
   story: string;
 }>;
 
-export const ForChromiumOnly: React.FC<Props> = (props) => (
-  <PreviewFrame
-    config={{
+export const ForChromiumOnly: React.FC<Props> = (props) => {
+  const preview = usePreviewConnection({
+    config: {
       id: TreeOP.ensureIsLeafID(props.params.story),
       device: useSelectedDevice(),
       screenshotting: true,
       emulated: false,
       key: '',
-    }}
-    onStateChange={() => {}}
-  />
-);
+    },
+    onStateChange: () => {},
+  });
+
+  return <Preview {...preview} />;
+};
 
 function useSelectedDevice() {
   const search = useSearch();
@@ -31,5 +33,3 @@ function useSelectedDevice() {
 
   return config?.device;
 }
-
-const PreviewFrame = createPreviewFrame();

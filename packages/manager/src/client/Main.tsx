@@ -2,9 +2,14 @@ import React from 'react';
 import { Screenshot } from './Screenshot';
 import { Records } from './Records';
 import { UseBehaviourProps } from './behaviour/types';
-import { createPreviewFrame } from './reusables/PreviewFrame';
+import { Preview, usePreviewConnection } from './reusables/ConnectedPreview';
 
 export const Main: React.FC<UseBehaviourProps> = (props) => {
+  const preview = usePreviewConnection({
+    config: props.preview,
+    onStateChange: props.onStateChange,
+  });
+
   return render();
 
   function render() {
@@ -28,13 +33,6 @@ export const Main: React.FC<UseBehaviourProps> = (props) => {
       );
     }
 
-    return (
-      <PreviewFrame
-        config={props.preview}
-        onStateChange={props.onStateChange}
-      />
-    );
+    return <Preview {...preview} />;
   }
 };
-
-const PreviewFrame = createPreviewFrame();
