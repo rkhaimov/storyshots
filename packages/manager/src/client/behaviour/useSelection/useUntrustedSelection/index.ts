@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
 import { DeviceName, ScreenshotName, StoryID } from '@storyshots/core';
-import { UntrustedPreviewConfig, UntrustedSelection } from './types';
+import { UntrustedPreviewConfig } from './types';
+import { useURLPersistentSelection } from './useURLPersistentSelection';
 
 export function useUntrustedSelection() {
-  const [selection, setSelection] = usePersistentState();
+  const [selection, setSelection] = useURLPersistentSelection();
 
   return {
     selection,
@@ -23,34 +23,3 @@ export function useUntrustedSelection() {
   };
 }
 
-function usePersistentState() {
-  const [selection, setSelection] = useState((): UntrustedSelection => {
-    const url = new URL(location.href);
-    const last = url.searchParams.get('selection');
-
-    if (last === null) {
-      return {
-        type: 'no-selection',
-        config: {
-          emulated: false,
-        },
-      };
-    }
-
-    return JSON.parse(last) as UntrustedSelection;
-  });
-
-  useEffect(() => {
-    if (selection.type !== 'story') {
-      return;
-    }
-
-    const url = new URL(location.href);
-
-    url.searchParams.set('selection', JSON.stringify(selection));
-
-    history.pushState(null, '', url);
-  }, [selection]);
-
-  return [selection, setSelection] as const;
-}
