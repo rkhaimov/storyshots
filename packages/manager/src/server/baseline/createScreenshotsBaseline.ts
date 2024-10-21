@@ -55,15 +55,7 @@ export async function createScreenshotsBaseline(env: ManagerConfig) {
 }
 
 function createConcreteConfigPath(config: TestConfig) {
-  const presetDir = Object.entries(config.presets)
-    .map(([name, value]) => `${name}-${value}`)
-    .join('__');
-
-  if (presetDir === '') {
-    return config.device.name;
-  }
-
-  return path.join(config.device.name, presetDir);
+  return config.device.name;
 }
 
 function constructScreenshotFileName(

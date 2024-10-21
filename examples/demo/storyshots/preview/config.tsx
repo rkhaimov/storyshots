@@ -30,13 +30,6 @@ const {
       },
     },
   ],
-  presets: [
-    {
-      name: 'Theme',
-      default: 'Light',
-      additional: ['Dark'],
-    },
-  ],
   createExternals: createMockExternals,
   createJournalExternals: createJournalExternals,
 });

@@ -2,7 +2,6 @@ import {
   Device,
   JournalRecord,
   ScreenshotName,
-  SelectedPresets,
   StoryID,
 } from '@storyshots/core';
 import { ScreenshotPath } from '../../../reusables/types';
@@ -23,11 +22,6 @@ export type TestResultDetails = {
 
 export type ScreenshotResult = {
   name: ScreenshotName;
-  results: PresetScreenshotResult[];
-};
-
-export type PresetScreenshotResult = {
-  presets: SelectedPresets;
   result: ScreenshotComparisonResult;
 };
 

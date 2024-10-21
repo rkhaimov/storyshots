@@ -48,7 +48,9 @@ async function runAllTests(config: ManagerConfig) {
   );
 
   for (const story of stories) {
-    const error = await story.$('::-p-aria([role="image"][name="exclamation"])');
+    const error = await story.$(
+      '::-p-aria([role="image"][name="exclamation"])',
+    );
 
     if (error !== null) {
       throw new Error(

@@ -1,5 +1,10 @@
 import { test } from '../reusables/test';
-import { acceptStoryOrGroup, openRecords, runStoryOrGroupComplete, screenshot } from './actors';
+import {
+  acceptStoryOrGroup,
+  openRecords,
+  runStoryOrGroupComplete,
+  screenshot,
+} from './actors';
 import { withCommandSample, withMobileDevice } from './factories';
 import { preview } from '../reusables/preview';
 import { withStatefulExternals } from '../reusables/state';

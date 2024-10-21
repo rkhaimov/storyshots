@@ -3,14 +3,14 @@ import React from 'react';
 import { Placeholder } from './Placeholder';
 import { Story } from './Story';
 import { PreviewProps } from './types';
-import { useManagerState } from './useManagerState';
+import { usePreviewConfig } from './usePreviewConfig';
 
 export const App: React.FC<PreviewProps> = (props) => {
-  const { id, ...state } = useManagerState(props);
+  const { id, ...config } = usePreviewConfig(props);
 
   if (isNil(id)) {
     return <Placeholder />;
   }
 
-  return <Story id={id} preview={props} state={state} />;
+  return <Story id={id} preview={props} config={config} />;
 };

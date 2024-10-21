@@ -34,6 +34,7 @@ test('shows the difference with baseline', {
           actor
             .screenshot('Initial')
             .click(finder.getByText('Act'))
+            .wait(1_000)
             .screenshot('Incremented'),
         render: (externals) => {
           const Component = useMemo(

@@ -1,4 +1,4 @@
-import { App, ConfigProvider, theme, ThemeConfig } from 'antd';
+import { App, ConfigProvider, ThemeConfig } from 'antd';
 import React from 'react';
 import { createGlobalStyle } from 'styled-components';
 import { Route, Switch } from 'wouter';
@@ -11,18 +11,10 @@ import { Main } from './pages/main';
 type Props = { externals: IExternals; theme?: ThemeConfig };
 
 export const PureApp: React.FC<Props> = (props) => {
-  const darkMode = props.externals.options.getTheme() === 'dark';
-
   return (
     <App>
-      <ConfigProvider
-        theme={{
-          algorithm: darkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
-          ...props.theme,
-        }}
-      >
+      <ConfigProvider theme={props.theme}>
         <GlobalStyle />
-        {darkMode && <GlobalDarkStyle />}
         <ExternalsProvider externals={props.externals}>
           <Switch>
             <Route path="/" component={Main} />
@@ -42,11 +34,5 @@ const GlobalStyle = createGlobalStyle`
 
     body, html, #root, .ant-app {
         height: 100%;
-    }
-`;
-
-const GlobalDarkStyle = createGlobalStyle`
-    body {
-        background: #000;
     }
 `;

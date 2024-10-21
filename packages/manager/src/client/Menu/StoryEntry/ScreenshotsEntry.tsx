@@ -30,7 +30,7 @@ export const ScreenshotsEntry: React.FC<Props> = ({
           key={it.name}
           role="menuitem"
           aria-label={it.name}
-          onClick={() => setScreenshot(story.id, it.name, details.device)}
+          onClick={() => setScreenshot(story.id, it.name, details.device.name)}
         >
           <ActiveEntryHeader
             $level={level}
@@ -52,13 +52,11 @@ export const ScreenshotsEntry: React.FC<Props> = ({
   function renderStatus(
     screenshot: ScreenshotResult,
   ): ScreenshotComparisonResult['type'] {
-    const statuses = screenshot.results.map(({ result }) => result.type);
-
-    if (statuses.includes('fail')) {
+    if (screenshot.result.type === 'fail') {
       return 'fail';
     }
 
-    if (statuses.includes('fresh')) {
+    if (screenshot.result.type === 'fresh') {
       return 'fresh';
     }
 

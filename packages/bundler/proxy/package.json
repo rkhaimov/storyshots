@@ -16,6 +16,6 @@
     "http-proxy-middleware": "^3.0.0"
   },
   "peerDependencies": {
-    "@storyshots/manager": "0.0.4"
+    "@storyshots/manager": "0.0.5"
   }
 }

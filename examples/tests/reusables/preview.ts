@@ -22,7 +22,6 @@ type Stories<T> = ReturnType<StoryUtils<T>['it' | 'describe']>;
 export type PreviewBuilder<T = any> = {
   tap<R>(on: (pb: PreviewBuilder<T>) => PreviewBuilder<R>): PreviewBuilder<R>;
   externals<R>(transform: ExternalsFactory<R>): PreviewBuilder<T & R>;
-  presets(transform: PresetsFactory<T>): PreviewBuilder<T>;
   devices(transform: DevicesFactory): PreviewBuilder<T>;
   stories(build: StoriesFactory<T>): PreviewBuilder<T>;
   entry(handle: EntryHandler<T>): PreviewBuilder<T>;
@@ -30,7 +29,6 @@ export type PreviewBuilder<T = any> = {
 };
 
 type DevicesFactory = () => Config<unknown>['devices'];
-type PresetsFactory<T> = () => Config<T>['presets'];
 
 type ExternalsFactory<T> = () => Pick<
   Config<T>,
@@ -52,8 +50,6 @@ export function preview() {
     },
   ];
 
-  let createPresets: PresetsFactory<unknown> = () => [];
-
   let createStories: StoriesFactory<unknown> = () => [];
 
   let onEntry: EntryHandler<unknown> = (utils) => {
@@ -63,11 +59,6 @@ export function preview() {
   };
 
   const result: PreviewBuilder = {
-    presets: (transform) => {
-      createPresets = transform;
-
-      return result;
-    },
     devices: (transform) => {
       createDevices = transform;
 
@@ -102,7 +93,6 @@ export function preview() {
           stories: ${createStories.toString()},
           config: (${buildConfig.toString()})(
             ${createDevices.toString()},
-            ${createPresets.toString()},
             ${externalsCreators.map((it) => it.toString()).join(', ')}
           ),
         });
@@ -121,7 +111,6 @@ type UnknownExternals = Record<string, unknown>;
 
 function buildConfig(
   createDevices: DevicesFactory,
-  createPresets: PresetsFactory<UnknownExternals>,
   ...externalsCreators: Array<ExternalsFactory<UnknownExternals>>
 ): Config<unknown> {
   const initial: ReturnType<ExternalsFactory<UnknownExternals>> = {
@@ -132,7 +121,6 @@ function buildConfig(
   return {
     retries: 0,
     devices: createDevices(),
-    presets: createPresets(),
     ...externalsCreators.reduce(
       (all, curr) => ({
         createExternals: (device) => ({

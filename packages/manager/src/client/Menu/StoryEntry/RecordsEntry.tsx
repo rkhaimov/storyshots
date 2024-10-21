@@ -27,7 +27,7 @@ export const RecordsEntry: React.FC<Props> = ({
         $color={blue[0]}
         role="menuitem"
         aria-label="Records"
-        onClick={() => setRecords(story.id, details.device)}
+        onClick={() => setRecords(story.id, details.device.name)}
       >
         <HighlightableEntry
           title="Records"
