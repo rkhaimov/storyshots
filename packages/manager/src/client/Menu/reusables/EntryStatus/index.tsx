@@ -32,7 +32,7 @@ function renderStatusIcon({ status }: Props) {
   }
 
   if (status === 'fresh') {
-      return (
+    return (
       <Badge
         // @ts-expect-error Type mismatch from antd side
         role="image"

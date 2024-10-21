@@ -1,7 +1,7 @@
 type SupportedAriaAttrs = Partial<Record<'name', string>>;
 
 export type Finder = {
-  // Finds and element by its role which is computed using aria accessibility tree.
+  // Finds an element by its role which is computed using aria accessibility tree.
   // Name attribute can be passed for additional narrowing and is matched by exact comparison.
   getByRole(role: string, attrs?: SupportedAriaAttrs): Finder;
   // Finds deepest element containing specified text. Matches by substring comparison

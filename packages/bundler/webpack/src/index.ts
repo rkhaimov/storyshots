@@ -8,8 +8,6 @@ export function createWebpackBundler(config: Configuration): PreviewServe {
   return {
     handler: dev(compiler),
     onUpdate: (handler) =>
-      compiler.hooks.done.tap('PreviewUpdate', (stats) =>
-        handler(stats.hash),
-      ),
+      compiler.hooks.done.tap('PreviewUpdate', (stats) => handler(stats.hash)),
   };
 }

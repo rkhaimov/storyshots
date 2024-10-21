@@ -3,7 +3,7 @@ import { PureStory } from '@storyshots/core';
 import React from 'react';
 import { UseBehaviourProps } from '../../behaviour/types';
 import { EntryAction } from './EntryAction';
-import {ReadySelection} from "../../behaviour/useSelection/types";
+import { ReadySelection } from '../../behaviour/useSelection/types';
 
 type Props = Pick<UseBehaviourProps, 'runComplete'> & {
   stories: PureStory[];

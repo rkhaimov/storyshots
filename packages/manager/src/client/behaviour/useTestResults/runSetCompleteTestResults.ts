@@ -25,9 +25,7 @@ async function toStoryResult(
   const details: WithPossibleError<TestResultDetails>[] = [];
 
   for (const device of preview.devices) {
-    details.push(
-      await createDetailedResult(story, { device }, preview),
-    );
+    details.push(await createDetailedResult(story, { device }, preview));
   }
 
   const result = toAllSuccessOrAnyError(details);

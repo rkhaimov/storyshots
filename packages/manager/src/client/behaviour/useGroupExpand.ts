@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { GroupID } from '../../reusables/types';
 import { PureGroup, TreeOP } from '@storyshots/core';
-import {Selection} from "./useSelection/types";
+import { Selection } from './useSelection/types';
 
 export function useGroupExpand(selection: Selection) {
   const [expanded, setExpanded] = useState(new Set<GroupID>());
