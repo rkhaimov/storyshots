@@ -25,11 +25,11 @@ export function createJournalExternals(
     ...externals,
     analytics: {
       ...externals.analytics,
-      log: journal.record('log', externals.analytics.log),
+      log: journal.asRecordable('log', externals.analytics.log),
     },
     business: {
       ...externals.business,
-      applyCV: journal.record('applyCV', externals.business.applyCV),
+      applyCV: journal.asRecordable('applyCV', externals.business.applyCV),
     },
   };
 }

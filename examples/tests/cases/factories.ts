@@ -32,7 +32,7 @@ export function withCommandSample<T>(pb: PreviewBuilder<T>) {
       pet: () => {},
     }),
     createJournalExternals: ({ pet }, { journal }) => ({
-      pet: journal.record('pet', pet),
+      pet: journal.asRecordable('pet', pet),
     }),
   }));
 }

@@ -52,7 +52,7 @@ export const balanceStories = describe('Balance', [
       ...externals,
       business: {
         ...externals.business,
-        getBalanceAt: journal.record(
+        getBalanceAt: journal.asRecordable(
           'getInitialValue',
           externals.business.getBalanceAt,
         ),

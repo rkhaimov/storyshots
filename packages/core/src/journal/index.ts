@@ -3,14 +3,19 @@ import { Journal, JournalRecord } from './types';
 export function createJournal(): Journal {
   const records: JournalRecord[] = [];
 
-  return {
-    record:
+  const journal: Journal = {
+    record: (method, ...args) => {
+      records.push({ method, args });
+    },
+    asRecordable:
       (method, fn) =>
       (...args) => {
-        records.push({ method, args });
+        journal.record(method, ...args);
 
         return fn(...args);
       },
     read: () => records,
   };
+
+  return journal;
 }

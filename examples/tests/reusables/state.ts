@@ -36,7 +36,7 @@ export function withStatefulExternals<T>(pb: PreviewBuilder<T>) {
     }),
     createJournalExternals: ({ get, update }, { journal }) => ({
       get,
-      update: journal.record('update', update),
+      update: journal.asRecordable('update', update),
     }),
   }));
 }
