@@ -12,9 +12,6 @@
     "jsx": "preserve"
   },
   "ts-node": {
-    "files": [
-      "./packages/manager/src/reusables/augmentations.d.ts"
-    ],
     "compilerOptions": {
       "module": "CommonJS"
     }

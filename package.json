@@ -29,7 +29,8 @@
     "packages/manager",
     "packages/bundler/webpack",
     "packages/bundler/proxy",
-    "packages/preview/react"
+    "packages/preview/react",
+    "packages/msw-replacer"
   ],
   "engines": {
     "node": ">=20"

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig",
+  "include": [
+    "./createMSWorkerHandler.ts"
+  ],
+  "compilerOptions": {
+    "module": "CommonJS",
+    "declaration": true
+  }
+}

@@ -1,6 +1,5 @@
-import { ManagerConfig } from './reusables/types';
+import { ManagerConfig, PreviewServe } from './reusables/types';
 import { runUI as _runUI } from './modes/runUI';
-import { root } from './compiler/manager-root';
 import { STABILIZER } from './handlers/createActServerSideHandler';
 import { runTestsCI as _runCITests } from './modes/runTestsCI';
 
@@ -24,6 +23,21 @@ export const runTestsCI = async (config: OptimizedConfig) => {
   cleanup();
   process.exit();
 };
+
+export const mergeServe = (...handlers: PreviewServe[]): PreviewServe =>
+  handlers.reduce(mergeTwoServeHandlers);
+
+const mergeTwoServeHandlers = (
+  left: PreviewServe,
+  right: PreviewServe,
+): PreviewServe => ({
+  handler: (req, res, next) =>
+    left.handler(req, res, () => right.handler(req, res, next)),
+  onUpdate: (handle) => {
+    left.onUpdate(handle);
+    right.onUpdate(handle);
+  },
+});
 
 function fromOptimizedConfig(config: OptimizedConfig): ManagerConfig {
   return {
