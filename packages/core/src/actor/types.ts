@@ -11,7 +11,22 @@ export type Actor = {
   screenshot(name: string): Actor;
   scrollTo(to: Finder): Actor;
   select(on: Finder, ...values: string[]): Actor;
-  uploadFile(on: Finder, ...paths: string[]): Actor;
+  /**
+   * Uploads one or multiple files.
+   * @param chooser an action that triggers file chooser to appear.
+   * @param paths a list of files. Paths must be relative to current working directory (usually a project root)
+   *
+   * @example
+   * <input type="file" multiple />
+   *
+   * // uploads specified files
+   * actor.uploadFile(
+   *    actor.click(finder.getByRole('button')),
+   *    'path/to/file_0.ext',
+   *    'path/to/file_1.ext'
+   * )
+   */
+  uploadFile(chooser: Actor, ...paths: string[]): Actor;
   do(transformer: ActorTransformer): Actor;
   toMeta(): ActionMeta[];
 };
@@ -72,7 +87,7 @@ export type SelectAction = {
 export type UploadFileAction = {
   action: 'uploadFile';
   payload: {
-    on: FinderMeta;
+    chooser: ActionMeta[];
     paths: string[];
   };
 };

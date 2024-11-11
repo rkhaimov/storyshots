@@ -122,15 +122,15 @@ async function interactWithPageAndMakeShots(
   server: ManagerConfig,
 ): Promise<ActualServerSideResult> {
   const screenshots: Screenshot[] = [];
-  for (const action of actions) {
-    if (action.action === 'screenshot') {
-      screenshots.push(
+
+  await act(
+    preview,
+    actions,
+    async (action) =>
+      void screenshots.push(
         await createScreenshot(baseline, page, id, action, config, server),
-      );
-    } else {
-      await act(preview, action);
-    }
-  }
+      ),
+  );
 
   const records = await preview.evaluate(() =>
     (window as never as Channel).records(),

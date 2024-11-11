@@ -277,7 +277,10 @@ test('allows to upload files', {
   preview: preview().stories(({ it, createElement, finder }) => [
     it('pets are great', {
       act: (actor) =>
-        actor.uploadFile(finder.getByRole('button'), '/stub-files/PI.png'),
+        actor.uploadFile(
+          actor.click(finder.getByRole('button')),
+          '/stub-files/PI.png',
+        ),
       render: () => createElement('input', { type: 'file' }),
     }),
   ]),
@@ -295,7 +298,7 @@ test('allows to upload multiple files', {
     it('pets are great', {
       act: (actor) =>
         actor.uploadFile(
-          finder.getByRole('button'),
+          actor.click(finder.getByRole('button')),
           '/stub-files/PI.png',
           '/stub-files/tree.jpg',
         ),

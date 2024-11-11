@@ -11,9 +11,14 @@ export const cvStories = describe('CV', [
           .scrollTo(finder.getByRole('button', { name: 'Register' }));
       }
 
-      return actor.click(
-        finder.getByRole('button', { name: 'Navigate' }).at(1),
-      );
+      return actor
+        .click(finder.getByRole('button', { name: 'Navigate' }).at(1))
+        .click(
+          finder
+            .getBySelector('.ant-select-selection-item')
+            .has(finder.getByText('label 2'))
+            .getBySelector('.ant-select-selection-item-remove'),
+        );
     },
   }),
   it('lets all of its fields to be filled', {
