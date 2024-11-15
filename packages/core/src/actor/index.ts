@@ -27,10 +27,10 @@ export const createActor = (meta: ActionMeta[] = []): Actor => {
         ...meta,
         { action: 'select', payload: { on: on.__toMeta(), values } },
       ]),
-    uploadFile: (on, ...paths) =>
+    uploadFile: (chooser, ...paths) =>
       createActor([
         ...meta,
-        { action: 'uploadFile', payload: { on: on.__toMeta(), paths } },
+        { action: 'uploadFile', payload: { chooser: chooser.toMeta(), paths } },
       ]),
     scrollTo: (to) =>
       createActor([

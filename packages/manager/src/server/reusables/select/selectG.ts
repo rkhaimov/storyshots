@@ -9,29 +9,48 @@ export async function* selectG(
   by: FinderMeta,
   guards: ElementGuard[],
 ): AsyncGenerator<string, ElementHandle, void> {
-  await wait(100);
+  const element = yield* createSingleElementBySelector(frame, by, guards);
 
+  return yield* createValidElement(element, guards);
+}
+
+async function* createSingleElementBySelector(
+  frame: Frame,
+  by: FinderMeta,
+  guards: ElementGuard[],
+): AsyncGenerator<string, ElementHandle, void> {
   const elements = await search(frame, by);
 
   if (elements.length === 0) {
     yield `Element was not found during provided time interval ${TIMEOUT} ms.`;
 
-    return yield* selectG(frame, by, guards);
+    await wait(100);
+
+    return yield* createSingleElementBySelector(frame, by, guards);
   }
 
-  const element = elements[0];
+  return elements[0];
+}
 
-  for (const guard of guards) {
-    const result = await guard(element);
-
-    if (result.pass) {
-      continue;
-    }
-
-    yield result.reason;
-
-    return yield* selectG(frame, by, guards);
+async function* createValidElement(
+  element: ElementHandle,
+  guards: ElementGuard[],
+): AsyncGenerator<string, ElementHandle, void> {
+  if (guards.length === 0) {
+    return element;
   }
 
-  return element;
+  const [head, ...tail] = guards;
+
+  const result = await head(element);
+
+  if (result.pass) {
+    return yield* createValidElement(element, tail);
+  }
+
+  yield result.reason;
+
+  await wait(100);
+
+  return yield* createValidElement(element, guards);
 }

@@ -1,13 +1,13 @@
+import { ActionMeta } from '@storyshots/core';
 import { Application } from 'express-serve-static-core';
-import puppeteer, { Frame, Page } from 'puppeteer';
+import path from 'path';
+import puppeteer, { Page } from 'puppeteer';
 import { WithPossibleError } from '../../reusables/types';
+import { getManagerHost } from '../paths';
 import { act } from '../reusables/act';
 import { toPreviewFrame } from '../reusables/toPreviewFrame';
-import { handlePossibleErrors } from './reusables/handlePossibleErrors';
-import { ActionMeta } from '@storyshots/core';
 import { ManagerConfig } from '../reusables/types';
-import { getManagerHost } from '../paths';
-import path from 'path';
+import { handlePossibleErrors } from './reusables/handlePossibleErrors';
 
 // TODO: Implement cancellation
 export async function createHeadAndConnect(
@@ -20,24 +20,11 @@ export async function createHeadAndConnect(
     const actions: ActionMeta[] = request.body;
 
     const result: WithPossibleError<void> = await handlePossibleErrors(() =>
-      toPreviewFrame(page).then((preview) => createActResult(preview, actions)),
+      toPreviewFrame(page).then((preview) => act(preview, actions)),
     );
 
     response.json(result);
   });
-}
-
-async function createActResult(
-  preview: Frame,
-  actions: ActionMeta[],
-): Promise<void> {
-  for (const action of actions) {
-    if (action.action === 'screenshot') {
-      continue;
-    }
-
-    await act(preview, action);
-  }
 }
 
 async function openAppAndGetPage(config: ManagerConfig): Promise<Page> {

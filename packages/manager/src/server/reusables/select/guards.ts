@@ -52,9 +52,16 @@ export const isStable: ElementGuard = async (element) => {
     return element.evaluate(
       (it) =>
         new Promise<BoundingBox>((resolve) =>
-          window.requestAnimationFrame(() =>
-            resolve(it.getBoundingClientRect()),
-          ),
+          window.requestAnimationFrame(() => {
+            const rect = it.getBoundingClientRect();
+
+            resolve({
+              x: rect.x,
+              y: rect.y,
+              width: rect.width,
+              height: rect.height,
+            });
+          }),
         ),
     );
   }

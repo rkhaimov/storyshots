@@ -3,6 +3,7 @@ import {
   assertIsNever,
   FillAction,
   ScreenshotAction,
+  UploadFileAction,
   wait,
   WaitAction,
 } from '@storyshots/core';
@@ -14,10 +15,30 @@ import { isInsideViewport, isStable, isVisible } from './select/guards';
 
 export async function act(
   preview: Frame,
+  actions: ActionMeta[],
+  onScreenshot: (action: ScreenshotAction) => Promise<void> = async () => {},
+): Promise<void> {
+  for (const action of actions) {
+    if (action.action === 'screenshot') {
+      await onScreenshot(action);
+
+      continue;
+    }
+
+    await actSingle(preview, action);
+  }
+}
+
+async function actSingle(
+  preview: Frame,
   action: Exclude<ActionMeta, ScreenshotAction>,
 ): Promise<unknown> {
   if (action.action === 'wait') {
     return wait(action.payload.ms);
+  }
+
+  if (action.action === 'uploadFile') {
+    return upload(preview, action);
   }
 
   const element = await select(
@@ -37,23 +58,27 @@ export async function act(
       return element.scrollIntoView();
     case 'select':
       return element.select(...action.payload.values);
-    case 'uploadFile':
-      return (element as ElementHandle<HTMLInputElement>).uploadFile(
-        ...action.payload.paths,
-      );
   }
 
   assertIsNever(action);
 }
 
+async function upload(preview: Frame, action: UploadFileAction) {
+  const [chooser] = await Promise.all([
+    preview.page().waitForFileChooser(),
+    act(preview, action.payload.chooser),
+  ]);
+
+  return chooser.accept(action.payload.paths);
+}
+
 function actionToGuards(
-  action: Exclude<ActionMeta, WaitAction | ScreenshotAction>,
+  action: Exclude<ActionMeta, WaitAction | ScreenshotAction | UploadFileAction>,
 ): ElementGuard[] {
   switch (action.action) {
     case 'click':
     case 'fill':
     case 'select':
-    case 'uploadFile':
       return [isVisible, isInsideViewport, isStable, isEnabled];
     case 'hover':
     case 'scrollTo':
