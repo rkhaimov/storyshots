@@ -13,7 +13,7 @@ export async function createScreenshotsBaseline(env: ManagerConfig) {
       id: StoryID,
       config: TestConfig,
       name: ScreenshotName,
-      content: Buffer,
+      content: Uint8Array,
     ): Promise<ScreenshotPath> => {
       const dir = path.join(actualResultsDir, createConcreteConfigPath(config));
       const at = path.join(dir, constructScreenshotFileName(id, name));

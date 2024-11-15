@@ -18,8 +18,8 @@
     "express-ws": "^5.0.2",
     "pixelmatch": "^5.3.0",
     "pngjs": "^7.0.0",
-    "puppeteer": "^21.6.1",
-    "puppeteer-cluster": "^0.23.0"
+    "puppeteer": "^23.8.0",
+    "puppeteer-cluster": "^0.24.0"
   },
   "peerDependencies": {
     "react": "*",

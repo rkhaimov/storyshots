@@ -15,7 +15,7 @@ export async function runTestsCI(config: ManagerConfig) {
 
 async function runAllTests(config: ManagerConfig) {
   const browser = await puppeteer.launch({
-    headless: 'new',
+    headless: true,
     defaultViewport: null,
     userDataDir: path.join(config.paths.temp, 'chrome-data'),
   });

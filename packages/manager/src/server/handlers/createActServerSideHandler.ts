@@ -41,7 +41,7 @@ export async function createActServerSideHandler(
     concurrency: Cluster.CONCURRENCY_BROWSER,
     maxConcurrency: config.optimization.agentsCount,
     puppeteerOptions: {
-      headless: 'new',
+      headless: true,
     },
   });
 
@@ -183,7 +183,7 @@ const byImage = (config: ImageStabilizerConfig): Stabilizer => {
   const stabilizer = async (
     story: StoryID,
     page: Page,
-    last: Buffer,
+    last: Uint8Array,
     attempt = 0,
   ): Promise<void> => {
     if (attempt === config.attempts) {
@@ -194,7 +194,7 @@ const byImage = (config: ImageStabilizerConfig): Stabilizer => {
 
     const curr = await page.screenshot({ type: 'png' });
 
-    if (last.equals(curr)) {
+    if (Buffer.from(last).equals(curr)) {
       return;
     }
 
