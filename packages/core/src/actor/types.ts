@@ -1,3 +1,4 @@
+import type { KeyInput } from 'puppeteer';
 import { Finder, FinderMeta } from '../finder/types';
 import { ScreenshotName } from '../screenshot';
 
@@ -11,9 +12,12 @@ export type Actor = {
   screenshot(name: string): Actor;
   scrollTo(to: Finder): Actor;
   select(on: Finder, ...values: string[]): Actor;
+  press(input: KeyInput): Actor;
+  down(input: KeyInput): Actor;
+  up(input: KeyInput): Actor;
   /**
    * Uploads one or multiple files.
-   * @param chooser an action that triggers file chooser to appear.
+   * @param chooser a selector to an element which will trigger file chooser when clicked.
    * @param paths a list of files. Paths must be relative to current working directory (usually a project root)
    *
    * @example
@@ -21,13 +25,17 @@ export type Actor = {
    *
    * // uploads specified files
    * actor.uploadFile(
-   *    actor.click(finder.getByRole('button')),
+   *    finder.getByRole('button'),
    *    'path/to/file_0.ext',
    *    'path/to/file_1.ext'
    * )
    */
-  uploadFile(chooser: Actor, ...paths: string[]): Actor;
+  uploadFile(chooser: Finder, ...paths: string[]): Actor;
   do(transformer: ActorTransformer): Actor;
+  /**
+   * Stops doing anything after this point. Useful for debugging purposes
+   */
+  stop(): Actor;
   toMeta(): ActionMeta[];
 };
 
@@ -35,6 +43,15 @@ export type ClickAction = {
   action: 'click';
   payload: {
     on: FinderMeta;
+    options?: ClickOptions;
+  };
+};
+
+export type KeyboardAction = {
+  action: 'keyboard';
+  payload: {
+    type: 'press' | 'up' | 'down';
+    input: KeyInput;
     options?: ClickOptions;
   };
 };
@@ -87,7 +104,7 @@ export type SelectAction = {
 export type UploadFileAction = {
   action: 'uploadFile';
   payload: {
-    chooser: ActionMeta[];
+    chooser: FinderMeta;
     paths: string[];
   };
 };
@@ -100,7 +117,8 @@ export type ActionMeta =
   | ScrollToAction
   | ScreenshotAction
   | SelectAction
-  | UploadFileAction;
+  | UploadFileAction
+  | KeyboardAction;
 
 type ClickOptions = Partial<{
   button: 'left' | 'right' | 'middle' | 'back' | 'forward';

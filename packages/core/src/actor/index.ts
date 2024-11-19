@@ -30,7 +30,10 @@ export const createActor = (meta: ActionMeta[] = []): Actor => {
     uploadFile: (chooser, ...paths) =>
       createActor([
         ...meta,
-        { action: 'uploadFile', payload: { chooser: chooser.toMeta(), paths } },
+        {
+          action: 'uploadFile',
+          payload: { chooser: chooser.__toMeta(), paths },
+        },
       ]),
     scrollTo: (to) =>
       createActor([
@@ -46,7 +49,23 @@ export const createActor = (meta: ActionMeta[] = []): Actor => {
           payload: { name: name as ScreenshotName },
         },
       ]),
+    press: (input) =>
+      createActor([
+        ...meta,
+        { action: 'keyboard', payload: { type: 'press', input } },
+      ]),
+    down: (input) =>
+      createActor([
+        ...meta,
+        { action: 'keyboard', payload: { type: 'down', input } },
+      ]),
+    up: (input) =>
+      createActor([
+        ...meta,
+        { action: 'keyboard', payload: { type: 'up', input } },
+      ]),
     do: (transform) => transform(actor),
+    stop: () => createIdleActor(actor),
     toMeta: () => {
       assertAllScreenshotsAreUniq(meta);
 
@@ -86,4 +105,25 @@ function assertAllScreenshotsAreUniq(meta: ActionMeta[]) {
     not(shots.includes('FINAL' as ScreenshotName)),
     'FINAL is a reserved word',
   );
+}
+
+function createIdleActor(from: Actor): Actor {
+  const idle: Actor = {
+    click: () => idle,
+    press: () => idle,
+    down: () => idle,
+    up: () => idle,
+    fill: () => idle,
+    select: () => idle,
+    stop: () => idle,
+    scrollTo: () => idle,
+    screenshot: () => idle,
+    do: () => idle,
+    hover: () => idle,
+    wait: () => idle,
+    uploadFile: () => idle,
+    toMeta: () => from.toMeta(),
+  };
+
+  return idle;
 }

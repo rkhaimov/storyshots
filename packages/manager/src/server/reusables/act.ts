@@ -2,6 +2,7 @@ import {
   ActionMeta,
   assertIsNever,
   FillAction,
+  KeyboardAction,
   ScreenshotAction,
   UploadFileAction,
   wait,
@@ -9,9 +10,9 @@ import {
 } from '@storyshots/core';
 import { ElementHandle, Frame } from 'puppeteer';
 import { select } from './select';
-import { ElementGuard } from './select/types';
 import { TIMEOUT } from './select/constants';
 import { isInsideViewport, isStable, isVisible } from './select/guards';
+import { ElementGuard } from './select/types';
 
 export async function act(
   preview: Frame,
@@ -41,6 +42,10 @@ async function actSingle(
     return upload(preview, action);
   }
 
+  if (action.action === 'keyboard') {
+    return keyboard(preview, action);
+  }
+
   const element = await select(
     preview,
     action.payload.on,
@@ -63,17 +68,26 @@ async function actSingle(
   assertIsNever(action);
 }
 
+function keyboard(preview: Frame, action: KeyboardAction) {
+  return preview.page().keyboard[action.payload.type](action.payload.input);
+}
+
 async function upload(preview: Frame, action: UploadFileAction) {
   const [chooser] = await Promise.all([
     preview.page().waitForFileChooser(),
-    act(preview, action.payload.chooser),
+    act(preview, [
+      { action: 'click', payload: { on: action.payload.chooser } },
+    ]),
   ]);
 
   return chooser.accept(action.payload.paths);
 }
 
 function actionToGuards(
-  action: Exclude<ActionMeta, WaitAction | ScreenshotAction | UploadFileAction>,
+  action: Exclude<
+    ActionMeta,
+    WaitAction | ScreenshotAction | UploadFileAction | KeyboardAction
+  >,
 ): ElementGuard[] {
   switch (action.action) {
     case 'click':
