@@ -1,0 +1,41 @@
+--- START OF FILE ./users-api.ts ---
+
+import { api } from "./api";
+const injectedRtkApi = api.injectEndpoints({
+  endpoints: (build) => ({
+    getApiUssBusinessDirections: build.query<
+      GetApiUssBusinessDirectionsApiResponse,
+      GetApiUssBusinessDirectionsApiArg
+    >({
+      query: () => ({ url: `/api/uss/BusinessDirections` }),
+    }),
+  }),
+  overrideExisting: false,
+});
+export { injectedRtkApi as enhancedApi };
+export type GetApiUssBusinessDirectionsApiResponse =
+  /** status 200 OK */ CoreBusinessDirectionListVm;
+export type GetApiUssBusinessDirectionsApiArg = void;
+export type CoreBusinessDirectionListVm = string;
+
+--- END OF FILE ./users-api.ts ---
+
+--- START OF FILE ./users-api.testable.ts ---
+
+import { MethodMeta } from "@storyshots/rtk-codegen-adapter";
+import type { GetApiUssBusinessDirectionsApiArg, GetApiUssBusinessDirectionsApiResponse } from "users-api";
+export interface UsersAPI {
+    getApiUssBusinessDirections(arg: GetApiUssBusinessDirectionsApiArg): Promise<GetApiUssBusinessDirectionsApiResponse>;
+}
+export function createUsersAPIMeta(repository: UsersAPI): MethodMeta[] {
+    return [
+        {
+            url: "/api/uss/BusinessDirections",
+            method: "get",
+            arg: { type: "none" },
+            handler: repository.getApiUssBusinessDirections
+        }
+    ];
+}
+
+--- END OF FILE ./users-api.testable.ts ---

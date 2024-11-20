@@ -1,0 +1,46 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "GPN.SRZ.MyFunction.UserService.Web",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/uss/BusinessDirections": {
+      "get": {
+        "tags": [
+          "BusinessDirections"
+        ],
+        "summary": "Get BusinessDirection list",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoreBusinessDirectionListVm"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoreBusinessDirectionListVm"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoreBusinessDirectionListVm"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CoreBusinessDirectionListVm": {
+        "type": "string"
+      }
+    }
+  }
+}

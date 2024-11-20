@@ -9,7 +9,7 @@ import { setupWorker } from 'msw/browser';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 
-export const MSWReplacer: React.FC<React.PropsWithChildren<Props>> = ({
+export const FetchReplacer: React.FC<React.PropsWithChildren<Props>> = ({
   handlers,
   children,
 }) => {

@@ -1,19 +1,19 @@
 {
-  "name": "@storyshots/msw-replacer",
+  "name": "@storyshots/fetch-replacer",
   "version": "0.0.5",
-  "description": "MSW fetch replacer",
+  "description": "MSW based fetch replacer",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
   "files": [
     "lib",
-    "createMSWorkerHandler.js",
-    "createMSWorkerHandler.d.ts",
+    "createWorkerSupplier.js",
+    "createWorkerSupplier.d.ts",
     "mockServiceWorker.js"
   ],
   "scripts": {
-    "build": "rimraf ./lib && tsc -b tsconfig.json && tsc -b tsconfig.handler.json"
+    "build": "rimraf ./lib && tsc -b tsconfig.json && tsc -b tsconfig.supplier.json"
   },
   "dependencies": {
     "@storyshots/core": "0.0.5",

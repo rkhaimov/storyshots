@@ -1,7 +1,7 @@
 {
-  "extends": "../../tsconfig",
+  "extends": "../../../tsconfig.json",
   "include": [
-    "./createMSWorkerHandler.ts"
+    "./createWorkerSupplier.ts"
   ],
   "compilerOptions": {
     "module": "CommonJS",

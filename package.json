@@ -30,7 +30,8 @@
     "packages/bundler/webpack",
     "packages/bundler/proxy",
     "packages/preview/react",
-    "packages/msw-replacer"
+    "packages/adapters/fetch",
+    "packages/adapters/rtk-codegen"
   ],
   "engines": {
     "node": ">=20"

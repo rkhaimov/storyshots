@@ -1,0 +1,24 @@
+{
+  "name": "@storyshots/rtk-codegen-adapter",
+  "version": "0.0.5",
+  "description": "Generates testable endpoints using rtk-codegen",
+  "repository": "https://github.com/rkhaimov/storyshots.git",
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "rimraf ./lib && tsc -b tsconfig.json",
+    "test": "ts-node ./src/tests/index.ts"
+  },
+  "devDependencies": {
+    "@rtk-query/codegen-openapi": "^2.0.0",
+    "@reduxjs/toolkit": "2.2.5"
+  },
+  "peerDependencies": {
+    "@rtk-query/codegen-openapi": "*",
+    "@reduxjs/toolkit": "*"
+  }
+}
