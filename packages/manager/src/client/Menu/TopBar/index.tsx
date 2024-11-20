@@ -1,5 +1,5 @@
 import { SlidersOutlined } from '@ant-design/icons';
-import { Device, not, PureStoryTree, TreeOP } from '@storyshots/core';
+import { Device, PureStoryTree, TreeOP } from '@storyshots/core';
 import { Checkbox, Form, Select } from 'antd';
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -50,7 +50,7 @@ export const TopBar: React.FC<Props> = ({
             selection={selection}
             runComplete={runComplete}
           />
-          <ToggleConfigPaneAction onToggle={() => setOpened(not)} />
+          <ToggleConfigPaneAction onToggle={() => setOpened((prev) => !prev)} />
         </EntryActions>
       </StatusEntryHeader>
       {opened && (

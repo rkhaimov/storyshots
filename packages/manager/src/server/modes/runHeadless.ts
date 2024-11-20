@@ -1,6 +1,5 @@
 import wsify from 'express-ws';
 import express from 'express';
-import { not } from '@storyshots/core';
 import { createPreviewWatcher } from '../compiler/createPreviewWatcher';
 import { createCommonApiHandlers } from '../createCommonApiHandlers';
 import { ManagerConfig } from '../reusables/types';
@@ -14,11 +13,11 @@ export async function runHeadless(config: ManagerConfig) {
   app.use((request, response, next) => {
     const query = request.method === 'GET' || request.method === 'HEAD';
 
-    if (not(query)) {
+    if (!query) {
       return next();
     }
 
-    if (not('manager' in request.query && request.query.manager === 'SECRET')) {
+    if (!('manager' in request.query && request.query.manager === 'SECRET')) {
       return config.preview.handler(request, response, next);
     }
 

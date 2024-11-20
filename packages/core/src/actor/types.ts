@@ -15,6 +15,7 @@ export type Actor = {
   press(input: KeyInput): Actor;
   down(input: KeyInput): Actor;
   up(input: KeyInput): Actor;
+  clear(on: Finder): Actor;
   /**
    * Uploads one or multiple files.
    * @param chooser a selector to an element which will trigger file chooser when clicked.
@@ -127,4 +128,4 @@ type ClickOptions = Partial<{
   offset: { x: number; y: number };
 }>;
 
-type FillOptions = Partial<{ delay: number }>;
+type FillOptions = Partial<{ delay: number; fast: boolean }>;

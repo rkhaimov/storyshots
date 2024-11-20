@@ -38,7 +38,7 @@ export type Finder = {
   getByTitle(title: string): Finder;
   /**
    * Finds label containing specified text by substring OR an element that specifies aria-label attribute with exact match.
-   * It is better to use getByRole selector for other scenarios (like aria-labelledby)
+   * It is better to use getByRole as it is more flexible
    * @example
    * <label>Hello, friend!</label>
    *

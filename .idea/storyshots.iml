@@ -18,6 +18,8 @@
       <excludeFolder url="file://$MODULE_DIR$/examples/tests/test-results" />
       <excludeFolder url="file://$MODULE_DIR$/examples/tests/temp" />
       <excludeFolder url="file://$MODULE_DIR$/packages/msw-replacer/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/externals/msw/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/externals/rtk/lib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

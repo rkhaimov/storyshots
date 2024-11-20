@@ -2,6 +2,10 @@ export function wait(ms: number): Promise<void> {
   return new Promise<void>((resolve) => setTimeout(resolve, ms));
 }
 
+export function notImplemented(method: string): never {
+  assert(false, `${method} is not implemented`);
+}
+
 export function assertIsNever(input: never) {
   throw new Error('Should never be called');
 }
@@ -22,10 +26,6 @@ export function assert(
   if (input === false) {
     throw new Error(message);
   }
-}
-
-export function not(input: boolean) {
-  return !input;
 }
 
 export function isNil<T>(

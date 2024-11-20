@@ -1,4 +1,4 @@
-import { not, PureStory, PureStoryTree, TreeOP } from '@storyshots/core';
+import { PureStory, PureStoryTree, TreeOP } from '@storyshots/core';
 import { Segmented } from 'antd';
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
@@ -10,7 +10,7 @@ export const StatusPaneArea: React.FC<UseBehaviourProps> = (props) => {
   const { selection, statusPaneOpen } = props;
   const [errorsAreActive, setErrorsAreActive] = useState(true);
 
-  if (selection.type === 'initializing' || not(statusPaneOpen)) {
+  if (selection.type === 'initializing' || !statusPaneOpen) {
     return null;
   }
 
@@ -148,7 +148,7 @@ const StatusEntry = styled.li<{ active$: boolean }>`
     `}
 
   ${(props) =>
-    not(props.active$) &&
+    !props.active$ &&
     css`
       cursor: pointer;
 

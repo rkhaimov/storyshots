@@ -1,5 +1,5 @@
 import { Brand, ChildBrand } from './brand';
-import { assert, not } from './utils';
+import { assert } from './utils';
 
 // Tree that has unique IDs in each of its nodes
 export type Tree<TNode, TLeaf> =
@@ -77,7 +77,7 @@ export const TreeOP = {
 
     const inside = TreeOP.parseInterNodeIDsChain(id).includes(head.id);
 
-    if (not(inside)) {
+    if (!inside) {
       return TreeOP.find(tail, id);
     }
 
@@ -119,7 +119,7 @@ export const TreeOP = {
 };
 
 function ensureIsTreeNodeID(test: string): TreeNodeID {
-  assert(not(test.includes(' ')));
+  assert(!test.includes(' '));
 
   assert(
     test === encodeURIComponent(test),

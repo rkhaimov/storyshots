@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
 import { EntryActions } from './EntryActions';
-import { not } from '@storyshots/core';
 
 type Props = {
   $level: number;
@@ -34,7 +33,7 @@ export const ActiveEntryHeader = styled(EntryHeader)<{
   background: ${({ $active, $color }) => ($active ? $color : 'none')};
 
   ${({ $active }) =>
-    not($active) &&
+    !$active &&
     css`
       &:hover,
       &:focus {
