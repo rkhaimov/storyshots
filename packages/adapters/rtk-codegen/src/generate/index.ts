@@ -3,6 +3,7 @@ import ts, { EmitHint, ScriptTarget } from 'typescript';
 import path from 'path';
 import { Settings } from '../types';
 import { createTestableEndpointsFileName } from './createTestableEndpointsFileName';
+import { createPackageImports } from './createPackageImports';
 
 const f = ts.factory;
 
@@ -19,7 +20,7 @@ export function generate(
         EmitHint.Unspecified,
         f.createSourceFile(
           [
-            createHelperImports(),
+            createPackageImports(),
             createMethodTypeImports(settings.outputFile, meta),
             createAPIInterfaceExport(name, meta),
             createMetaFactory(name, meta),
@@ -125,25 +126,6 @@ function createAPIInterfaceExport(name: string, meta: EndpointParsingResult[]) {
         ]),
       ),
     ),
-  );
-}
-
-function createHelperImports() {
-  return f.createImportDeclaration(
-    undefined,
-    f.createImportClause(
-      false,
-      undefined,
-      f.createNamedImports([
-        f.createImportSpecifier(
-          false,
-          undefined,
-          f.createIdentifier('MethodMeta'),
-        ),
-      ]),
-    ),
-    f.createStringLiteral('@storyshots/rtk-codegen-adapter'),
-    undefined,
   );
 }
 
