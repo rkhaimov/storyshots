@@ -10,7 +10,7 @@
     "lib"
   ],
   "scripts": {
-    "build": "rimraf ./lib && tsc -b tsconfig.json",
+    "build": "rimraf ./lib && tsc -b tsconfig.json && tsc -b ../rtk-codegen/tsconfig.supplier.json",
     "test": "ts-node ./src/tests/index.ts"
   },
   "devDependencies": {

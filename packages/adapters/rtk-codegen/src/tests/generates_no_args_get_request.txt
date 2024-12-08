@@ -1,5 +1,4 @@
---- START OF FILE ./users-api.ts ---
-
+--- START users-api.ts ---
 import { api } from "./api";
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -18,24 +17,35 @@ export type GetApiUssBusinessDirectionsApiResponse =
 export type GetApiUssBusinessDirectionsApiArg = void;
 export type CoreBusinessDirectionListVm = string;
 
---- END OF FILE ./users-api.ts ---
+--- END users-api.ts ---
 
---- START OF FILE ./users-api.testable.ts ---
-
-import { MethodMeta } from "@storyshots/rtk-codegen-adapter";
-import type { GetApiUssBusinessDirectionsApiArg, GetApiUssBusinessDirectionsApiResponse } from "users-api";
+--- START users-api.storyshots.ts ---
+import { RequestHandlerMeta, createHandlerMetaFromEndpoint } from "@storyshots/rtk-codegen-adapter";
+import type { GetApiUssBusinessDirectionsApiArg, GetApiUssBusinessDirectionsApiResponse } from "./users-api";
 export interface UsersAPI {
     getApiUssBusinessDirections(arg: GetApiUssBusinessDirectionsApiArg): Promise<GetApiUssBusinessDirectionsApiResponse>;
 }
-export function createUsersAPIMeta(repository: UsersAPI): MethodMeta[] {
+export function createUsersAPIMeta(repository: UsersAPI): RequestHandlerMeta[] {
     return [
-        {
+        createHandlerMetaFromEndpoint({
             url: "/api/uss/BusinessDirections",
             method: "get",
-            arg: { type: "none" },
+            arg: "void",
+            body: undefined,
             handler: repository.getApiUssBusinessDirections
-        }
+        })
     ];
 }
 
---- END OF FILE ./users-api.testable.ts ---
+--- END users-api.storyshots.ts ---
+
+--- START Input ---
+undefined
+--- END Input ---
+
+--- START Output ---
+{
+  "status": 200,
+  "body": []
+}
+--- END Output ---

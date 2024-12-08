@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { EndpointParsingResult } from './types';
+import { EndpointParsingResult } from '../types';
 import { narrow } from './internal/narrow';
 import { createEndpointMetaProperties } from './internal/createEndpointMetaProperties';
 
@@ -12,10 +12,11 @@ export function createMethod(
   );
 
   if (method === undefined) {
-    return 'GET';
+    return 'get';
   }
 
   return narrow(method.initializer)
     .ensure(ts.isStringLiteral, (it) => it.text)
-    .fold();
+    .fold()
+    .toLowerCase() as EndpointParsingResult['method'];
 }

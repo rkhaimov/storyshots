@@ -1,13 +1,13 @@
-import type {
-  DefaultBodyType,
-  HttpResponse,
-  RequestHandler,
-  StrictRequest,
-} from 'msw';
+import type { RequestHandler } from 'msw';
 import { http } from 'msw';
 import { setupWorker } from 'msw/browser';
 import type React from 'react';
 import { useEffect, useState } from 'react';
+import { RequestHandlerMeta } from './types';
+
+interface Props {
+  handlers: RequestHandlerMeta[];
+}
 
 export const FetchReplacer: React.FC<React.PropsWithChildren<Props>> = ({
   handlers,
@@ -30,18 +30,4 @@ export const FetchReplacer: React.FC<React.PropsWithChildren<Props>> = ({
 
 function toRequestHandler(meta: RequestHandlerMeta): RequestHandler {
   return http[meta.method](meta.path, meta.handler);
-}
-
-export interface RequestHandlerMeta {
-  path: string;
-  method: keyof typeof http;
-  handler: (info: {
-    params: unknown;
-    cookies: Record<string, string>;
-    request: StrictRequest<DefaultBodyType>;
-  }) => Promise<HttpResponse>;
-}
-
-interface Props {
-  handlers: RequestHandlerMeta[];
 }

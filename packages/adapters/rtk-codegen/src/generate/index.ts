@@ -1,7 +1,6 @@
-import { EndpointParsingResult } from '../parse/types';
 import ts, { EmitHint, ScriptTarget } from 'typescript';
 import path from 'path';
-import { Settings } from '../types';
+import { EndpointParsingResult, Settings } from '../types';
 import { createTestableEndpointsFileName } from './createTestableEndpointsFileName';
 import { createPackageImports } from './createPackageImports';
 
@@ -50,44 +49,49 @@ function createMetaFactory(name: string, meta: EndpointParsingResult[]) {
       ),
     ],
     f.createArrayTypeNode(
-      f.createTypeReferenceNode(f.createIdentifier('MethodMeta'), undefined),
+      f.createTypeReferenceNode(
+        f.createIdentifier('RequestHandlerMeta'),
+        undefined,
+      ),
     ),
     f.createBlock(
       [
         f.createReturnStatement(
           f.createArrayLiteralExpression(
             meta.map((it) =>
-              f.createObjectLiteralExpression(
+              f.createCallExpression(
+                f.createIdentifier('createHandlerMetaFromEndpoint'),
+                undefined,
                 [
-                  f.createPropertyAssignment(
-                    f.createIdentifier('url'),
-                    f.createStringLiteral(it.url),
-                  ),
-                  f.createPropertyAssignment(
-                    f.createIdentifier('method'),
-                    f.createStringLiteral(it.method.toLowerCase()),
-                  ),
-                  f.createPropertyAssignment(
-                    f.createIdentifier('arg'),
-                    f.createObjectLiteralExpression(
-                      [
-                        f.createPropertyAssignment(
-                          f.createIdentifier('type'),
-                          f.createStringLiteral('none'),
+                  f.createObjectLiteralExpression(
+                    [
+                      f.createPropertyAssignment(
+                        f.createIdentifier('url'),
+                        f.createStringLiteral(it.url),
+                      ),
+                      f.createPropertyAssignment(
+                        f.createIdentifier('method'),
+                        f.createStringLiteral(it.method.toLowerCase()),
+                      ),
+                      f.createPropertyAssignment(
+                        f.createIdentifier('arg'),
+                        f.createIdentifier(JSON.stringify(it.input.type)),
+                      ),
+                      f.createPropertyAssignment(
+                        f.createIdentifier('body'),
+                        f.createIdentifier(it.input.body ?? 'undefined'),
+                      ),
+                      f.createPropertyAssignment(
+                        f.createIdentifier('handler'),
+                        f.createPropertyAccessExpression(
+                          f.createIdentifier('repository'),
+                          f.createIdentifier(it.name),
                         ),
-                      ],
-                      false,
-                    ),
-                  ),
-                  f.createPropertyAssignment(
-                    f.createIdentifier('handler'),
-                    f.createPropertyAccessExpression(
-                      f.createIdentifier('repository'),
-                      f.createIdentifier(it.name),
-                    ),
+                      ),
+                    ],
+                    true,
                   ),
                 ],
-                true,
               ),
             ),
             true,
@@ -117,7 +121,10 @@ function createAPIInterfaceExport(name: string, meta: EndpointParsingResult[]) {
             undefined,
             f.createIdentifier('arg'),
             undefined,
-            f.createTypeReferenceNode(f.createIdentifier(it.input), undefined),
+            f.createTypeReferenceNode(
+              f.createIdentifier(it.input.name),
+              undefined,
+            ),
             undefined,
           ),
         ],
@@ -140,14 +147,14 @@ function createMethodTypeImports(
       undefined,
       f.createNamedImports(
         meta
-          .flatMap((it) => [it.input, it.output])
+          .flatMap((it) => [it.input.name, it.output])
           .map((it) =>
             f.createImportSpecifier(false, undefined, f.createIdentifier(it)),
           ),
       ),
     ),
     f.createStringLiteral(
-      path.join('./', outputFile.replace(path.extname(outputFile), '')),
+      `./${path.basename(outputFile).replace(path.extname(outputFile), '')}`,
     ),
   );
 }

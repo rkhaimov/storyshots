@@ -12,7 +12,12 @@ export function createPackageImports() {
         f.createImportSpecifier(
           false,
           undefined,
-          f.createIdentifier('MethodMeta'),
+          f.createIdentifier('RequestHandlerMeta'),
+        ),
+        f.createImportSpecifier(
+          false,
+          undefined,
+          f.createIdentifier('createHandlerMetaFromEndpoint'),
         ),
       ]),
     ),

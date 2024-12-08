@@ -1,6 +1,6 @@
+import { createRTKEndpoints } from './createRTKEndpoints';
 import { generate } from './generate';
 import { parse } from './parse';
-import { createRTKEndpoints } from './createRTKEndpoints';
 import { Settings } from './types';
 
 export async function createTestableEndpoints(
@@ -8,7 +8,8 @@ export async function createTestableEndpoints(
   settings: Settings,
 ): Promise<Record<string, string>> {
   const rtk = await createRTKEndpoints(settings);
-  const testing = generate(name, settings, parse(rtk.code));
+  const meta = parse(rtk.code);
+  const testing = generate(name, settings, meta);
 
   return {
     [rtk.file]: rtk.code,

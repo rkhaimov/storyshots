@@ -1,7 +1,7 @@
 import ts from 'typescript';
 import assert from 'assert';
+import { EndpointParsingResult } from '../types';
 import { narrow } from './internal/narrow';
-import { EndpointParsingResult } from './types';
 import { createEndpointMetaProperties } from './internal/createEndpointMetaProperties';
 
 export function createURL(
