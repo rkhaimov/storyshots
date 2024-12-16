@@ -6,13 +6,11 @@
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node examples/demo/storyshots/ui.ts",
-    "test": "ts-node examples/demo/storyshots/ci.ts",
-    "debug": "node --inspect-brk ./node_modules/ts-node/dist/bin.js examples/demo/storyshots/ui.ts",
     "build": "npm run build --workspaces",
     "pack": "npm pack --workspaces"
   },
   "devDependencies": {
+    "@types/node": "^22.10.2",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
     "cross-env": "^7.0.3",
@@ -30,9 +28,10 @@
     "packages/bundler/webpack",
     "packages/bundler/proxy",
     "packages/preview/react",
-    "packages/msw-replacer"
+    "packages/externals/msw",
+    "packages/externals/rtk"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22.12.0"
   }
 }

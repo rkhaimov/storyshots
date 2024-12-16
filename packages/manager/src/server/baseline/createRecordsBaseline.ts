@@ -1,4 +1,4 @@
-import { Device, JournalRecord, not, StoryID, TreeOP } from '@storyshots/core';
+import { Device, JournalRecord, StoryID, TreeOP } from '@storyshots/core';
 import path from 'path';
 import { DeviceAndRecord } from '../../reusables/types';
 
@@ -35,7 +35,7 @@ export async function createRecordsBaseline(config: ManagerConfig) {
     const name = getRecordsMapFileName(id, device);
     const fullPath = path.join(config.paths.records, name);
 
-    if (not(await exists(fullPath))) {
+    if (!(await exists(fullPath))) {
       return {};
     }
 
@@ -51,7 +51,7 @@ export async function createRecordsBaseline(config: ManagerConfig) {
     const file = path.join(config.paths.records, name);
     const dir = path.dirname(file);
 
-    if (not(await exists(dir))) {
+    if (!(await exists(dir))) {
       await mkdir(dir);
     }
 

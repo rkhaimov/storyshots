@@ -4,7 +4,6 @@ import {
   createJournal,
   Device,
   JournalStoryConfig,
-  not,
   PreviewConfig,
   StoryID,
   TreeOP,
@@ -17,7 +16,7 @@ type Props = { id: StoryID; preview: PreviewProps; config: PreviewConfig };
 export const Story: React.FC<Props> = (props) => {
   const story = createStoryNode(props);
 
-  if (not(props.config.emulated)) {
+  if (!props.config.emulated) {
     return story;
   }
 

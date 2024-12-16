@@ -1,5 +1,5 @@
 import { ScreenshotName } from '../screenshot';
-import { assert, not } from '../utils';
+import { assert } from '../utils';
 import { ActionMeta, Actor } from './types';
 
 export const createActor = (meta: ActionMeta[] = []): Actor => {
@@ -64,6 +64,13 @@ export const createActor = (meta: ActionMeta[] = []): Actor => {
         ...meta,
         { action: 'keyboard', payload: { type: 'up', input } },
       ]),
+    clear: (on) =>
+      actor
+        .click(on)
+        .down('ControlLeft')
+        .press('A')
+        .press('Backspace')
+        .up('ControlLeft'),
     do: (transform) => transform(actor),
     stop: () => createIdleActor(actor),
     toMeta: () => {
@@ -102,7 +109,7 @@ function assertAllScreenshotsAreUniq(meta: ActionMeta[]) {
   );
 
   assert(
-    not(shots.includes('FINAL' as ScreenshotName)),
+    !shots.includes('FINAL' as ScreenshotName),
     'FINAL is a reserved word',
   );
 }
@@ -122,6 +129,7 @@ function createIdleActor(from: Actor): Actor {
     hover: () => idle,
     wait: () => idle,
     uploadFile: () => idle,
+    clear: () => idle,
     toMeta: () => from.toMeta(),
   };
 

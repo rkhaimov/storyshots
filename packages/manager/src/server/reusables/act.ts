@@ -58,7 +58,7 @@ async function actSingle(
     case 'hover':
       return element.hover();
     case 'fill':
-      return fill(element, action);
+      return fill(preview, element, action);
     case 'scrollTo':
       return element.scrollIntoView();
     case 'select':
@@ -128,14 +128,23 @@ const isEnabled: ElementGuard = async (element) => {
   return { pass: true };
 };
 
-async function fill(element: ElementHandle, action: FillAction) {
-  await (element as ElementHandle<HTMLInputElement>).evaluate((input) => {
-    if (input.isContentEditable) {
-      input.innerText = '';
-    } else {
-      input.value = '';
-    }
-  });
+async function fill(
+  preview: Frame,
+  element: ElementHandle,
+  action: FillAction,
+) {
+  if (!action.payload.options?.fast) {
+    return element.type(action.payload.text, action.payload.options);
+  }
 
-  return element.type(action.payload.text, action.payload.options);
+  await element.evaluate(
+    (_, text) => navigator.clipboard.writeText(text),
+    action.payload.text,
+  );
+
+  await element.click();
+
+  await preview.page().keyboard.down('ControlLeft');
+  await preview.page().keyboard.press('V');
+  await preview.page().keyboard.up('ControlLeft');
 }

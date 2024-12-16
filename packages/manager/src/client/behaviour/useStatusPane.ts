@@ -1,4 +1,3 @@
-import { not } from '@storyshots/core';
 import { useState } from 'react';
 
 export function useStatusPane() {
@@ -6,6 +5,6 @@ export function useStatusPane() {
 
   return {
     statusPaneOpen: open,
-    toggleStatusPane: () => setIsOpen(not),
+    toggleStatusPane: () => setIsOpen((prev) => !prev),
   };
 }

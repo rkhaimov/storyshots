@@ -1,4 +1,4 @@
-import { not, ScreenshotName, StoryID, TestConfig } from '@storyshots/core';
+import { ScreenshotName, StoryID, TestConfig } from '@storyshots/core';
 import path from 'path';
 import { ScreenshotPath } from '../../reusables/types';
 import { ManagerConfig } from '../reusables/types';
@@ -18,7 +18,7 @@ export async function createScreenshotsBaseline(env: ManagerConfig) {
       const dir = path.join(actualResultsDir, createConcreteConfigPath(config));
       const at = path.join(dir, constructScreenshotFileName(id, name));
 
-      if (not(await exists(dir))) {
+      if (!(await exists(dir))) {
         await mkdir(dir);
       }
 
@@ -45,7 +45,7 @@ export async function createScreenshotsBaseline(env: ManagerConfig) {
       const baseline = temp.replace(actualResultsDir, expectedResultsDir);
       const dir = path.dirname(baseline);
 
-      if (not(await exists(dir))) {
+      if (!(await exists(dir))) {
         await mkdir(dir);
       }
 
