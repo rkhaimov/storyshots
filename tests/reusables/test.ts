@@ -1,6 +1,6 @@
 import { Page } from 'playwright';
 import { createConfigAndCleanup } from './createConfigAndCleanup';
-import { runHeadless } from '../../../packages/manager/src/server/modes/runHeadless';
+import { runHeadless } from '../../packages/manager/src/server/modes/runHeadless';
 import { expect, test as _test } from '@playwright/test';
 import { PreviewBuilder } from './preview';
 import { withStatefulHandlers } from './state';

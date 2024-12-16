@@ -4,8 +4,8 @@ import { PreviewBuilder } from './preview';
 type State = { data: number };
 
 // State lives in context of current running test
-export function withStatefulHandlers(app: Application) {
-  let state: State = { data: 0 };
+export function withStatefulHandlers(app: Application, initial = 0) {
+  let state: State = { data: initial };
   app.post('/api/state/set', (request, response) => {
     state = request.body;
 

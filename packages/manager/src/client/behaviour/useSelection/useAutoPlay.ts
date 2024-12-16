@@ -1,7 +1,7 @@
 import { PlayingState, Selection } from './types';
 import { useEffect, useMemo, useState } from 'react';
 import { createActor } from '@storyshots/core';
-import { driver } from '../../externals/driver';
+import { driver } from '../../../reusables/runner/driver';
 
 export function useAutoPlay(selection: Selection): Selection {
   const [playing, setPlaying] = useState<PlayingState>({ type: 'not-played' });

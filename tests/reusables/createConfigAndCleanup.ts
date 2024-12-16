@@ -1,14 +1,15 @@
 import { createWebpackBundler } from '@storyshots/webpack-bundler';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import webpack from 'webpack';
-import { PreviewBuilder } from './preview';
-import { runHeadless } from '../../../packages/manager/src/server/modes/runHeadless';
-import path from 'path';
 import fs from 'fs';
-import { STABILIZER } from '../../../packages/manager/src';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import path from 'path';
+import webpack from 'webpack';
+import { STABILIZER } from '../../packages/manager/src';
+import { runHeadless } from '../../packages/manager/src/server/modes/runHeadless';
+import { PreviewBuilder } from './preview';
 
 export function createConfigAndCleanup(
   preview: PreviewBuilder,
+  retries = 0,
 ): Parameters<typeof runHeadless>[0] {
   const temp = path.join(process.cwd(), 'temp');
   const screenshots = path.join(temp, 'screenshots');
@@ -21,9 +22,9 @@ export function createConfigAndCleanup(
   return {
     optimization: {
       agentsCount: 1,
+      retries,
       stabilize: STABILIZER.none,
     },
-    port: 6006,
     paths: {
       screenshots,
       records,

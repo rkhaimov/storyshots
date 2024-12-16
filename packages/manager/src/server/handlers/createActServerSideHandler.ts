@@ -1,6 +1,8 @@
 import {
   Channel,
   Device,
+  isNil,
+  JournalRecord,
   ScreenshotAction,
   StoryID,
   TestConfig,
@@ -11,16 +13,25 @@ import { Application } from 'express-serve-static-core';
 import { Frame, Page } from 'puppeteer';
 import { Cluster } from 'puppeteer-cluster';
 import {
+  RecordsComparisonResult,
+  ScreenshotComparisonResult,
+  ScreenshotsComparisonResult,
+  TestResultDetails,
+} from '../../reusables/runner/types';
+import {
   ActionsAndConfig,
   ActualServerSideResult,
   Screenshot,
+  ScreenshotPath,
   WithPossibleError,
 } from '../../reusables/types';
+import { createStoryURL } from '../paths';
 import { act } from '../reusables/act';
 import { Baseline } from '../reusables/baseline';
 import { toPreviewFrame } from '../reusables/toPreviewFrame';
 import { ManagerConfig } from '../reusables/types';
-import { createPathToStory } from '../paths';
+import { areScreenshotsEqual } from './createScreenshotEqualHandler';
+import { findExpectedScreenshots } from './findExpectedScreenshots';
 import { handlePossibleErrors } from './reusables/handlePossibleErrors';
 
 type ActPayload = {
@@ -35,7 +46,7 @@ export async function createActServerSideHandler(
 ) {
   const cluster: Cluster<
     ActPayload,
-    WithPossibleError<ActualServerSideResult>
+    WithPossibleError<TestResultDetails>
   > = await Cluster.launch({
     timeout: Math.pow(2, 31) - 1,
     concurrency: Cluster.CONCURRENCY_BROWSER,
@@ -46,8 +57,21 @@ export async function createActServerSideHandler(
   });
 
   await cluster.task(({ page, data }) =>
-    handlePossibleErrors(() =>
-      createServerResultByDevice(baseline, page, data.id, data.payload, config),
+    withRetries(config.optimization.retries, () =>
+      handlePossibleErrors(async () =>
+        createTestResultDetails(
+          baseline,
+          data.id,
+          data.payload,
+          await createServerResultByDevice(
+            baseline,
+            page,
+            data.id,
+            data.payload,
+            config,
+          ),
+        ),
+      ),
     ),
   );
 
@@ -58,7 +82,7 @@ export async function createActServerSideHandler(
     response.json(await cluster.execute({ id, payload }));
   });
 
-  return cluster.close.bind(cluster);
+  return () => cluster.close();
 }
 
 async function createServerResultByDevice(
@@ -70,7 +94,7 @@ async function createServerResultByDevice(
 ) {
   await configurePageByMode(payload.config.device, page);
 
-  await page.goto(createPathToStory(id, payload.config, config), {
+  await page.goto(createStoryURL(id, payload.config).href, {
     waitUntil: 'networkidle0',
   });
 
@@ -209,3 +233,114 @@ export const STABILIZER = {
   none,
   byImage,
 };
+
+async function withRetries(
+  retries: number,
+  fn: () => Promise<WithPossibleError<TestResultDetails>>,
+): Promise<WithPossibleError<TestResultDetails>> {
+  const result = await fn();
+
+  if (retries === 0) {
+    return result;
+  }
+
+  if (result.type === 'error') {
+    return withRetries(retries - 1, fn);
+  }
+
+  if (result.data.screenshots.some((it) => it.result.type === 'fail')) {
+    return withRetries(retries - 1, fn);
+  }
+
+  if (result.data.records.type === 'fail') {
+    return withRetries(retries - 1, fn);
+  }
+
+  return result;
+}
+
+async function createTestResultDetails(
+  baseline: Baseline,
+  id: StoryID,
+  payload: ActionsAndConfig,
+  actual: ActualServerSideResult,
+): Promise<TestResultDetails> {
+  return {
+    device: payload.config.device,
+    records: await createRecordsComparisonResult(
+      baseline,
+      id,
+      actual.records,
+      payload.config.device,
+    ),
+    screenshots: await createScreenshotsComparisonResults(
+      baseline,
+      id,
+      payload,
+      actual.screenshots,
+    ),
+  };
+}
+
+async function createRecordsComparisonResult(
+  baseline: Baseline,
+  id: StoryID,
+  actual: JournalRecord[],
+  device: Device,
+): Promise<RecordsComparisonResult> {
+  const expected = await baseline.getExpectedRecords(id, device);
+
+  if (isNil(expected)) {
+    return { type: 'fresh', actual };
+  }
+
+  const equal = JSON.stringify(actual) === JSON.stringify(expected);
+
+  if (equal) {
+    return { type: 'pass', actual };
+  }
+
+  return { type: 'fail', actual, expected };
+}
+
+async function createScreenshotsComparisonResults(
+  baseline: Baseline,
+  id: StoryID,
+  payload: ActionsAndConfig,
+  actual: Screenshot[],
+): Promise<ScreenshotsComparisonResult[]> {
+  const expected = await findExpectedScreenshots(baseline, id, payload);
+
+  const comparing = actual.map(async (actualScreenshot) => {
+    const matchedOther = expected.find(
+      (expectedOther) => expectedOther.name === actualScreenshot.name,
+    );
+
+    return {
+      name: actualScreenshot.name,
+      result: await createScreenshotComparisonResult(
+        baseline,
+        actualScreenshot.path,
+        matchedOther?.path,
+      ),
+    };
+  });
+
+  return Promise.all(comparing);
+}
+
+async function createScreenshotComparisonResult(
+  baseline: Baseline,
+  left: ScreenshotPath,
+  right: ScreenshotPath | undefined,
+): Promise<ScreenshotComparisonResult> {
+  if (isNil(right)) {
+    return { type: 'fresh', actual: left };
+  }
+
+  if (await areScreenshotsEqual(baseline, left, right)) {
+    return { type: 'pass', actual: left };
+  }
+
+  return { type: 'fail', actual: left, expected: right };
+}

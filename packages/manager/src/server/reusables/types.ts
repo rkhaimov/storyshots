@@ -18,8 +18,8 @@ export type ManagerConfig = {
   preview: PreviewServe;
   optimization: {
     agentsCount: number;
+    retries: number;
     stabilize: Stabilizer;
   };
   devtools?: string;
-  port: number;
 };

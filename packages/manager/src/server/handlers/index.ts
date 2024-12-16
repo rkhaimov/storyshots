@@ -1,14 +1,11 @@
-import { Application } from 'express-serve-static-core';
 import express from 'express';
+import { Application } from 'express-serve-static-core';
 import type { Baseline } from '../reusables/baseline';
-import { createActServerSideHandler } from './createActServerSideHandler';
-import { createAcceptScreenshotHandler } from './createAcceptScreenshotHandler';
-import { createExpectedScreenshotsHandler } from './createExpectedScreenshotsHandler';
-import { createScreenshotEqualHandler } from './createScreenshotEqualHandler';
-import { createImagePathHandler } from './createImagePathHandler';
-import { createExpectedRecordsHandler } from './createExpectedRecordsHandler';
-import { createAcceptRecordsHandler } from './createAcceptRecordsHandler';
 import { ManagerConfig } from '../reusables/types';
+import { createAcceptRecordsHandler } from './createAcceptRecordsHandler';
+import { createAcceptScreenshotHandler } from './createAcceptScreenshotHandler';
+import { createActServerSideHandler } from './createActServerSideHandler';
+import { createImagePathHandler } from './createImagePathHandler';
 
 export function createApiHandlers(
   app: Application,
@@ -17,9 +14,6 @@ export function createApiHandlers(
 ) {
   app.use(express.json());
 
-  createExpectedScreenshotsHandler(app, baseline);
-  createExpectedRecordsHandler(app, baseline);
-  createScreenshotEqualHandler(app, baseline);
   createAcceptScreenshotHandler(app, baseline);
   createAcceptRecordsHandler(app, baseline);
   createImagePathHandler(app, baseline);

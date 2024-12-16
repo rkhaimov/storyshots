@@ -1,10 +1,14 @@
 import { isNil, PureStory } from '@storyshots/core';
-import { UseBehaviourProps } from '../../behaviour/types';
 import {
-  TestResultDetails,
-  TestResults,
-} from '../../behaviour/useTestResults/types';
-import { AcceptableRecord, AcceptableScreenshot } from '../../reusables/types';
+  getAcceptableRecords,
+  getAcceptableScreenshots,
+} from '../../../reusables/runner/acceptables';
+import {
+  AcceptableRecord,
+  AcceptableScreenshot,
+} from '../../../reusables/runner/types';
+import { UseBehaviourProps } from '../../behaviour/types';
+import { TestResults } from '../../behaviour/useTestResults/types';
 
 import { EntryStatus } from './EntryStatus/types';
 
@@ -40,7 +44,7 @@ export function getStoryEntryStatus(
     return comparison;
   }
 
-  const records = getAcceptableRecords(story, comparison.details);
+  const records = getAcceptableRecords(story.id, comparison.details);
   const screenshots = getAcceptableScreenshots(comparison.details);
 
   if (records.length === 0 && screenshots.length === 0) {
@@ -64,28 +68,4 @@ function liftFailWhenPresented(
   ].includes('fail')
     ? 'fail'
     : 'fresh';
-}
-
-function getAcceptableRecords(
-  story: PureStory,
-  details: TestResultDetails[],
-): AcceptableRecord[] {
-  return details
-    .filter((it) => it.records.type !== 'pass')
-    .map((it) => ({
-      id: story.id,
-      details: it,
-      result: it.records as never,
-    }));
-}
-
-function getAcceptableScreenshots(
-  details: TestResultDetails[],
-): AcceptableScreenshot[] {
-  return details.flatMap((detail) =>
-    detail.screenshots
-      .map((it) => it.result)
-      .filter((it): it is AcceptableScreenshot['result'] => it.type !== 'pass')
-      .map((it) => ({ details: detail, result: it })),
-  );
 }

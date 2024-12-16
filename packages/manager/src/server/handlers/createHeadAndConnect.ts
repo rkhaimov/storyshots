@@ -3,7 +3,7 @@ import { Application } from 'express-serve-static-core';
 import path from 'path';
 import puppeteer, { Page } from 'puppeteer';
 import { WithPossibleError } from '../../reusables/types';
-import { getManagerHost } from '../paths';
+import { createManagerRootURL } from '../paths';
 import { act } from '../reusables/act';
 import { toPreviewFrame } from '../reusables/toPreviewFrame';
 import { ManagerConfig } from '../reusables/types';
@@ -32,7 +32,7 @@ async function openAppAndGetPage(config: ManagerConfig): Promise<Page> {
     headless: false,
     defaultViewport: null,
     args: [
-      `--app=${getManagerHost(config)}`,
+      `--app=${createManagerRootURL().href}`,
       '--start-maximized',
       '--test-type=gpu',
       ...createDevtoolsArgs(config),

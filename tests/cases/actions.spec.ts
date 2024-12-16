@@ -18,12 +18,13 @@ test('can fill inputs from scratch', {
   },
 });
 
-test('can clears input value and refills it from scratch', {
+test('can clear input value and refills it from scratch', {
   preview: preview().stories(({ it, createElement, finder }) => [
     it('pets are great', {
       act: (actor) =>
         actor
           .fill(finder.getByRole('textbox'), 'Old value')
+          .clear(finder.getByRole('textbox'))
           .fill(finder.getByRole('textbox'), 'New value'),
       render: () => createElement('input', {}),
     }),
@@ -33,6 +34,36 @@ test('can clears input value and refills it from scratch', {
 
     await openScreenshot(page, 'FINAL');
 
+    await screenshot(page);
+  },
+});
+
+test('does not allow to fill disabled fields', {
+  preview: preview().stories(({ it, createElement, finder }) => [
+    it('pets are great', {
+      act: (actor) =>
+        actor
+          .fill(finder.getByPlaceholder('Пароль'), '1234')
+          .fill(
+            finder.getByPlaceholder('Повторите пароль'),
+            'mysuperstrongpassword',
+          ),
+      render: () =>
+        createElement(
+          'div',
+          {},
+          createElement('input', { type: 'password', placeholder: 'Пароль' }),
+          createElement('input', {
+            type: 'password',
+            placeholder: 'Повторите пароль',
+            disabled: true,
+          }),
+        ),
+    }),
+  ]),
+  test: async (page) => {
+    await runStoryOrGroup(page, 'pets are great');
+    await page.getByLabel('Progress').click();
     await screenshot(page);
   },
 });

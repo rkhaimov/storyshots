@@ -1,4 +1,4 @@
-import { SuccessTestResult } from '../../behaviour/useTestResults/types';
+import { SuccessTestResult } from '../../../reusables/runner/types';
 import { Props as ParentProps } from '../types';
 import { PureStory } from '@storyshots/core';
 

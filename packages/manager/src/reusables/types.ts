@@ -8,6 +8,7 @@ import {
   StoryID,
   TestConfig,
 } from '@storyshots/core';
+import { TestResultDetails } from './runner/types';
 
 export interface IWebDriver {
   actOnClientSide(action: ActionMeta[]): Promise<WithPossibleError<void>>;
@@ -15,23 +16,11 @@ export interface IWebDriver {
   actOnServerSide(
     at: StoryID,
     payload: ActionsAndConfig,
-  ): Promise<WithPossibleError<ActualServerSideResult>>;
-
-  getExpectedScreenshots(
-    at: StoryID,
-    payload: ActionsAndConfig,
-  ): Promise<Screenshot[]>;
-
-  getExpectedRecords(
-    at: StoryID,
-    device: Device,
-  ): Promise<JournalRecord[] | null>;
+  ): Promise<WithPossibleError<TestResultDetails>>;
 
   acceptScreenshot(screenshot: ScreenshotToAccept): Promise<void>;
 
   acceptRecords(at: StoryID, payload: DeviceAndRecord): Promise<void>;
-
-  areScreenshotsEqual(screenshots: ScreenshotsToCompare): Promise<boolean>;
 
   createScreenshotPath(path: ScreenshotPath): string;
 }
@@ -60,11 +49,6 @@ export type ScreenshotToAccept = {
   actual: ScreenshotPath;
 };
 
-export type ScreenshotsToCompare = {
-  left: ScreenshotPath;
-  right: ScreenshotPath;
-};
-
 export type ActualServerSideResult = {
   records: JournalRecord[];
   screenshots: Screenshot[];
@@ -79,3 +63,15 @@ export type Screenshot = {
 export type ScreenshotPath = Brand<string, 'ScreenshotPath'>;
 
 export type GroupID = IntermediateNodeID;
+
+export type RunnableStoriesSuit = {
+  id: StoryID;
+  cases: Array<{
+    device: Device;
+    actions: ActionMeta[];
+  }>;
+};
+
+export type CIChannel = {
+  evaluate(): RunnableStoriesSuit[] | undefined;
+};

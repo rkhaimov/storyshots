@@ -35,7 +35,7 @@ export async function runHeadless(config: ManagerConfig) {
   createPreviewWatcher(app, config.preview);
   const cleanup = await createCommonApiHandlers(app, config);
 
-  const server = app.listen(config.port);
+  const server = app.listen(6006);
 
   return {
     app,

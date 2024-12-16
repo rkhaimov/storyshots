@@ -119,7 +119,6 @@ function buildConfig(
   };
 
   return {
-    retries: 0,
     devices: createDevices(),
     ...externalsCreators.reduce(
       (all, curr) => ({

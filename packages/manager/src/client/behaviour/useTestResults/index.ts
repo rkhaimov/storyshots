@@ -5,27 +5,34 @@ import {
   TestConfig,
 } from '@storyshots/core';
 import { useState } from 'react';
+import { createRunnableStoriesSuits } from '../../../reusables/runner/createRunnableStoriesSuits';
+import { driver } from '../../../reusables/runner/driver';
+import { run } from '../../../reusables/runner/run';
+import { AcceptableRecord, AcceptableScreenshot } from '../../../reusables/runner/types';
 
-import { AcceptableRecord, AcceptableScreenshot } from '../../reusables/types';
-import { runSetCompleteTestResults } from './runSetCompleteTestResults';
-import { runSetConfiguredTestResults } from './runSetConfiguredTestResults';
 import { TestResults } from './types';
-import { driver } from '../../externals/driver';
 
 export function useTestResults() {
   const [results, setResults] = useState<TestResults>(new Map());
 
   return {
     results,
-    run: (stories: PureStory[], config: TestConfig, preview: PreviewState) => {
-      setChosenAsRunning(stories);
+    run: (stories: PureStory[], config: TestConfig) => {
+      const tests = createRunnableStoriesSuits(stories, [config]);
 
-      runSetConfiguredTestResults(setResults, stories, config, preview);
+      return run(tests, (id, result) =>
+        setResults((results) => new Map(results.set(id, result))),
+      );
     },
-    runComplete: (stories: PureStory[], preview: PreviewState) => {
-      setChosenAsRunning(stories);
+    runComplete: async (stories: PureStory[], preview: PreviewState) => {
+      const tests = createRunnableStoriesSuits(
+        stories,
+        preview.devices.map((device) => ({ device })),
+      );
 
-      runSetCompleteTestResults(setResults, stories, preview);
+      return run(tests, (id, result) =>
+        setResults((results) => new Map(results.set(id, result))),
+      );
     },
     // TODO: Logic duplication
     acceptRecords: async ({ id, result, details }: AcceptableRecord) => {
@@ -53,13 +60,4 @@ export function useTestResults() {
       setResults(new Map(results));
     },
   };
-
-  function setChosenAsRunning(stories: PureStory[]) {
-    return setResults(
-      stories.reduce(
-        (acc, story) => acc.set(story.id, { running: true }),
-        new Map(results),
-      ),
-    );
-  }
 }

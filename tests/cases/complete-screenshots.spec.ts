@@ -22,7 +22,10 @@ test('captures all user defined screenshots unique to device', {
               .screenshot('DesktopFinal');
           }
 
-          return actor.click(finder.getByText('Act')).screenshot('MobileFinal');
+          return actor
+            .click(finder.getByText('Act'))
+            .wait(1_000)
+            .screenshot('MobileFinal');
         },
         render: (externals) => {
           const Component = useMemo(

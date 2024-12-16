@@ -1,20 +1,39 @@
-import { Application } from 'express-serve-static-core';
-import { ScreenshotsToCompare } from '../../reusables/types';
+import pixelmatch from 'pixelmatch';
+import { PNG } from 'pngjs';
+import { ScreenshotPath } from '../../reusables/types';
 import { Baseline } from '../reusables/baseline';
-import { areScreenshotsEqual } from './reusables/areScreenshotsEqual';
 
-export function createScreenshotEqualHandler(
-  app: Application,
+export async function areScreenshotsEqual(
   baseline: Baseline,
+  left: ScreenshotPath,
+  right: ScreenshotPath,
 ) {
-  app.post('/api/screenshot/equals', async (request, response) => {
-    const body: ScreenshotsToCompare = request.body;
+  return equal(
+    await baseline.readScreenshot(left),
+    await baseline.readScreenshot(right),
+  );
+}
 
-    return response.json(
-      areScreenshotsEqual(
-        await baseline.readScreenshot(body.left),
-        await baseline.readScreenshot(body.right),
-      ),
-    );
-  });
+function equal(l: Buffer, r: Buffer): boolean {
+  const left = PNG.sync.read(l);
+  const right = PNG.sync.read(r);
+
+  if (left.width !== right.width) {
+    return false;
+  }
+
+  if (left.height !== right.height) {
+    return false;
+  }
+
+  const diff = pixelmatch(
+    left.data,
+    right.data,
+    null,
+    left.width,
+    left.height,
+    { threshold: 0 },
+  );
+
+  return diff === 0;
 }

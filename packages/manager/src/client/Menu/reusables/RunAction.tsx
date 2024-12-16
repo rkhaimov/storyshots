@@ -17,11 +17,7 @@ export const RunAction: React.FC<Props> = ({ run, selection, stories }) => (
     action={(e) => {
       e.stopPropagation();
 
-      run(
-        TreeOP.toLeafsArray(stories),
-        { device: selection.config.device },
-        selection.preview,
-      );
+      run(TreeOP.toLeafsArray(stories), { device: selection.config.device });
     }}
   />
 );

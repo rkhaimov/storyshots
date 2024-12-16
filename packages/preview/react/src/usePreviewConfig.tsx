@@ -14,7 +14,6 @@ export function usePreviewConfig(props: PreviewProps) {
   return useMemo(
     () =>
       getPreviewConfig({
-        retries: props.retries,
         stories: toPureStories(props.stories),
         devices: props.devices as Device[],
       }),

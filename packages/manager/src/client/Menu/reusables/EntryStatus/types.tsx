@@ -1,8 +1,5 @@
 import { ComponentProps } from 'react';
-import {
-  AcceptableRecord,
-  AcceptableScreenshot,
-} from '../../../reusables/types';
+import { AcceptableRecord, AcceptableScreenshot } from '../../../../reusables/runner/types';
 import { EntryTitle } from '../EntryTitle';
 
 export type Props = ComponentProps<typeof EntryTitle> & {

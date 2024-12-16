@@ -9,16 +9,18 @@ export { root } from './compiler/manager-root';
 
 export { STABILIZER } from './handlers/createActServerSideHandler';
 
-type OptimizedConfig = Omit<
-  Optional<ManagerConfig, 'port' | 'optimization'>,
+type PublicConfig = Omit<
+  Optional<ManagerConfig, 'optimization'>,
   'createManagerCompiler'
 >;
 
-export const runUI = (config: OptimizedConfig) =>
+export const runUI = (config: PublicConfig) =>
   _runUI(fromOptimizedConfig(config));
 
-export const runTestsCI = async (config: OptimizedConfig) => {
-  const { cleanup } = await _runCITests(fromOptimizedConfig(config));
+export const runTestsCI = async (config: PublicConfig) => {
+  const { cleanup, run } = await _runCITests(fromOptimizedConfig(config));
+
+  await run();
 
   cleanup();
   process.exit();
@@ -39,11 +41,11 @@ const mergeTwoServeHandlers = (
   },
 });
 
-function fromOptimizedConfig(config: OptimizedConfig): ManagerConfig {
+function fromOptimizedConfig(config: PublicConfig): ManagerConfig {
   return {
-    port: 6006,
     optimization: {
       agentsCount: 1,
+      retries: 0,
       stabilize: STABILIZER.none,
     },
     ...config,

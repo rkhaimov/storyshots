@@ -14,7 +14,6 @@ const {
   it: _it,
   describe,
 } = createPreviewApp<Externals>({
-  retries: 3,
   devices: [
     {
       type: 'size-only',
