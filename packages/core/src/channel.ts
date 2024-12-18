@@ -3,7 +3,6 @@ import { PureStoryTree, StoryID } from './story';
 import { Device } from './test-config';
 
 export type PreviewState = {
-  retries: number;
   stories: PureStoryTree[];
   devices: Device[];
 };

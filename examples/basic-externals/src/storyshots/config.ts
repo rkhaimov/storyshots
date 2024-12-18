@@ -13,6 +13,7 @@ export const config: Parameters<typeof runUI>[0] = {
   },
   optimization: {
     agentsCount: 4,
+    retries: 3,
     stabilize: STABILIZER.byImage({
       attempts: 5,
       interval: (attempt) => 100 * Math.pow(2, attempt),

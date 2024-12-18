@@ -1,7 +1,7 @@
 import { blue } from '@ant-design/colors';
 import { ProfileOutlined } from '@ant-design/icons';
 import React from 'react';
-import { TestResultDetails } from '../../behaviour/useTestResults/types';
+import { TestResultDetails } from '../../../reusables/runner/types';
 import { ActiveEntryHeader } from '../reusables/EntryHeader';
 import { HighlightableEntry } from '../reusables/EntryStatus';
 import { Props as ParentProps } from './types';

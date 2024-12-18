@@ -1,19 +1,83 @@
+import { assertNotEmpty, StoryID } from '@storyshots/core';
+import path from 'path';
+import puppeteer from 'puppeteer';
+import {
+  getAcceptableRecords,
+  getAcceptableScreenshots,
+} from '../../reusables/runner/acceptables';
+import { driver } from '../../reusables/runner/driver';
+import { run } from '../../reusables/runner/run';
+import {
+  AcceptableRecord,
+  AcceptableScreenshot,
+  ErrorTestResult,
+} from '../../reusables/runner/types';
+import { CIChannel, RunnableStoriesSuit } from '../../reusables/types';
+import { createManagerRootURL } from '../paths';
 import { ManagerConfig } from '../reusables/types';
 import { runHeadless } from './runHeadless';
-import puppeteer, { Frame } from 'puppeteer';
-import path from 'path';
-import { getManagerHost } from '../paths';
-import { assertNotEmpty, wait } from '@storyshots/core';
 
 export async function runTestsCI(config: ManagerConfig) {
   const app = await runHeadless(config);
 
-  await runAllTests(config);
+  return {
+    ...app,
+    run: async () => {
+      const stories = await getStories(config);
 
-  return app;
+      console.log(`Received ${stories.length} stories`);
+
+      const errors = new Map<StoryID, ErrorTestResult>();
+      const records: AcceptableRecord[] = [];
+      const screenshots: AcceptableScreenshot[] = [];
+
+      console.log('Running...');
+      await run(stories, (id, result) => {
+        if (result.running) {
+          return;
+        }
+
+        if (result.type === 'error') {
+          errors.set(id, result);
+
+          return;
+        }
+
+        records.push(...getAcceptableRecords(id, result.details));
+        screenshots.push(...getAcceptableScreenshots(result.details));
+      });
+
+      if (errors.size > 0) {
+        console.log('There are some errors...');
+
+        for (const [id, error] of Array.from(errors.entries())) {
+          console.log(id, error.message);
+        }
+
+        throw new Error('Failed to run tests, check reasons above');
+      }
+
+      console.log('Updating records...');
+      for (const record of records) {
+        await driver.acceptRecords(record.id, {
+          records: record.result.actual,
+          device: record.details.device,
+        });
+      }
+
+      console.log('Updating screenshots...');
+      for (const screenshot of screenshots) {
+        await driver.acceptScreenshot({ actual: screenshot.result.actual });
+      }
+
+      console.log('Done');
+    },
+  };
 }
 
-async function runAllTests(config: ManagerConfig) {
+async function getStories(
+  config: ManagerConfig,
+): Promise<RunnableStoriesSuit[]> {
   const browser = await puppeteer.launch({
     headless: true,
     defaultViewport: null,
@@ -22,98 +86,17 @@ async function runAllTests(config: ManagerConfig) {
 
   const page = await browser.newPage();
 
-  await page.goto(getManagerHost(config), { timeout: 0 });
+  await page.goto(createManagerRootURL().href, { timeout: 0 });
 
-  const frame = page.mainFrame();
-
-  console.log('Waiting tests to initialize...');
-
-  const runAll = await frame.waitForSelector(
-    '::-p-aria([role="button"][name="Run complete"])',
-    { timeout: 0 },
+  const handle = await page.waitForFunction(() =>
+    (window as unknown as CIChannel).evaluate(),
   );
 
-  assertNotEmpty(runAll);
+  const state = await handle.jsonValue();
 
-  console.log('Tests are being started...');
+  assertNotEmpty(state);
 
-  await runAll.click();
+  await browser.close();
 
-  printProgress(frame);
-
-  await waitForAllRunsAreDone(frame);
-
-  const stories = await frame.$$(
-    '::-p-aria([role="list"][name="Stories 0"]) ::-p-aria([role="menuitem"])',
-  );
-
-  for (const story of stories) {
-    const error = await story.$(
-      '::-p-aria([role="image"][name="exclamation"])',
-    );
-
-    if (error !== null) {
-      throw new Error(
-        'One or more stories are failed to run. Please investigate problem locally',
-      );
-    }
-
-    await story.hover();
-
-    const acceptAll = await story.$(
-      '::-p-aria([role="button"][name="Accept all"])',
-    );
-
-    if (acceptAll !== null) {
-      await acceptAll.click();
-    }
-  }
-
-  await waitForAllDone(frame);
-
-  console.log('DONE');
-}
-
-async function waitForAllRunsAreDone(frame: Frame) {
-  while (true) {
-    const element = await frame.$(
-      '::-p-aria([role="generic"][name="Status"]) ::-p-aria([role="image"][name="loading"])',
-    );
-
-    await wait(1_000);
-
-    if (element === null) {
-      break;
-    }
-  }
-}
-
-async function waitForAllDone(frame: Frame) {
-  while (true) {
-    const fresh = await frame.$('::-p-aria([role="image"][name="fresh"])');
-    const fail = await frame.$('::-p-aria([role="image"][name="close"])');
-
-    if (fresh === null && fail === null) {
-      return;
-    }
-
-    await wait(1_000);
-  }
-}
-
-async function printProgress(frame: Frame) {
-  while (true) {
-    const current = await frame.$('::-p-aria([role="link"][name="Progress"])');
-
-    assertNotEmpty(current);
-
-    console.clear();
-    console.log(
-      await current.evaluate(
-        (element) => (element as HTMLAnchorElement).innerText,
-      ),
-    );
-
-    await wait(1_000);
-  }
+  return state;
 }

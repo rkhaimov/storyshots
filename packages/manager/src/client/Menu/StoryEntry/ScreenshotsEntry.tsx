@@ -2,12 +2,8 @@ import { blue } from '@ant-design/colors';
 import { PictureOutlined } from '@ant-design/icons';
 import React from 'react';
 import styled from 'styled-components';
+import { ScreenshotComparisonResult, ScreenshotResult, TestResultDetails } from '../../../reusables/runner/types';
 
-import {
-  ScreenshotComparisonResult,
-  ScreenshotResult,
-  TestResultDetails,
-} from '../../behaviour/useTestResults/types';
 import { ActiveEntryHeader } from '../reusables/EntryHeader';
 import { HighlightableEntry } from '../reusables/EntryStatus';
 import { Props as ParentProps } from './types';

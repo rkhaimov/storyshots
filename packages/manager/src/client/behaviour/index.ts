@@ -1,5 +1,6 @@
-import { useSelection } from './useSelection';
+import { useExportSelectionEffect } from './useExportSelectionEffect';
 import { useGroupExpand } from './useGroupExpand';
+import { useSelection } from './useSelection';
 import { useStatusPane } from './useStatusPane';
 import { useTestResults } from './useTestResults';
 
@@ -8,6 +9,8 @@ export function useBehaviour() {
   const play = useSelection();
   const expand = useGroupExpand(play.selection);
   const pane = useStatusPane();
+
+  useExportSelectionEffect(play.selection);
 
   return {
     ...expand,

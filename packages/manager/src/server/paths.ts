@@ -1,20 +1,18 @@
 import { StoryID, TestConfig } from '@storyshots/core';
-import { createManagerRequest } from '../reusables/createManagerRequest';
-import { ManagerConfig } from './reusables/types';
 
-const _getHostUrl = (config: ManagerConfig) =>
-  `http://localhost:${config.port}`;
+export const createManagerRootURL = () => {
+  const url = new URL('http://localhost:6006');
 
-export const getManagerHost = (config: ManagerConfig) =>
-  createManagerRequest(_getHostUrl(config));
+  url.searchParams.set('manager', 'SECRET');
 
-export const createPathToStory = (
-  id: StoryID,
-  test: TestConfig,
-  config: ManagerConfig,
-) =>
-  createManagerRequest(
-    `${_getHostUrl(config)}/chromium/${id}?config=${encodeURIComponent(
-      JSON.stringify(test),
-    )}`,
-  );
+  return url;
+};
+
+export const createStoryURL = (id: StoryID, test: TestConfig) => {
+  const url = createManagerRootURL();
+
+  url.pathname = `/chromium/${id}`;
+  url.searchParams.set('config', JSON.stringify(test));
+
+  return url;
+};

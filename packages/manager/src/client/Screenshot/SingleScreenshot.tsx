@@ -1,16 +1,13 @@
 import { PureStory } from '@storyshots/core';
 import React from 'react';
+import { ScreenshotResult, TestResultDetails } from '../../reusables/runner/types';
 import { UseBehaviourProps } from '../behaviour/types';
-import {
-  ScreenshotResult,
-  TestResultDetails,
-} from '../behaviour/useTestResults/types';
 import { Workspace } from '../Workspace';
 import { ActionAccept } from '../Workspace/Accept';
 import { ActionBack } from '../Workspace/Back';
 import { DiffImgViewer } from './DiffImgViewer';
 import { ImgViewer } from './ImgViewer';
-import { driver } from '../externals/driver';
+import { driver } from '../../reusables/runner/driver';
 
 type Props = {
   screenshot: ScreenshotResult;

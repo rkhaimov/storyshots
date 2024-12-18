@@ -2,7 +2,6 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack, { Configuration } from 'webpack';
-import { createManagerRequest } from '../../reusables/createManagerRequest';
 import { root } from './manager-root';
 
 const config = {
@@ -16,7 +15,7 @@ const config = {
   output: {
     path: path.join(root, 'lib', 'client'),
     pathinfo: true,
-    filename: createManagerRequest('static/js/bundle.js'),
+    filename: 'static/js/bundle.js?manager=SECRET',
     assetModuleFilename: 'static/media/[name].[hash][ext]',
     publicPath: '/',
   },

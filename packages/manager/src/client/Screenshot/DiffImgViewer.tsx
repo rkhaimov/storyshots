@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import ReactCompareImage from 'react-compare-image';
 import styled from 'styled-components';
 import { ScreenshotPath } from '../../reusables/types';
-import { driver } from '../externals/driver';
+import { driver } from '../../reusables/runner/driver';
 
 enum ViewerMode {
   TwoUp = 'twoup',

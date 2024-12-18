@@ -9,15 +9,16 @@ export async function handlePossibleErrors<T>(
       data: await func(),
     };
   } catch (error: unknown) {
-    console.log(error);
-
     if (error instanceof Error) {
       return { type: 'error', message: error.message };
     }
 
+    console.log(error);
+
     return {
       type: 'error',
-      message: 'Unknown exception occurred. Check terminal for more info',
+      message:
+        'Unknown kind of exception has occurred. Check your terminal for more info',
     };
   }
 }
