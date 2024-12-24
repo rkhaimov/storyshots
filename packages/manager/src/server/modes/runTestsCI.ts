@@ -88,8 +88,9 @@ async function getStories(
 
   await page.goto(createManagerRootURL().href, { timeout: 0 });
 
-  const handle = await page.waitForFunction(() =>
-    (window as unknown as CIChannel).evaluate(),
+  const handle = await page.waitForFunction(
+    () => (window as unknown as CIChannel).evaluate(),
+    { timeout: 0 },
   );
 
   const state = await handle.jsonValue();
