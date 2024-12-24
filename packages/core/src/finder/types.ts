@@ -107,14 +107,14 @@ export type Finder = {
    *     <li>Johny</li>
    * </ul>
    *
-   * const getByListItemName =
+   * const byListItemName =
    *   (name: string): FinderTransformer =>
    *   (finder) =>
    *     finder.getByRole('listitem', { name });
    *
-   * do(getByListItemName('Johny'))
+   * get(byListItemName('Johny'))
    */
-  do(transformer: FinderTransformer): Finder;
+  get(transformer: FinderTransformer): Finder;
   __toMeta(): FinderMeta;
 };
 

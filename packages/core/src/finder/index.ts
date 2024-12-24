@@ -13,7 +13,7 @@ function createFinder(result: FinderMeta['consequent'] = []) {
       finder.getBySelector(createPlaceholderSelector(placeholder)),
     getByTitle: (title) => finder.getBySelector(createTitleSelector(title)),
     getByLabel: (label) => finder.getBySelector(createLabelSelector(label)),
-    do: (transformer) => transformer(finder),
+    get: (transformer) => transformer(finder),
     getBySelector: (selector) =>
       createFinder([...result, { type: 'selector', on: selector }]),
     has: (element) =>
