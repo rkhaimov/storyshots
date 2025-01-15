@@ -14,19 +14,13 @@ export async function runStoryOrGroup(page: Page, story: string) {
 
   await page.getByLabel(story).getByLabel('Run', { exact: true }).click();
 
-  await page
-    .getByLabel('Status')
-    .getByLabel('loading')
-    .waitFor({ state: 'detached' });
+  await waitForAllCompleted(page);
 }
 
 export async function runAll(page: Page) {
   await page.getByRole('button', { name: 'Run', exact: true }).click();
 
-  await page
-    .getByLabel('Status')
-    .getByLabel('loading')
-    .waitFor({ state: 'hidden' });
+  await waitForAllCompleted(page);
 }
 
 export async function runStoryOrGroupComplete(page: Page, story: string) {
@@ -34,10 +28,7 @@ export async function runStoryOrGroupComplete(page: Page, story: string) {
 
   await page.getByLabel(story).getByLabel('Run complete').click();
 
-  await page
-    .getByLabel('Status')
-    .getByLabel('loading')
-    .waitFor({ state: 'hidden' });
+  await waitForAllCompleted(page);
 }
 
 export function screenshot(page: Page) {
@@ -65,4 +56,11 @@ export async function acceptStoryOrGroup(page: Page, story: string) {
     .getByTitle(story, { exact: true })
     .getByLabel('check')
     .waitFor({ state: 'visible' });
+}
+
+async function waitForAllCompleted(page: Page) {
+  await page
+    .getByLabel('Status')
+    .getByLabel('Stop', { exact: true })
+    .waitFor({ state: 'hidden' });
 }

@@ -2,11 +2,13 @@ import React from 'react';
 import { Screenshot } from './Screenshot';
 import { Records } from './Records';
 import { UseBehaviourProps } from './behaviour/types';
-import { Preview, usePreviewConnection } from './reusables/ConnectedPreview';
+import { usePreviewConnection } from './reusables/ConnectedPreview';
+import { EmulatedReplayPreview } from './EmulatedReplayPreview';
+import { createPreviewConfig } from './behaviour/useSelection/createPreviewConfig';
 
 export const Main: React.FC<UseBehaviourProps> = (props) => {
   const preview = usePreviewConnection({
-    config: props.preview,
+    config: createPreviewConfig(props.selection),
     onStateChange: props.onStateChange,
   });
 
@@ -33,6 +35,6 @@ export const Main: React.FC<UseBehaviourProps> = (props) => {
       );
     }
 
-    return <Preview {...preview} />;
+    return <EmulatedReplayPreview {...preview} selection={props.selection} />;
   }
 };

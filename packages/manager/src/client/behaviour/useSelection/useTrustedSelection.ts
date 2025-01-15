@@ -54,9 +54,7 @@ export function useTrustedSelection(
       type: 'story',
       selectedAt: untrusted.selectedAt,
       story,
-      state: {
-        type: 'not-played',
-      },
+      state: NOT_PLAYED_YET,
     };
   }, [preview, untrusted]);
 }
@@ -80,3 +78,7 @@ function createTrustedConfig(
     },
   };
 }
+
+const NOT_PLAYED_YET = {
+  type: 'not-played',
+} as const;

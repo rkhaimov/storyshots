@@ -1,4 +1,3 @@
-import { createPreviewConfig } from './createPreviewConfig';
 import { usePreviewState } from './usePreviewState';
 import { useUntrustedSelection } from './useUntrustedSelection';
 import { useTrustedSelection } from './useTrustedSelection';
@@ -11,7 +10,6 @@ export function useSelection() {
 
   return {
     selection: played,
-    preview: createPreviewConfig(played),
     ...handlers,
     onStateChange,
   };

@@ -1,14 +1,24 @@
-import { LoadingOutlined } from '@ant-design/icons';
+import { ClockCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import React from 'react';
 import styled from 'styled-components';
+import { EntryStatus } from './EntryStatus/types';
 
-type Props = React.PropsWithChildren<{ waiting?: boolean; className?: string }>;
+type Props = React.PropsWithChildren<{
+  status: EntryStatus;
+  className?: string;
+}>;
 
 const _EntryActions: React.FC<Props> = (props) => {
-  if (props.waiting) {
+  if (props.status?.type === 'running') {
     return (
       <Spin indicator={<LoadingOutlined style={{ fontSize: 18 }} spin />} />
+    );
+  }
+
+  if (props.status?.type === 'scheduled') {
+    return (
+      <Spin indicator={<ClockCircleOutlined style={{ fontSize: 14 }} />} />
     );
   }
 

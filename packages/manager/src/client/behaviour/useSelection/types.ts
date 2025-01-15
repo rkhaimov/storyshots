@@ -49,3 +49,17 @@ export type PreviewConfig = {
     emulated: boolean;
   };
 };
+
+export type RecordsSelection = Extract<
+  Selection,
+  {
+    type: 'records';
+  }
+>;
+
+export type ScreenshotSelection = Extract<
+  Selection,
+  {
+    type: 'screenshot';
+  }
+>;

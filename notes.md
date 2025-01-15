@@ -5,9 +5,7 @@ state-shots - that is a good name
 # Functional improvements
 
 * React-devtool duplicates roots
-* Debug preview mode, act should run only with preview option on
-* Avoid rerender on device selection
-* Add promise pool and stop button
+* Fix scaled images display
 * Write docs
 * Implement true background CI (without headless hack)
 * Add story search

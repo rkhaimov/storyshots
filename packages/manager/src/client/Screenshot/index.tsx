@@ -4,13 +4,8 @@ import React from 'react';
 import { UseBehaviourProps } from '../behaviour/types';
 import { Spinner } from '../reusables/Spinner';
 import { SingleScreenshot } from './SingleScreenshot';
-
-type ScreenshotSelection = Extract<
-  UseBehaviourProps['selection'],
-  {
-    type: 'screenshot';
-  }
->;
+import { ScreenshotSelection } from '../behaviour/useSelection/types';
+import { isOnRun } from '../../reusables/runner/isOnRun';
 
 type Props = {
   selection: ScreenshotSelection;
@@ -27,7 +22,7 @@ export const Screenshot: React.FC<Props> = ({
     return <span>Screenshots are not generated yet</span>;
   }
 
-  if (result.running) {
+  if (isOnRun(result)) {
     return <Spinner />;
   }
 

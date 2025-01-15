@@ -1,4 +1,5 @@
 import { api } from './api';
+
 export const addTagTypes = ['pet'] as const;
 const injectedRtkApi = api
   .enhanceEndpoints({

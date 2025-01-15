@@ -24,7 +24,7 @@ export const GroupEntry: React.FC<
     return;
   }
 
-  const { status, running } = getGroupEntryStatus(
+  const status = getGroupEntryStatus(
     props.results,
     props.selection,
     group.children,
@@ -45,7 +45,7 @@ export const GroupEntry: React.FC<
           title={group.payload.title}
           style={{ fontSize: 16, fontWeight: 600 }}
         />
-        <EntryActions waiting={running}>
+        <EntryActions status={status}>
           {renderAcceptAllAction()}
           <RunAction
             stories={TreeOP.toLeafsArray(group.children)}

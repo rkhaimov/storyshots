@@ -5,13 +5,8 @@ import { Spinner } from '../reusables/Spinner';
 import { Workspace } from '../Workspace';
 import { ActionAccept } from '../Workspace/Accept';
 import { DiffReader } from './DiffReader';
-
-type RecordsSelection = Extract<
-  UseBehaviourProps['selection'],
-  {
-    type: 'records';
-  }
->;
+import { RecordsSelection } from '../behaviour/useSelection/types';
+import { isOnRun } from '../../reusables/runner/isOnRun';
 
 type Props = {
   selection: RecordsSelection;
@@ -29,7 +24,7 @@ export const Records: React.FC<Props> = ({
     return <span>Records are not generated yet</span>;
   }
 
-  if (result.running) {
+  if (isOnRun(result)) {
     return <Spinner />;
   }
 

@@ -210,7 +210,7 @@ test('allows for xpath or css selector', {
               'css',
             )
             .fill(
-              finder.by(
+              finder.get(
                 byXPath(
                   './/*[@id="root"]/div/input[(count(preceding-sibling::*)+1) = 2]',
                 ),

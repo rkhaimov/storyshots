@@ -13,10 +13,7 @@ export function getGroupEntryStatus(
     getStoryEntryStatus(results, selection, story),
   );
 
-  return {
-    status: fold(statuses),
-    running: statuses.some((it) => it?.type === 'running'),
-  };
+  return fold(statuses);
 }
 
 function fold(statuses: EntryStatus[]): EntryStatus {
@@ -50,6 +47,10 @@ function fold(statuses: EntryStatus[]): EntryStatus {
 
   if (statuses.some((it) => it?.type === 'running')) {
     return { type: 'running' };
+  }
+
+  if (statuses.some((it) => it?.type === 'scheduled')) {
+    return { type: 'scheduled' };
   }
 
   if (statuses.some((it) => it?.type === 'pass')) {

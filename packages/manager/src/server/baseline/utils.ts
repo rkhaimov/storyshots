@@ -10,7 +10,10 @@ export function mkdir(path: string): Promise<void> {
   );
 }
 
-export function mkfile(path: string, content: string | Uint8Array): Promise<void> {
+export function mkfile(
+  path: string,
+  content: string | Uint8Array,
+): Promise<void> {
   return fromThrowableCB((cb) => fs.writeFile(path, content, cb));
 }
 

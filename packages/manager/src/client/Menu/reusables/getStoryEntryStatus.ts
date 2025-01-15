@@ -36,12 +36,16 @@ export function getStoryEntryStatus(
     return;
   }
 
-  if (comparison.running) {
-    return { type: 'running' };
+  if (comparison.type === 'scheduled') {
+    return { type: 'scheduled' };
   }
 
   if (comparison.type === 'error') {
     return comparison;
+  }
+
+  if (comparison.running) {
+    return { type: 'running' };
   }
 
   const records = getAcceptableRecords(story.id, comparison.details);

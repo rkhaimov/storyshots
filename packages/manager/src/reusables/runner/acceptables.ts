@@ -1,5 +1,9 @@
 import { StoryID } from '@storyshots/core';
-import { AcceptableRecord, AcceptableScreenshot, TestResultDetails } from './types';
+import {
+  AcceptableRecord,
+  AcceptableScreenshot,
+  TestResultDetails,
+} from './types';
 
 export function getAcceptableRecords(
   id: StoryID,

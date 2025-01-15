@@ -16,6 +16,7 @@ import { CIChannel, RunnableStoriesSuit } from '../../reusables/types';
 import { createManagerRootURL } from '../paths';
 import { ManagerConfig } from '../reusables/types';
 import { runHeadless } from './runHeadless';
+import { isOnRun } from '../../reusables/runner/isOnRun';
 
 export async function runTestsCI(config: ManagerConfig) {
   const app = await runHeadless(config);
@@ -32,8 +33,8 @@ export async function runTestsCI(config: ManagerConfig) {
       const screenshots: AcceptableScreenshot[] = [];
 
       console.log('Running...');
-      await run(stories, (id, result) => {
-        if (result.running) {
+      await run(stories, new AbortController().signal, (id, result) => {
+        if (isOnRun(result)) {
           return;
         }
 
