@@ -7,8 +7,8 @@ import {
 import { ScreenshotPath } from '../types';
 
 export type SuccessTestResult = {
-  running: false;
   type: 'success';
+  running: boolean;
   details: TestResultDetails[];
 };
 
@@ -24,15 +24,12 @@ export type ScreenshotResult = {
 };
 
 export type ErrorTestResult = {
-  running: false;
   type: 'error';
   message: string;
 };
 
 export type TestResult =
-  | {
-      running: true;
-    }
+  | { type: 'scheduled' }
   | SuccessTestResult
   | ErrorTestResult;
 

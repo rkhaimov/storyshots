@@ -4,13 +4,15 @@ import { Checkbox, Form, Select } from 'antd';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { UseBehaviourProps } from '../../behaviour/types';
-import { getGroupEntryStatus } from '../GroupEntry/getGroupEntryStatus';
 import { EntryAction } from '../reusables/EntryAction';
-import { EntryActions } from '../reusables/EntryActions';
 import { getStoryEntryStatus } from '../reusables/getStoryEntryStatus';
 import { RunAction } from '../reusables/RunAction';
 import { RunCompleteAction } from '../reusables/RunCompleteAction';
 import { ReadySelection } from '../../behaviour/useSelection/types';
+import { EntryHeader } from './EntryHeader';
+import { EntryActions } from './EntryActions';
+import { StopAction } from './StopAction';
+import { isOnRun } from '../../../reusables/runner/isOnRun';
 
 export type Props = UseBehaviourProps & {
   stories: PureStoryTree[];
@@ -20,6 +22,7 @@ export type Props = UseBehaviourProps & {
 export const TopBar: React.FC<Props> = ({
   run,
   runComplete,
+  stopAll,
   stories,
   selection,
   results,
@@ -32,7 +35,7 @@ export const TopBar: React.FC<Props> = ({
 
   return (
     <div aria-label="Status">
-      <StatusEntryHeader>
+      <EntryHeader>
         <a
           href="#"
           aria-label="Progress"
@@ -42,7 +45,7 @@ export const TopBar: React.FC<Props> = ({
           {renderStatusText(results, selection, stories)}
         </a>
         <EntryActions
-          waiting={getGroupEntryStatus(results, selection, stories).running}
+          onRunNode={hasAnyOnRun(results) && <StopAction stopAll={stopAll} />}
         >
           <RunAction stories={nodes} selection={selection} run={run} />
           <RunCompleteAction
@@ -52,7 +55,7 @@ export const TopBar: React.FC<Props> = ({
           />
           <ToggleConfigPaneAction onToggle={() => setOpened((prev) => !prev)} />
         </EntryActions>
-      </StatusEntryHeader>
+      </EntryHeader>
       {opened && (
         <PreviewConfigForm layout="vertical" size="small">
           <Form.Item label="Device">
@@ -94,6 +97,10 @@ export const TopBar: React.FC<Props> = ({
   );
 };
 
+function hasAnyOnRun(results: Props['results']) {
+  return Array.from(results.entries()).some(([, result]) => isOnRun(result));
+}
+
 function renderStatusText(
   results: Props['results'],
   selection: Props['selection'],
@@ -111,15 +118,6 @@ function renderStatusText(
 
   return `${passed}/${total} passed (${((passed / total) * 100).toFixed()}%)`;
 }
-
-const StatusEntryHeader = styled.div`
-  display: flex;
-  align-items: center;
-  padding-right: 2px;
-  padding-left: 8px;
-  height: 30px;
-  border-bottom: 1px solid rgb(206, 206, 206);
-`;
 
 const ToggleConfigPaneAction: React.FC<{ onToggle(): void }> = ({
   onToggle,

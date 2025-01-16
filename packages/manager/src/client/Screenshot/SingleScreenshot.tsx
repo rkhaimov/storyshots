@@ -1,6 +1,9 @@
 import { PureStory } from '@storyshots/core';
 import React from 'react';
-import { ScreenshotResult, TestResultDetails } from '../../reusables/runner/types';
+import {
+  ScreenshotResult,
+  TestResultDetails,
+} from '../../reusables/runner/types';
 import { UseBehaviourProps } from '../behaviour/types';
 import { Workspace } from '../Workspace';
 import { ActionAccept } from '../Workspace/Accept';

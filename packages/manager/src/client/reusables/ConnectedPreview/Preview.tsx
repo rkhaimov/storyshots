@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 type Props = {
   identity: string;
+  style?: CSSProperties;
 };
 
 export const Preview: React.FC<Props> = (props) => (
@@ -14,6 +15,7 @@ export const Preview: React.FC<Props> = (props) => (
       border: 'none',
       height: '100%',
       width: '100%',
+      ...props.style,
     }}
   />
 );

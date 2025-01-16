@@ -78,16 +78,16 @@ export type Finder = {
    */
   has(selector: Finder): Finder;
   /**
-     * Takes element by its index starting from zero
-     * @example
-     * <ul>
-     *     <li>Leonard</li>
-     *     <li>Johny</li>
-     * </ul>
+   * Takes element by its index starting from zero
+   * @example
+   * <ul>
+   *     <li>Leonard</li>
+   *     <li>Johny</li>
+   * </ul>
 
-     * getByRole('listitem')
-     *   .at(1) // returns <li>Johny</li>
-     */
+   * getByRole('listitem')
+   *   .at(1) // returns <li>Johny</li>
+   */
   at(index: number): Finder;
   /**
    * Test found elements against provided conditions with AND rule

@@ -14,6 +14,7 @@ import { RunCompleteAction } from '../reusables/RunCompleteAction';
 import { RecordsEntry } from './RecordsEntry';
 import { ScreenshotsEntry } from './ScreenshotsEntry';
 import { Props } from './types';
+import { isOnRun } from '../../../reusables/runner/isOnRun';
 
 export const StoryEntry: React.FC<Props> = (props) => {
   const status = getStoryEntryStatus(
@@ -37,9 +38,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
           status={status?.type}
           title={props.story.payload.title}
         />
-        <EntryActions waiting={status?.type === 'running'}>
-          {renderStoryActions()}
-        </EntryActions>
+        <EntryActions status={status}>{renderStoryActions()}</EntryActions>
       </ActiveEntryHeader>
       {renderResultEntries()}
     </li>
@@ -50,7 +49,7 @@ export const StoryEntry: React.FC<Props> = (props) => {
 
     const comparison = results.get(story.id);
 
-    if (comparison && comparison.running) {
+    if (comparison && isOnRun(comparison)) {
       return;
     }
 
@@ -96,11 +95,11 @@ export const StoryEntry: React.FC<Props> = (props) => {
   function renderResultEntries() {
     const results = props.results.get(props.story.id);
 
-    if (isNil(results) || results.running) {
-      return;
-    }
-
-    if (results.type === 'error') {
+    if (
+      isNil(results) ||
+      results.type === 'scheduled' ||
+      results.type === 'error'
+    ) {
       return;
     }
 
@@ -113,8 +112,8 @@ export const StoryEntry: React.FC<Props> = (props) => {
       );
     }
 
-    return results.details.map((detail) => (
-      <li>
+    return results.details.map((detail, index) => (
+      <li key={index}>
         <DeviceEntryHeader $level={props.level} $offset={8}>
           <EntryTitle title={detail.device.name} />
         </DeviceEntryHeader>

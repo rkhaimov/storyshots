@@ -11,8 +11,6 @@ export type PreviewConfig = {
   id?: StoryID;
   device?: Device;
   screenshotting: boolean;
-  emulated: boolean;
-  key: string;
 };
 
 export interface Channel {

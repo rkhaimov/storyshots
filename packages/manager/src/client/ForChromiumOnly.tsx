@@ -14,8 +14,6 @@ export const ForChromiumOnly: React.FC<Props> = (props) => {
       id: TreeOP.ensureIsLeafID(props.params.story),
       device: useSelectedDevice(),
       screenshotting: true,
-      emulated: false,
-      key: '',
     },
     onStateChange: () => {},
   });

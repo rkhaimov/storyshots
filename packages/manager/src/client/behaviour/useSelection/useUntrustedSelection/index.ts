@@ -22,4 +22,3 @@ export function useUntrustedSelection() {
       setSelection({ ...selection, config }),
   };
 }
-

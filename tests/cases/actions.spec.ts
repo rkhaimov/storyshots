@@ -71,7 +71,7 @@ test('does not allow to fill disabled fields', {
 test('able to fill dates', {
   preview: preview().stories(({ it, createElement, finder }) => [
     it('pets are great', {
-      act: (actor) => actor.fill(finder.getByRole('Date'), '14-10-2024'),
+      act: (actor) => actor.fill(finder.getByRole('Date'), '01/16/2024'),
       render: () => createElement('input', { type: 'date' }),
     }),
   ]),

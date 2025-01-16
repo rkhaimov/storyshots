@@ -240,12 +240,8 @@ async function withRetries(
 ): Promise<WithPossibleError<TestResultDetails>> {
   const result = await fn();
 
-  if (retries === 0) {
+  if (retries === 0 || result.type === 'error') {
     return result;
-  }
-
-  if (result.type === 'error') {
-    return withRetries(retries - 1, fn);
   }
 
   if (result.data.screenshots.some((it) => it.result.type === 'fail')) {
