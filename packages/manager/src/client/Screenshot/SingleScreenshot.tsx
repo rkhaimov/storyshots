@@ -79,7 +79,11 @@ export const SingleScreenshot: React.FC<Props> = ({
             />
           }
         >
-          <DiffImgViewer {...result} />
+          <DiffImgViewer
+            key={details.device.name}
+            device={details.device}
+            {...result}
+          />
         </Workspace>
       );
   }

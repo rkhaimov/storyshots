@@ -5,9 +5,7 @@ state-shots - that is a good name
 # Functional improvements
 
 * React-devtool duplicates roots
-* Fix scaled images display
 * Write docs
-* Implement true background CI (without headless hack)
 * Add story search
     * Should work like live filter on groups and story contents
 * Error should be linked to specific device
@@ -16,27 +14,22 @@ state-shots - that is a good name
     * Add possibility to use regexp
 * Handle non serializable entities for recorder
     * Examine how jest handles them
-* Stop button
 * Add
   recorder https://github.com/AndrewUsher/playwright-chrome-recorder https://github.com/AndrewUsher/playwright-recorder-extension
 * Accessibility checking https://github.com/abhinaba-ghosh/axe-playwright
 * AI Engine to turn text commands in playwright API https://github.com/zerostep-ai/zerostep
 * Add action modifiers and key shortcuts
   emulation https://stackoverflow.com/questions/59575748/puppeteer-how-to-click-element-so-it-opens-in-new-tab
-* Implement true emulation in manager mode
-  * Using as detached or inline with manager
 
 ## Low priority
 
 * Add baseline read button
-* Add production build for manager
 * Support HMR
 * Add todo meta function to `it` factory
 * Implement antd actor extensions package
 * Implement antd finder extensions package
 * Rename story or group utility
     * It is relatively hard to rename them manually
-* Improve story bulk run - it should give quick response (now it updates in chunks, use promise pool function?)
 * Add action guards tests
 
 # Structural improvements
@@ -45,6 +38,9 @@ state-shots - that is a good name
 * Obtain more control under public interface
     * api extractor
 * Develop a general strategy of test writing that ensures there are no duplicated or missed tests
+* Refactor tests
+* Refactor manager component styles
+* Refactor main storyshots models (story, test result, etc.)
 
 ## Low priority
 

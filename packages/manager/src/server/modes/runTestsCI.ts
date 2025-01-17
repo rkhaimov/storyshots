@@ -25,28 +25,10 @@ export async function runTestsCI(config: ManagerConfig) {
     ...app,
     run: async () => {
       const stories = await getStories(config);
-
       console.log(`Received ${stories.length} stories`);
 
-      const errors = new Map<StoryID, ErrorTestResult>();
-      const records: AcceptableRecord[] = [];
-      const screenshots: AcceptableScreenshot[] = [];
-
       console.log('Running...');
-      await run(stories, new AbortController().signal, (id, result) => {
-        if (isOnRun(result)) {
-          return;
-        }
-
-        if (result.type === 'error') {
-          errors.set(id, result);
-
-          return;
-        }
-
-        records.push(...getAcceptableRecords(id, result.details));
-        screenshots.push(...getAcceptableScreenshots(result.details));
-      });
+      const { records, errors, screenshots } = await runAll(stories);
 
       if (errors.size > 0) {
         console.log('There are some errors...');
@@ -101,4 +83,31 @@ async function getStories(
   await browser.close();
 
   return state;
+}
+
+async function runAll(stories: RunnableStoriesSuit[]) {
+  const errors = new Map<StoryID, ErrorTestResult>();
+  const records: AcceptableRecord[] = [];
+  const screenshots: AcceptableScreenshot[] = [];
+
+  await run(stories, new AbortController().signal, (id, result) => {
+    if (isOnRun(result)) {
+      return;
+    }
+
+    if (result.type === 'error') {
+      errors.set(id, result);
+
+      return;
+    }
+
+    records.push(...getAcceptableRecords(id, result.details));
+    screenshots.push(...getAcceptableScreenshots(result.details));
+  });
+
+  return {
+    errors,
+    records,
+    screenshots,
+  };
 }

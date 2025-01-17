@@ -22,7 +22,7 @@ export const Screenshot: React.FC<Props> = ({
     return <span>Screenshots are not generated yet</span>;
   }
 
-  if (isOnRun(result)) {
+  if (result.type === 'scheduled') {
     return <Spinner />;
   }
 

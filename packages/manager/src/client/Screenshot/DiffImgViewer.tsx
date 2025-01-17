@@ -1,9 +1,14 @@
 import { Radio, RadioChangeEvent } from 'antd';
 import React, { useState } from 'react';
-import ReactCompareImage from 'react-compare-image';
 import styled from 'styled-components';
 import { ScreenshotPath } from '../../reusables/types';
 import { driver } from '../../reusables/runner/driver';
+import {
+  ReactCompareSlider,
+  ReactCompareSliderHandle,
+  ReactCompareSliderImage,
+} from 'react-compare-slider';
+import { Device, isNil } from '@storyshots/core';
 
 enum ViewerMode {
   TwoUp = 'twoup',
@@ -11,49 +16,86 @@ enum ViewerMode {
 }
 
 type Props = {
+  device: Device;
   actual: ScreenshotPath;
   expected: ScreenshotPath;
 };
 
 export const DiffImgViewer: React.FC<Props> = (props) => {
-  const [mode, setMode] = useState<ViewerMode>(ViewerMode.TwoUp);
+  const [mode, setMode] = useState(
+    props.device.config.width > props.device.config.height
+      ? ViewerMode.Swipe
+      : ViewerMode.TwoUp,
+  );
 
-  function render2Up() {
+  function renderTwoUp() {
     return (
-      <>
-        <Left>
-          <Image src={driver.createScreenshotPath(props.actual)} alt="Actual" />
-        </Left>
-        <Right>
-          <Image
-            src={driver.createScreenshotPath(props.expected)}
-            alt="Expected"
-          />
-        </Right>
-      </>
+      <TwoUp>
+        <ActualImage
+          src={driver.createScreenshotPath(props.actual)}
+          alt="Actual"
+        />
+        <ExpectedImage
+          src={driver.createScreenshotPath(props.expected)}
+          alt="Expected"
+        />
+      </TwoUp>
     );
   }
 
   function renderSwipe() {
     return (
-      <ReactCompareImage
-        leftImageCss={{ border: `1px solid ${ACTUAL_BORDER_COLOR}` }}
-        rightImageCss={{ border: `1px solid ${EXPECTED_BORDER_COLOR}` }}
-        sliderLineColor={'#acacac'}
-        sliderLineWidth={1}
-        handle={<></>}
-        leftImage={driver.createScreenshotPath(props.actual)}
-        rightImage={driver.createScreenshotPath(props.expected)}
+      <ReactCompareSlider
+        itemOne={
+          <ReactCompareSliderImage
+            src={driver.createScreenshotPath(props.actual)}
+            style={{
+              border: `1px solid ${ACTUAL_BORDER_COLOR}`,
+              width: 'unset',
+              height: 'unset',
+              maxHeight: '100%',
+              maxWidth: '100%',
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+            }}
+          />
+        }
+        itemTwo={
+          <ReactCompareSliderImage
+            src={driver.createScreenshotPath(props.expected)}
+            style={{
+              border: `1px solid ${EXPECTED_BORDER_COLOR}`,
+              width: 'unset',
+              height: 'unset',
+              maxHeight: '100%',
+              maxWidth: '100%',
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+            }}
+          />
+        }
+        handle={
+          <ReactCompareSliderHandle
+            buttonStyle={{ display: 'none' }}
+            linesStyle={{ backgroundColor: '#acacac' }}
+          />
+        }
+        style={{
+          display: 'unset',
+          height: 'calc(100% - 24px)',
+        }}
       />
     );
   }
 
   return (
     <ViewerPanel>
-      <Frame>
-        {mode === ViewerMode.TwoUp && render2Up()}
-        {mode === ViewerMode.Swipe && renderSwipe()}
-      </Frame>
+      {mode === ViewerMode.TwoUp && renderTwoUp()}
+      {mode === ViewerMode.Swipe && renderSwipe()}
       <Controls>
         <Radio.Group
           size="small"
@@ -72,39 +114,42 @@ const ACTUAL_BORDER_COLOR = '#1677ff';
 const EXPECTED_BORDER_COLOR = '#63c363';
 
 const ViewerPanel = styled.div`
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 12px;
   padding: 30px;
-  overflow: auto;
-  width: calc(100% - 24px);
+  height: 100%;
   background-color: #ececef;
   border: 1px solid #cecece;
   border-radius: 4px;
   box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 `;
 
-const Frame = styled.div`
+const TwoUp = styled.div`
   display: flex;
-  position: relative;
+  height: calc(100% - 24px);
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 `;
 
 const Controls = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 16px;
+  height: 24px;
 `;
 
-const Left = styled.div`
-  width: 50%;
+const ActualImage = styled.img`
+  max-height: 100%;
+  max-width: 50%;
+  pointer-events: none;
   border: 1px solid ${ACTUAL_BORDER_COLOR};
 `;
 
-const Right = styled.div`
-  width: 50%;
-  border: 1px solid ${EXPECTED_BORDER_COLOR};
-`;
-
-const Image = styled.img`
-  display: block;
-  max-width: 100%;
+const ExpectedImage = styled.img`
+  max-height: 100%;
+  max-width: 50%;
   pointer-events: none;
+  border: 1px solid ${EXPECTED_BORDER_COLOR};
 `;

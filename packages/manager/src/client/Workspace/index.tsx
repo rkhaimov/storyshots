@@ -1,8 +1,6 @@
-import { Layout } from 'antd';
+import { Layout as AntdLayout } from 'antd';
 import React, { PropsWithChildren } from 'react';
 import styled from 'styled-components';
-
-const { Header } = Layout;
 
 type Props = PropsWithChildren & {
   title?: string;
@@ -26,7 +24,13 @@ export const Workspace: React.FC<Props> = ({
   </Layout>
 );
 
-const TopPanel = styled(Header)`
+const Layout = styled.div`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+`;
+
+const TopPanel = styled(AntdLayout.Header)`
   display: flex;
   justify-content: space-between;
   background-color: #fafafa;
@@ -48,8 +52,8 @@ const FirstAction = styled.div`
 `;
 
 const Content = styled.div`
-  display: flex;
+  flex: 1;
+  max-height: calc(100vh - 64px);
   background-color: #fff;
   padding: 12px 0;
-  max-height: calc(100vh - 64px);
 `;

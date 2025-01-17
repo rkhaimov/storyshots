@@ -12,32 +12,26 @@ type Props = {
 export const ImgViewer: React.FC<Props> = (props) => {
   return (
     <ViewerPanel>
-      <Frame>
-        <Image src={props.src} alt={props.alt} $type={props.type} />
-      </Frame>
+      <Image src={props.src} alt={props.alt} $type={props.type} />
     </ViewerPanel>
   );
 };
 
 const ViewerPanel = styled.div`
-  margin: 0 auto;
+  display: flex;
+  margin: 0 12px;
   padding: 30px;
-  overflow: auto;
-  width: calc(100% - 24px);
+  height: 100%;
   background-color: #ececef;
   border: 1px solid #cecece;
   border-radius: 4px;
   box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 `;
 
-const Frame = styled.div`
-  position: relative;
-`;
-
 export const Image = styled.img<{ $type: ViewType }>`
-  display: block;
-  margin: 0 auto;
+  margin: auto;
   max-width: 100%;
+  max-height: 100%;
   pointer-events: none;
   border: 1px solid ${({ $type }) => getViewTypeColor($type)};
 `;

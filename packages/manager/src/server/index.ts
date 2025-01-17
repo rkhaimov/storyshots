@@ -18,11 +18,10 @@ export const runUI = (config: PublicConfig) =>
   _runUI(fromOptimizedConfig(config));
 
 export const runTestsCI = async (config: PublicConfig) => {
-  const { cleanup, run } = await _runCITests(fromOptimizedConfig(config));
+  const { run } = await _runCITests(fromOptimizedConfig(config));
 
   await run();
 
-  cleanup();
   process.exit();
 };
 

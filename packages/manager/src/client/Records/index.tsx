@@ -24,7 +24,7 @@ export const Records: React.FC<Props> = ({
     return <span>Records are not generated yet</span>;
   }
 
-  if (isOnRun(result)) {
+  if (result.type === 'scheduled') {
     return <Spinner />;
   }
 
