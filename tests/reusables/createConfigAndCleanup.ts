@@ -3,7 +3,7 @@ import fs from 'fs';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
-import { STABILIZER } from '../../packages/manager/src';
+import { STABILIZER, COMPARATOR } from '../../packages/manager/src';
 import { runHeadless } from '../../packages/manager/src/server/modes/runHeadless';
 import { PreviewBuilder } from './preview';
 
@@ -25,6 +25,7 @@ export function createConfigAndCleanup(
       retries,
       stabilize: STABILIZER.none,
     },
+    compare: COMPARATOR.withLooksSame(),
     paths: {
       screenshots,
       records,

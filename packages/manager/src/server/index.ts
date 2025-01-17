@@ -1,16 +1,15 @@
 import { ManagerConfig, PreviewServe } from './reusables/types';
 import { runUI as _runUI } from './modes/runUI';
-import { STABILIZER } from './handlers/createActServerSideHandler';
 import { runTestsCI as _runCITests } from './modes/runTestsCI';
+import { STABILIZER } from './modules/stabilizer';
+import { COMPARATOR } from './modules/comparator';
 
 export type { ManagerConfig, PreviewServe } from './reusables/types';
 
 export { root } from './compiler/manager-root';
 
-export { STABILIZER } from './handlers/createActServerSideHandler';
-
 type PublicConfig = Omit<
-  Optional<ManagerConfig, 'optimization'>,
+  Optional<ManagerConfig, 'optimization' | 'compare'>,
   'createManagerCompiler'
 >;
 
@@ -47,9 +46,13 @@ function fromOptimizedConfig(config: PublicConfig): ManagerConfig {
       retries: 0,
       stabilize: STABILIZER.none,
     },
+    compare: COMPARATOR.withLooksSame(),
     ...config,
   };
 }
 
 type Optional<TRecord, TKey extends keyof TRecord> = Omit<TRecord, TKey> &
   Partial<Pick<TRecord, TKey>>;
+
+export { STABILIZER } from './modules/stabilizer';
+export { COMPARATOR } from './modules/comparator';

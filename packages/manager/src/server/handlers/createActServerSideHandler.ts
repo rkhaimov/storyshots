@@ -7,7 +7,6 @@ import {
   StoryID,
   TestConfig,
   TreeOP,
-  wait,
 } from '@storyshots/core';
 import { Application } from 'express-serve-static-core';
 import { Frame, Page } from 'puppeteer';
@@ -30,7 +29,6 @@ import { act } from '../reusables/act';
 import { Baseline } from '../reusables/baseline';
 import { toPreviewFrame } from '../reusables/toPreviewFrame';
 import { ManagerConfig } from '../reusables/types';
-import { areScreenshotsEqual } from './createScreenshotEqualHandler';
 import { findExpectedScreenshots } from './findExpectedScreenshots';
 import { handlePossibleErrors } from './reusables/handlePossibleErrors';
 
@@ -70,6 +68,7 @@ export async function createActServerSideHandler(
             data.payload,
             config,
           ),
+          config,
         ),
       ),
     ),
@@ -174,6 +173,8 @@ async function createScreenshot(
   config: TestConfig,
   server: ManagerConfig,
 ): Promise<Screenshot> {
+  await page.waitForFunction(() => window.document.fonts.ready);
+
   await server.optimization.stabilize(page, id, action, config);
 
   const path = await baseline.createActualScreenshot(
@@ -188,51 +189,6 @@ async function createScreenshot(
     path,
   };
 }
-
-export type Stabilizer = (
-  page: Page,
-  id: StoryID,
-  action: ScreenshotAction,
-  config: TestConfig,
-) => Promise<void>;
-
-const none: Stabilizer = async () => {};
-
-type ImageStabilizerConfig = {
-  attempts: number;
-  interval(attempt: number): number;
-};
-
-const byImage = (config: ImageStabilizerConfig): Stabilizer => {
-  const stabilizer = async (
-    story: StoryID,
-    page: Page,
-    last: Uint8Array,
-    attempt = 0,
-  ): Promise<void> => {
-    if (attempt === config.attempts) {
-      return;
-    }
-
-    await wait(config.interval(attempt));
-
-    const curr = await page.screenshot({ type: 'png' });
-
-    if (Buffer.from(last).equals(curr)) {
-      return;
-    }
-
-    return stabilizer(story, page, curr, attempt + 1);
-  };
-
-  return async (page, id) =>
-    stabilizer(id, page, await page.screenshot({ type: 'png' }));
-};
-
-export const STABILIZER = {
-  none,
-  byImage,
-};
 
 async function withRetries(
   retries: number,
@@ -260,6 +216,7 @@ async function createTestResultDetails(
   id: StoryID,
   payload: ActionsAndConfig,
   actual: ActualServerSideResult,
+  config: ManagerConfig,
 ): Promise<TestResultDetails> {
   return {
     device: payload.config.device,
@@ -274,6 +231,7 @@ async function createTestResultDetails(
       id,
       payload,
       actual.screenshots,
+      config,
     ),
   };
 }
@@ -304,6 +262,7 @@ async function createScreenshotsComparisonResults(
   id: StoryID,
   payload: ActionsAndConfig,
   actual: Screenshot[],
+  config: ManagerConfig,
 ): Promise<ScreenshotsComparisonResult[]> {
   const expected = await findExpectedScreenshots(baseline, id, payload);
 
@@ -316,8 +275,11 @@ async function createScreenshotsComparisonResults(
       name: actualScreenshot.name,
       result: await createScreenshotComparisonResult(
         baseline,
+        id,
+        payload,
         actualScreenshot.path,
         matchedOther?.path,
+        config,
       ),
     };
   });
@@ -327,16 +289,25 @@ async function createScreenshotsComparisonResults(
 
 async function createScreenshotComparisonResult(
   baseline: Baseline,
-  left: ScreenshotPath,
-  right: ScreenshotPath | undefined,
+  id: StoryID,
+  meta: ActionsAndConfig,
+  actual: ScreenshotPath,
+  expected: ScreenshotPath | undefined,
+  config: ManagerConfig,
 ): Promise<ScreenshotComparisonResult> {
-  if (isNil(right)) {
-    return { type: 'fresh', actual: left };
+  if (isNil(expected)) {
+    return { type: 'fresh', actual: actual };
   }
 
-  if (await areScreenshotsEqual(baseline, left, right)) {
-    return { type: 'pass', actual: left };
+  const { equal } = await config.compare(
+    await baseline.readScreenshot(actual),
+    await baseline.readScreenshot(expected),
+    { id, meta },
+  );
+
+  if (equal) {
+    return { type: 'pass', actual: actual };
   }
 
-  return { type: 'fail', actual: left, expected: right };
+  return { type: 'fail', actual: actual, expected: expected };
 }

@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express';
-import { Stabilizer } from '../handlers/createActServerSideHandler';
+import { Stabilizer } from '../modules/stabilizer';
+import { ImageComparator } from '../modules/comparator';
 
 export type PreviewServe = {
   // Handler must provide all requested static contents
@@ -21,5 +22,6 @@ export type ManagerConfig = {
     retries: number;
     stabilize: Stabilizer;
   };
+  compare: ImageComparator;
   devtools?: string;
 };
