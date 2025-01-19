@@ -5,6 +5,7 @@ state-shots - that is a good name
 # Functional improvements
 
 * React-devtool duplicates roots
+* Pool should be the size of agentsCount
 * Write docs
 * Add story search
     * Should work like live filter on groups and story contents
