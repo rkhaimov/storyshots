@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
-import { runHeadless } from '@storyshots/manager/src/server/modes/runHeadless';
-import { runTestsCI } from '@storyshots/manager/src/server/modes/runTestsCI';
+import { runInBackground } from '@storyshots/manager/src/server/modes/runInBackground';
+import { createStoryEngine } from '../../packages/manager/src/server/modes/createStoryEngine';
 import { createConfigAndCleanup } from '../reusables/createConfigAndCleanup';
 import { preview } from '../reusables/preview';
 import {
@@ -22,13 +22,13 @@ test('runs all stories and adds them all', async ({ page }) => {
 
   const config = createConfigAndCleanup(preview().tap(withLotsOfStories));
 
-  const ci = await runTestsCI(config);
+  const ci = await runInBackground(config);
 
   await ci.run();
 
   ci.cleanup();
 
-  const headless = await runHeadless(config);
+  const headless = await createStoryEngine(config);
 
   await page.goto('http://localhost:6006/?manager=SECRET');
 
@@ -49,7 +49,9 @@ test('throws when story are failed to execute', async () => {
     ]),
   );
 
-  await expect(runTestsCI(config).then(({ run }) => run())).rejects.toThrow();
+  await expect(
+    runInBackground(config).then(({ run }) => run()),
+  ).rejects.toThrow();
 });
 
 test('updates failed shots', async ({ page }) => {
@@ -104,7 +106,7 @@ test('updates failed shots', async ({ page }) => {
       ),
   );
 
-  const first = await runHeadless(config);
+  const first = await createStoryEngine(config);
 
   withStatefulHandlers(first.app);
 
@@ -116,7 +118,7 @@ test('updates failed shots', async ({ page }) => {
 
   first.cleanup();
 
-  const second = await runTestsCI(config);
+  const second = await runInBackground(config);
 
   withStatefulHandlers(second.app, 1);
 
@@ -124,7 +126,7 @@ test('updates failed shots', async ({ page }) => {
 
   second.cleanup();
 
-  const third = await runHeadless(config);
+  const third = await createStoryEngine(config);
 
   withStatefulHandlers(third.app, 2);
 

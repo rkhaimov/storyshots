@@ -1,0 +1,28 @@
+Subject: [PATCH] .
+---
+Index: packages/manager/src/server/manager-compiler/index.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/packages/manager/src/server/manager-compiler/index.ts b/packages/manager/src/server/manager-compiler/index.ts
+--- a/packages/manager/src/server/manager-compiler/index.ts	(revision e0daccaa10cfb31f804887da61757bc36a791818)
++++ b/packages/manager/src/server/manager-compiler/index.ts	(revision 6691df63cf3efe62de17a76260ed5c171ac6a1e6)
+@@ -1,9 +1,11 @@
+-import express from 'express';
+-import path from 'path';
+-import { root } from './root';
++import { webpack } from 'webpack';
++import dev from 'webpack-dev-middleware';
++import config from './config';
+ 
+-function createPrebuiltManager() {
+-  return express.static(path.join(root, 'lib', 'client'));
++function createHOTManager() {
++  console.log('createHOTManager');
++
++  return dev(webpack(config));
+ }
+ 
+-export const createManager = createPrebuiltManager;
++export const createManager = createHOTManager;

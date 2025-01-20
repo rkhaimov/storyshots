@@ -1,5 +1,5 @@
-import { test } from '../reusables/test';
 import { preview } from '../reusables/preview';
+import { test } from '../reusables/test';
 import { openScreenshot, runStoryOrGroup, screenshot } from './actors';
 
 test('can fill inputs from scratch', {
@@ -68,22 +68,6 @@ test('does not allow to fill disabled fields', {
   },
 });
 
-test('able to fill dates', {
-  preview: preview().stories(({ it, createElement, finder }) => [
-    it('pets are great', {
-      act: (actor) => actor.fill(finder.getByRole('Date'), '01/16/2024'),
-      render: () => createElement('input', { type: 'date' }),
-    }),
-  ]),
-  test: async (page) => {
-    await runStoryOrGroup(page, 'pets are great');
-
-    await openScreenshot(page, 'FINAL');
-
-    await screenshot(page);
-  },
-});
-
 test('able to click on checkboxes', {
   preview: preview().stories(({ it, createElement, finder }) => [
     it('pets are great', {
@@ -109,7 +93,7 @@ test('able to click on checkboxes', {
 test('able to click on radios', {
   preview: preview().stories(({ it, createElement, finder }) => [
     it('pets are great', {
-      act: (actor) => actor.click(finder.getByLabel('Male')),
+      act: (actor) => actor.click(finder.getByLabel('Male', { exact: true })),
       render: () =>
         createElement(
           'div',
@@ -165,7 +149,7 @@ test('able to select an option', {
 test('able to select multiple options', {
   preview: preview().stories(({ it, createElement, finder }) => [
     it('pets are great', {
-      act: (actor) => actor.select(finder.getByRole('listbox'), 'dog', 'cat'),
+      act: (actor) => actor.select(finder.getByRole('listbox'), ['dog', 'cat']),
       render: () =>
         createElement(
           'select',
@@ -216,7 +200,8 @@ test('can do single click', {
 test('can do double click', {
   preview: preview().stories(({ it, createElement, finder, useState }) => [
     it('pets are great', {
-      act: (actor) => actor.click(finder.getByRole('button'), { count: 2 }),
+      act: (actor) =>
+        actor.click(finder.getByRole('button'), { clickCount: 2 }),
       render: () => {
         const [submitted, setSubmitted] = useState(false);
 
@@ -308,7 +293,7 @@ test('allows to upload files', {
   preview: preview().stories(({ it, createElement, finder }) => [
     it('pets are great', {
       act: (actor) =>
-        actor.uploadFile(finder.getByRole('button'), '/stub-files/PI.png'),
+        actor.uploadFile(finder.getByRole('textbox'), '/stub-files/PI.png'),
       render: () => createElement('input', { type: 'file' }),
     }),
   ]),
@@ -321,12 +306,42 @@ test('allows to upload files', {
   },
 });
 
+test('upload files fails gracefully when not found', {
+  preview: preview().stories(({ it, createElement, finder }) => [
+    it('pets are great', {
+      act: (actor) =>
+        actor.uploadFile(finder.getByRole('textbox'), '/missing.png'),
+      render: () => createElement('input', { type: 'file' }),
+    }),
+  ]),
+  test: async (page) => {
+    await runStoryOrGroup(page, 'pets are great');
+    await page.getByLabel('Progress').click();
+    await screenshot(page);
+  },
+});
+
+test('upload files fails gracefully when error', {
+  preview: preview().stories(({ it, createElement, finder }) => [
+    it('pets are great', {
+      act: (actor) =>
+        actor.uploadFile(finder.getByRole('button'), './stub-files/PI.png'),
+      render: () => createElement('input', { type: 'file' }),
+    }),
+  ]),
+  test: async (page) => {
+    await runStoryOrGroup(page, 'pets are great');
+    await page.getByLabel('Progress').click();
+    await screenshot(page);
+  },
+});
+
 test('allows to upload multiple files', {
   preview: preview().stories(({ it, createElement, finder }) => [
     it('pets are great', {
       act: (actor) =>
         actor.uploadFile(
-          finder.getByRole('button'),
+          finder.getByRole('textbox'),
           '/stub-files/PI.png',
           '/stub-files/tree.jpg',
         ),

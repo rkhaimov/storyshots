@@ -1,16 +1,15 @@
+import { createStoryEngine } from '../../packages/manager/src/server/modes/createStoryEngine';
 import { createWebpackBundler } from '@storyshots/webpack-bundler';
 import fs from 'fs';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
-import { STABILIZER, COMPARATOR } from '../../packages/manager/src';
-import { runHeadless } from '../../packages/manager/src/server/modes/runHeadless';
+import { CAPTURE, COMPARE, RUNNER } from '../../packages/manager/src';
 import { PreviewBuilder } from './preview';
 
 export function createConfigAndCleanup(
   preview: PreviewBuilder,
-  retries = 0,
-): Parameters<typeof runHeadless>[0] {
+): Parameters<typeof createStoryEngine>[0] {
   const temp = path.join(process.cwd(), 'temp');
   const screenshots = path.join(temp, 'screenshots');
   const records = path.join(temp, 'records');
@@ -20,12 +19,9 @@ export function createConfigAndCleanup(
   }
 
   return {
-    optimization: {
-      agentsCount: 1,
-      retries,
-      stabilize: STABILIZER.none,
-    },
-    compare: COMPARATOR.withLooksSame(),
+    runner: RUNNER.singleton(),
+    capture: CAPTURE.instantly(),
+    compare: COMPARE.withLooksSame(),
     paths: {
       screenshots,
       records,

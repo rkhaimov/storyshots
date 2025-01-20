@@ -20,7 +20,7 @@
   "peerDependencies": {
     "@reduxjs/toolkit": "*",
     "@rtk-query/codegen-openapi": "*",
-    "react-redux": "*",
-    "@storyshots/manager": "0.0.8"
+    "@storyshots/manager": "0.0.8",
+    "react-redux": "*"
   }
 }

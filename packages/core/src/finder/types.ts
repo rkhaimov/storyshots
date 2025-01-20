@@ -1,146 +1,138 @@
-type SupportedAriaAttrs = Partial<Record<'name', string>>;
+import type { Page } from 'playwright';
 
 export type Finder = {
   /**
-   * Finds an element semantically.
-   * @param role is a value under name attribute on accessibility tree view.
-   * @param attrs can be passed for additional narrowing and is matched by exact comparison.
-   * @example
-   * <button>Create</button>
-   *
-   * getByRole('button', { name: 'Create' })
+   * https://playwright.dev/docs/api/class-locator#locator-get-by-role
    */
-  getByRole(role: string, attrs?: SupportedAriaAttrs): Finder;
+  getByRole(role: ByRole['role'], options?: ByRole['options']): Finder;
   /**
-   * Finds deepest element containing specified text.
-   * @param substring a text to match with, by inclusion.
-   * @example
-   * <div><span>Hello, friend!<span></div>
-   *
-   * getByText('friend') // returns span element
+   * https://playwright.dev/docs/api/class-locator#locator-get-by-text
    */
-  getByText(substring: string): Finder;
+  getByText(text: ByText['text'], options?: ByText['options']): Finder;
   /**
-   * Finds element whose placeholder attribute is exactly like specified
-   * @example
-   * <input placeholder="Enter your name" />
-   *
-   * getByPlaceholder('Enter your name')
+   * https://playwright.dev/docs/api/class-locator#locator-get-by-label
    */
-  getByPlaceholder(placeholder: string): Finder;
+  getByLabel(text: ByLabel['text'], options?: ByLabel['options']): Finder;
   /**
-   * Finds element whose title attribute is exactly like specified
-   * @example
-   * <span title="Hint!">Text</span>
-   *
-   * getByTitle('Hint!')
+   * https://playwright.dev/docs/api/class-locator#locator-get-by-placeholder
    */
-  getByTitle(title: string): Finder;
+  getByPlaceholder(
+    text: ByPlaceholder['text'],
+    options?: ByPlaceholder['options'],
+  ): Finder;
   /**
-   * Finds label containing specified text by substring OR an element that specifies aria-label attribute with exact match.
-   * It is better to use getByRole as it is more flexible
-   * @example
-   * <label>Hello, friend!</label>
-   *
-   * getByLabel('friend')
-   * @example
-   * <p aria-label="friend">Hello, friend!</p>
-   *
-   * getByLabel('friend')
+   * https://playwright.dev/docs/api/class-locator#locator-get-by-alt-text
    */
-  getByLabel(label: string): Finder;
+  getByAltText(text: ByAltText['text'], options?: ByAltText['options']): Finder;
   /**
-   * Finds element by given selector. Supports https://pptr.dev/guides/page-interactions#selectors
-   * @example
-   * <div><button>Create</button></div>
-   *
-   * getBySelector('div > button') // returns button
+   * https://playwright.dev/docs/api/class-locator#locator-get-by-title
+   */
+  getByTitle(text: ByTitle['text'], options?: ByTitle['options']): Finder;
+  /**
+   * https://playwright.dev/docs/api/class-locator#locator-locator
    */
   getBySelector(selector: string): Finder;
   /**
-   * Leaves elements that have at least one child satisfying given criteria.
-   * @param selector a condition to test against.
-   * @example
-   * <ul>
-   *     <li>
-   *       <h1>Leonard</h1>
-   *       <button>Delete</button>
-   *     </li>
-   *     <li>
-   *       <h1>Johny</h1>
-   *       <button>Delete</button>
-   *     </li>
-   * </ul>
+   * Only has option is implemented.
    *
-   * getByRole('listitem')
-   *   .has(getByText('Johny'))
-   *   .getByRole('button', { name: 'Delete' }) // returns second li element
+   * https://playwright.dev/docs/api/class-locator#locator-filter
    */
   has(selector: Finder): Finder;
   /**
-   * Takes element by its index starting from zero
-   * @example
-   * <ul>
-   *     <li>Leonard</li>
-   *     <li>Johny</li>
-   * </ul>
-
-   * getByRole('listitem')
-   *   .at(1) // returns <li>Johny</li>
+   * https://playwright.dev/docs/api/class-locator#locator-nth
    */
   at(index: number): Finder;
   /**
-   * Test found elements against provided conditions with AND rule
-   * @example
-   * <button title="Hint!">Action</button>
-   *
-   * getByRole('button')
-   *   .and(getByTitle('Title of a button'))
+   * https://playwright.dev/docs/api/class-locator#locator-and
    */
   and(selector: Finder): Finder;
   /**
-   * Allows to extend finder
-   * @param transformer transforms a finder by returning its new version
+   * Allows to compose different complex selectors on finder.
+   *
    * @example
-   * <ul>
-   *     <li>Leonard</li>
-   *     <li>Johny</li>
-   * </ul>
    *
-   * const byListItemName =
-   *   (name: string): FinderTransformer =>
-   *   (finder) =>
-   *     finder.getByRole('listitem', { name });
+   * function byButtonSeverity(severity): FinderTransformer {
+   *     return (finder) => finder.getByRole(...)
+   * }
    *
-   * get(byListItemName('Johny'))
+   * finder.get(byButtonSeverity('error'))
    */
   get(transformer: FinderTransformer): Finder;
+  /**
+   * Allows to pass RegExp values to matchers that expect it.
+   *
+   * @example
+   *
+   * finder.getByText(finder.r(/submit/i))
+   */
+  r(pattern: RegExp): RegExpMatcher;
   __toMeta(): FinderMeta;
 };
 
 export type FinderTransformer = (finder: Finder) => Finder;
 
 export type FinderMeta = {
-  beginning: Selector;
-  consequent: Array<Selector | Index | Filter | And>;
+  beginning: ByLocator;
+  consequent: Array<ByLocator | ByIndex | WithFilter | WithAnd>;
 };
 
-export type Selector = {
+export type ByLocator = {
+  type: 'locator';
+  by:
+    | ByRole
+    | ByText
+    | ByLabel
+    | ByPlaceholder
+    | ByAltText
+    | ByTitle
+    | BySelector;
+};
+
+export type ByRole = {
+  type: 'role';
+  role: Parameters<Page['getByRole']>[0];
+  options:
+    | (Parameters<Page['getByRole']>[1] & { name: never })
+    | { name: string | RegExpMatcher }
+    | undefined;
+};
+
+export type ByText = { type: 'text' } & ByTextLike;
+
+export type ByLabel = { type: 'label' } & ByTextLike;
+
+export type ByPlaceholder = { type: 'placeholder' } & ByTextLike;
+
+export type ByAltText = { type: 'alt-text' } & ByTextLike;
+
+export type ByTitle = { type: 'title' } & ByTextLike;
+
+type ByTextLike = {
+  text: string | RegExpMatcher;
+  options?: { exact?: boolean };
+};
+
+export type RegExpMatcher = {
+  source: string;
+  flags: string;
+};
+
+export type BySelector = {
   type: 'selector';
-  on: string;
+  selector: string;
 };
 
-type And = {
+export type WithAnd = {
   type: 'and';
   condition: FinderMeta;
 };
 
-type Filter = {
+export type WithFilter = {
   type: 'filter';
   has: FinderMeta;
 };
 
-type Index = {
+export type ByIndex = {
   type: 'index';
   at: number;
 };

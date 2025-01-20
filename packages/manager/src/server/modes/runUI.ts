@@ -1,9 +1,9 @@
-import { createHeadAndConnect } from '../handlers/createHeadAndConnect';
-import { runHeadless } from './runHeadless';
-import { ManagerConfig } from '../reusables/types';
+import { createUIAndConnectActor } from '../createUIAndConnectActor';
+import { createStoryEngine } from './createStoryEngine';
+import { ManagerConfig } from '../types';
 
 export async function runUI(config: ManagerConfig) {
-  const { app } = await runHeadless(config);
+  const { app } = await createStoryEngine(config);
 
-  await createHeadAndConnect(app, config);
+  await createUIAndConnectActor(app, config);
 }

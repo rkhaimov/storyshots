@@ -1,6 +1,6 @@
 import { Page } from 'playwright';
 import { createConfigAndCleanup } from './createConfigAndCleanup';
-import { runHeadless } from '../../packages/manager/src/server/modes/runHeadless';
+import { createStoryEngine } from '../../packages/manager/src/server/modes/createStoryEngine';
 import { expect, test as _test } from '@playwright/test';
 import { PreviewBuilder } from './preview';
 import { withStatefulHandlers } from './state';
@@ -15,7 +15,7 @@ export function test(message: string, { test, preview }: Config) {
   _test(message, async ({ page }) => {
     _test.setTimeout(120_000);
 
-    const { app, cleanup } = await runHeadless(createConfigAndCleanup(preview));
+    const { app, cleanup } = await createStoryEngine(createConfigAndCleanup(preview));
 
     const getJournal = withClientActJournal(app);
 

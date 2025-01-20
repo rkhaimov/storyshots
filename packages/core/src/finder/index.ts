@@ -1,21 +1,49 @@
-import { AriaRole } from 'react';
 import { Finder, FinderMeta } from './types';
 
 export const finder = createFinder();
 
 function createFinder(result: FinderMeta['consequent'] = []) {
   const finder: Finder = {
-    getByRole: (role, attrs) =>
-      finder.getBySelector(createAriaSelector(role, attrs)),
-    getByText: (substring) =>
-      finder.getBySelector(createTextSelector(substring)),
-    getByPlaceholder: (placeholder) =>
-      finder.getBySelector(createPlaceholderSelector(placeholder)),
-    getByTitle: (title) => finder.getBySelector(createTitleSelector(title)),
-    getByLabel: (label) => finder.getBySelector(createLabelSelector(label)),
-    get: (transformer) => transformer(finder),
+    getByRole: (role, options) =>
+      createFinder([
+        ...result,
+        { type: 'locator', by: { type: 'role', role, options } },
+      ]),
+    getByText: (text, options) =>
+      createFinder([
+        ...result,
+        { type: 'locator', by: { type: 'text', text, options } },
+      ]),
+    getByPlaceholder: (text, options) =>
+      createFinder([
+        ...result,
+        { type: 'locator', by: { type: 'placeholder', text, options } },
+      ]),
+    getByTitle: (text, options) =>
+      createFinder([
+        ...result,
+        { type: 'locator', by: { type: 'title', text, options } },
+      ]),
+    getByLabel: (text, options) =>
+      createFinder([
+        ...result,
+        { type: 'locator', by: { type: 'label', text, options } },
+      ]),
+    getByAltText: (text, options) =>
+      createFinder([
+        ...result,
+        { type: 'locator', by: { type: 'alt-text', text, options } },
+      ]),
     getBySelector: (selector) =>
-      createFinder([...result, { type: 'selector', on: selector }]),
+      createFinder([
+        ...result,
+        { type: 'locator', by: { type: 'selector', selector } },
+      ]),
+    r: (pattern) => ({
+      flags: pattern.flags,
+      source: pattern.source,
+    }),
+    get: (transformer) => transformer(finder),
     has: (element) =>
       createFinder([
         ...result,
@@ -40,7 +68,7 @@ function createFinder(result: FinderMeta['consequent'] = []) {
 
       const [beginning, ...consequent] = result;
 
-      if (beginning.type !== 'selector') {
+      if (beginning.type !== 'locator') {
         throw new Error(
           `Finder selector must start with valid entry, ${beginning.type} was found instead`,
         );
@@ -54,31 +82,4 @@ function createFinder(result: FinderMeta['consequent'] = []) {
   };
 
   return finder;
-}
-
-function createAriaSelector(
-  role: AriaRole,
-  attrs: Record<string, string> | undefined,
-) {
-  const entries = Object.entries({ role, ...attrs });
-
-  return `::-p-aria(${entries
-    .map(([name, value]) => `[${name}="${value}"]`)
-    .join('')})`;
-}
-
-function createTextSelector(substring: string) {
-  return `::-p-text(${substring})`;
-}
-
-function createPlaceholderSelector(placeholder: string) {
-  return `[placeholder="${placeholder}"]`;
-}
-
-function createTitleSelector(title: string) {
-  return `[title="${title}"]`;
-}
-
-function createLabelSelector(label: string) {
-  return `label::-p-text(${label}), [aria-label="${label}"]`;
 }

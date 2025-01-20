@@ -8,8 +8,7 @@ export function pool(
 
   return Promise.all(workers);
 
-  // async is important here for throwIfAborted to be wrapped in promise rejection object
-  async function work() {
+  function work() {
     const current = state.shift();
 
     if (current === undefined) {

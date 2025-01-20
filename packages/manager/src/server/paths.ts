@@ -1,15 +1,17 @@
 import { StoryID, TestConfig } from '@storyshots/core';
+import { ManagerConfig } from './types';
 
-export const createManagerRootURL = () => {
+export const createManagerRootURL = (config: ManagerConfig) => {
   const url = new URL('http://localhost:6006');
 
   url.searchParams.set('manager', 'SECRET');
+  url.searchParams.set('agentsCount', `${config.runner.agentsCount}`);
 
   return url;
 };
 
-export const createStoryURL = (id: StoryID, test: TestConfig) => {
-  const url = createManagerRootURL();
+export const createStoryURL = (id: StoryID, test: TestConfig, config: ManagerConfig) => {
+  const url = createManagerRootURL(config);
 
   url.pathname = `/chromium/${id}`;
   url.searchParams.set('config', JSON.stringify(test));

@@ -4,18 +4,21 @@ import { TestResult, TestResultDetails } from './types';
 import { pool } from './pool';
 import { driver } from './driver';
 
-export function run(
-  stories: RunnableStoriesSuit[],
-  abort: AbortSignal,
-  onResult: (id: StoryID, result: TestResult) => void,
-) {
+export type RunConfig = {
+  stories: RunnableStoriesSuit[];
+  abort: AbortSignal;
+  agentsCount: number;
+  onResult(id: StoryID, result: TestResult): void;
+};
+
+export function run({ abort, onResult, stories, agentsCount }: RunConfig) {
   markAllAsScheduled(stories, onResult);
 
   const cases = createAllRunCases(stories);
   const onActed = createResultsSyncer(onResult);
   const acting = createActEffects(cases, onResult, abort, onActed);
 
-  return pool(acting, { size: 5 });
+  return pool(acting, { size: agentsCount });
 }
 
 function markAllAsScheduled(
