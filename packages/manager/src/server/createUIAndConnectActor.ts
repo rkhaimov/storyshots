@@ -41,6 +41,7 @@ async function openAppAndGetPage(config: ManagerConfig): Promise<Page> {
   const context = await chromium.launchPersistentContext(
     path.join(config.paths.temp, 'chrome-data'),
     {
+      timeout: 0,
       headless: false,
       viewport: null,
       ignoreDefaultArgs: ['--enable-automation'],
