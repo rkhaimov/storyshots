@@ -68,6 +68,7 @@ export type RunnableStoriesSuit = {
   id: StoryID;
   cases: Array<{
     device: Device;
+    retries: number;
     actions: ActionMeta[];
   }>;
 };

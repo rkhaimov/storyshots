@@ -45,7 +45,7 @@ function fromOptimizedConfig(config: PublicConfig): ManagerConfig {
       attempts: 5,
       interval: (attempt) => 100 * Math.pow(2, attempt),
     }),
-    runner: RUNNER.singleton(),
+    runner: RUNNER.pool({ agentsCount: 1 }),
     ...config,
   };
 }

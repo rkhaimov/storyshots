@@ -4,44 +4,47 @@ export type Finder = {
   /**
    * https://playwright.dev/docs/api/class-locator#locator-get-by-role
    */
-  getByRole(role: ByRole['role'], options?: ByRole['options']): Finder;
+  getByRole(role: ByRole['role'], options?: ByRoleOptions): Finder;
   /**
    * https://playwright.dev/docs/api/class-locator#locator-get-by-text
    */
-  getByText(text: ByText['text'], options?: ByText['options']): Finder;
+  getByText(text: TextMatch, options?: ByText['options']): Finder;
   /**
    * https://playwright.dev/docs/api/class-locator#locator-get-by-label
    */
-  getByLabel(text: ByLabel['text'], options?: ByLabel['options']): Finder;
+  getByLabel(text: TextMatch, options?: ByLabel['options']): Finder;
   /**
    * https://playwright.dev/docs/api/class-locator#locator-get-by-placeholder
    */
-  getByPlaceholder(
-    text: ByPlaceholder['text'],
-    options?: ByPlaceholder['options'],
-  ): Finder;
+  getByPlaceholder(text: TextMatch, options?: ByPlaceholder['options']): Finder;
   /**
    * https://playwright.dev/docs/api/class-locator#locator-get-by-alt-text
    */
-  getByAltText(text: ByAltText['text'], options?: ByAltText['options']): Finder;
+  getByAltText(text: TextMatch, options?: ByAltText['options']): Finder;
   /**
    * https://playwright.dev/docs/api/class-locator#locator-get-by-title
    */
-  getByTitle(text: ByTitle['text'], options?: ByTitle['options']): Finder;
+  getByTitle(text: TextMatch, options?: ByTitle['options']): Finder;
   /**
    * https://playwright.dev/docs/api/class-locator#locator-locator
    */
-  getBySelector(selector: string): Finder;
+  locator(selector: string): Finder;
   /**
-   * Only has option is implemented.
-   *
    * https://playwright.dev/docs/api/class-locator#locator-filter
    */
-  has(selector: Finder): Finder;
+  filter(options: WithFilterOptions): Finder;
   /**
    * https://playwright.dev/docs/api/class-locator#locator-nth
    */
-  at(index: number): Finder;
+  nth(index: number): Finder;
+  /**
+   * https://playwright.dev/docs/api/class-locator#locator-first
+   */
+  first(): Finder;
+  /**
+   * https://playwright.dev/docs/api/class-locator#locator-last
+   */
+  last(): Finder;
   /**
    * https://playwright.dev/docs/api/class-locator#locator-and
    */
@@ -58,14 +61,6 @@ export type Finder = {
    * finder.get(byButtonSeverity('error'))
    */
   get(transformer: FinderTransformer): Finder;
-  /**
-   * Allows to pass RegExp values to matchers that expect it.
-   *
-   * @example
-   *
-   * finder.getByText(finder.r(/submit/i))
-   */
-  r(pattern: RegExp): RegExpMatcher;
   __toMeta(): FinderMeta;
 };
 
@@ -88,13 +83,12 @@ export type ByLocator = {
     | BySelector;
 };
 
+type ByRoleOptions = Parameters<Page['getByRole']>[1];
+
 export type ByRole = {
   type: 'role';
   role: Parameters<Page['getByRole']>[0];
-  options:
-    | (Parameters<Page['getByRole']>[1] & { name: never })
-    | { name: string | RegExpMatcher }
-    | undefined;
+  options: JSONTextMatchOptions<ByRoleOptions>;
 };
 
 export type ByText = { type: 'text' } & ByTextLike;
@@ -108,13 +102,8 @@ export type ByAltText = { type: 'alt-text' } & ByTextLike;
 export type ByTitle = { type: 'title' } & ByTextLike;
 
 type ByTextLike = {
-  text: string | RegExpMatcher;
+  text: JSONTextMatch;
   options?: { exact?: boolean };
-};
-
-export type RegExpMatcher = {
-  source: string;
-  flags: string;
 };
 
 export type BySelector = {
@@ -127,12 +116,54 @@ export type WithAnd = {
   condition: FinderMeta;
 };
 
+type WithFilterOptions = {
+  has?: Finder;
+  hasNot?: Finder;
+  hasText?: TextMatch;
+  hasNotText?: TextMatch;
+};
+
 export type WithFilter = {
   type: 'filter';
-  has: FinderMeta;
+  options: {
+    has?: FinderMeta;
+    hasNot?: FinderMeta;
+    hasText?: JSONTextMatch;
+    hasNotText?: JSONTextMatch;
+  };
 };
 
 export type ByIndex = {
   type: 'index';
-  at: number;
+  options:
+    | {
+        kind: 'first';
+      }
+    | {
+        kind: 'last';
+      }
+    | {
+        kind: 'nth';
+        at: number;
+      };
+};
+
+export type JSONTextMatchOptions<TOptions> = {
+  [TKey in keyof TOptions]: RegExp extends TOptions[TKey]
+    ? Exclude<TOptions[TKey], RegExp> | JSONRegExp
+    : TOptions[TKey];
+};
+
+export type TextMatchOptions<TOptions> = {
+  [TKey in keyof TOptions]: JSONRegExp extends TOptions[TKey]
+    ? Exclude<TOptions[TKey], JSONRegExp> | RegExp
+    : TOptions[TKey];
+};
+
+export type JSONTextMatch = string | JSONRegExp;
+export type TextMatch = string | RegExp;
+
+export type JSONRegExp = {
+  pattern: string;
+  flags: string;
 };

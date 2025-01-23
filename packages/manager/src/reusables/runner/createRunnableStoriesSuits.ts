@@ -9,6 +9,7 @@ export function createRunnableStoriesSuits(
     id: story.id,
     cases: config.map(({ device }) => ({
       device,
+      retries: story.payload.retries({ device, screenshotting: true }),
       actions: story.payload
         .act(createActor(), { device, screenshotting: true })
         .toMeta(),

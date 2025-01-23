@@ -34,6 +34,7 @@ function toPureStories(nodes: StoryTree[]): PureStoryTree[] {
     node: (node) => node,
     leaf: (leaf) => ({
       title: leaf.title,
+      retries: leaf.retries,
       act: leaf.act,
     }),
   });

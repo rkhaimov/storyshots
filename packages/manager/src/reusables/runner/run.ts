@@ -7,18 +7,18 @@ import { driver } from './driver';
 export type RunConfig = {
   stories: RunnableStoriesSuit[];
   abort: AbortSignal;
-  agentsCount: number;
+  size: number;
   onResult(id: StoryID, result: TestResult): void;
 };
 
-export function run({ abort, onResult, stories, agentsCount }: RunConfig) {
+export function run({ abort, onResult, stories, size }: RunConfig) {
   markAllAsScheduled(stories, onResult);
 
   const cases = createAllRunCases(stories);
   const onActed = createResultsSyncer(onResult);
   const acting = createActEffects(cases, onResult, abort, onActed);
 
-  return pool(acting, { size: agentsCount });
+  return pool(acting, { size: size });
 }
 
 function markAllAsScheduled(
@@ -74,15 +74,39 @@ function createActEffects(
 
     onResult(story.meta.id, { type: 'success', running: true, details: [] });
 
-    const result = await driver.actOnServerSide(story.meta.id, {
-      config: { device: story.config.device },
-      actions: story.config.actions,
-    });
+    const result = await withRetries(
+      () =>
+        driver.actOnServerSide(story.meta.id, {
+          config: { device: story.config.device },
+          actions: story.config.actions,
+        }),
+      story.config.retries,
+    );
 
     abort.throwIfAborted();
 
     onActed(story, result);
   });
+}
+
+async function withRetries(
+  act: () => Promise<WithPossibleError<TestResultDetails>>,
+  retries: number,
+) {
+  const result = await act();
+
+  if (retries === 0 || result.type === 'error') {
+    return result;
+  }
+
+  if (
+    result.data.screenshots.some((it) => it.result.type === 'fail') ||
+    result.data.records.type === 'fail'
+  ) {
+    return withRetries(act, retries - 1);
+  }
+
+  return result;
 }
 
 type OnActed = (

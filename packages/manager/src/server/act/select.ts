@@ -1,13 +1,14 @@
 import {
   ByLocator,
-  ByRole,
   FinderMeta,
   isNil,
-  RegExpMatcher,
+  JSONTextMatch,
+  TextMatch,
+  TextMatchOptions,
   WithAnd,
 } from '@storyshots/core';
 import { ByIndex, WithFilter } from '@storyshots/core/src';
-import { Frame, Locator, type Page } from 'playwright';
+import { Frame, Locator } from 'playwright';
 
 export function select(preview: Frame, on: FinderMeta): Locator {
   const beginning = byLocator(preview, on.beginning);
@@ -27,11 +28,25 @@ export function select(preview: Frame, on: FinderMeta): Locator {
 }
 
 function byIndex(element: Locator, finder: ByIndex) {
-  return element.nth(finder.at);
+  switch (finder.options.kind) {
+    case 'first':
+      return element.first();
+    case 'last':
+      return element.last();
+    case 'nth':
+      return element.nth(finder.options.at);
+  }
 }
 
-function withFilter(frame: Frame, element: Locator, finder: WithFilter) {
-  return element.filter({ has: select(frame, finder.has) });
+function withFilter(frame: Frame, element: Locator, filter: WithFilter) {
+  const parsed = toTextMatchOptions(filter.options);
+
+  return element.filter({
+    has: isNil(parsed.has) ? undefined : select(frame, parsed.has),
+    hasNot: isNil(parsed.hasNot) ? undefined : select(frame, parsed.hasNot),
+    hasText: parsed.hasText,
+    hasNotText: parsed.hasNotText,
+  });
 }
 
 function withAnd(frame: Frame, element: Locator, finder: WithAnd) {
@@ -45,47 +60,47 @@ function byLocator(element: Frame | Locator, finder: ByLocator): Locator {
     case 'role':
       return element.getByRole(
         finder.by.role,
-        fromRoleOptions(finder.by.options),
+        toTextMatchOptions(finder.by.options),
       );
     case 'text':
-      return element.getByText(fromMatcher(finder.by.text), finder.by.options);
+      return element.getByText(toTextMatch(finder.by.text), finder.by.options);
     case 'label':
-      return element.getByLabel(fromMatcher(finder.by.text), finder.by.options);
+      return element.getByLabel(toTextMatch(finder.by.text), finder.by.options);
     case 'placeholder':
       return element.getByPlaceholder(
-        fromMatcher(finder.by.text),
+        toTextMatch(finder.by.text),
         finder.by.options,
       );
     case 'alt-text':
       return element.getByAltText(
-        fromMatcher(finder.by.text),
+        toTextMatch(finder.by.text),
         finder.by.options,
       );
     case 'title':
-      return element.getByTitle(fromMatcher(finder.by.text), finder.by.options);
+      return element.getByTitle(toTextMatch(finder.by.text), finder.by.options);
   }
 }
 
-function fromMatcher(matcher: string | RegExpMatcher): string | RegExp {
-  if (typeof matcher === 'string') {
-    return matcher;
-  }
-
-  return new RegExp(matcher.source, matcher.flags);
-}
-
-function fromRoleOptions(
-  options: ByRole['options'],
-): Parameters<Page['getByRole']>[1] {
+function toTextMatchOptions<T extends Record<string, unknown> | undefined>(
+  options: T,
+): undefined extends T ? undefined : TextMatchOptions<T> {
   if (isNil(options)) {
-    return;
+    return undefined as never;
   }
 
-  const name = options.name;
+  return Object.fromEntries(
+    Object.entries(options).map(([key, value]) => [
+      key,
+      typeof value === 'object' &&
+      value !== null &&
+      'pattern' in value &&
+      'flags' in value
+        ? new RegExp(value.pattern as string, value.flags as string)
+        : value,
+    ]),
+  ) as never;
+}
 
-  if (isNil(name)) {
-    return options as Parameters<Page['getByRole']>[1];
-  }
-
-  return { ...options, name: fromMatcher(name) };
+function toTextMatch(text: JSONTextMatch): TextMatch {
+  return typeof text === 'string' ? text : new RegExp(text.pattern, text.flags);
 }

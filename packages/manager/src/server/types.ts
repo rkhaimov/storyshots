@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express';
 import { Capture } from './modules/capture';
 import { ImageComparator } from './modules/compare';
+
 import { Runner } from './modules/runner/types';
 
 export type PreviewServe = {

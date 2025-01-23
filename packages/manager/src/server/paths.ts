@@ -5,7 +5,7 @@ export const createManagerRootURL = (config: ManagerConfig) => {
   const url = new URL('http://localhost:6006');
 
   url.searchParams.set('manager', 'SECRET');
-  url.searchParams.set('agentsCount', `${config.runner.agentsCount}`);
+  url.searchParams.set('size', `${config.runner.size}`);
 
   return url;
 };

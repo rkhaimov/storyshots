@@ -6,6 +6,7 @@ export type StoryID = LeafNodeID;
 
 export type PureStory = LeafNode<{
   title: string;
+  retries(config: StoryConfig): number;
   act(actor: Actor, config: StoryConfig): Actor;
 }>;
 

@@ -1,13 +1,18 @@
 import { Page } from 'playwright';
+import { TestResultDetails } from '../../../reusables/runner/types';
+import { WithPossibleError } from '../../../reusables/types';
 import { Story } from '../../reusables/types';
 
 export type Runner = {
-  agentsCount: number;
-  run(): Promise<RunnerInstance>;
+  size: number;
+  create(): Promise<RunnerInstance>;
 };
 
 type RunnerInstance = {
-  allocate<T>(story: Story, task: (page: Page) => Promise<T>): Promise<T>;
-  busy(): boolean;
+  schedule(story: Story, task: Task): Promise<TaskResult>;
   close(): void;
 };
+
+export type Task = (page: Page) => Promise<TaskResult>;
+
+export type TaskResult = WithPossibleError<TestResultDetails>;

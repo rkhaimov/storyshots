@@ -10,6 +10,6 @@ export const config: Parameters<typeof runUI>[0] = {
     temp: path.join(process.cwd(), '..', '..', 'temp'),
   },
   preview: createPreviewServe(),
-  runner: RUNNER.cluster({ agentsCount: 4 }),
+  runner: RUNNER.pool({ agentsCount: 4 }),
   devtools,
 };

@@ -19,6 +19,7 @@ export type Group = IntermediateNode<
 
 export type Story<TExternals = unknown> = LeafNode<{
   title: string;
+  retries(config: StoryConfig): number;
   arrange(externals: TExternals, config: JournalStoryConfig): TExternals;
   act(actor: Actor, config: StoryConfig): Actor;
   render(externals: TExternals, config: StoryConfig): React.ReactNode;

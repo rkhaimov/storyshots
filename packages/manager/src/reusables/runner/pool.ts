@@ -1,10 +1,12 @@
+import { repeat } from '../repeat';
+
 export function pool(
   factories: ReadonlyArray<() => Promise<unknown>>,
   config: { size: number },
 ): Promise<unknown> {
   const state = Array.from(factories);
 
-  const workers = new Array(config.size).fill(undefined).map(work);
+  const workers = repeat(config.size, work);
 
   return Promise.all(workers);
 

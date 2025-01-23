@@ -1,4 +1,4 @@
-import { ClockCircleOutlined, LoadingOutlined } from '@ant-design/icons';
+import { HistoryOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import React from 'react';
 import styled from 'styled-components';
@@ -17,9 +17,7 @@ const _EntryActions: React.FC<Props> = (props) => {
   }
 
   if (props.status?.type === 'scheduled') {
-    return (
-      <Spin indicator={<ClockCircleOutlined style={{ fontSize: 14 }} />} />
-    );
+    return <Spin indicator={<HistoryOutlined style={{ fontSize: 16 }} />} />;
   }
 
   return <div className={props.className}>{props.children}</div>;

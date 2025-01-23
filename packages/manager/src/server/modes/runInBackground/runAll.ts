@@ -25,7 +25,7 @@ export async function runAll(
   await run({
     stories,
     abort: new AbortController().signal,
-    agentsCount: config.runner.agentsCount,
+    size: config.runner.size,
     onResult: withResultsRenderer(stories, (id, result) => {
       if (isOnRun(result)) {
         return;

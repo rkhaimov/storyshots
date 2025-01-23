@@ -4,6 +4,8 @@ state-shots - that is a good name
 
 # Functional improvements
 
+* Replace RunnableStoriesSuit with PureStory
+* Add pressSequentially
 * React-devtool duplicates roots
 * Write docs
 * Add story search
@@ -11,16 +13,22 @@ state-shots - that is a good name
 * Error should be linked to specific device
 * Handle non serializable entities for recorder
     * Examine how jest handles them
-* Add
-  recorder https://github.com/AndrewUsher/playwright-chrome-recorder https://github.com/AndrewUsher/playwright-recorder-extension
 * Accessibility checking https://github.com/abhinaba-ghosh/axe-playwright
 * AI Engine to turn text commands in playwright API https://github.com/zerostep-ai/zerostep
 * Add action modifiers and key shortcuts
   emulation https://stackoverflow.com/questions/59575748/puppeteer-how-to-click-element-so-it-opens-in-new-tab
+* Add recorder and improve pick mode (add clipboard copy)
+* Introduce detached machine background mode
+* expected changes on cross-cut elements make a lot of tests to fail, it is hard and error-prone to verify all
+    screenshots manually
+  * Failed shots can be analyzed and grouped with "similar" kinds of change to ease this task
+  * Algorithm of comparison is a key
+  * Diff might be generated as well to make this change much more obvious
 
 ## Low priority
 
 * Add baseline read button
+* Add recorder
 * Support HMR
 * Add todo meta function to `it` factory
 * Implement antd actor extensions package
@@ -55,11 +63,4 @@ playwright UI https://playwright.dev/docs/test-ui-mode
 
 * "waitForState" action, for example to determine when an element is hidden
     * There is always a possibility to replace any long async tasks with mocks using Externals object
-* option to configure action guards, for example to be able to click on hidden elements
-    * It is better to rely on true user experience, thus producing much more stable results
-* expected changes on cross-cut elements make a lot of tests to fail, it is hard and error-prone to verify all
-  screenshots manually
-    * Failed shots can be analyzed and grouped with "similar" kinds of change to ease this task
-    * Algorithm of comparison is a key
-    * Diff might be generated as well to make this change much more obvious
 * plain scroll is not necessary because there is scrollUntilVisible alternative

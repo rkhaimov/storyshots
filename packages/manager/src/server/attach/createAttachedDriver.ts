@@ -1,40 +1,17 @@
-import { ActionMeta } from '@storyshots/core';
 import { Application } from 'express-serve-static-core';
 import path from 'path';
 import { chromium, Page } from 'playwright';
-import { WithPossibleError } from '../reusables/types';
-import { act } from './act';
-import { handlePossibleErrors } from './handlers/reusables/handlePossibleErrors';
-import { toPreviewFrame } from './handlers/reusables/toPreviewFrame';
-import { createManagerRootURL } from './paths';
-import { ManagerConfig } from './types';
+import { createManagerRootURL } from '../paths';
+import { ManagerConfig } from '../types';
+import { createActHandler } from './createActHandler';
 
-export async function createUIAndConnectActor(
+export async function createAttachedDriver(
   app: Application,
   config: ManagerConfig,
 ) {
   const page = await openAppAndGetPage(config);
 
-  // TODO: Implement cancellation
-  app.post('/api/client/act', async (request, response) => {
-    const actions: ActionMeta[] = request.body;
-
-    const result: WithPossibleError<void> = await handlePossibleErrors(
-      async () => {
-        const preview = await toPreviewFrame(page);
-
-        for (const action of actions) {
-          if (action.action === 'screenshot') {
-            continue;
-          }
-
-          await act(preview, action);
-        }
-      },
-    );
-
-    response.json(result);
-  });
+  createActHandler(app, page);
 }
 
 async function openAppAndGetPage(config: ManagerConfig): Promise<Page> {

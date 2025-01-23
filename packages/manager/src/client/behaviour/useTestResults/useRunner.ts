@@ -8,7 +8,7 @@ import { TestResults } from './types';
 export function useRunner() {
   const [results, setResults] = useState<TestResults>(new Map());
   const abort = useAbort();
-  const agentsCount = useAgentsCount();
+  const size = usePoolSize();
 
   return {
     results,
@@ -19,7 +19,7 @@ export function useRunner() {
       return run({
         stories: tests,
         abort: abort.get(),
-        agentsCount,
+        size: size,
         onResult: (id, result) =>
           setResults((results) => new Map(results.set(id, result))),
       });
@@ -32,7 +32,7 @@ export function useRunner() {
 
       return run({
         stories: tests,
-        agentsCount,
+        size: size,
         abort: abort.get(),
         onResult: (id, result) =>
           setResults((results) => new Map(results.set(id, result))),
@@ -60,12 +60,12 @@ export function useRunner() {
   }
 }
 
-function useAgentsCount() {
+function usePoolSize() {
   const url = new URL(location.href);
 
-  const agentsCount = url.searchParams.get('agentsCount');
+  const size = url.searchParams.get('size');
 
-  return isNil(agentsCount) ? 1 : parseInt(agentsCount);
+  return isNil(size) ? 1 : parseInt(size);
 }
 
 function useAbort() {

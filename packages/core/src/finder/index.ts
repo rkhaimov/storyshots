@@ -1,4 +1,11 @@
-import { Finder, FinderMeta } from './types';
+import {
+  Finder,
+  FinderMeta,
+  JSONTextMatchOptions,
+  JSONTextMatch,
+  TextMatch,
+} from './types';
+import { isNil } from '../utils';
 
 export const finder = createFinder();
 
@@ -7,51 +14,74 @@ function createFinder(result: FinderMeta['consequent'] = []) {
     getByRole: (role, options) =>
       createFinder([
         ...result,
-        { type: 'locator', by: { type: 'role', role, options } },
+        {
+          type: 'locator',
+          by: { type: 'role', role, options: toJSONTextMatchOptions(options) },
+        },
       ]),
     getByText: (text, options) =>
       createFinder([
         ...result,
-        { type: 'locator', by: { type: 'text', text, options } },
+        {
+          type: 'locator',
+          by: { type: 'text', text: toJSONTextMatch(text), options },
+        },
       ]),
     getByPlaceholder: (text, options) =>
       createFinder([
         ...result,
-        { type: 'locator', by: { type: 'placeholder', text, options } },
+        {
+          type: 'locator',
+          by: { type: 'placeholder', text: toJSONTextMatch(text), options },
+        },
       ]),
     getByTitle: (text, options) =>
       createFinder([
         ...result,
-        { type: 'locator', by: { type: 'title', text, options } },
+        {
+          type: 'locator',
+          by: { type: 'title', text: toJSONTextMatch(text), options },
+        },
       ]),
     getByLabel: (text, options) =>
       createFinder([
         ...result,
-        { type: 'locator', by: { type: 'label', text, options } },
+        {
+          type: 'locator',
+          by: { type: 'label', text: toJSONTextMatch(text), options },
+        },
       ]),
     getByAltText: (text, options) =>
       createFinder([
         ...result,
-        { type: 'locator', by: { type: 'alt-text', text, options } },
+        {
+          type: 'locator',
+          by: { type: 'alt-text', text: toJSONTextMatch(text), options },
+        },
       ]),
-    getBySelector: (selector) =>
+    locator: (selector) =>
       createFinder([
         ...result,
         { type: 'locator', by: { type: 'selector', selector } },
       ]),
-    r: (pattern) => ({
-      flags: pattern.flags,
-      source: pattern.source,
-    }),
     get: (transformer) => transformer(finder),
-    has: (element) =>
-      createFinder([
+    filter: (options) => {
+      const converted = toJSONTextMatchOptions(options);
+
+      return createFinder([
         ...result,
         {
           type: 'filter',
-          has: element.__toMeta(),
+          options: {
+            ...converted,
+            has: isNil(converted.has) ? undefined : converted.has.__toMeta(),
+            hasNot: isNil(converted.hasNot)
+              ? undefined
+              : converted.hasNot.__toMeta(),
+          },
         },
-      ]),
+      ]);
+    },
     and: (selector) =>
       createFinder([
         ...result,
@@ -60,7 +90,15 @@ function createFinder(result: FinderMeta['consequent'] = []) {
           condition: selector.__toMeta(),
         },
       ]),
-    at: (index) => createFinder([...result, { type: 'index', at: index }]),
+    nth: (index) =>
+      createFinder([
+        ...result,
+        { type: 'index', options: { kind: 'nth', at: index } },
+      ]),
+    first: () =>
+      createFinder([...result, { type: 'index', options: { kind: 'first' } }]),
+    last: () =>
+      createFinder([...result, { type: 'index', options: { kind: 'last' } }]),
     __toMeta: () => {
       if (result.length === 0) {
         throw new Error('Finder selector cannot be empty');
@@ -82,4 +120,34 @@ function createFinder(result: FinderMeta['consequent'] = []) {
   };
 
   return finder;
+}
+
+// TODO: Simplify
+function toJSONTextMatchOptions<T extends Record<string, unknown> | undefined>(
+  options: T,
+): undefined extends T ? undefined : JSONTextMatchOptions<T> {
+  if (isNil(options)) {
+    return undefined as never;
+  }
+
+  return Object.fromEntries(
+    Object.entries(options).map(([key, value]) => [
+      key,
+      value instanceof RegExp
+        ? {
+            pattern: value.source,
+            flags: value.flags,
+          }
+        : value,
+    ]),
+  ) as never;
+}
+
+function toJSONTextMatch(text: TextMatch): JSONTextMatch {
+  return text instanceof RegExp
+    ? {
+        pattern: text.source,
+        flags: text.flags,
+      }
+    : text;
 }
