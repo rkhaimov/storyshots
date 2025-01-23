@@ -1,17 +1,18 @@
 import express from 'express';
 import { Application } from 'express-serve-static-core';
-import type { Baseline } from '../reusables/baseline';
-import { ManagerConfig } from '../reusables/types';
+import { ManagerConfig } from '../types';
 import { createAcceptRecordsHandler } from './createAcceptRecordsHandler';
 import { createAcceptScreenshotHandler } from './createAcceptScreenshotHandler';
 import { createActServerSideHandler } from './createActServerSideHandler';
 import { createImagePathHandler } from './createImagePathHandler';
+import { createBaseline } from './reusables/baseline';
 
-export function createApiHandlers(
+export async function createApiHandlers(
   app: Application,
-  baseline: Baseline,
   config: ManagerConfig,
 ) {
+  const baseline = await createBaseline(config);
+
   app.use(express.json());
 
   createAcceptScreenshotHandler(app, baseline);

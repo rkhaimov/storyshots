@@ -1,23 +1,22 @@
-import { ManagerConfig, PreviewServe } from './reusables/types';
+import { runInBackground as _runInBackground } from './modes/runInBackground';
 import { runUI as _runUI } from './modes/runUI';
-import { runTestsCI as _runCITests } from './modes/runTestsCI';
-import { STABILIZER } from './modules/stabilizer';
-import { COMPARATOR } from './modules/comparator';
+import { CAPTURE } from './modules/capture';
+import { COMPARE } from './modules/compare';
+import { RUNNER } from './modules/runner';
+import { ManagerConfig, PreviewServe } from './types';
 
-export type { ManagerConfig, PreviewServe } from './reusables/types';
-
-export { root } from './compiler/manager-root';
+export type { ManagerConfig, PreviewServe } from './types';
 
 type PublicConfig = Omit<
-  Optional<ManagerConfig, 'optimization' | 'compare'>,
+  Optional<ManagerConfig, 'runner' | 'compare' | 'capture'>,
   'createManagerCompiler'
 >;
 
 export const runUI = (config: PublicConfig) =>
   _runUI(fromOptimizedConfig(config));
 
-export const runTestsCI = async (config: PublicConfig) => {
-  const { run } = await _runCITests(fromOptimizedConfig(config));
+export const runInBackground = async (config: PublicConfig) => {
+  const { run } = await _runInBackground(fromOptimizedConfig(config));
 
   await run();
 
@@ -41,12 +40,12 @@ const mergeTwoServeHandlers = (
 
 function fromOptimizedConfig(config: PublicConfig): ManagerConfig {
   return {
-    optimization: {
-      agentsCount: 1,
-      retries: 0,
-      stabilize: STABILIZER.none,
-    },
-    compare: COMPARATOR.withLooksSame(),
+    compare: COMPARE.withLooksSame(),
+    capture: CAPTURE.stabilized({
+      attempts: 5,
+      interval: (attempt) => 100 * Math.pow(2, attempt),
+    }),
+    runner: RUNNER.singleton(),
     ...config,
   };
 }
@@ -54,5 +53,6 @@ function fromOptimizedConfig(config: PublicConfig): ManagerConfig {
 type Optional<TRecord, TKey extends keyof TRecord> = Omit<TRecord, TKey> &
   Partial<Pick<TRecord, TKey>>;
 
-export { STABILIZER } from './modules/stabilizer';
-export { COMPARATOR } from './modules/comparator';
+export { CAPTURE } from './modules/capture';
+export { COMPARE } from './modules/compare';
+export { RUNNER } from './modules/runner';

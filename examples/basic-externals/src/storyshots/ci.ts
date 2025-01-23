@@ -1,4 +1,4 @@
-import { runTestsCI } from '../../../../packages/manager/src';
+import { runInBackground } from '../../../../packages/manager/src';
 import { config } from './config';
 
-void runTestsCI(config);
+void runInBackground(config);

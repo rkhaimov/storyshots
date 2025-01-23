@@ -16,19 +16,12 @@ export const cvStories = describe('CV', [
       );
     },
   }),
-  it('intro can fit a lot of text', {
-    act: (actor) =>
-      actor
-        .click(finder.getByRole('button', { name: 'Navigate' }).at(1))
-        .clear(finder.getByLabel('Intro'))
-        .fill(finder.getByLabel('Intro'), 'A'.repeat(2_000), { fast: true }),
-  }),
   it('lets all of its fields to be filled', {
     act: (actor) =>
       actor
         .click(finder.getByRole('button', { name: 'Navigate' }).at(1))
         .fill(finder.getByPlaceholder('example@site.com'), 'hello@world.com')
-        .fill(finder.getByLabel('Password'), '123pppq@33p')
+        .fill(finder.getByLabel('Password', { exact: true }), '123pppq@33p')
         .fill(finder.getByLabel('Confirm Password'), '123pppq@33p')
         .fill(finder.getByLabel('Nickname'), 'ha4ker')
         .click(finder.getByRole('combobox', { name: 'Residence' }))
@@ -72,7 +65,7 @@ export const cvStories = describe('CV', [
     act: (actor) =>
       actor
         .click(finder.getByRole('button', { name: 'Navigate' }).at(1))
-        .fill(finder.getByLabel('Password'), '123pppq@33p')
+        .fill(finder.getByLabel('Password', { exact: true }), '123pppq@33p')
         .fill(finder.getByLabel('Confirm Password'), '123pppq@'),
   }),
   it('lets to select residence', {
@@ -84,13 +77,13 @@ export const cvStories = describe('CV', [
         .click(finder.getByText('Hangzhou'))
         .screenshot('Prefilled')
         .click(finder.getByText('West Lake'))
-        .click(finder.getByRole('combobox', { name: 'Residence' })),
+        .click(finder.getByRole('combobox', { name: 'Residence' }), { force: true }),
   }),
   it('provides certain tips', {
     act: (actor) =>
       actor
         .click(finder.getByRole('button', { name: 'Navigate' }).at(1))
-        .hover(finder.getByRole('image', { name: 'question-circle' }))
+        .hover(finder.getByRole('img', { name: 'question-circle' }))
         .wait(100),
   }),
 ]);

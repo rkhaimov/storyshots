@@ -1,3 +1,4 @@
+import convert from 'ansi-to-html';
 import { PureStory, PureStoryTree, TreeOP } from '@storyshots/core';
 import { Segmented } from 'antd';
 import React, { useState } from 'react';
@@ -59,7 +60,15 @@ export const StatusPaneArea: React.FC<UseBehaviourProps> = (props) => {
               onClick={() => props.setStory(story.id)}
             >
               <span style={{ fontWeight: 'bold' }}>{story.payload.title}</span>
-              <p style={{ margin: 0 }}>{result.message}</p>
+              <div
+                style={{ margin: 0 }}
+                dangerouslySetInnerHTML={{
+                  __html: new convert({
+                    escapeXML: true,
+                    newline: true,
+                  }).toHtml(result.message),
+                }}
+              />
             </StatusEntry>
           ))}
         </StatusEntries>
@@ -109,6 +118,8 @@ function toAllErrors(
 }
 
 const Pane = styled.div`
+  display: flex;
+  flex-direction: column;
   border-top: 1px solid rgb(206, 206, 206);
   height: 30vh;
 `;
@@ -133,6 +144,7 @@ const TabPanes = styled(Segmented)`
 `;
 
 const StatusEntries = styled.ul`
+  overflow: auto;
   list-style-type: none;
   padding: 0;
   margin: 0;

@@ -1,13 +1,5 @@
 {
   "balance__shows_current_salary": [],
-  "balance__provides_ability_to_work_hard": [
-    {
-      "method": "log",
-      "args": [
-        "worked hard"
-      ]
-    }
-  ],
   "balance__lets_user_to_relax_and_spend_money": [
     {
       "method": "log",
@@ -19,6 +11,14 @@
       "method": "log",
       "args": [
         "relaxed a little"
+      ]
+    }
+  ],
+  "balance__provides_ability_to_work_hard": [
+    {
+      "method": "log",
+      "args": [
+        "worked hard"
       ]
     }
   ],

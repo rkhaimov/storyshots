@@ -5,14 +5,10 @@ state-shots - that is a good name
 # Functional improvements
 
 * React-devtool duplicates roots
-* Pool should be the size of agentsCount
 * Write docs
 * Add story search
     * Should work like live filter on groups and story contents
 * Error should be linked to specific device
-* Text matching strategy must be systematic across selectors
-    * Text should match by substring by default, case-insensitive
-    * Add possibility to use regexp
 * Handle non serializable entities for recorder
     * Examine how jest handles them
 * Add
@@ -31,7 +27,6 @@ state-shots - that is a good name
 * Implement antd finder extensions package
 * Rename story or group utility
     * It is relatively hard to rename them manually
-* Add action guards tests
 
 # Structural improvements
 

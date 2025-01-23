@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node src/storyshots/ui.ts",
-    "ci": "ts-node src/storyshots/ci.ts"
+    "ci": "ts-node src/storyshots/ci.ts",
+    "debug": "node --inspect-brk ../../node_modules/ts-node/dist/bin.js src/storyshots/ui.ts"
   }
 }

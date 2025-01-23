@@ -17,15 +17,15 @@ export const createActor = (meta: ActionMeta[] = []): Actor => {
           payload: { on: on.__toMeta(), text, options },
         },
       ]),
-    hover: (on) =>
+    hover: (on, options) =>
       createActor([
         ...meta,
-        { action: 'hover', payload: { on: on.__toMeta() } },
+        { action: 'hover', payload: { on: on.__toMeta(), options } },
       ]),
-    select: (on, ...values) =>
+    select: (on, values, options) =>
       createActor([
         ...meta,
-        { action: 'select', payload: { on: on.__toMeta(), values } },
+        { action: 'select', payload: { on: on.__toMeta(), values, options } },
       ]),
     uploadFile: (chooser, ...paths) =>
       createActor([
@@ -35,10 +35,20 @@ export const createActor = (meta: ActionMeta[] = []): Actor => {
           payload: { chooser: chooser.__toMeta(), paths },
         },
       ]),
-    scrollTo: (to) =>
+    scrollTo: (to, options) =>
       createActor([
         ...meta,
-        { action: 'scrollTo', payload: { on: to.__toMeta() } },
+        { action: 'scrollTo', payload: { on: to.__toMeta(), options } },
+      ]),
+    clear: (on, options) =>
+      createActor([
+        ...meta,
+        { action: 'clear', payload: { on: on.__toMeta(), options } },
+      ]),
+    highlight: (on) =>
+      createActor([
+        ...meta,
+        { action: 'highlight', payload: { on: on.__toMeta() } },
       ]),
     wait: (ms) => createActor([...meta, { action: 'wait', payload: { ms } }]),
     screenshot: (name) =>
@@ -64,13 +74,14 @@ export const createActor = (meta: ActionMeta[] = []): Actor => {
         ...meta,
         { action: 'keyboard', payload: { type: 'up', input } },
       ]),
-    clear: (on) =>
-      actor
-        .click(on)
-        .down('ControlLeft')
-        .press('A')
-        .press('Backspace')
-        .up('ControlLeft'),
+    drag: (draggable, to) =>
+      createActor([
+        ...meta,
+        {
+          action: 'drag',
+          payload: { draggable: draggable.__toMeta(), to: to.__toMeta() },
+        },
+      ]),
     do: (transform) => transform(actor),
     stop: () => createIdleActor(actor),
     toMeta: () => {
@@ -130,6 +141,8 @@ function createIdleActor(from: Actor): Actor {
     wait: () => idle,
     uploadFile: () => idle,
     clear: () => idle,
+    highlight: () => idle,
+    drag: () => idle,
     toMeta: () => from.toMeta(),
   };
 

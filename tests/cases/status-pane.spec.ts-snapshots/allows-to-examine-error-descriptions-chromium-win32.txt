@@ -5,8 +5,14 @@
       "payload": {
         "on": {
           "beginning": {
-            "type": "selector",
-            "on": "::-p-aria([role=\"button\"][name=\"Pet\"])"
+            "type": "locator",
+            "by": {
+              "type": "role",
+              "role": "button",
+              "options": {
+                "name": "Pet"
+              }
+            }
           },
           "consequent": []
         }

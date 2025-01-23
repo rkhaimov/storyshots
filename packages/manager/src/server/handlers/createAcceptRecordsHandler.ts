@@ -1,7 +1,7 @@
 import { TreeOP } from '@storyshots/core';
 import { Application } from 'express-serve-static-core';
 import { DeviceAndRecord } from '../../reusables/types';
-import { Baseline } from '../reusables/baseline';
+import { Baseline } from './reusables/baseline';
 
 export function createAcceptRecordsHandler(
   app: Application,

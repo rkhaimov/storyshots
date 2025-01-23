@@ -1,6 +1,6 @@
 import { Application } from 'express-serve-static-core';
 import { ScreenshotToAccept } from '../../reusables/types';
-import { Baseline } from '../reusables/baseline';
+import { Baseline } from './reusables/baseline';
 
 export function createAcceptScreenshotHandler(
   app: Application,
