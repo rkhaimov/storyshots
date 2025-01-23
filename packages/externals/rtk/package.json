@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/rtk-externals",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Utilities to create testable rtk endpoints",
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
@@ -20,7 +20,7 @@
   "peerDependencies": {
     "@reduxjs/toolkit": "*",
     "@rtk-query/codegen-openapi": "*",
-    "@storyshots/manager": "0.0.8",
+    "@storyshots/manager": "0.0.9",
     "react-redux": "*"
   }
 }
