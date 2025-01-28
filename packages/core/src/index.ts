@@ -2,7 +2,6 @@ export * from './brand';
 export * from './screenshot';
 export * from './story';
 export * from './tree';
-export * from './tree';
 export * from './channel';
 export * from './utils';
 export * from './test-config';

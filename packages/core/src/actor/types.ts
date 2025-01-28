@@ -124,7 +124,7 @@ export type FillAction = {
   payload: {
     on: FinderMeta;
     text: string;
-    options?: Parameters<Locator['fill']>[1] & { fast: boolean };
+    options?: Parameters<Locator['fill']>[1];
   };
 };
 

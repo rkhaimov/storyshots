@@ -1,8 +1,6 @@
-import { cluster } from './cluster';
-import { singleton } from './singleton';
+import { pool } from './pool';
 
 export const RUNNER = {
-  cluster,
-  singleton,
+  pool,
 };
 

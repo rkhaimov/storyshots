@@ -19,7 +19,7 @@ export function createConfigAndCleanup(
   }
 
   return {
-    runner: RUNNER.singleton(),
+    runner: RUNNER.pool({ agentsCount: 1 }),
     capture: CAPTURE.instantly(),
     compare: COMPARE.withLooksSame(),
     paths: {

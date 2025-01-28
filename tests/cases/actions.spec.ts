@@ -264,7 +264,7 @@ test('can do right mouse button click', {
 test('can hover an element', {
   preview: preview().stories(({ it, createElement, finder, useState }) => [
     it('pets are great', {
-      act: (actor) => actor.hover(finder.getBySelector('span')),
+      act: (actor) => actor.hover(finder.locator('span')),
       render: () => {
         const [submitted, setSubmitted] = useState(false);
 

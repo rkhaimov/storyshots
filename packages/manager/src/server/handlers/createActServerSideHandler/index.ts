@@ -9,12 +9,12 @@ export async function createActServerSideHandler(
   baseline: Baseline,
   config: ManagerConfig,
 ) {
-  const runner = await config.runner.run();
+  const runner = await config.runner.create();
 
   app.post('/api/server/act/:id', async (request, response) => {
     const story = parseStory(request);
 
-    const result = await runner.allocate(story, (page) =>
+    const result = await runner.schedule(story, (page) =>
       createTestResults({ story, config, baseline }, page),
     );
 

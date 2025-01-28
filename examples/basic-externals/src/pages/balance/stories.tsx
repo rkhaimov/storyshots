@@ -4,7 +4,7 @@ import { describe, it } from '../../storyshots/preview/config';
 export const balanceStories = describe('Balance', [
   it('shows current salary', {
     act: (actor) =>
-      actor.click(finder.getByRole('button', { name: 'Navigate' }).at(0)),
+      actor.click(finder.getByRole('button', { name: 'Navigate' }).nth(0)),
   }),
   it('provides ability to work hard', {
     act: (actor) =>
@@ -12,7 +12,7 @@ export const balanceStories = describe('Balance', [
         .click(
           finder
             .getByRole('listitem')
-            .has(finder.getByText('Balance'))
+            .filter({ has: finder.getByText('Balance') })
             .getByRole('button', { name: 'Navigate' }),
         )
         .click(finder.getByRole('button', { name: 'Work hard' })),
@@ -20,7 +20,7 @@ export const balanceStories = describe('Balance', [
   it('lets user to relax and spend money', {
     act: (actor) =>
       actor
-        .click(finder.getByRole('button', { name: 'Navigate' }).at(0))
+        .click(finder.getByRole('button', { name: 'Navigate' }).nth(0))
         .click(finder.getByRole('button', { name: 'Work hard' }))
         .screenshot('Incremented')
         .click(finder.getByRole('button', { name: 'Relax' })),
@@ -34,7 +34,7 @@ export const balanceStories = describe('Balance', [
       },
     }),
     act: (actor) =>
-      actor.click(finder.getByRole('button', { name: 'Navigate' }).at(0)),
+      actor.click(finder.getByRole('button', { name: 'Navigate' }).nth(0)),
   }),
   it('balance can be different by default', {
     arrange: (externals) => ({
@@ -45,7 +45,7 @@ export const balanceStories = describe('Balance', [
       },
     }),
     act: (actor) =>
-      actor.click(finder.getByRole('button', { name: 'Navigate' }).at(0)),
+      actor.click(finder.getByRole('button', { name: 'Navigate' }).nth(0)),
   }),
   it('provides correct date when retrieving current balance', {
     arrange: (externals, { journal }) => ({
@@ -59,6 +59,6 @@ export const balanceStories = describe('Balance', [
       },
     }),
     act: (actor) =>
-      actor.click(finder.getByRole('button', { name: 'Navigate' }).at(0)),
+      actor.click(finder.getByRole('button', { name: 'Navigate' }).nth(0)),
   }),
 ]);

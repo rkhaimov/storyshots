@@ -1,18 +1,18 @@
-import { SlidersOutlined } from '@ant-design/icons';
+import { EyeOutlined, SlidersOutlined } from '@ant-design/icons';
 import { Device, PureStoryTree, TreeOP } from '@storyshots/core';
 import { Checkbox, Form, Select } from 'antd';
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { isOnRun } from '../../../reusables/runner/isOnRun';
 import { UseBehaviourProps } from '../../behaviour/types';
+import { ReadySelection } from '../../behaviour/useSelection/types';
 import { EntryAction } from '../reusables/EntryAction';
 import { getStoryEntryStatus } from '../reusables/getStoryEntryStatus';
 import { RunAction } from '../reusables/RunAction';
 import { RunCompleteAction } from '../reusables/RunCompleteAction';
-import { ReadySelection } from '../../behaviour/useSelection/types';
-import { EntryHeader } from './EntryHeader';
 import { EntryActions } from './EntryActions';
+import { EntryHeader } from './EntryHeader';
 import { StopAction } from './StopAction';
-import { isOnRun } from '../../../reusables/runner/isOnRun';
 
 export type Props = UseBehaviourProps & {
   stories: PureStoryTree[];
@@ -27,6 +27,7 @@ export const TopBar: React.FC<Props> = ({
   selection,
   results,
   setConfig,
+  highlight,
   toggleStatusPane,
 }) => {
   const [opened, setOpened] = useState(false);
@@ -53,6 +54,7 @@ export const TopBar: React.FC<Props> = ({
             selection={selection}
             runComplete={runComplete}
           />
+          <PickLocatorAction onPick={highlight.toggle} />
           <ToggleConfigPaneAction onToggle={() => setOpened((prev) => !prev)} />
         </EntryActions>
       </EntryHeader>
@@ -118,6 +120,14 @@ function renderStatusText(
 
   return `${passed}/${total} passed (${((passed / total) * 100).toFixed()}%)`;
 }
+
+const PickLocatorAction: React.FC<{ onPick(): void }> = ({ onPick }) => (
+  <EntryAction
+    label="Pick locator"
+    icon={<EyeOutlined />}
+    action={onPick}
+  />
+);
 
 const ToggleConfigPaneAction: React.FC<{ onToggle(): void }> = ({
   onToggle,
