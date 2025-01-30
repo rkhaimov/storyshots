@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { APIType } from './types';
 
-export const ReplaceRtkAPI: React.FC<
+export const RtkAPIReplacer: React.FC<
   React.PropsWithChildren<{
     endpoints: Record<string, (input: never) => unknown>;
     api: APIType;

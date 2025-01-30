@@ -6,7 +6,7 @@ type Props = {
   handlers: Parameters<typeof setupWorker>;
 };
 
-export const MSWExternals: React.FC<React.PropsWithChildren<Props>> = ({
+export const MSWReplacer: React.FC<React.PropsWithChildren<Props>> = ({
   handlers,
   children,
 }) => {

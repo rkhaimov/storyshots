@@ -1,4 +1,4 @@
-export { ReplaceRtkAPI } from './ReplaceRtkAPI';
+export { RtkAPIReplacer } from './RtkAPIReplacer';
 
 export {
   mockedBaseQuery,

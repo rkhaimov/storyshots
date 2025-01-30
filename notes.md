@@ -4,8 +4,9 @@ state-shots - that is a good name
 
 # Functional improvements
 
+* HMR on actions, highlight when several matches, each function
 * React-devtool duplicates roots
-* Write docs
+* Write docs (including all sub packages)
 * Add story search
     * Should work like live filter on groups and story contents
 * Error should be linked to specific device

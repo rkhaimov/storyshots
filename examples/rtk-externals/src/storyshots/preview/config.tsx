@@ -1,5 +1,5 @@
 import { createPreviewApp } from '@storyshots/react-preview';
-import { ReplaceRtkAPI } from '@storyshots/rtk-externals';
+import { RtkAPIReplacer } from '@storyshots/rtk-externals';
 import React from 'react';
 import { api } from '../../externals';
 import {
@@ -40,9 +40,9 @@ const it = (title: Parameters<typeof _it>[0], config: RenderBoundConfig) =>
   _it(title, {
     ...config,
     render: (endpoints) => (
-      <ReplaceRtkAPI api={api} endpoints={endpoints}>
+      <RtkAPIReplacer api={api} endpoints={endpoints}>
         <PureApp />
-      </ReplaceRtkAPI>
+      </RtkAPIReplacer>
     ),
   });
 
