@@ -1,5 +1,6 @@
 import { ActionMeta, assertIsNever, ScreenshotAction } from '@storyshots/core';
 import { Frame } from 'playwright';
+import { doBlur } from './actions/doBlur';
 import { doClear } from './actions/doClear';
 import { doClick } from './actions/doClick';
 import { doDrag } from './actions/doDrag';
@@ -7,6 +8,7 @@ import { doFill } from './actions/doFill';
 import { doHighlight } from './actions/doHighlight';
 import { doHover } from './actions/doHover';
 import { doKeyboard } from './actions/doKeyboard';
+import { doPressSequentially } from './actions/doPressSequentially';
 import { doScrollTo } from './actions/doScrollTo';
 import { doSelect } from './actions/doSelect';
 import { doUploadFile } from './actions/doUpload';
@@ -39,6 +41,10 @@ export async function act(
       return doHighlight(preview, action);
     case 'drag':
       return doDrag(preview, action);
+    case 'blur':
+      return doBlur(preview, action);
+    case 'pressSequentially':
+      return doPressSequentially(preview, action);
   }
 
   assertIsNever(action);

@@ -82,6 +82,19 @@ export const createActor = (meta: ActionMeta[] = []): Actor => {
           payload: { draggable: draggable.__toMeta(), to: to.__toMeta() },
         },
       ]),
+    blur: (on, options) =>
+      createActor([
+        ...meta,
+        { action: 'blur', payload: { on: on.__toMeta(), options } },
+      ]),
+    pressSequentially: (on, text, options) =>
+      createActor([
+        ...meta,
+        {
+          action: 'pressSequentially',
+          payload: { on: on.__toMeta(), text, options },
+        },
+      ]),
     do: (transform) => transform(actor),
     stop: () => createIdleActor(actor),
     toMeta: () => {
@@ -143,6 +156,8 @@ function createIdleActor(from: Actor): Actor {
     clear: () => idle,
     highlight: () => idle,
     drag: () => idle,
+    blur: () => idle,
+    pressSequentially: () => idle,
     toMeta: () => from.toMeta(),
   };
 

@@ -85,6 +85,18 @@ export type Actor = {
    */
   drag(draggable: Finder, to: Finder): Actor;
   /**
+   * https://playwright.dev/docs/api/class-locator#locator-blur
+   */
+  blur(on: Finder, options?: BlurAction['payload']['options']): Actor;
+  /**
+   * https://playwright.dev/docs/api/class-locator#locator-press-sequentially
+   */
+  pressSequentially(
+    on: Finder,
+    text: string,
+    options?: BlurAction['payload']['options'],
+  ): Actor;
+  /**
    * Allows to compose different complex scenarios on actor.
    *
    * @example
@@ -108,6 +120,23 @@ export type HoverAction = {
   payload: {
     on: FinderMeta;
     options?: Parameters<Locator['hover']>[0];
+  };
+};
+
+export type BlurAction = {
+  action: 'blur';
+  payload: {
+    on: FinderMeta;
+    options?: Parameters<Locator['blur']>[0];
+  };
+};
+
+export type PressSequentiallyAction = {
+  action: 'pressSequentially';
+  payload: {
+    on: FinderMeta;
+    text: string;
+    options?: Parameters<Locator['pressSequentially']>[1];
   };
 };
 
@@ -211,4 +240,6 @@ export type ActionMeta =
   | KeyboardAction
   | ClearAction
   | HighlightAction
-  | DragAction;
+  | DragAction
+  | BlurAction
+  | PressSequentiallyAction;
