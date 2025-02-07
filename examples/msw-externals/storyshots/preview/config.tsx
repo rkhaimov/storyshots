@@ -1,13 +1,13 @@
+import { MSWReplacer, native } from '@storyshots/msw-externals';
 import { createPreviewApp } from '@storyshots/react-preview';
-import { RtkAPIReplacer } from '@storyshots/rtk-externals';
+import { HttpResponse } from 'msw';
 import React from 'react';
-import { api } from '../../externals';
+import { PureApp } from '../../src/PureApp';
 import {
   createJournalExternals,
   createMockExternals,
   Externals,
-} from '../../externals/testing';
-import { PureApp } from '../../PureApp';
+} from '../externals';
 
 const {
   run,
@@ -39,10 +39,15 @@ const {
 const it = (title: Parameters<typeof _it>[0], config: RenderBoundConfig) =>
   _it(title, {
     ...config,
-    render: (endpoints) => (
-      <RtkAPIReplacer api={api} endpoints={endpoints}>
+    render: (externals) => (
+      <MSWReplacer
+        endpoints={externals.endpoints}
+        onUnknownEndpoint={() =>
+          native(new HttpResponse(null, { status: 404 }))
+        }
+      >
         <PureApp />
-      </RtkAPIReplacer>
+      </MSWReplacer>
     ),
   });
 

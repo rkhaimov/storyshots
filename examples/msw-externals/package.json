@@ -1,12 +1,12 @@
 {
-  "name": "rtk-externals",
+  "name": "msw-externals",
   "version": "0.0.0",
   "main": "index.js",
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
   "scripts": {
     "start": "webpack serve --open",
-    "test": "ts-node src/storyshots/ui.ts",
+    "test": "ts-node storyshots/ui.ts",
     "codegen": "ts-node codegen/generator.ts"
   }
 }

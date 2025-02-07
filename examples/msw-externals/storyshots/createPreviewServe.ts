@@ -1,5 +1,6 @@
 import { createWebpackBundler } from '@storyshots/webpack-bundler';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import TSPlugin from 'fork-ts-checker-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
 
@@ -52,8 +53,12 @@ export function createPreviewServe() {
     },
     plugins: [
       new HtmlWebpackPlugin(),
+      new TSPlugin({
+        async: true,
+        typescript: { configFile: path.join(process.cwd(), '..', '..', 'tsconfig.json') },
+      }),
       new webpack.DefinePlugin({
-        'process.env': { NODE_ENV: '"development"', TESTING: true },
+        'process.env': { NODE_ENV: '"development"' },
       }),
     ],
   });

@@ -1,0 +1,22 @@
+{
+  "handles_adding_error": [
+    {
+      "method": "addPet",
+      "args": [
+        {
+          "query": {},
+          "params": {},
+          "body": {
+            "name": "Ilya",
+            "tags": [
+              {
+                "name": "crazy"
+              }
+            ],
+            "photoUrls": []
+          }
+        }
+      ]
+    }
+  ]
+}
