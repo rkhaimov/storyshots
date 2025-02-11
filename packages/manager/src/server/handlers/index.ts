@@ -6,6 +6,7 @@ import { createAcceptScreenshotHandler } from './createAcceptScreenshotHandler';
 import { createActServerSideHandler } from './createActServerSideHandler';
 import { createImagePathHandler } from './createImagePathHandler';
 import { createBaseline } from './reusables/baseline';
+import { regexpJSONReviver } from '../../reusables/regexpJSON';
 
 export async function createApiHandlers(
   app: Application,
@@ -13,7 +14,7 @@ export async function createApiHandlers(
 ) {
   const baseline = await createBaseline(config);
 
-  app.use(express.json());
+  app.use(express.json({ reviver: regexpJSONReviver }));
 
   createAcceptScreenshotHandler(app, baseline);
   createAcceptRecordsHandler(app, baseline);

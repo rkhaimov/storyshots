@@ -1,5 +1,5 @@
 import { ScreenshotAction } from '@storyshots/core';
-import { ScreenshotsComparisonResult } from '../../../../../reusables/runner/types';
+import { ScreenshotComparisonResult } from '../../../../../reusables/runner/types';
 import { Screenshot } from '../../../../../reusables/types';
 import { ExpectedPayload } from '../types';
 import { createActualScreenshotPath } from './createActualScreenshotPath';
@@ -9,13 +9,11 @@ export async function createFailResult(
   action: ScreenshotAction,
   actual: Buffer,
   expected: Screenshot,
-): Promise<ScreenshotsComparisonResult> {
+): Promise<ScreenshotComparisonResult> {
   return {
     name: action.payload.name,
-    result: {
-      type: 'fail',
-      actual: await createActualScreenshotPath(payload, action, actual),
-      expected: expected.path,
-    },
+    type: 'fail',
+    actual: await createActualScreenshotPath(payload, action, actual),
+    expected: expected.path,
   };
 }

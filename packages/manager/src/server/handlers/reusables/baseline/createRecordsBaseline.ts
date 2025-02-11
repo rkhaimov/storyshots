@@ -1,9 +1,9 @@
-import { Device, JournalRecord, StoryID, TreeOP } from '@storyshots/core';
+import { Device, JournalRecord, parseStoryID, StoryID } from '@storyshots/core';
 import path from 'path';
-import { DeviceAndRecord } from '../../../../reusables/types';
 
 import { ManagerConfig } from '../../../types';
 import { exists, mkdir, mkfile, read } from './utils';
+import { AcceptableRecords } from '../../../../reusables/runner/types';
 
 export async function createRecordsBaseline(config: ManagerConfig) {
   return {
@@ -17,13 +17,14 @@ export async function createRecordsBaseline(config: ManagerConfig) {
     },
     acceptRecords: async (
       id: StoryID,
-      { records, device }: DeviceAndRecord,
+      device: Device,
+      records: AcceptableRecords,
     ) => {
       const baseline = await getRecordsMap(id, device);
 
       return updateRecordsMap(id, device, {
         ...baseline,
-        [id]: records,
+        [id]: records.actual,
       });
     },
   };
@@ -60,11 +61,9 @@ export async function createRecordsBaseline(config: ManagerConfig) {
 }
 
 function getRecordsMapFileName(id: StoryID, device: Device): string {
-  const parents = TreeOP.parseInterNodeIDsChain(id);
+  const name = parseStoryID(id).at(-1) ?? id;
 
-  const last = parents[parents.length - 1];
-
-  return path.join(device.name, `${last ?? id}.json`);
+  return path.join(device.name, `${name}.json`);
 }
 
 type StoryIDToRecords = Record<StoryID, JournalRecord[]>;

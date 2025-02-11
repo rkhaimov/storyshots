@@ -15,6 +15,7 @@ export function createWorkerSupplier(
 
       return next();
     },
+    cleanup: async () => {},
     onUpdate: () => {},
   };
 }

@@ -6,12 +6,13 @@ import {
   ScreenshotSelection,
 } from './behaviour/useSelection/types';
 
-type Props = Omit<ReplayPreviewProps, 'style'>;
+type Props = Omit<ReplayPreviewProps, 'style'> &
+  Pick<UseBehaviourProps, 'emulated' | 'device'>;
 
 export const EmulatedReplayPreview: React.FC<Props> = (props) => {
   const { selection } = props;
 
-  if (selection.type === 'initializing' || !selection.config.emulated) {
+  if (selection.type === 'initializing' || !props.emulated) {
     return <ReplayPreview {...props} />;
   }
 
@@ -20,8 +21,8 @@ export const EmulatedReplayPreview: React.FC<Props> = (props) => {
       <ReplayPreview
         {...props}
         style={{
-          width: `${selection.config.device.config.width}px`,
-          height: `${selection.config.device.config.height}px`,
+          width: `${props.device.preview.config.width}px`,
+          height: `${props.device.preview.config.height}px`,
           margin: 'auto',
           border: '1px solid rgb(206, 206, 206)',
         }}

@@ -1,6 +1,5 @@
+import { GroupID, parseStoryID, PureGroup } from '@storyshots/core';
 import { useEffect, useState } from 'react';
-import { GroupID } from '../../reusables/types';
-import { PureGroup, TreeOP } from '@storyshots/core';
 import { Selection } from './useSelection/types';
 
 export function useGroupExpand(selection: Selection) {
@@ -9,18 +8,14 @@ export function useGroupExpand(selection: Selection) {
   useEffect(() => {
     if (selection.type === 'story') {
       setExpanded(
-        (curr) =>
-          new Set([
-            ...curr,
-            ...TreeOP.parseInterNodeIDsChain(selection.story.id),
-          ]),
+        (curr) => new Set([...curr, ...parseStoryID(selection.story.id)]),
       );
     }
   }, [selection]);
 
   return {
     expanded,
-    toggleGroupExpanded: (group: PureGroup) =>
+    toggleExpanded: (group: PureGroup) =>
       setExpanded((prev) => {
         if (prev.has(group.id)) {
           prev.delete(group.id);

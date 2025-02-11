@@ -1,13 +1,13 @@
 import { Application } from 'express-serve-static-core';
-import { ScreenshotToAccept } from '../../reusables/types';
 import { Baseline } from './reusables/baseline';
+import { AcceptableScreenshot } from '../../reusables/runner/types';
 
 export function createAcceptScreenshotHandler(
   app: Application,
   baseline: Baseline,
 ) {
   app.post('/api/screenshot/accept', async (request, response) => {
-    const screenshot: ScreenshotToAccept = request.body;
+    const screenshot: AcceptableScreenshot = request.body;
 
     await baseline.acceptScreenshot(screenshot.actual);
 

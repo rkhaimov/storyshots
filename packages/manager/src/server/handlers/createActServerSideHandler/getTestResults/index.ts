@@ -1,16 +1,15 @@
 import { isNil } from '@storyshots/core';
 import {
   RecordsComparisonResult,
-  TestResultDetails,
+  TestRunResult,
 } from '../../../../reusables/runner/types';
 import { ActualResults } from '../getActualResults';
 import { ExpectedPayload } from '../getActualResults/types';
 
 export async function getTestResults(
   payload: FinalPayload,
-): Promise<TestResultDetails> {
+): Promise<TestRunResult> {
   return {
-    device: payload.story.payload.config.device,
     records: await createRecordsComparisonResult(payload),
     screenshots: payload.actual.screenshots,
   };

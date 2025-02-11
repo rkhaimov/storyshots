@@ -1,21 +1,20 @@
 import { blue } from '@ant-design/colors';
 import { ProfileOutlined } from '@ant-design/icons';
 import React from 'react';
-import { TestResultDetails } from '../../../reusables/runner/types';
 import { ActiveEntryHeader } from '../reusables/EntryHeader';
-import { HighlightableEntry } from '../reusables/EntryStatus';
-import { Props as ParentProps } from './types';
+import { HighlightableEntry } from '../reusables/HighlightableEntry';
+import { DeviceToTestRunResult, Props as ParentProps } from './types';
 
-type Props = { details: TestResultDetails } & Pick<
+type Props = { result: DeviceToTestRunResult } & Pick<
   ParentProps,
   'setRecords' | 'story' | 'level' | 'selection'
 >;
 
 export const RecordsEntry: React.FC<Props> = ({
   story,
-  selection,
   level,
-  details,
+  result,
+  selection,
   setRecords,
 }) => {
   return (
@@ -27,12 +26,12 @@ export const RecordsEntry: React.FC<Props> = ({
         $color={blue[0]}
         role="menuitem"
         aria-label="Records"
-        onClick={() => setRecords(story.id, details.device.name)}
+        onClick={() => setRecords(story.id, result.device.name)}
       >
         <HighlightableEntry
           title="Records"
           left={<ProfileOutlined style={{ marginRight: 4 }} />}
-          status={details.records.type}
+          status={result.details.records.type}
         />
       </ActiveEntryHeader>
     </>
@@ -42,7 +41,7 @@ export const RecordsEntry: React.FC<Props> = ({
     return (
       selection.type === 'records' &&
       selection.story.id === story.id &&
-      selection.device === details.device.name
+      selection.device === result.device
     );
   }
 };

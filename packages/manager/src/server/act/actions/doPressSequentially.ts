@@ -1,6 +1,6 @@
 import { PressSequentiallyAction } from '@storyshots/core';
 import { Frame } from 'playwright';
-import { select } from '../select';
+import { select } from '../../select';
 
 export async function doPressSequentially(
   preview: Frame,

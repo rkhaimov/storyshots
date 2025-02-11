@@ -6,10 +6,5 @@ export async function createActualScreenshotPath(
   action: ScreenshotAction,
   actual: Buffer,
 ) {
-  return baseline.createActualScreenshot(
-    story.id,
-    story.payload.config,
-    action.payload.name,
-    actual,
-  );
+  return baseline.createActualScreenshot(story, action.payload.name, actual);
 }

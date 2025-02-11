@@ -5,8 +5,14 @@ import dev from 'webpack-dev-middleware';
 export function createWebpackBundler(config: Configuration): PreviewServe {
   const compiler = webpack(config);
 
+  const middleware = dev(compiler);
+
   return {
-    handler: dev(compiler),
+    handler: middleware,
+    cleanup: () =>
+      new Promise<void>((resolve, reject) =>
+        middleware.close((error) => (error ? reject(error) : resolve())),
+      ),
     onUpdate: (handler) =>
       compiler.hooks.done.tap('PreviewUpdate', (stats) => handler(stats.hash)),
   };

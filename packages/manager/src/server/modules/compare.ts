@@ -11,10 +11,8 @@ function withLooksSame(options: LooksSameOptions = {}): ImageComparator {
     expected,
     {
       payload: {
-        config: {
-          device: {
-            config: { deviceScaleFactor },
-          },
+        device: {
+          config: { deviceScaleFactor },
         },
       },
     },

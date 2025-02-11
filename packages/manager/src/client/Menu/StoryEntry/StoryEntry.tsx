@@ -1,135 +1,101 @@
 import { blue } from '@ant-design/colors';
-import { CheckOutlined } from '@ant-design/icons';
 import { isNil } from '@storyshots/core';
 import React from 'react';
 import styled from 'styled-components';
-import { EntryAction } from '../reusables/EntryAction';
+import { DeviceToTestRunState } from '../../../reusables/runner/types';
+import { AcceptAction } from '../reusables/AcceptAction';
 import { EntryActions } from '../reusables/EntryActions';
 import { ActiveEntryHeader, EntryHeader } from '../reusables/EntryHeader';
-import { HighlightableEntry } from '../reusables/EntryStatus';
 import { EntryTitle } from '../reusables/EntryTitle';
-import { getStoryEntryStatus } from '../reusables/getStoryEntryStatus';
+import { getStatusFromSummary } from '../reusables/getStatusFromSummary';
+import { HighlightableEntry } from '../reusables/HighlightableEntry';
 import { RunAction } from '../reusables/RunAction';
 import { RunCompleteAction } from '../reusables/RunCompleteAction';
+import { getStoryEntrySummary } from './getStoryEntrySummary';
 import { RecordsEntry } from './RecordsEntry';
 import { ScreenshotsEntry } from './ScreenshotsEntry';
-import { Props } from './types';
-import { isOnRun } from '../../../reusables/runner/isOnRun';
+import { DeviceToTestRunResult, Props } from './types';
 
 export const StoryEntry: React.FC<Props> = (props) => {
-  const status = getStoryEntryStatus(
-    props.results,
-    props.selection,
-    props.story,
-  );
+  const { story } = props;
+  const summary = getStoryEntrySummary(story, props);
+  const status = getStatusFromSummary(summary);
 
   return (
-    <li>
+    <li aria-label={story.title}>
       <ActiveEntryHeader
         $offset={8}
         $level={props.level}
         $active={isActive()}
         $color={blue[0]}
-        onClick={() => props.setStory(props.story.id)}
+        onClick={() => props.setStory(story.id)}
         role="menuitem"
-        aria-label={props.story.payload.title}
       >
-        <HighlightableEntry
-          status={status?.type}
-          title={props.story.payload.title}
-        />
-        <EntryActions status={status}>{renderStoryActions()}</EntryActions>
+        <HighlightableEntry status={status} title={story.title} />
+        <EntryActions status={status}>
+          <AcceptAction
+            changes={summary.changes}
+            accept={props.accept}
+            accepting={props.accepting}
+          />
+          <RunAction stories={[story]} run={props.run} />
+          <RunCompleteAction
+            stories={[story]}
+            runComplete={props.runComplete}
+          />
+        </EntryActions>
       </ActiveEntryHeader>
       {renderResultEntries()}
     </li>
   );
 
-  function renderStoryActions() {
-    const { results, story, run, runComplete, selection } = props;
-
-    const comparison = results.get(story.id);
-
-    if (comparison && isOnRun(comparison)) {
-      return;
-    }
-
-    if (selection.type === 'initializing') {
-      return;
-    }
-
-    return (
-      <>
-        {renderAcceptAllAction()}
-        <RunAction stories={[story]} selection={selection} run={run} />
-        <RunCompleteAction
-          stories={[story]}
-          selection={selection}
-          runComplete={runComplete}
-        />
-      </>
-    );
-  }
-
-  function renderAcceptAllAction() {
-    if (status?.type === 'fresh' || status?.type === 'fail') {
-      return (
-        <EntryAction
-          label="Accept all"
-          icon={<CheckOutlined />}
-          action={async (e) => {
-            e.stopPropagation();
-
-            for (const record of status.records) {
-              await props.acceptRecords(record);
-            }
-
-            for (const screenshot of status.screenshots) {
-              await props.acceptScreenshot(screenshot);
-            }
-          }}
-        />
-      );
-    }
-  }
-
   function renderResultEntries() {
-    const results = props.results.get(props.story.id);
+    const results = toDoneResultsOnly(props.results.get(story.id));
 
-    if (
-      isNil(results) ||
-      results.type === 'scheduled' ||
-      results.type === 'error'
-    ) {
+    if (results.length === 0) {
       return;
     }
 
-    if (results.details.length === 1) {
+    if (results.length === 1) {
       return (
         <>
-          <RecordsEntry {...props} details={results.details[0]} />
-          <ScreenshotsEntry {...props} details={results.details[0]} />
+          <RecordsEntry {...props} result={results[0]} />
+          <ScreenshotsEntry {...props} result={results[0]} />
         </>
       );
     }
 
-    return results.details.map((detail, index) => (
-      <li key={index}>
+    return results.map((result, index) => (
+      <li aria-label={result.device.name} key={index}>
         <DeviceEntryHeader $level={props.level} $offset={8}>
-          <EntryTitle title={detail.device.name} />
+          <EntryTitle title={result.device.name} />
         </DeviceEntryHeader>
-        <RecordsEntry {...props} details={detail} />
-        <ScreenshotsEntry {...props} details={detail} />
+        <RecordsEntry {...props} result={result} />
+        <ScreenshotsEntry {...props} result={result} />
       </li>
     ));
   }
 
   function isActive() {
     return (
-      props.selection.type === 'story' &&
-      props.selection.story.id === props.story.id
+      props.selection.type === 'story' && props.selection.story.id === story.id
     );
   }
 };
+
+function toDoneResultsOnly(state: DeviceToTestRunState | undefined) {
+  if (isNil(state)) {
+    return [];
+  }
+
+  return Array.from(state.entries()).reduce((results, [device, result]) => {
+    if (result.type === 'done' && result.details.type === 'success') {
+      results.push({ device, details: result.details.data });
+    }
+
+    return results;
+  }, [] as DeviceToTestRunResult[]);
+}
 
 const DeviceEntryHeader = styled(EntryHeader)`
   font-style: italic;

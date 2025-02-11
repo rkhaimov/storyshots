@@ -2,7 +2,7 @@ import { HistoryOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import React from 'react';
 import styled from 'styled-components';
-import { EntryStatus } from './EntryStatus/types';
+import { EntryStatus } from './types';
 
 type Props = React.PropsWithChildren<{
   status: EntryStatus;
@@ -10,13 +10,13 @@ type Props = React.PropsWithChildren<{
 }>;
 
 const _EntryActions: React.FC<Props> = (props) => {
-  if (props.status?.type === 'running') {
+  if (props.status === 'running') {
     return (
       <Spin indicator={<LoadingOutlined style={{ fontSize: 18 }} spin />} />
     );
   }
 
-  if (props.status?.type === 'scheduled') {
+  if (props.status === 'scheduled') {
     return <Spin indicator={<HistoryOutlined style={{ fontSize: 16 }} />} />;
   }
 

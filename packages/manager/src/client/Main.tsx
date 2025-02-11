@@ -1,15 +1,20 @@
 import React from 'react';
-import { Screenshot } from './Screenshot';
-import { Records } from './Records';
 import { UseBehaviourProps } from './behaviour/types';
-import { usePreviewConnection } from './reusables/ConnectedPreview';
 import { EmulatedReplayPreview } from './EmulatedReplayPreview';
-import { createPreviewConfig } from './behaviour/useSelection/createPreviewConfig';
+import { Records } from './Records';
+import { usePreviewConnection } from './reusables/ConnectedPreview';
+import { Screenshot } from './Screenshot';
 
 export const Main: React.FC<UseBehaviourProps> = (props) => {
   const preview = usePreviewConnection({
-    config: createPreviewConfig(props.selection),
-    onStateChange: props.onStateChange,
+    state: {
+      devices: props.devices,
+      device: props.device.preview,
+      testing: false,
+      id:
+        props.selection.type === 'story' ? props.selection.story.id : undefined,
+    },
+    onPreviewLoaded: props.onPreviewLoaded,
   });
 
   return render();
@@ -35,6 +40,13 @@ export const Main: React.FC<UseBehaviourProps> = (props) => {
       );
     }
 
-    return <EmulatedReplayPreview {...preview} selection={props.selection} />;
+    return (
+      <EmulatedReplayPreview
+        {...preview}
+        selection={props.selection}
+        emulated={props.emulated}
+        device={props.device}
+      />
+    );
   }
 };

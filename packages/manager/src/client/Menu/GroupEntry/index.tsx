@@ -1,16 +1,17 @@
-import { CheckOutlined, UpOutlined } from '@ant-design/icons';
-import { PureGroup, TreeOP } from '@storyshots/core';
+import { UpOutlined } from '@ant-design/icons';
+import { PureGroup } from '@storyshots/core';
 import React from 'react';
 import styled from 'styled-components';
 import { MenuHavingStories } from '../MenuHavingStories';
-import { EntryAction } from '../reusables/EntryAction';
+import { AcceptAction } from '../reusables/AcceptAction';
 import { EntryActions } from '../reusables/EntryActions';
 import { EntryHeader } from '../reusables/EntryHeader';
-import { HighlightableEntry } from '../reusables/EntryStatus';
+import { getStatusFromSummary } from '../reusables/getStatusFromSummary';
+import { HighlightableEntry } from '../reusables/HighlightableEntry';
 import { RunAction } from '../reusables/RunAction';
 import { RunCompleteAction } from '../reusables/RunCompleteAction';
 import { Props } from '../types';
-import { getGroupEntryStatus } from './getGroupEntryStatus';
+import { getGroupEntrySummary } from './getGroupEntrySummary';
 
 export const GroupEntry: React.FC<
   Props & {
@@ -24,37 +25,32 @@ export const GroupEntry: React.FC<
     return;
   }
 
-  const status = getGroupEntryStatus(
-    props.results,
-    props.selection,
-    group.children,
-  );
+  const summary = getGroupEntrySummary(group, props);
+  const status = getStatusFromSummary(summary);
 
   return (
-    <li>
+    <li aria-label={group.title}>
       <EntryHeader
         $offset={8}
         $level={others.level}
-        onClick={() => others.toggleGroupExpanded(group)}
+        onClick={() => others.toggleExpanded(group)}
         role="menuitem"
-        aria-label={group.payload.title}
       >
         <Fold open={expanded} />
         <HighlightableEntry
-          status={status?.type}
-          title={group.payload.title}
+          status={status}
+          title={group.title}
           style={{ fontSize: 16, fontWeight: 600 }}
         />
         <EntryActions status={status}>
-          {renderAcceptAllAction()}
-          <RunAction
-            stories={TreeOP.toLeafsArray(group.children)}
-            selection={selection}
-            run={others.run}
+          <AcceptAction
+            accept={props.accept}
+            accepting={props.accepting}
+            changes={summary.changes}
           />
+          <RunAction stories={group.children} run={others.run} />
           <RunCompleteAction
-            stories={TreeOP.toLeafsArray(group.children)}
-            selection={selection}
+            stories={group.children}
             runComplete={others.runComplete}
           />
         </EntryActions>
@@ -69,28 +65,6 @@ export const GroupEntry: React.FC<
       )}
     </li>
   );
-
-  function renderAcceptAllAction() {
-    if (status?.type === 'fresh' || status?.type === 'fail') {
-      return (
-        <EntryAction
-          label="Accept all"
-          icon={<CheckOutlined />}
-          action={async (e) => {
-            e.stopPropagation();
-
-            for (const record of status.records) {
-              await props.acceptRecords(record);
-            }
-
-            for (const screenshot of status.screenshots) {
-              await props.acceptScreenshot(screenshot);
-            }
-          }}
-        />
-      );
-    }
-  }
 };
 
 const Fold = styled(UpOutlined)`

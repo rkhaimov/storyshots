@@ -7,6 +7,7 @@ export function createProxyBundler(to: string): PreviewServe {
       target: to,
       changeOrigin: true,
     }),
+    cleanup: async () => {},
     // Update events are not possible by definition
     onUpdate: () => {},
   };

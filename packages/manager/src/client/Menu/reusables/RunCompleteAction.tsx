@@ -1,18 +1,15 @@
 import { ForwardOutlined } from '@ant-design/icons';
-import { PureStory } from '@storyshots/core';
+import { PureStoryTree } from '@storyshots/core';
 import React from 'react';
 import { UseBehaviourProps } from '../../behaviour/types';
 import { EntryAction } from './EntryAction';
-import { ReadySelection } from '../../behaviour/useSelection/types';
 
 type Props = Pick<UseBehaviourProps, 'runComplete'> & {
-  stories: PureStory[];
-  selection: ReadySelection;
+  stories: PureStoryTree[];
 };
 
 export const RunCompleteAction: React.FC<Props> = ({
   runComplete,
-  selection,
   stories,
 }) => (
   <EntryAction
@@ -21,7 +18,7 @@ export const RunCompleteAction: React.FC<Props> = ({
     action={(e) => {
       e.stopPropagation();
 
-      runComplete(stories, selection.preview);
+      runComplete(stories);
     }}
   />
 );

@@ -1,16 +1,16 @@
 import { EyeOutlined, SlidersOutlined } from '@ant-design/icons';
-import { Device, PureStoryTree, TreeOP } from '@storyshots/core';
+import { assert, Device, PureStoryTree } from '@storyshots/core';
 import { Checkbox, Form, Select } from 'antd';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { isOnRun } from '../../../reusables/runner/isOnRun';
+import { createSummary } from '../../../reusables/summary';
+import { Summary } from '../../../reusables/summary/types';
 import { UseBehaviourProps } from '../../behaviour/types';
 import { ReadySelection } from '../../behaviour/useSelection/types';
 import { EntryAction } from '../reusables/EntryAction';
-import { getStoryEntryStatus } from '../reusables/getStoryEntryStatus';
 import { RunAction } from '../reusables/RunAction';
 import { RunCompleteAction } from '../reusables/RunCompleteAction';
-import { EntryActions } from './EntryActions';
+import { EntryActions, IdleActions } from './EntryActions';
 import { EntryHeader } from './EntryHeader';
 import { StopAction } from './StopAction';
 
@@ -19,20 +19,10 @@ export type Props = UseBehaviourProps & {
   selection: ReadySelection;
 };
 
-export const TopBar: React.FC<Props> = ({
-  run,
-  runComplete,
-  stopAll,
-  stories,
-  selection,
-  results,
-  setConfig,
-  highlight,
-  toggleStatusPane,
-}) => {
+export const TopBar: React.FC<Props> = (props) => {
+  const { results, toggleStatusPane } = props;
   const [opened, setOpened] = useState(false);
-  const nodes = TreeOP.toLeafsArray(stories);
-  const { preview, config } = selection;
+  const summary = createSummary(results);
 
   return (
     <div aria-label="Status">
@@ -43,37 +33,34 @@ export const TopBar: React.FC<Props> = ({
           style={{ flex: 1 }}
           onClick={toggleStatusPane}
         >
-          {renderStatusText(results, selection, stories)}
+          {renderStatusText(summary)}
         </a>
-        <EntryActions
-          onRunNode={hasAnyOnRun(results) && <StopAction stopAll={stopAll} />}
-        >
-          <RunAction stories={nodes} selection={selection} run={run} />
-          <RunCompleteAction
-            stories={nodes}
-            selection={selection}
-            runComplete={runComplete}
-          />
-          <PickLocatorAction onPick={highlight.toggle} />
-          <ToggleConfigPaneAction onToggle={() => setOpened((prev) => !prev)} />
+        <EntryActions>
+          <StopAction stopAll={props.stopAll} summary={summary} />
+          <IdleActions summary={summary}>
+            <RunAction stories={props.stories} run={props.run} />
+            <RunCompleteAction
+              stories={props.stories}
+              runComplete={props.runComplete}
+            />
+            <PickLocatorAction onPick={props.toggleHighlighting} />
+            <ToggleConfigPaneAction
+              onToggle={() => setOpened((prev) => !prev)}
+            />
+          </IdleActions>
         </EntryActions>
       </EntryHeader>
       {opened && (
         <PreviewConfigForm layout="vertical" size="small">
           <Form.Item label="Device">
             <Select<DeviceOption['value'], DeviceOption>
-              value={config.device.name}
+              value={props.device.selected.name}
               onChange={(_, option) => {
-                if (Array.isArray(option)) {
-                  return;
-                }
+                assert(!Array.isArray(option));
 
-                setConfig({
-                  device: option.device.name,
-                  emulated: config.emulated,
-                });
+                props.setDevice(option.device);
               }}
-              options={preview.devices.map((it) => ({
+              options={props.devices.map((it) => ({
                 value: it.name,
                 label: it.name,
                 device: it,
@@ -82,13 +69,8 @@ export const TopBar: React.FC<Props> = ({
           </Form.Item>
           <Form.Item>
             <Checkbox
-              checked={config.emulated}
-              onChange={(it) =>
-                setConfig({
-                  device: config.device.name,
-                  emulated: it.target.checked,
-                })
-              }
+              checked={props.emulated}
+              onChange={(it) => props.setEmulated(it.target.checked)}
             >
               Apply to preview
             </Checkbox>
@@ -99,34 +81,16 @@ export const TopBar: React.FC<Props> = ({
   );
 };
 
-function hasAnyOnRun(results: Props['results']) {
-  return Array.from(results.entries()).some(([, result]) => isOnRun(result));
-}
-
-function renderStatusText(
-  results: Props['results'],
-  selection: Props['selection'],
-  stories: Props['stories'],
-): string {
-  const total = results.size;
-
+function renderStatusText({ pass, total }: Summary): string {
   if (total === 0) {
     return 'Status';
   }
 
-  const passed = TreeOP.toLeafsArray(stories)
-    .map((story) => getStoryEntryStatus(results, selection, story))
-    .filter((status) => status?.type === 'pass').length;
-
-  return `${passed}/${total} passed (${((passed / total) * 100).toFixed()}%)`;
+  return `${pass}/${total} passed (${((pass / total) * 100).toFixed()}%)`;
 }
 
 const PickLocatorAction: React.FC<{ onPick(): void }> = ({ onPick }) => (
-  <EntryAction
-    label="Pick locator"
-    icon={<EyeOutlined />}
-    action={onPick}
-  />
+  <EntryAction label="Pick locator" icon={<EyeOutlined />} action={onPick} />
 );
 
 const ToggleConfigPaneAction: React.FC<{ onToggle(): void }> = ({

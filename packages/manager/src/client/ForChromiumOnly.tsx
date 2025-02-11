@@ -1,7 +1,6 @@
-import { TestConfig, TreeOP } from '@storyshots/core';
+import { assertNotEmpty, Device, StoryID } from '@storyshots/core';
 import React from 'react';
-import { RouteComponentProps } from 'wouter';
-import { useSearch } from 'wouter/use-location';
+import { RouteComponentProps, useSearchParams } from 'wouter';
 import { Preview, usePreviewConnection } from './reusables/ConnectedPreview';
 
 type Props = RouteComponentProps<{
@@ -9,25 +8,26 @@ type Props = RouteComponentProps<{
 }>;
 
 export const ForChromiumOnly: React.FC<Props> = (props) => {
+  const [params] = useSearchParams();
+
   const preview = usePreviewConnection({
-    config: {
-      id: TreeOP.ensureIsLeafID(props.params.story),
-      device: useSelectedDevice(),
-      screenshotting: true,
+    state: {
+      id: props.params.story as StoryID,
+      devices: getRequiredValue<Device[]>(params, 'devices'),
+      device: getRequiredValue<Device>(params, 'device'),
+      testing: true,
     },
-    onStateChange: () => {},
+    onPreviewLoaded: () => {},
   });
 
   return <Preview {...preview} />;
 };
 
-function useSelectedDevice() {
-  const search = useSearch();
-  const params = new URLSearchParams(search);
+// TODO: Duplication with useManagerConfig
+function getRequiredValue<T>(params: URLSearchParams, key: string): T {
+  const value = params.get(key);
 
-  const config: Partial<TestConfig> | null = JSON.parse(
-    params.get('config') ?? 'null',
-  );
+  assertNotEmpty(value, `Expected ${key} to be defined in query`);
 
-  return config?.device;
+  return JSON.parse(value) as T;
 }
