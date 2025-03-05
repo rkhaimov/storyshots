@@ -30,7 +30,7 @@ export const Balance = () => {
       gap={20}
     >
       <Statistic
-        title="Account Balance (RUB)q"
+        title="Account Balance (RUB)"
         value={balance}
         precision={2}
         suffix={<MoneyCollectOutlined />}
