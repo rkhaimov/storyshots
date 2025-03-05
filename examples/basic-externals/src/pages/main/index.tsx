@@ -1,4 +1,3 @@
-import { RightOutlined } from '@ant-design/icons';
 import { List } from 'antd';
 import React from 'react';
 import { useLocation } from 'wouter';
@@ -20,16 +19,8 @@ export const Main = () => {
           to: '/cv',
         },
       ]}
-      renderItem={({ title, description, to }) => (
-        <List.Item
-          actions={[
-            <RightOutlined
-              role="button"
-              aria-label="Navigate"
-              onClick={() => navigate(to)}
-            />,
-          ]}
-        >
+      renderItem={({ title, description }) => (
+        <List.Item actions={[]}>
           <List.Item.Meta title={title} description={description} />
         </List.Item>
       )}
