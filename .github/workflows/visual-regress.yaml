@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  create_commit:
+  run_visual_tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -21,7 +21,7 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Run script to create and commit file
+      - name: Run tests
         run: npm run ci
         working-directory: ./examples/basic-externals
 
