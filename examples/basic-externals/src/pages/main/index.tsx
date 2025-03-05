@@ -10,7 +10,7 @@ export const Main = () => {
     <List
       dataSource={[
         {
-          title: 'Balance',
+          title: 'Wow',
           description: 'Simple balance counter example',
           to: '/balance',
         },
