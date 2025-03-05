@@ -19,14 +19,7 @@ export async function runInBackground(config: ManagerConfig) {
       const summary = await runAll(stories, config);
 
       if (summary.errors.length > 0) {
-        for (const error of summary.errors) {
-          console.log('Error has happened:');
-          console.log(`Story: ${error.id}`);
-          console.log(`Device: ${error.device.name}`);
-          console.log(`Message: ${error.message}`);
-        }
-
-        throw new Error('Failed to run tests, check reasons above');
+        throw new Error('Failed to run tests, check errors above');
       }
 
       if (summary.changes.length > 0) {
