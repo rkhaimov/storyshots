@@ -1,4 +1,5 @@
 {
+  "cv__renders_all_fields_as_empty_by_default": [],
   "cv__lets_all_of_its_fields_to_be_filled": [
     {
       "method": "applyCV",
@@ -26,7 +27,6 @@
       ]
     }
   ],
-  "cv__renders_all_fields_as_empty_by_default": [],
   "cv__checks_validity_of_an_email_that_was_entered": [],
   "cv__ensures_entered_passwords_match": [],
   "cv__lets_to_select_residence": [],

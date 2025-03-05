@@ -10,7 +10,12 @@ export async function runInBackground(config: ManagerConfig) {
   return {
     ...app,
     run: async () => {
+      console.log('Retrieving stories...');
+
       const stories = await getStories(config);
+
+      console.log('Running...');
+
       const summary = await runAll(stories, config);
 
       if (summary.errors.length > 0) {

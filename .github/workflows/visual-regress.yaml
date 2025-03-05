@@ -1,0 +1,38 @@
+name: Visual regression tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create_commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.12.0'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Run script to create and commit file
+        run: npm run ci
+        working-directory: ./examples/basic-externals
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'CI-bot'
+          git config --global user.email 'ci@bot.com'
+          git add .
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "[skip ci] Add sample text file"
+            git push
+          else
+            echo "No changes to commit."
+          fi

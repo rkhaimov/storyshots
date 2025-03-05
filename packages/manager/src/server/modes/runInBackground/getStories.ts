@@ -1,4 +1,4 @@
-import { assertNotEmpty, PureStoryTree } from '@storyshots/core';
+import { assertNotEmpty, Device, PureStoryTree } from '@storyshots/core';
 import { chromium } from 'playwright';
 import { createManagerRootURL } from '../../paths';
 import { ManagerConfig } from '../../types';
@@ -22,5 +22,32 @@ export async function getStories(
 
   await browser.close();
 
-  return state;
+  return withConfiguredDevices(config, state);
+}
+
+function withConfiguredDevices(
+  config: ManagerConfig,
+  stories: PureStoryTree[],
+) {
+  return stories.map((story): PureStoryTree => {
+    if (story.type === 'group') {
+      return { ...story, children: withConfiguredDevices(config, story.children) };
+    }
+
+    return {
+      ...story,
+      cases: story.cases.map((_case) => {
+        const resolved = config.devices.find(
+          (device) => _case.device.name === device.name,
+        );
+
+        assertNotEmpty(resolved);
+
+        return {
+          ..._case,
+          device: resolved as Device,
+        };
+      }),
+    };
+  });
 }

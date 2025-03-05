@@ -14,6 +14,8 @@ state-shots - that is a good name
 * AI Engine to turn text commands in playwright API https://github.com/zerostep-ai/zerostep
 * Clipboard copy for action picker
 * Add coverage tool
+* Run only changed stories first
+* Fix docs for it, describe, each
 
 ## Low priority
 
