@@ -29,9 +29,13 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Run tests
+      - name: Run basic-externals tests
         run: npm run ci
         working-directory: ./examples/basic-externals
+
+      - name: Run msw-externals tests
+        run: npm run ci
+        working-directory: ./examples/msw-externals
 
       - name: Commit changes
         run: |
