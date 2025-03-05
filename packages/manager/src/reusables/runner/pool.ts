@@ -1,22 +1,28 @@
 import { repeat } from '../repeat';
 
-export function pool(
+export async function pool(
   factories: ReadonlyArray<() => Promise<unknown>>,
   config: { size: number },
-): Promise<unknown> {
+): Promise<void> {
   const state = Array.from(factories);
 
   const workers = repeat(config.size, work);
 
-  return Promise.all(workers);
+  await Promise.all(workers);
 
-  function work() {
-    const current = state.shift();
+  async function work() {
+    while (true) {
+      const current = state.shift();
 
-    if (current === undefined) {
-      return;
+      if (current === undefined) {
+        return;
+      }
+
+      try {
+        await current();
+      } catch (_) {
+        /* empty */
+      }
     }
-
-    return current().finally(work);
   }
 }

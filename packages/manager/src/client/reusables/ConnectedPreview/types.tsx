@@ -1,6 +1,8 @@
-import { PreviewConfig, PreviewState } from '@storyshots/core';
+import { Brand, ManagerState, PreviewState } from '@storyshots/core';
+
+export type PreviewBuildHash = Brand<string, 'PreviewBuildHash'> | undefined;
 
 export type PreviewConnectionProps = {
-  config: PreviewConfig;
-  onStateChange(preview: PreviewState): void;
+  state: ManagerState;
+  onPreviewLoaded(preview: PreviewState, hash: PreviewBuildHash): void;
 };

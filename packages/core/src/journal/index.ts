@@ -14,7 +14,7 @@ export function createJournal(): Journal {
 
         return fn(...args);
       },
-    read: () => records,
+    __read: () => records,
   };
 
   return journal;

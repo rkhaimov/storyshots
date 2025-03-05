@@ -5,9 +5,7 @@ export async function getExpectedResults(payload: BasePayload) {
   const {
     story: {
       id,
-      payload: {
-        config: { device },
-      },
+      payload: { device },
     },
     baseline,
   } = payload;

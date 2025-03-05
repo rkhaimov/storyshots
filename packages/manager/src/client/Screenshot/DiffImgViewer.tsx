@@ -1,14 +1,14 @@
+import { Device } from '@storyshots/core';
 import { Radio, RadioChangeEvent } from 'antd';
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import { ScreenshotPath } from '../../reusables/types';
-import { driver } from '../../reusables/runner/driver';
 import {
   ReactCompareSlider,
   ReactCompareSliderHandle,
   ReactCompareSliderImage,
 } from 'react-compare-slider';
-import { Device, isNil } from '@storyshots/core';
+import styled from 'styled-components';
+import { driver } from '../../reusables/runner/driver';
+import { ScreenshotPath } from '../../reusables/types';
 
 enum ViewerMode {
   TwoUp = 'twoup',
@@ -32,11 +32,11 @@ export const DiffImgViewer: React.FC<Props> = (props) => {
     return (
       <TwoUp>
         <ActualImage
-          src={driver.createScreenshotPath(props.actual)}
+          src={driver.createImgSrc(props.actual)}
           alt="Actual"
         />
         <ExpectedImage
-          src={driver.createScreenshotPath(props.expected)}
+          src={driver.createImgSrc(props.expected)}
           alt="Expected"
         />
       </TwoUp>
@@ -48,7 +48,7 @@ export const DiffImgViewer: React.FC<Props> = (props) => {
       <ReactCompareSlider
         itemOne={
           <ReactCompareSliderImage
-            src={driver.createScreenshotPath(props.actual)}
+            src={driver.createImgSrc(props.actual)}
             style={{
               border: `1px solid ${ACTUAL_BORDER_COLOR}`,
               width: 'unset',
@@ -64,7 +64,7 @@ export const DiffImgViewer: React.FC<Props> = (props) => {
         }
         itemTwo={
           <ReactCompareSliderImage
-            src={driver.createScreenshotPath(props.expected)}
+            src={driver.createImgSrc(props.expected)}
             style={{
               border: `1px solid ${EXPECTED_BORDER_COLOR}`,
               width: 'unset',

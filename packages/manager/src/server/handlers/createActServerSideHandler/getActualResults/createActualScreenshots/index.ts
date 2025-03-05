@@ -1,5 +1,5 @@
 import { Frame } from 'playwright';
-import { ScreenshotsComparisonResult } from '../../../../../reusables/runner/types';
+import { ScreenshotComparisonResult } from '../../../../../reusables/runner/types';
 import { act } from '../../../../act';
 import { ExpectedPayload } from '../types';
 import { createCompareScreenshot } from './createCompareScreenshot';
@@ -14,7 +14,7 @@ export async function createActualScreenshots(
     },
   } = payload;
 
-  const screenshots: ScreenshotsComparisonResult[] = [];
+  const screenshots: ScreenshotComparisonResult[] = [];
   for (const action of actions) {
     if (action.action === 'screenshot') {
       screenshots.push(await createCompareScreenshot(payload, preview, action));

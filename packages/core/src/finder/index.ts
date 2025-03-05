@@ -1,10 +1,4 @@
-import {
-  Finder,
-  FinderMeta,
-  JSONTextMatchOptions,
-  JSONTextMatch,
-  TextMatch,
-} from './types';
+import { Finder, FinderMeta } from './types';
 import { isNil } from '../utils';
 
 export const finder = createFinder();
@@ -16,7 +10,7 @@ function createFinder(result: FinderMeta['consequent'] = []) {
         ...result,
         {
           type: 'locator',
-          by: { type: 'role', role, options: toJSONTextMatchOptions(options) },
+          by: { type: 'role', role, options },
         },
       ]),
     getByText: (text, options) =>
@@ -24,7 +18,7 @@ function createFinder(result: FinderMeta['consequent'] = []) {
         ...result,
         {
           type: 'locator',
-          by: { type: 'text', text: toJSONTextMatch(text), options },
+          by: { type: 'text', text, options },
         },
       ]),
     getByPlaceholder: (text, options) =>
@@ -32,7 +26,7 @@ function createFinder(result: FinderMeta['consequent'] = []) {
         ...result,
         {
           type: 'locator',
-          by: { type: 'placeholder', text: toJSONTextMatch(text), options },
+          by: { type: 'placeholder', text, options },
         },
       ]),
     getByTitle: (text, options) =>
@@ -40,7 +34,7 @@ function createFinder(result: FinderMeta['consequent'] = []) {
         ...result,
         {
           type: 'locator',
-          by: { type: 'title', text: toJSONTextMatch(text), options },
+          by: { type: 'title', text, options },
         },
       ]),
     getByLabel: (text, options) =>
@@ -48,7 +42,7 @@ function createFinder(result: FinderMeta['consequent'] = []) {
         ...result,
         {
           type: 'locator',
-          by: { type: 'label', text: toJSONTextMatch(text), options },
+          by: { type: 'label', text, options },
         },
       ]),
     getByAltText: (text, options) =>
@@ -56,7 +50,7 @@ function createFinder(result: FinderMeta['consequent'] = []) {
         ...result,
         {
           type: 'locator',
-          by: { type: 'alt-text', text: toJSONTextMatch(text), options },
+          by: { type: 'alt-text', text, options },
         },
       ]),
     locator: (selector) =>
@@ -65,23 +59,20 @@ function createFinder(result: FinderMeta['consequent'] = []) {
         { type: 'locator', by: { type: 'selector', selector } },
       ]),
     get: (transformer) => transformer(finder),
-    filter: (options) => {
-      const converted = toJSONTextMatchOptions(options);
-
-      return createFinder([
+    filter: (options) =>
+      createFinder([
         ...result,
         {
           type: 'filter',
           options: {
-            ...converted,
-            has: isNil(converted.has) ? undefined : converted.has.__toMeta(),
-            hasNot: isNil(converted.hasNot)
+            ...options,
+            has: isNil(options.has) ? undefined : options.has.__toMeta(),
+            hasNot: isNil(options.hasNot)
               ? undefined
-              : converted.hasNot.__toMeta(),
+              : options.hasNot.__toMeta(),
           },
         },
-      ]);
-    },
+      ]),
     and: (selector) =>
       createFinder([
         ...result,
@@ -120,34 +111,4 @@ function createFinder(result: FinderMeta['consequent'] = []) {
   };
 
   return finder;
-}
-
-// TODO: Simplify
-function toJSONTextMatchOptions<T extends Record<string, unknown> | undefined>(
-  options: T,
-): undefined extends T ? undefined : JSONTextMatchOptions<T> {
-  if (isNil(options)) {
-    return undefined as never;
-  }
-
-  return Object.fromEntries(
-    Object.entries(options).map(([key, value]) => [
-      key,
-      value instanceof RegExp
-        ? {
-            pattern: value.source,
-            flags: value.flags,
-          }
-        : value,
-    ]),
-  ) as never;
-}
-
-function toJSONTextMatch(text: TextMatch): JSONTextMatch {
-  return text instanceof RegExp
-    ? {
-        pattern: text.source,
-        flags: text.flags,
-      }
-    : text;
 }

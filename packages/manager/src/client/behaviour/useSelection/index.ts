@@ -1,16 +1,27 @@
-import { usePreviewState } from './usePreviewState';
-import { useUntrustedSelection } from './useUntrustedSelection';
-import { useTrustedSelection } from './useTrustedSelection';
 import { useAutoPlay } from './useAutoPlay';
+import { ManagerConfig } from './useManagerConfig';
+import { usePreviewState } from './usePreviewState';
+import { useTrustedSelection } from './useTrustedSelection';
+import { useUserSelection } from './useUserSelection';
 
-export function useSelection() {
-  const { preview, onStateChange } = usePreviewState();
-  const { selection, ...handlers } = useUntrustedSelection();
-  const played = useAutoPlay(useTrustedSelection(preview, selection));
+/**
+ * Implements main user actions available for the manager:
+ * * Opening stories, screenshots or records
+ * * Playing stories upon opening, using actual preview configuration
+ * * Persisting state between page reloads
+ */
+export function useSelection(manager: ManagerConfig) {
+  const { preview, onPreviewLoaded } = usePreviewState();
+  const { selection, ...handlers } = useUserSelection();
+
+  const played = useAutoPlay(
+    useTrustedSelection(preview, selection, manager),
+    manager,
+  );
 
   return {
     selection: played,
+    onPreviewLoaded,
     ...handlers,
-    onStateChange,
   };
 }

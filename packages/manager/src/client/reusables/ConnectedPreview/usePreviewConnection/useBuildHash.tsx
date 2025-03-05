@@ -1,7 +1,10 @@
 import { assert } from '@storyshots/core';
 import { useEffect, useState } from 'react';
+import { PreviewBuildHash } from '../types';
 
-// Connects to preview bundler to retrieve actual content hash
+/**
+ * Connects to preview bundler to retrieve actual content hash
+ */
 export function useBuildHash() {
   const [hash, setHash] = useState<PreviewBuildHash>();
 
@@ -11,7 +14,7 @@ export function useBuildHash() {
     ws.addEventListener('message', (event) => {
       assert(typeof event.data === 'string');
 
-      setHash(event.data);
+      setHash(event.data as PreviewBuildHash);
     });
 
     return () => ws.close();
@@ -19,5 +22,3 @@ export function useBuildHash() {
 
   return hash;
 }
-
-export type PreviewBuildHash = string | undefined;

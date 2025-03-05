@@ -1,12 +1,11 @@
 import { isNil } from '@storyshots/core';
 import React from 'react';
 import { UseBehaviourProps } from '../behaviour/types';
+import { RecordsSelection } from '../behaviour/useSelection/types';
 import { Spinner } from '../reusables/Spinner';
 import { Workspace } from '../Workspace';
 import { ActionAccept } from '../Workspace/Accept';
 import { DiffReader } from './DiffReader';
-import { RecordsSelection } from '../behaviour/useSelection/types';
-import { isOnRun } from '../../reusables/runner/isOnRun';
 
 type Props = {
   selection: RecordsSelection;
@@ -17,32 +16,24 @@ export const Records: React.FC<Props> = ({
   results,
   acceptRecords,
 }) => {
-  const result = results.get(selection.story.id);
-  const title = `${selection.story.payload.title} — Records`;
+  const result = results.get(selection.story.id)?.get(selection.device);
 
   if (isNil(result)) {
-    return <span>Records are not generated yet</span>;
+    return <span>Records are not generated yet, for given device</span>;
   }
 
-  if (result.type === 'scheduled') {
+  if (result.type === 'running' || result.type === 'scheduled') {
     return <Spinner />;
   }
 
-  if (result.type === 'error') {
+  if (result.details.type === 'error') {
     return (
       <span>Error has been caught during last run. Check the errors pane.</span>
     );
   }
 
-  const details = result.details.find(
-    (it) => it.device.name === selection.device,
-  );
-
-  if (isNil(details)) {
-    return <span>Records are not generated yet, for given device</span>;
-  }
-
-  const { records } = details;
+  const { records } = result.details.data;
+  const title = `[${selection.device.name}] ${selection.story.title}`;
 
   if (records.type === 'fresh') {
     return (
@@ -51,11 +42,7 @@ export const Records: React.FC<Props> = ({
         actions={
           <ActionAccept
             onAction={() =>
-              acceptRecords({
-                result: records,
-                details,
-                id: selection.story.id,
-              })
+              acceptRecords(selection.story.id, selection.device, records)
             }
           />
         }
@@ -93,11 +80,7 @@ export const Records: React.FC<Props> = ({
       actions={
         <ActionAccept
           onAction={() =>
-            acceptRecords({
-              result: records,
-              details,
-              id: selection.story.id,
-            })
+            acceptRecords(selection.story.id, selection.device, records)
           }
         />
       }

@@ -3,21 +3,17 @@ import { Screenshot } from '../../../../reusables/types';
 import { BasePayload } from '../types';
 
 export async function findExpectedScreenshots({
-  story: {
-    id,
-    payload: { actions, config },
-  },
+  story,
   baseline,
 }: BasePayload) {
   const screenshots: Screenshot[] = [];
-  for (const action of actions) {
+  for (const action of story.payload.actions) {
     if (action.action !== 'screenshot') {
       continue;
     }
 
     const path = await baseline.getExpectedScreenshot(
-      id,
-      config,
+      story,
       action.payload.name,
     );
 

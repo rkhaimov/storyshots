@@ -1,13 +1,17 @@
+import { useAcceptBaseline } from './useAcceptBaseline';
 import { useExportSelectionEffect } from './useExportSelectionEffect';
 import { useGroupExpand } from './useGroupExpand';
-import { useSelection } from './useSelection';
-import { useStatusPane } from './useStatusPane';
-import { useTestResults } from './useTestResults';
 import { useHighlighter } from './useHighlighter';
+import { useRun } from './useRun';
+import { useSelection } from './useSelection';
+import { useManagerConfig } from './useSelection/useManagerConfig';
+import { useStatusPane } from './useStatusPane';
 
 export function useBehaviour() {
-  const test = useTestResults();
-  const play = useSelection();
+  const manager = useManagerConfig();
+  const run = useRun(manager);
+  const accept = useAcceptBaseline(run);
+  const play = useSelection(manager);
   const expand = useGroupExpand(play.selection);
   const pane = useStatusPane();
   const highlight = useHighlighter();
@@ -15,10 +19,12 @@ export function useBehaviour() {
   useExportSelectionEffect(play.selection);
 
   return {
+    ...manager,
     ...expand,
-    ...test,
     ...play,
     ...pane,
-    highlight,
+    ...run,
+    ...accept,
+    ...highlight,
   };
 }

@@ -5,9 +5,15 @@ type Props = {
   label: string;
   icon: React.ReactNode;
   action?: React.MouseEventHandler<HTMLElement>;
+  disabled?: boolean;
 };
 
-export const EntryAction: React.FC<Props> = ({ label, action, icon }) => (
+export const EntryAction: React.FC<Props> = ({
+  label,
+  action,
+  icon,
+  disabled,
+}) => (
   <Button
     size="small"
     type="text"
@@ -15,5 +21,6 @@ export const EntryAction: React.FC<Props> = ({ label, action, icon }) => (
     icon={icon}
     title={label}
     aria-label={label}
+    disabled={disabled}
   />
 );

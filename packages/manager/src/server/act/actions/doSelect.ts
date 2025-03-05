@@ -1,6 +1,6 @@
 import { SelectAction } from '@storyshots/core';
 import { Frame } from 'playwright';
-import { select } from '../select';
+import { select } from '../../select';
 
 export function doSelect(preview: Frame, action: SelectAction) {
   return select(preview, action.payload.on).selectOption(

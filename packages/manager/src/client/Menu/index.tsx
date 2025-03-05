@@ -16,11 +16,11 @@ export const Menu: React.FC<UseBehaviourProps> = (props) => {
       <TopBar
         {...props}
         selection={props.selection}
-        stories={props.selection.preview.stories}
+        stories={props.selection.stories}
       />
       <MenuHavingStories
         {...props}
-        stories={props.selection.preview.stories}
+        stories={props.selection.stories}
         level={0}
       />
     </Sidebar>

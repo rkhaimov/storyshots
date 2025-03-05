@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "playwright test --ui",
-    "test": "playwright test"
+    "debug": "npx playwright test -g \"your tests here\" --debug",
+    "compile": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",

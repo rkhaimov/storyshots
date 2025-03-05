@@ -21,11 +21,7 @@ export async function createIsolatedContextWorker(): Promise<Worker> {
 }
 
 async function createContextByDevice(
-  {
-    payload: {
-      config: { device },
-    },
-  }: Story,
+  { payload: { device } }: Story,
   browser: Browser,
 ) {
   switch (device.type) {

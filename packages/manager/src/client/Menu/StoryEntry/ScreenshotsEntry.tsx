@@ -2,35 +2,31 @@ import { blue } from '@ant-design/colors';
 import { PictureOutlined } from '@ant-design/icons';
 import React from 'react';
 import styled from 'styled-components';
-import {
-  ScreenshotComparisonResult,
-  ScreenshotResult,
-  TestResultDetails,
-} from '../../../reusables/runner/types';
+import { ScreenshotComparisonResult } from '../../../reusables/runner/types';
 
 import { ActiveEntryHeader } from '../reusables/EntryHeader';
-import { HighlightableEntry } from '../reusables/EntryStatus';
-import { Props as ParentProps } from './types';
+import { HighlightableEntry } from '../reusables/HighlightableEntry';
+import { DeviceToTestRunResult, Props as ParentProps } from './types';
 
 type Props = {
-  details: TestResultDetails;
+  result: DeviceToTestRunResult;
 } & Pick<ParentProps, 'setScreenshot' | 'story' | 'level' | 'selection'>;
 
 export const ScreenshotsEntry: React.FC<Props> = ({
   story,
   level,
-  details,
+  result,
   selection,
   setScreenshot,
 }) => {
   return (
     <ScreenshotsList>
-      {details.screenshots.map((it) => (
+      {result.details.screenshots.map((it) => (
         <li
           key={it.name}
           role="menuitem"
           aria-label={it.name}
-          onClick={() => setScreenshot(story.id, it.name, details.device.name)}
+          onClick={() => setScreenshot(story.id, it.name, result.device.name)}
         >
           <ActiveEntryHeader
             $level={level}
@@ -39,7 +35,7 @@ export const ScreenshotsEntry: React.FC<Props> = ({
             $active={isActive(it)}
           >
             <HighlightableEntry
-              status={renderStatus(it)}
+              status={it.type}
               left={<PictureOutlined style={{ marginRight: 4 }} />}
               title={it.name}
             />
@@ -49,25 +45,11 @@ export const ScreenshotsEntry: React.FC<Props> = ({
     </ScreenshotsList>
   );
 
-  function renderStatus(
-    screenshot: ScreenshotResult,
-  ): ScreenshotComparisonResult['type'] {
-    if (screenshot.result.type === 'fail') {
-      return 'fail';
-    }
-
-    if (screenshot.result.type === 'fresh') {
-      return 'fresh';
-    }
-
-    return 'pass';
-  }
-
-  function isActive(screenshot: ScreenshotResult) {
+  function isActive(screenshot: ScreenshotComparisonResult) {
     return (
       selection.type === 'screenshot' &&
       selection.story.id === story.id &&
-      selection.device === details.device.name &&
+      selection.device === result.device &&
       selection.name === screenshot.name
     );
   }

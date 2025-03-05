@@ -1,6 +1,5 @@
 import {
   Device,
-  DeviceName,
   PreviewState,
   PureStory,
   ScreenshotName,
@@ -13,7 +12,7 @@ export type Selection =
     }
   | ReadySelection;
 
-export type ReadySelection = PreviewConfig & _ReadySelection;
+export type ReadySelection = PreviewState & _ReadySelection;
 
 type _ReadySelection =
   | {
@@ -28,13 +27,13 @@ type _ReadySelection =
   | {
       type: 'records';
       story: PureStory;
-      device: DeviceName;
+      device: Device;
     }
   | {
       type: 'screenshot';
       name: ScreenshotName;
       story: PureStory;
-      device: DeviceName;
+      device: Device;
     };
 
 export type PlayingState =
@@ -42,13 +41,12 @@ export type PlayingState =
   | { type: 'playing' }
   | { type: 'played'; result: WithPossibleError<void> };
 
-export type PreviewConfig = {
-  preview: PreviewState;
-  config: {
-    device: Device;
-    emulated: boolean;
-  };
-};
+export type StorySelection = Extract<
+  Selection,
+  {
+    type: 'story';
+  }
+>;
 
 export type RecordsSelection = Extract<
   Selection,

@@ -19,9 +19,12 @@ export async function createStoryEngine(config: ManagerConfig) {
 
   return {
     app,
-    cleanup: () => {
+    cleanup: async () => {
+      await config.preview.cleanup();
+
+      await cleanup();
+
       server.close();
-      cleanup();
     },
   };
 }

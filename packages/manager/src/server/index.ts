@@ -3,24 +3,23 @@ import { runUI as _runUI } from './modes/runUI';
 import { CAPTURE } from './modules/capture';
 import { COMPARE } from './modules/compare';
 import { RUNNER } from './modules/runner';
-import { ManagerConfig, PreviewServe } from './types';
+import { ManagerConfig as FullManagerConfig, PreviewServe } from './types';
 
-export type { ManagerConfig, PreviewServe } from './types';
+export type { PreviewServe } from './types';
 
-type PublicConfig = Omit<
-  Optional<ManagerConfig, 'runner' | 'compare' | 'capture'>,
+export type ManagerConfig = Omit<
+  Optional<FullManagerConfig, 'runner' | 'compare' | 'capture'>,
   'createManagerCompiler'
 >;
 
-export const runUI = (config: PublicConfig) =>
+export const runUI = (config: ManagerConfig) =>
   _runUI(fromOptimizedConfig(config));
 
-export const runInBackground = async (config: PublicConfig) => {
-  const { run } = await _runInBackground(fromOptimizedConfig(config));
+export const runInBackground = async (config: ManagerConfig) => {
+  const { run, cleanup } = await _runInBackground(fromOptimizedConfig(config));
 
   await run();
-
-  process.exit();
+  await cleanup();
 };
 
 export const mergeServe = (...handlers: PreviewServe[]): PreviewServe =>
@@ -36,9 +35,13 @@ const mergeTwoServeHandlers = (
     left.onUpdate(handle);
     right.onUpdate(handle);
   },
+  cleanup: async () => {
+    await left.cleanup();
+    await right.cleanup();
+  },
 });
 
-function fromOptimizedConfig(config: PublicConfig): ManagerConfig {
+function fromOptimizedConfig(config: ManagerConfig): FullManagerConfig {
   return {
     compare: COMPARE.withLooksSame(),
     capture: CAPTURE.stabilized({

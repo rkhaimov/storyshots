@@ -2,32 +2,32 @@ import {
   ActionMeta,
   Brand,
   Device,
-  IntermediateNodeID,
   JournalRecord,
+  PureStoryTree,
   ScreenshotName,
   StoryID,
-  TestConfig,
 } from '@storyshots/core';
-import { TestResultDetails } from './runner/types';
+import { AcceptableRecords, AcceptableScreenshot, TestRunResult } from './runner/types';
 
 export interface IWebDriver {
-  actOnClientSide(action: ActionMeta[]): Promise<WithPossibleError<void>>;
+  play(actions: ActionMeta[]): Promise<WithPossibleError<void>>;
 
-  actOnServerSide(
+  test(
     at: StoryID,
-    payload: ActionsAndConfig,
-  ): Promise<WithPossibleError<TestResultDetails>>;
+    meta: DeviceAndActions,
+  ): Promise<WithPossibleError<TestRunResult>>;
 
-  acceptScreenshot(screenshot: ScreenshotToAccept): Promise<void>;
+  acceptScreenshot(screenshot: AcceptableScreenshot): Promise<void>;
 
-  acceptRecords(at: StoryID, payload: DeviceAndRecord): Promise<void>;
+  acceptRecords(record: DeviceAndAcceptableRecords): Promise<void>;
 
-  createScreenshotPath(path: ScreenshotPath): string;
+  createImgSrc(path: ScreenshotPath): string;
 }
 
-export type DeviceAndRecord = {
-  records: JournalRecord[];
+export type DeviceAndAcceptableRecords = {
+  id: StoryID;
   device: Device;
+  records: AcceptableRecords;
 };
 
 export type WithPossibleError<T> =
@@ -40,18 +40,9 @@ export type WithPossibleError<T> =
       data: T;
     };
 
-export type ActionsAndConfig = {
+export type DeviceAndActions = {
   actions: ActionMeta[];
-  config: TestConfig;
-};
-
-export type ScreenshotToAccept = {
-  actual: ScreenshotPath;
-};
-
-export type ActualServerSideResult = {
-  records: JournalRecord[];
-  screenshots: Screenshot[];
+  device: Device;
 };
 
 export type Screenshot = {
@@ -62,17 +53,8 @@ export type Screenshot = {
 // Represents full path to saved screenshot (either actual or expected)
 export type ScreenshotPath = Brand<string, 'ScreenshotPath'>;
 
-export type GroupID = IntermediateNodeID;
-
-export type RunnableStoriesSuit = {
-  id: StoryID;
-  cases: Array<{
-    device: Device;
-    retries: number;
-    actions: ActionMeta[];
-  }>;
-};
-
-export type CIChannel = {
-  evaluate(): RunnableStoriesSuit[] | undefined;
-};
+declare global {
+  interface Window {
+    getStories(): PureStoryTree[] | undefined;
+  }
+}

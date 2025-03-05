@@ -6,7 +6,6 @@ import { handlePossibleErrors } from '../handlers/reusables/handlePossibleErrors
 import { toPreviewFrame } from '../handlers/reusables/toPreviewFrame';
 import { act } from '../act';
 
-// TODO: Implement cancellation
 export function createActHandler(app: Application, page: Page) {
   app.post('/api/client/act', async (request, response) => {
     const actions: ActionMeta[] = request.body;

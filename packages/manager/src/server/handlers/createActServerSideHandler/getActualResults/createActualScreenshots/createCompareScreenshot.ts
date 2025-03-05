@@ -1,6 +1,6 @@
 import { isNil, ScreenshotAction } from '@storyshots/core';
 import { Frame } from 'playwright';
-import { ScreenshotsComparisonResult } from '../../../../../reusables/runner/types';
+import { ScreenshotComparisonResult } from '../../../../../reusables/runner/types';
 import { ExpectedPayload } from '../types';
 import { capture } from './capture';
 import { createFailResult } from './createFailResult';
@@ -13,8 +13,8 @@ export async function createCompareScreenshot(
   payload: ExpectedPayload,
   preview: Frame,
   action: ScreenshotAction,
-): Promise<ScreenshotsComparisonResult> {
-  const actual = await capture(payload, preview);
+): Promise<ScreenshotComparisonResult> {
+  const actual = await capture(payload, preview, action);
   const expected = findExpected(payload, action);
 
   if (isNil(expected)) {

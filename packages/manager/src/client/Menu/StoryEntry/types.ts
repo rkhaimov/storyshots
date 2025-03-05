@@ -1,12 +1,9 @@
-import { SuccessTestResult } from '../../../reusables/runner/types';
+import { TestRunResult } from '../../../reusables/runner/types';
 import { Props as ParentProps } from '../types';
-import { PureStory } from '@storyshots/core';
+import { Device, PureStory } from '@storyshots/core';
 
 export type Props = ParentProps & {
   story: PureStory;
 };
 
-export type ResultKindComponentProps = { results: SuccessTestResult } & Pick<
-  Props,
-  'setRecords' | 'story'
->;
+export type DeviceToTestRunResult = { device: Device; details: TestRunResult };

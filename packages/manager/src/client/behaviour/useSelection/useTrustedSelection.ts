@@ -1,84 +1,103 @@
-import { assertNotEmpty, PreviewState, TreeOP } from '@storyshots/core';
-import { UntrustedSelection } from './useUntrustedSelection/types';
-import { PreviewConfig, Selection } from './types';
+import {
+  assertNotEmpty,
+  Device,
+  DeviceName,
+  parseStoryID,
+  PreviewState,
+  PureStory,
+  PureStoryTree,
+  StoryID,
+} from '@storyshots/core';
 import { useMemo } from 'react';
+import { Selection } from './types';
+import { ManagerConfig } from './useManagerConfig';
+import { UserSelection } from './useUserSelection';
 
+/**
+ * Projects user selection on actual preview defined data. Thus resulting in trusted selection
+ */
 export function useTrustedSelection(
   preview: PreviewState | undefined,
-  untrusted: UntrustedSelection,
+  untrusted: UserSelection,
+  manager: ManagerConfig,
 ) {
   return useMemo((): Selection => {
     if (preview === undefined) {
       return { type: 'initializing' };
     }
 
-    const config = createTrustedConfig(preview, untrusted);
-
     if (untrusted.type === 'no-selection') {
       return {
-        ...config,
+        ...preview,
         type: 'no-selection',
       };
     }
 
-    const story = TreeOP.find(preview.stories, untrusted.id);
+    const story = find(untrusted.id, preview.stories);
 
     if (story === undefined) {
       return {
-        ...config,
+        ...preview,
         type: 'no-selection',
       };
     }
 
     if (untrusted.type === 'records') {
       return {
-        ...config,
+        ...preview,
         story,
         type: 'records',
-        device: untrusted.device,
+        device: ensureSelectedDevice(manager.devices, untrusted.device),
       };
     }
 
     if (untrusted.type === 'screenshot') {
       return {
-        ...config,
+        ...preview,
         story,
         type: 'screenshot',
-        device: untrusted.device,
         name: untrusted.name,
+        device: ensureSelectedDevice(manager.devices, untrusted.device),
       };
     }
 
     return {
-      ...config,
+      ...preview,
+      story,
       type: 'story',
       selectedAt: untrusted.selectedAt,
-      story,
-      state: NOT_PLAYED_YET,
+      state: {
+        type: 'not-played',
+      },
     };
-  }, [preview, untrusted]);
+  }, [preview, untrusted, manager.devices]);
 }
 
-function createTrustedConfig(
-  preview: PreviewState,
-  untrusted: UntrustedSelection,
-): PreviewConfig {
-  const found =
-    untrusted.config.device === undefined
-      ? preview.devices[0]
-      : preview.devices.find((it) => it.name === untrusted.config.device);
+function ensureSelectedDevice(devices: Device[], name: DeviceName): Device {
+  const found = devices.find((it) => it.name === name);
 
-  assertNotEmpty(found, 'Given configuration is misaligned with preview');
+  assertNotEmpty(found, 'Device is not defined. Press F5 to update');
 
-  return {
-    preview,
-    config: {
-      device: found,
-      emulated: untrusted.config.emulated,
-    },
-  };
+  return found;
 }
 
-const NOT_PLAYED_YET = {
-  type: 'not-played',
-} as const;
+function find(id: StoryID, stories: PureStoryTree[]): PureStory | undefined {
+  for (const node of stories) {
+    switch (node.type) {
+      case 'story': {
+        if (node.id === id) {
+          return node;
+        }
+
+        break;
+      }
+      case 'group': {
+        if (parseStoryID(id).includes(node.id)) {
+          return find(id, node.children);
+        }
+
+        break;
+      }
+    }
+  }
+}

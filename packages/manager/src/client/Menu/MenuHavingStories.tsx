@@ -5,12 +5,12 @@ import { StoryEntry } from './StoryEntry/StoryEntry';
 import { Props } from './types';
 
 export const MenuHavingStories: React.FC<Props> = (props) => (
-  <Entries aria-label={`Stories ${props.level}`}>
-    {props.stories.map((it) => {
+  <Entries>
+    {props.stories.map((it): React.ReactNode => {
       switch (it.type) {
-        case 'node':
+        case 'group':
           return <GroupEntry key={it.id} {...props} group={it} />;
-        case 'leaf':
+        case 'story':
           return <StoryEntry key={it.id} {...props} story={it} />;
       }
     })}

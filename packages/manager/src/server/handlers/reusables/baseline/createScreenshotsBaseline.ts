@@ -1,8 +1,9 @@
-import { ScreenshotName, StoryID, TestConfig } from '@storyshots/core';
+import { ScreenshotName } from '@storyshots/core';
 import path from 'path';
 import { ScreenshotPath } from '../../../../reusables/types';
 import { ManagerConfig } from '../../../types';
 import { copy, exists, mkdir, mkfile, read, rmdir } from './utils';
+import { Story } from '../../../reusables/types';
 
 export async function createScreenshotsBaseline(env: ManagerConfig) {
   const actualResultsDir = path.join(env.paths.temp, 'actual');
@@ -14,13 +15,12 @@ export async function createScreenshotsBaseline(env: ManagerConfig) {
 
   return {
     createActualScreenshot: async (
-      id: StoryID,
-      config: TestConfig,
+      story: Story,
       name: ScreenshotName,
       content: Uint8Array,
     ): Promise<ScreenshotPath> => {
-      const dir = path.join(actualResultsDir, createConcreteConfigPath(config));
-      const at = path.join(dir, constructScreenshotFileName(id, name));
+      const dir = path.join(actualResultsDir, createConcreteConfigPath(story));
+      const at = path.join(dir, constructScreenshotFileName(story, name));
 
       if (!(await exists(dir))) {
         await mkdir(dir);
@@ -31,14 +31,13 @@ export async function createScreenshotsBaseline(env: ManagerConfig) {
       return at as ScreenshotPath;
     },
     getExpectedScreenshot: async (
-      id: StoryID,
-      config: TestConfig,
+      story: Story,
       name: ScreenshotName,
     ): Promise<ScreenshotPath | undefined> => {
-      const image = constructScreenshotFileName(id, name);
+      const image = constructScreenshotFileName(story, name);
       const file = path.join(
         expectedResultsDir,
-        createConcreteConfigPath(config),
+        createConcreteConfigPath(story),
         image,
       );
 
@@ -58,13 +57,13 @@ export async function createScreenshotsBaseline(env: ManagerConfig) {
   };
 }
 
-function createConcreteConfigPath(config: TestConfig) {
-  return config.device.name;
+function createConcreteConfigPath(story: Story) {
+  return story.payload.device.name;
 }
 
 function constructScreenshotFileName(
-  id: StoryID,
+  story: Story,
   name: ScreenshotName,
 ): string {
-  return `${id}_${name}.png`;
+  return `${story.id}_${name}.png`;
 }

@@ -4,10 +4,10 @@ import { toPreviewFrame } from '../../reusables/toPreviewFrame';
 import { ExpectedPayload } from './types';
 
 export async function createPreviewFrame(
-  { story: { id, payload }, config }: ExpectedPayload,
+  { story, config }: ExpectedPayload,
   page: Page,
 ) {
-  await page.goto(createStoryURL(id, payload.config, config).href, {
+  await page.goto(createStoryURL(story, config).href, {
     waitUntil: 'networkidle',
   });
 

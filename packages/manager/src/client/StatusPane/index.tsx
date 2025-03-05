@@ -1,22 +1,24 @@
+import { assertNotEmpty, PureStoryTree, StoryID } from '@storyshots/core';
 import convert from 'ansi-to-html';
-import { PureStory, PureStoryTree, TreeOP } from '@storyshots/core';
 import { Segmented } from 'antd';
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
+import { toStories } from '../../reusables/runner/toStories';
+import { createSummary } from '../../reusables/summary';
+import { ErrorSummary } from '../../reusables/summary/types';
 import { UseBehaviourProps } from '../behaviour/types';
-import { EntryErrorStatus } from '../Menu/reusables/EntryStatus/types';
-import { getStoryEntryStatus } from '../Menu/reusables/getStoryEntryStatus';
 
 export const StatusPaneArea: React.FC<UseBehaviourProps> = (props) => {
-  const { selection, statusPaneOpen } = props;
+  const { selection, results, statusPaneOpen } = props;
   const [errorsAreActive, setErrorsAreActive] = useState(true);
 
   if (selection.type === 'initializing' || !statusPaneOpen) {
     return null;
   }
 
-  const errors = toAllErrors(selection.preview.stories, props);
-  const failures = toAllFailures(selection.preview.stories, props);
+  const summary = createSummary(results);
+  const errors = enrichErrors(selection.stories);
+  const failures = enrichFailures(selection.stories);
 
   return (
     <Pane>
@@ -32,7 +34,7 @@ export const StatusPaneArea: React.FC<UseBehaviourProps> = (props) => {
                 <span>
                   Errors{' '}
                   <span style={{ color: 'rgb(0 0 0 / 50%)' }}>
-                    {errors.size}
+                    {errors.length}
                   </span>
                 </span>
               ),
@@ -53,20 +55,22 @@ export const StatusPaneArea: React.FC<UseBehaviourProps> = (props) => {
       </Header>
       {errorsAreActive ? (
         <StatusEntries aria-label="Errors">
-          {[...errors].map(([story, result]) => (
+          {errors.map(({ story, error }, index) => (
             <StatusEntry
-              active$={isActive(story)}
-              aria-label={story.payload.title}
+              key={index}
+              active$={isSelected(story.id)}
               onClick={() => props.setStory(story.id)}
             >
-              <span style={{ fontWeight: 'bold' }}>{story.payload.title}</span>
+              <span
+                style={{ fontWeight: 'bold' }}
+              >{`[${error.device.name}] ${story.title}`}</span>
               <div
                 style={{ margin: 0 }}
                 dangerouslySetInnerHTML={{
                   __html: new convert({
                     escapeXML: true,
                     newline: true,
-                  }).toHtml(result.message),
+                  }).toHtml(error.message),
                 }}
               />
             </StatusEntry>
@@ -74,13 +78,15 @@ export const StatusPaneArea: React.FC<UseBehaviourProps> = (props) => {
         </StatusEntries>
       ) : (
         <StatusEntries aria-label="Failures">
-          {failures.map((story) => (
+          {failures.map(({ story, failure }, index) => (
             <StatusEntry
-              active$={isActive(story)}
-              aria-label={story.payload.title}
+              key={index}
+              active$={isSelected(story.id)}
               onClick={() => props.setStory(story.id)}
             >
-              <span style={{ fontWeight: 'bold' }}>{story.payload.title}</span>
+              <span
+                style={{ fontWeight: 'bold' }}
+              >{`[${failure.device.name}] ${story.title}`}</span>
             </StatusEntry>
           ))}
         </StatusEntries>
@@ -88,34 +94,50 @@ export const StatusPaneArea: React.FC<UseBehaviourProps> = (props) => {
     </Pane>
   );
 
-  function isActive(story: PureStory) {
-    return selection.type === 'story' && story.id === selection.story.id;
+  function isSelected(id: StoryID) {
+    return selection.type === 'story' && id === selection.story.id;
+  }
+
+  function enrichErrors(stories: PureStoryTree[]) {
+    const errors: ErrorSummary[] =
+      selection.type === 'story' &&
+      selection.state.type === 'played' &&
+      selection.state.result.type === 'error'
+        ? [
+            ...summary.errors,
+            {
+              id: selection.story.id,
+              device: props.device.preview,
+              message: selection.state.result.message,
+            },
+          ]
+        : summary.errors;
+
+    return errors.map((error) => {
+      const story = toStories(stories).find((it) => it.id === error.id);
+
+      assertNotEmpty(story, 'Errors are invalid. Press F5 to update');
+
+      return { story, error };
+    });
+  }
+
+  function enrichFailures(stories: PureStoryTree[]) {
+    return summary.changes
+      .filter(
+        (it) =>
+          it.records?.type === 'fail' ||
+          it.screenshots.some((screenshot) => screenshot.type === 'fail'),
+      )
+      .map((failure) => {
+        const story = toStories(stories).find((it) => it.id === failure.id);
+
+        assertNotEmpty(story, 'Failures are invalid. Press F5 to update');
+
+        return { story, failure };
+      });
   }
 };
-
-function toAllFailures(
-  stories: PureStoryTree[],
-  { results, selection }: UseBehaviourProps,
-): PureStory[] {
-  return TreeOP.toLeafsArray(stories).filter(
-    (story) => getStoryEntryStatus(results, selection, story)?.type === 'fail',
-  );
-}
-
-function toAllErrors(
-  stories: PureStoryTree[],
-  { results, selection }: UseBehaviourProps,
-) {
-  return TreeOP.toLeafsArray(stories).reduce((errors, story) => {
-    const status = getStoryEntryStatus(results, selection, story);
-
-    if (status?.type === 'error') {
-      errors.set(story, status);
-    }
-
-    return errors;
-  }, new Map<PureStory, EntryErrorStatus>());
-}
 
 const Pane = styled.div`
   display: flex;

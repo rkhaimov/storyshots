@@ -11,25 +11,35 @@ export async function runInBackground(config: ManagerConfig) {
     ...app,
     run: async () => {
       const stories = await getStories(config);
-      const { records, errors, screenshots } = await runAll(stories, config);
+      const summary = await runAll(stories, config);
 
-      if (errors.size > 0) {
-        for (const [id, error] of Array.from(errors.entries())) {
-          console.log(id, error.message);
+      if (summary.errors.length > 0) {
+        for (const error of summary.errors) {
+          console.log('Error has happened:');
+          console.log(`Story: ${error.id}`);
+          console.log(`Device: ${error.device.name}`);
+          console.log(`Message: ${error.message}`);
         }
 
         throw new Error('Failed to run tests, check reasons above');
       }
 
-      for (const record of records) {
-        await driver.acceptRecords(record.id, {
-          records: record.result.actual,
-          device: record.details.device,
-        });
+      if (summary.changes.length > 0) {
+        console.log('Baseline changes has been detected, commiting...');
       }
 
-      for (const screenshot of screenshots) {
-        await driver.acceptScreenshot({ actual: screenshot.result.actual });
+      for (const change of summary.changes) {
+        if (change.records) {
+          await driver.acceptRecords({
+            id: change.id,
+            device: change.device,
+            records: change.records,
+          });
+        }
+
+        for (const screenshot of change.screenshots) {
+          await driver.acceptScreenshot(screenshot);
+        }
       }
 
       console.log('Done');

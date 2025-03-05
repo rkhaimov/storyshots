@@ -6,7 +6,7 @@ export function useHighlighting(cb: OnHighlightStart) {
   const highlighting = !isNil(onDone);
 
   return {
-    toggle: async () => {
+    toggleHighlighting: async () => {
       if (highlighting) {
         onDone();
 

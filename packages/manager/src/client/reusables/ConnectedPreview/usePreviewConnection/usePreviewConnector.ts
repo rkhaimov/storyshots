@@ -1,32 +1,33 @@
-import { Channel, PreviewConfig, PreviewState } from '@storyshots/core';
+import { ManagerState, PreviewState } from '@storyshots/core';
 import { useEffect, useState } from 'react';
-import { PreviewBuildHash } from './useBuildHash';
+import { PreviewBuildHash } from '../types';
 
-// Defines connected preview internal and external states according to content hash and config
+/**
+ * Defines connected preview internal and external states according to content hash and config
+ */
 export function usePreviewConnector(
   hash: PreviewBuildHash,
-  config: PreviewConfig,
+  config: ManagerState,
 ) {
-  const [state, setState] = useState<UntrustedPreviewState>();
+  const [state, setState] = useState<PreviewState>();
   const identity = `${JSON.stringify(config)}${hash}`;
 
-  useEffect(() => {
-    // Ignore race condition on purpose
-    getConnectedPreviewState(config).then(setState);
-  }, [identity]);
+  // Ignore race condition on purpose
+  useEffect(
+    () => void getConnectedPreviewState(config).then(setState),
+    [identity],
+  );
 
   return { identity, state };
 }
 
-function getConnectedPreviewState(config: PreviewConfig) {
+function getConnectedPreviewState(config: ManagerState) {
   return new Promise<PreviewState>(
     (resolve) =>
-      ((window as never as Channel).state = (preview) => {
-        resolve(preview);
+      (window.onPreviewReady = (getState) => {
+        resolve(getState(config));
 
         return config;
       }),
   );
 }
-
-export type UntrustedPreviewState = PreviewState | undefined;

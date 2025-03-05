@@ -8,7 +8,6 @@
     "module": "CommonJS",
     "outDir": "./lib",
     "declaration": true,
-    "declarationMap": true,
-    "removeComments": false
+    "declarationMap": true
   }
 }

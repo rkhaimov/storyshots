@@ -4,19 +4,12 @@ import styled from 'styled-components';
 
 type Props = PropsWithChildren & {
   title?: string;
-  firstAction?: React.ReactNode;
   actions?: React.ReactNode;
 };
 
-export const Workspace: React.FC<Props> = ({
-  children,
-  firstAction,
-  actions,
-  title,
-}) => (
+export const Workspace: React.FC<Props> = ({ children, actions, title }) => (
   <Layout>
     <TopPanel>
-      <FirstAction>{firstAction}</FirstAction>
       <Title>{title}</Title>
       <Actions>{actions}</Actions>
     </TopPanel>
@@ -45,10 +38,6 @@ const Title = styled.span`
 
 const Actions = styled.div`
   margin: 0 2px 0 16px;
-`;
-
-const FirstAction = styled.div`
-  margin: 0 16px 0 2px;
 `;
 
 const Content = styled.div`

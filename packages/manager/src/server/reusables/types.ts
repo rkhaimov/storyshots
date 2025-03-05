@@ -1,7 +1,7 @@
 import { StoryID } from '@storyshots/core';
-import { ActionsAndConfig } from '../../reusables/types';
+import { DeviceAndActions } from '../../reusables/types';
 
 export type Story = {
   id: StoryID;
-  payload: ActionsAndConfig;
+  payload: DeviceAndActions;
 };
