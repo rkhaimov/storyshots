@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -40,7 +40,7 @@ jobs:
           git add .
           if ! git diff-index --quiet HEAD; then
             git commit -m "[skip ci] baseline"
-            git push
+            git push origin ${{ github.event.pull_request.head.ref }}
           else
             echo "No changes to commit."
           fi
