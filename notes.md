@@ -4,10 +4,8 @@ state-shots - that is a good name
 
 # Functional improvements
 
-* Background mode - script on CI, run only manually by anyone, with queue and commit in ran branch OR Introduce detached
-  machine background mode
-* React-devtool duplicates roots
 * Write docs (including all sub packages)
+* React-devtool duplicates roots
 * Add story search
     * Should work like live filter on groups and story contents
 * Accessibility checking https://github.com/abhinaba-ghosh/axe-playwright
