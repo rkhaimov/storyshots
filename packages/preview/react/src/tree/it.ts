@@ -6,14 +6,6 @@ import {
 } from '@storyshots/core';
 import React from 'react';
 
-/**
- * Creates a story.
- * This function allows you to define the behavior of the story, including how to render, act, arrange external dependencies, and retry logic.
- *
- * @param title - The title of the story.
- * @param config - See {@link StoryConfig}
- * @returns A story object containing the title and configuration settings.
- */
 export function it<TExternals>(
   title: string,
   config: StoryPayload<TExternals>,

@@ -1,9 +1,11 @@
 import { assert, isNil } from '@storyshots/core';
 import fs from 'fs';
 import path from 'path';
+import { Cleanup } from './description';
 
-export function setup() {
-  assert(cleanups.length === 0);
+export async function setup() {
+  await clean();
+
   assert(!fs.existsSync(storage));
 
   fs.mkdirSync(storage);
@@ -12,6 +14,12 @@ export function setup() {
 }
 
 export async function teardown() {
+  fs.rmSync(storage, { recursive: true, force: true });
+}
+
+export const cleanups: Cleanup[] = [];
+
+export async function clean() {
   while (true) {
     const clean = cleanups.shift();
 
@@ -21,11 +29,7 @@ export async function teardown() {
 
     await clean();
   }
-
-  fs.rmSync(storage, { recursive: true, force: true });
 }
-
-export const cleanups: Array<() => Promise<void>> = [];
 
 export type CreateTempPath = typeof _createTempPath;
 
