@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/react-preview",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "CSR react adapter",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -11,7 +11,7 @@
     "build": "rimraf ./lib && tsc -b tsconfig.json"
   },
   "dependencies": {
-    "@storyshots/core": "0.0.9"
+    "@storyshots/core": "0.0.10"
   },
   "peerDependencies": {
     "react": "*",

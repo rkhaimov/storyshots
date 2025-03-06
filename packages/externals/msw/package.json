@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/msw-externals",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Direct fetch middleware",
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
@@ -19,6 +19,6 @@
     "msw": "^2.6.8"
   },
   "peerDependencies": {
-    "@storyshots/manager": "0.0.9"
+    "@storyshots/manager": "0.0.10"
   }
 }
