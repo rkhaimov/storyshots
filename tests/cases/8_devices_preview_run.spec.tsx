@@ -1,4 +1,5 @@
-import { Action, describe, test } from '../reusables/test';
+import { Action } from '../reusables/factories';
+import { describe, test } from '../reusables/test';
 import { devices } from './reusables/device';
 
 describe('devices preview run', () => {

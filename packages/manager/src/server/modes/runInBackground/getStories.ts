@@ -12,7 +12,7 @@ export async function getStories(
 
   await page.goto(createManagerRootURL(config).href, { timeout: 0 });
 
-  const handle = await page.waitForFunction(() => window.getStories(), {
+  const handle = await page.waitForFunction(() => window.getStories(), null, {
     timeout: 0,
   });
 

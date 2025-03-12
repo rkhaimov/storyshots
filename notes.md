@@ -13,7 +13,7 @@ state-shots - that is a good name
 * Clipboard copy for action picker
 * Add coverage tool
 * Run only changed stories first
-* Fix docs for it, describe, each
+* Clocks
 
 ## Low priority
 

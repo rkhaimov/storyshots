@@ -1,6 +1,6 @@
 import { Actor, createActor } from '../actor';
 import { createPreviewTestsFactory } from '../factories';
-import { Arrangers } from '../test';
+import { TestDescription } from '../test/description';
 import { createCode } from './code';
 import {
   createDefaultExternalsFactory,
@@ -21,7 +21,7 @@ export type Preview<T> = {
   actor(): Actor<T>;
 };
 
-export function createPreview(factory: Arrangers) {
+export function createPreview(description: TestDescription) {
   let externals = createDefaultExternalsFactory();
   let stories = createDefaultStoriesFactory();
 
@@ -43,7 +43,7 @@ export function createPreview(factory: Arrangers) {
     },
     actor: () =>
       createActor(
-        createPreviewTestsFactory(factory, createCode(externals, stories)),
+        createPreviewTestsFactory(description, createCode(externals, stories)),
       ),
   };
 

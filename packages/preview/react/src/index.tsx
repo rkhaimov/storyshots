@@ -48,11 +48,57 @@ export function createPreviewApp<TExternals>(
   factory: ExternalsFactory<TExternals>,
 ) {
   return {
+    /**
+     * Describes a semantic group tests.
+     *
+     * @param title - The title of the group. Should not contain characters that are invalid in file names (e.g., `/`, `:`, `*`, `?`, `|`).
+     * @param children - The children test entities.
+     * @returns A group of stories
+     *
+     * @example
+     * export const loginStories = describe('Login', [
+     *   it('renders login form'),
+     *   it('displays error on invalid credentials'),
+     *   describe('Authentication Flow', [
+     *     it('successfully logs in with valid credentials'),
+     *     it('displays loading spinner during authentication'),
+     *   ]),
+     * ]);
+     */
     describe: describe,
+    /**
+     * Creates a story.
+     * This function allows you to define the behavior of the story, including how to render, act, arrange external dependencies, and retry logic.
+     *
+     * @param title - The title of the story.
+     * @param config - See {@link StoryConfig}
+     * @returns A story object containing the title and configuration settings.
+     */
     it: it<TExternals>,
+    /**
+     * Denotes an aggregate of all generated stories. This can be used inside `describe` to group related stories.
+     *
+     * @param elements - The array of elements to iterate over.
+     * @param onEach - A function that is called on each element. It receives an element and returns a StoryTree item.
+     * @returns An aggregate containing the generated children stories.
+     *
+     * @example
+     * export const statusStories = describe('Status Updates', [
+     *   it('renders no updates'),
+     *   it('renders updates with content'),
+     *   each(['Online', 'Offline', 'Busy'], (status) =>
+     *     it(`shows user status as ${status}`)
+     *   ),
+     * ]);
+     */
     each: each,
     run: createRun(factory),
   };
 }
 
 export { masked } from './masked';
+export type { ExternalsFactory };
+export type { StoryTree } from './tree/types';
+export type { Story } from './tree/it';
+export type { StoryAggregate } from './tree/each';
+export type { Group } from './tree/describe';

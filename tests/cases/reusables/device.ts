@@ -1,7 +1,8 @@
-import { manager } from '../../reusables/manager';
+import { Background } from '../../reusables/background';
+import { UI, ui } from '../../reusables/ui';
 
-export function desktop() {
-  return manager
+export function desktop(on: UI | Background = ui) {
+  return on
     .devices([
       {
         type: 'size-only',
@@ -13,7 +14,7 @@ export function desktop() {
 }
 
 export function devices() {
-  return manager
+  return ui
     .devices([
       {
         type: 'size-only',

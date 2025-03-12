@@ -1,22 +1,19 @@
 import { expect } from '@playwright/test';
 import { wait } from '@storyshots/core';
-import { createActorTestsFactory } from './factories';
+import { Action, createActorTestsFactory } from './factories';
 import { createPreview, Preview } from './preview';
-import { Action, Arrangers } from './test';
+import { TestDescription } from './test/description';
 
-export type Actor<TExternals> = {
+export type Actor<TExternals> = TestDescription & {
   screenshot(): Actor<TExternals>;
   open(title: string, under?: string): Actor<TExternals>;
   run(title: string): Actor<TExternals>;
   accept(title: string): Actor<TExternals>;
   do(action: Action): Actor<TExternals>;
   preview(): Preview<TExternals>;
-  __arrangers(): Arrangers;
 };
 
-export function createActor<TExternals>(factory: Arrangers) {
-  const actions: Action[] = [];
-
+export function createActor<TExternals>(description: TestDescription) {
   const actor: Actor<TExternals> = {
     open: (title, under) =>
       actor
@@ -45,13 +42,9 @@ export function createActor<TExternals>(factory: Arrangers) {
             .waitFor({ state: 'visible' }),
         ),
     screenshot: () => actor.do((page) => expect(page).toHaveScreenshot()),
-    do: (action) => {
-      actions.push(action);
-
-      return actor;
-    },
-    preview: () => createPreview(actor.__arrangers()) as never,
-    __arrangers: () => createActorTestsFactory(factory, actions),
+    do: (action) => createActor(createActorTestsFactory(description, action)),
+    preview: () => createPreview(actor) as never,
+    ...description,
   };
 
   return actor;

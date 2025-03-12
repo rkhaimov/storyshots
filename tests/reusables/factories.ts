@@ -1,26 +1,36 @@
+import { Page } from '@playwright/test';
 import { CAPTURE, COMPARE, RUNNER } from '@storyshots/manager/src';
 import { createStoryEngine } from '@storyshots/manager/src/server/modes/createStoryEngine';
+import { runInBackground } from '@storyshots/manager/src/server/modes/runInBackground';
 import { createManagerRootURL } from '@storyshots/manager/src/server/paths';
 import { ManagerConfig } from '@storyshots/manager/src/server/types';
 import { createWebpackBundler } from '@storyshots/webpack-bundler';
 import fs from 'fs';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack from 'webpack';
-import { Action, Arrangers } from './test';
+import {
+  createEmptyDescription,
+  hasSetup,
+  onRun,
+  onSetup,
+  TestDescription,
+  onJoinAct,
+} from './test/description';
 import { CreateTempPath } from './test/env';
 
-export const createManagerTestsFactory = (
-  devices: ManagerConfig['devices'],
-): Arrangers => [
-  async (createTempPath) => {
-    fs.writeFileSync(createTempPath('index.tsx'), '');
+export const createCITestsFactory = (devices: ManagerConfig['devices']) =>
+  onRun(createEmptyDescription(), async (createTP) =>
+    runInBackground(createConfig(devices, createTP)),
+  );
 
-    const config: ManagerConfig = createConfig(devices, createTempPath);
+export const createUITestsFactory = (devices: ManagerConfig['devices']) =>
+  onRun(createEmptyDescription(), async (createTP, page) => {
+    const config: ManagerConfig = createConfig(devices, createTP);
     const { cleanup } = await createStoryEngine(config);
 
     return {
       cleanup,
-      act: async (page) => {
+      run: async () => {
         // TODO: Act calls are being ignored. They should be recorded
         await page.route('*/**/api/client/act', (route) =>
           route.fulfill({ json: { type: 'success' } }),
@@ -29,46 +39,39 @@ export const createManagerTestsFactory = (
         await page.goto(createManagerRootURL(config).href);
       },
     };
-  },
-];
+  });
 
 export const createPreviewTestsFactory = (
-  arrangers: Arrangers,
+  description: TestDescription,
   code: string,
-): Arrangers => [
-  ...arrangers,
-  async (createTempPath) => {
-    fs.writeFileSync(createTempPath('index.tsx'), code);
+) => {
+  if (!hasSetup(description)) {
+    return onSetup(description, async (createTP) =>
+      fs.writeFileSync(createTP('index.tsx'), code),
+    );
+  }
 
-    return {
-      cleanup: async () => {},
-      act: (page) =>
-        Promise.all([
-          page.getByLabel('Progress').waitFor({ state: 'visible' }),
-          page.waitForLoadState('networkidle'),
-        ]),
-    };
-  },
-];
+  return onJoinAct(description, async (createTP, page) => {
+    fs.writeFileSync(createTP('index.tsx'), code);
+
+    // TODO: Do not need these, probably
+    return Promise.all([
+      page.getByLabel('Progress').waitFor({ state: 'visible' }),
+      page.waitForLoadState('networkidle'),
+    ]);
+  });
+};
+
+export type Action = (page: Page) => Promise<unknown>;
 
 export const createActorTestsFactory = (
-  arrangers: Arrangers,
-  actions: Action[],
-): Arrangers => [
-  ...arrangers,
-  async () => ({
-    cleanup: async () => {},
-    act: async (page) => {
-      for (const action of actions) {
-        await action(page);
-      }
-    },
-  }),
-];
+  description: TestDescription,
+  action: Action,
+) => onJoinAct(description, async (_, page) => action(page));
 
 function createConfig(
   devices: ManagerConfig['devices'],
-  createTempPath: CreateTempPath,
+  createTP: CreateTempPath,
 ) {
   return {
     devices,
@@ -76,14 +79,14 @@ function createConfig(
     capture: CAPTURE.instantly(),
     runner: RUNNER.pool({ agentsCount: 1 }),
     paths: {
-      records: createTempPath('records'),
-      screenshots: createTempPath('screenshots'),
-      temp: createTempPath('temp'),
+      records: createTP('records'),
+      screenshots: createTP('screenshots'),
+      temp: createTP('temp'),
     },
     preview: createWebpackBundler({
       mode: 'development',
       bail: false,
-      entry: createTempPath('index.tsx'),
+      entry: createTP('index.tsx'),
       devtool: 'cheap-module-source-map',
       stats: {
         errorDetails: true,
