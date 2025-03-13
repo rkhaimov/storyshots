@@ -2,12 +2,15 @@ import {
   ActionMeta,
   Brand,
   Device,
-  JournalRecord,
   PureStoryTree,
   ScreenshotName,
   StoryID,
 } from '@storyshots/core';
-import { AcceptableRecords, AcceptableScreenshot, TestRunResult } from './runner/types';
+import {
+  AcceptableRecords,
+  AcceptableScreenshot,
+  TestRunResult,
+} from './runner/types';
 
 export interface IWebDriver {
   play(actions: ActionMeta[]): Promise<WithPossibleError<void>>;

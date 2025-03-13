@@ -8,18 +8,12 @@ import {
 import { ChangeSummary } from '../../reusables/summary/types';
 import { useRun } from './useRun';
 
-/**
- * Provides functions to accept baseline records and screenshots,
- * updating the run results accordingly.
- */
 export function useAcceptBaseline(run: ReturnType<typeof useRun>) {
   const [accepting, setAccepting] = useState(false);
 
   const result = {
     accepting,
-    /**
-     * Commits given changes to a baseline.
-     */
+
     accept: async (changes: ChangeSummary[]) => {
       setAccepting(true);
 
@@ -35,9 +29,7 @@ export function useAcceptBaseline(run: ReturnType<typeof useRun>) {
 
       setAccepting(false);
     },
-    /**
-     * Accepts the provided records as the new baseline.
-     */
+
     acceptRecords: async (
       id: StoryID,
       device: Device,
@@ -63,9 +55,6 @@ export function useAcceptBaseline(run: ReturnType<typeof useRun>) {
       run.setResults(new Map(run.results));
     },
 
-    /**
-     * Accepts the provided screenshot as the new baseline.
-     */
     acceptScreenshot: async (
       id: StoryID,
       device: Device,

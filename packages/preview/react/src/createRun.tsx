@@ -6,7 +6,9 @@ export const createRun =
   <TExternals extends unknown>(factory: ExternalsFactory<TExternals>) =>
   async (stories: StoryTree[]) => {
     try {
-      const { createRoot } = await import(/* webpackIgnore: true */ 'react-dom/client');
+      const { createRoot } = await import(
+        /* webpackIgnore: true */ 'react-dom/client'
+      );
 
       createRoot(createRootElement()).render(
         createStoryView({ ...factory, stories }),

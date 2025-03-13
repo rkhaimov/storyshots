@@ -1,0 +1,29 @@
+---
+sidebar_position: 2
+---
+
+import { BalancedMetricsTip, Metric } from '@site/src/MetricsTip';
+import { Diagram } from '@site/src/Diagram';
+
+# Пользователь
+
+<BalancedMetricsTip improves={[Metric.RegressionProtection, Metric.RefactoringAllowance, Metric.Maintainability]} />
+
+Являясь частью секции [*аргументов*](/specification/requirements/borders#определение-границ) данный блок описывает
+последовательность действий, которые пользователь предпринимает на странице.
+
+Пример действий пользователя на странице:
+<Diagram src={require('./assets/user-events.drawio.png')} />
+
+## Связь с библиотекой
+
+[//]: # (TODO: Добавить ссылки)
+
+В библиотеке storyshots объекты actor и finder совместно представляют пользователя — агента, способного выполнять
+различные действия на странице.
+
+:::note
+С точки зрения спецификации, действия пользователя можно представить в виде *значений* (например, тех, которые можно
+записать в переменную или передать в функцию). `storyshots` использует этот подход, приближая общую архитектуру к
+функциональной парадигме, что положительно сказывается на расширяемости решения в целом.
+:::

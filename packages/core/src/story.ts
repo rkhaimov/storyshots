@@ -17,9 +17,6 @@ export function createStoryID(value: string, parent?: GroupID) {
   return join(parent, value) as StoryID;
 }
 
-/**
- * Returns parents chain of story
- */
 export function parseStoryID(id: StoryID): GroupID[] {
   return id
     .split('__')
@@ -27,9 +24,6 @@ export function parseStoryID(id: StoryID): GroupID[] {
     .map((_, index, parts) => parts.slice(0, index + 1).join('__') as GroupID);
 }
 
-/**
- * Represents serializable version of story nodes
- */
 export type PureStoryTree = PureGroup | PureStory;
 
 export type PureGroup = {

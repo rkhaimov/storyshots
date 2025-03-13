@@ -1,10 +1,10 @@
 import path from 'path';
 
-import type { PreviewServe } from '@storyshots/manager';
+import type { PreviewServer } from '@storyshots/manager';
 
 export function createWorkerSupplier(
   mswPath = path.join(__dirname, 'mockServiceWorker.js'),
-): PreviewServe {
+): PreviewServer {
   return {
     handler: (req, res, next) => {
       if (req.url.includes('mockServiceWorker.js')) {

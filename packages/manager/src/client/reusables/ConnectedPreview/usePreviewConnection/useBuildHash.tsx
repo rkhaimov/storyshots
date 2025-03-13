@@ -2,9 +2,6 @@ import { assert } from '@storyshots/core';
 import { useEffect, useState } from 'react';
 import { PreviewBuildHash } from '../types';
 
-/**
- * Connects to preview bundler to retrieve actual content hash
- */
 export function useBuildHash() {
   const [hash, setHash] = useState<PreviewBuildHash>();
 

@@ -6,7 +6,9 @@
   "types": "./lib/index.d.ts",
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "build": "rimraf ./lib && tsc -b tsconfig.json"
   },

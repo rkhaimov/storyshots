@@ -1,7 +1,7 @@
 import { Endpoints } from './types';
-import { JournalStoryConfig } from '@storyshots/core';
+import { StoryConfig } from '@storyshots/core';
 
 export type Arranger = <TExternals extends { endpoints: Endpoints }>(
   externals: TExternals,
-  config: JournalStoryConfig,
+  config: StoryConfig,
 ) => TExternals;

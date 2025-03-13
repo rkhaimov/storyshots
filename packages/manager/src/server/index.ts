@@ -3,9 +3,9 @@ import { runUI as _runUI } from './modes/runUI';
 import { CAPTURE } from './modules/capture';
 import { COMPARE } from './modules/compare';
 import { RUNNER } from './modules/runner';
-import { ManagerConfig as FullManagerConfig, PreviewServe } from './types';
+import { ManagerConfig as FullManagerConfig, PreviewServer } from './types';
 
-export type { PreviewServe } from './types';
+export type { PreviewServer } from './types';
 
 export type ManagerConfig = Omit<
   Optional<FullManagerConfig, 'runner' | 'compare' | 'capture'>,
@@ -22,13 +22,13 @@ export const runInBackground = async (config: ManagerConfig) => {
   await cleanup();
 };
 
-export const mergeServe = (...handlers: PreviewServe[]): PreviewServe =>
+export const mergeServe = (...handlers: PreviewServer[]): PreviewServer =>
   handlers.reduce(mergeTwoServeHandlers);
 
 const mergeTwoServeHandlers = (
-  left: PreviewServe,
-  right: PreviewServe,
-): PreviewServe => ({
+  left: PreviewServer,
+  right: PreviewServer,
+): PreviewServer => ({
   handler: (req, res, next) =>
     left.handler(req, res, () => right.handler(req, res, next)),
   onUpdate: (handle) => {

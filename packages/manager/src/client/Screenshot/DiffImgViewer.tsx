@@ -31,10 +31,7 @@ export const DiffImgViewer: React.FC<Props> = (props) => {
   function renderTwoUp() {
     return (
       <TwoUp>
-        <ActualImage
-          src={driver.createImgSrc(props.actual)}
-          alt="Actual"
-        />
+        <ActualImage src={driver.createImgSrc(props.actual)} alt="Actual" />
         <ExpectedImage
           src={driver.createImgSrc(props.expected)}
           alt="Expected"

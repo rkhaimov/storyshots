@@ -1,9 +1,6 @@
 import { assertNotEmpty, Device, isNil } from '@storyshots/core';
 import { useSearchParams } from 'wouter';
 
-/**
- * Retrieves user selected device. Maintains referential equality by using objects from devices param
- */
 export function useDevice(devices: Device[], emulated: boolean) {
   const [params, setParams] = useSearchParams();
   const selected = useSelectedDevice();

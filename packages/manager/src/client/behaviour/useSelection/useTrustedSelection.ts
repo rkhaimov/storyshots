@@ -13,9 +13,6 @@ import { Selection } from './types';
 import { ManagerConfig } from './useManagerConfig';
 import { UserSelection } from './useUserSelection';
 
-/**
- * Projects user selection on actual preview defined data. Thus resulting in trusted selection
- */
 export function useTrustedSelection(
   preview: PreviewState | undefined,
   untrusted: UserSelection,

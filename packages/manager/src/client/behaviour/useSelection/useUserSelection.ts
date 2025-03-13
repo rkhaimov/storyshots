@@ -2,9 +2,6 @@ import { DeviceName, isNil, ScreenshotName, StoryID } from '@storyshots/core';
 import { useMemo } from 'react';
 import { useSearchParams } from 'wouter';
 
-/**
- * Manages user selection by persisting them between page reloads
- */
 export function useUserSelection() {
   const [params, setParams] = useSearchParams();
 

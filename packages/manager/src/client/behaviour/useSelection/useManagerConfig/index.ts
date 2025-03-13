@@ -3,9 +3,6 @@ import { useEmulated } from './useEmulated';
 import { usePoolSize } from './usePoolSize';
 import { useDevice } from './useDevice';
 
-/**
- * Manages current manager configuration including selected device and emulating parameter.
- */
 export function useManagerConfig() {
   const devices = useDevices();
   const size = usePoolSize();

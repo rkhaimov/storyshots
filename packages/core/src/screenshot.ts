@@ -2,14 +2,8 @@ import { Brand } from './brand';
 import { ActionMeta } from './actor/types';
 import { assert } from './utils';
 
-/**
- * Represents a unique identifier for an intermediate screenshot within a story.
- */
 export type ScreenshotName = Brand<string, 'ScreenshotName'>;
 
-/**
- * Proof of {@link ScreenshotName} conditions.
- */
 export function assertScreenshotNameConditions(
   meta: ActionMeta[],
 ): ActionMeta[] {

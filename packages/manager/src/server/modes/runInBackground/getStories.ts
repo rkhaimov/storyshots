@@ -31,7 +31,10 @@ function withConfiguredDevices(
 ) {
   return stories.map((story): PureStoryTree => {
     if (story.type === 'group') {
-      return { ...story, children: withConfiguredDevices(config, story.children) };
+      return {
+        ...story,
+        children: withConfiguredDevices(config, story.children),
+      };
     }
 
     return {

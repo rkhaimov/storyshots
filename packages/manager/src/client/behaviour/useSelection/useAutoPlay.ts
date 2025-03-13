@@ -4,9 +4,6 @@ import { driver } from '../../../reusables/runner/driver';
 import { PlayingState, Selection } from './types';
 import { ManagerConfig } from './useManagerConfig';
 
-/**
- * Plays selected story automatically.
- */
 export function useAutoPlay(
   selection: Selection,
   manager: ManagerConfig,

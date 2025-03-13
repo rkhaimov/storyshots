@@ -4,11 +4,6 @@ import { Preview } from '../Preview';
 import { PreviewConnectionProps } from '../types';
 import { useBuildHash } from './useBuildHash';
 
-/**
- * Creates a connection between manager and preview.
- *
- * @returns Identity of the preview.
- */
 export function usePreviewConnection(
   props: PreviewConnectionProps,
 ): React.ComponentProps<typeof Preview> {

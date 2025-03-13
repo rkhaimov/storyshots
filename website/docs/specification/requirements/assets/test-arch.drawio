@@ -1,0 +1,58 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36" version="26.1.1">
+  <diagram name="Page-1" id="VghXr3DV2tmhOhi8Gk_4">
+    <mxGraphModel dx="989" dy="514" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="mQDamdUsFG1WEKTS0zRD-1" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#A1A1A1;" parent="1" vertex="1">
+          <mxGeometry x="96" y="415" width="200" height="265" as="geometry" />
+        </mxCell>
+        <mxCell id="mQDamdUsFG1WEKTS0zRD-2" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#A1A1A1;" parent="1" vertex="1">
+          <mxGeometry x="296" y="415" width="168" height="265" as="geometry" />
+        </mxCell>
+        <mxCell id="mQDamdUsFG1WEKTS0zRD-3" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#A1A1A1;" parent="1" vertex="1">
+          <mxGeometry x="464" y="415" width="200" height="265" as="geometry" />
+        </mxCell>
+        <mxCell id="FQs-gukBbYW2bG0p04tq-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="FQs-gukBbYW2bG0p04tq-1" target="FQs-gukBbYW2bG0p04tq-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="FQs-gukBbYW2bG0p04tq-1" value="AUT" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="320" y="520" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="FQs-gukBbYW2bG0p04tq-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="FQs-gukBbYW2bG0p04tq-2" target="FQs-gukBbYW2bG0p04tq-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="FQs-gukBbYW2bG0p04tq-2" value="Пользователь" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="130" y="480" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="FQs-gukBbYW2bG0p04tq-4" value="Хранилище" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="510" y="480" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="FQs-gukBbYW2bG0p04tq-6" value="Монитор" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="510" y="560" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="FQs-gukBbYW2bG0p04tq-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="FQs-gukBbYW2bG0p04tq-1" target="FQs-gukBbYW2bG0p04tq-4" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="450" y="560" as="sourcePoint" />
+            <mxPoint x="520" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FQs-gukBbYW2bG0p04tq-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="FQs-gukBbYW2bG0p04tq-8" target="FQs-gukBbYW2bG0p04tq-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="FQs-gukBbYW2bG0p04tq-8" value="Внешняя среда" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="130" y="560" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="mQDamdUsFG1WEKTS0zRD-4" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Аргументы&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
+          <mxGeometry x="136.99999999999991" y="418.99999999999994" width="106" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="mQDamdUsFG1WEKTS0zRD-5" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Функция&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
+          <mxGeometry x="326.9999999999999" y="418.99999999999994" width="106" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="mQDamdUsFG1WEKTS0zRD-6" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Результат&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
+          <mxGeometry x="516.9999999999999" y="418.99999999999994" width="106" height="36" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
