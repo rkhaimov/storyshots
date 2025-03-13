@@ -5,6 +5,44 @@ state-shots - that is a good name
 # Functional improvements
 
 * Write docs (including all sub packages)
+  * Describe main concept (in details)
+    * Source of problems
+    * Program as a function
+    * What to verify
+    * How to verify
+    * Baseline and golden master
+    * Requirements for tests
+  * Describe current impl
+    * Architecture description
+    * Manager
+      * UI description
+      * Config description
+    * Preview
+      * Config description
+      * test nodes description and theirs capabilities
+        * Requirements for arrange
+          * Emulating behaviour
+        * Requirements for act
+        * Requirements for assert
+      * Actor
+        * Purpose, pitfalls, techniques
+        * API
+      * Finder
+        * Purpose, pitfalls, techniques
+        * API
+  * Add guides
+    * Replacing web api
+      * Date, local storage
+    * Replacing components
+    * Replacing libraries
+    * Replacing certain kinds of externals
+    * Writing modular externals
+    * Using for features
+    * Using for bugs
+    * Integrating in CI/CD pipelines
+    * Using as TDD technique
+    * Debugging
+    * Masking technique
 * React-devtool duplicates roots
 * Add story search
     * Should work like live filter on groups and story contents
@@ -18,6 +56,9 @@ state-shots - that is a good name
 ## Low priority
 
 * Add baseline read button
+* Add true device filter for stories
+* Add meta objects for stories
+* Add stories map function
 * Support HMR
 * Add todo meta function to `it` factory
 * Implement antd actor extensions package
