@@ -4,32 +4,65 @@ sidebar_position: 2
 
 # Установка и запуск
 
-[//]: # (TODO дополнить)
 :::note
-На данный момент библиотека не публикуется ни в один из реестров пакетов, установка выполняется в локальном режиме.
+На данный момент библиотека не публикуется ни в один из реестров пакетов, ввиду наличия не стабильной структуры пакетов.
+Установка выполняется в офлайн режиме.
 :::
 
-## Пример использования
+В корне проекта установить зависимости:
 
-*Описание превью и историй:*
+```shell
+npm install
+```
+
+Собрать пакеты и запаковать в архив:
+
+```shell
+npm run build && npm run pack
+```
+
+## Артефакты
+
+Команда сформирует следующие артефакты:
+
+- **@storyshots/core** - базовый модуль, является обязательным к использованию
+- **@storyshots/manager** - модуль управляющий тестами, обязательный
+- **@storyshots/react-preview** - адаптер для [приложений](/specification/requirements/borders#функция) написанных на
+  `react`
+- **@storyshots/webpack-bundler** - сборщик (или же сервер) приложений написанных на `webpack`
+- **@storyshots/proxy-bundler** - сервер позволяющий тестировать удалённые приложения по url
+- **@storyshots/msw-externals** - набор утилит для подмены запросов с помощью `msw` библиотеки
+- **@storyshots/rtk-externals** - набор утилит для подмены запросов сгенерированных `rtk` библиотекой
+
+:::tip
+Для проекта написанного на `react` с использованием `webpack` сборщика подойдёт следующий набор:
+
+* @storyshots/core
+* @storyshots/manager
+* @storyshots/react-preview
+* @storyshots/webpack-bundler
+  :::
+
+## Описание тестовых сценариев
+
+После установки, первым делом следует описать превью область и определить первые тесты:
 
 ```tsx title="/storyshots/preview.tsx"
 import { createPreviewApp } from '@storyshots/react-preview';
 
-// Определение внешних зависимостей
-const factory = {
+// Инициализация превью
+const { it, run } = createPreviewApp({
+    // Определение поведения "по умолчанию" для внешних зависимостей
     createExternals: (config) => ({
         getUser: async () => ({ id: 1, name: 'John Doe' }),
     }),
+    // Маркировка методов для записи в журнал вызовов
     createJournalExternals: (externals, config) => ({
         getUser: config.journal.asRecordable(externals.getUser),
     }),
-};
+});
 
-// Инициализация превью
-const { it, run } = createPreviewApp(factory);
-
-// Определение историй
+// Описание историй
 const stories = [
     it('renders the application correctly', {
         render: (externals) => <App externals={externals} />,
@@ -44,7 +77,7 @@ const stories = [
 run(stories);
 ```
 
-*Описание менеджера в режиме **UI***:
+Описание менеджера в режиме **UI**:
 
 ```tsx title="/storyshots/ui.ts"
 import { runUI } from '@storyshots/manager';
@@ -52,40 +85,34 @@ import { createWebpackBundler } from '@storyshots/webpack-bundler';
 import path from 'path';
 
 void runUI({
-    // Описание тестируемых устройств
-    devices: [
-        {
-            type: 'size-only',
-            name: 'desktop',
-            config: { width: 1480, height: 920 },
-        },
-        {
-            type: 'emulated',
-            name: 'mobile',
-            config: {
-                userAgent:
-                    'Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1',
-                width: 414,
-                height: 896,
-                deviceScaleFactor: 3,
-            },
-        },
-    ],
-    // Описание путей до основных артефактов: эталонного результата работы и файлов браузера
-    paths: {
-        screenshots: path.join(process.cwd(), 'screenshots'),
-        records: path.join(process.cwd(), 'records'),
-        temp: path.join(process.cwd(), 'temp'),
-    },
-    // Описание сервера превью
-    preview: createWebpackBundler({ entry: '/storyshots/preview.tsx' /* ... */ }),
-    // Настройка служб тестирования
-    runner: RUNNER.pool({ agentsCount: 4 }),
+  // Описание тестируемых устройств
+  devices: [
+    {
+      type: 'size-only',
+      name: 'desktop',
+      config: { width: 1480, height: 920 },
+    }
+  ],
+  // Описание путей до основных артефактов: эталонного результата работы и временного хранилища
+  paths: {
+    screenshots: path.join(process.cwd(), 'screenshots'),
+    records: path.join(process.cwd(), 'records'),
+    temp: path.join(process.cwd(), 'temp'),
+  },
+  // Описание сервера превью
+  preview: createWebpackBundler({ entry: '/storyshots/preview.tsx' /* ... */ }),
+  // Настройка служб тестирования
+  runner: RUNNER.pool({ agentsCount: 4 }),
 });
 ```
 
-*Запуск UI менеджера* (требуется ts-node)
+Запуск UI менеджера (требуется ts-node)
 
 ```shell
 npx ts-node /storyshots/ui.ts
 ```
+
+:::tip
+Типовой пример проекта можно
+посмотреть [тут](https://github.com/rkhaimov/storyshots/tree/master/examples/basic-externals)
+:::

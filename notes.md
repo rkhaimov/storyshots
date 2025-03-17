@@ -6,11 +6,6 @@ state-shots - that is a good name
 
 * Write docs (including all sub packages)
   * Describe main concept (in details)
-    * Source of problems
-    * Program as a function
-    * What to verify
-    * How to verify
-    * Baseline and golden master
     * Requirements for tests
   * Describe current impl
     * Architecture description
