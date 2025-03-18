@@ -7,6 +7,7 @@ import { Journal } from './journal/types';
 export type StoryConfig = {
   /** The device configuration used in the story. */
   device: Device;
+  journal: Journal;
   /**
    * Indicates the mode in which the story is running.
    * - `true`: The story is running in the background (e.g., testing mode).
@@ -16,13 +17,6 @@ export type StoryConfig = {
    * actions/data, to ensure consistent and reliable test results.
    */
   testing: boolean;
-};
-
-/**
- * Extended story configuration that includes journal information.
- */
-export type JournalStoryConfig = StoryConfig & {
-  journal: Journal;
 };
 
 export type DeviceName = Brand<string, 'DeviceName'>;

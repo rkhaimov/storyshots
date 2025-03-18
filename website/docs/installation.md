@@ -77,7 +77,7 @@ const stories = [
 run(stories);
 ```
 
-Описание менеджера в режиме **UI**:
+Использование режима **UI**:
 
 ```tsx title="/storyshots/ui.ts"
 import { runUI } from '@storyshots/manager';
@@ -106,7 +106,7 @@ void runUI({
 });
 ```
 
-Запуск UI менеджера (требуется ts-node)
+Запуск (требуется ts-node)
 
 ```shell
 npx ts-node /storyshots/ui.ts
