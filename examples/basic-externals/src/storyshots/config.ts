@@ -28,6 +28,4 @@ export const config: Parameters<typeof runUI>[0] = {
   },
   preview: createPreviewServe(),
   runner: RUNNER.pool({ agentsCount: 4 }),
-  capture,
-  compare,
 };

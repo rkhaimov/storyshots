@@ -1,4 +1,4 @@
-import { JournalStoryConfig, StoryConfig } from '@storyshots/core';
+import { StoryConfig } from '@storyshots/core';
 
 /**
  * Factory for creating and manipulating the application's external data sources.
@@ -43,6 +43,6 @@ export type ExternalsFactory<TExternals> = {
    */
   createJournalExternals(
     externals: TExternals,
-    config: JournalStoryConfig,
+    config: StoryConfig,
   ): TExternals;
 };

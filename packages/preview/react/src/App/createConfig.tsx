@@ -1,19 +1,13 @@
-import {
-  createJournal,
-  JournalStoryConfig,
-  ManagerState,
-  StoryConfig,
-} from '@storyshots/core';
+import { createJournal, ManagerState, StoryConfig } from '@storyshots/core';
 
-export function createConfig(manager: ManagerState): JournalStoryConfig {
-  const config: StoryConfig = {
-    device: manager.device,
-    testing: manager.testing,
-  };
-
+export function createConfig(manager: ManagerState): StoryConfig {
   const journal = createJournal();
 
   window.getJournalRecords = journal.__read;
 
-  return { ...config, journal };
+  return {
+    device: manager.device,
+    testing: manager.testing,
+    journal,
+  };
 }

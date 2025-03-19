@@ -54,18 +54,11 @@ function createStoryFactory(
       type: 'story',
       id: createStoryID(node.title, parent), // create StoryID with parent context
       title: node.title,
-      cases: manager.devices.map((device) => {
-        const config = {
-          device,
-          testing: manager.testing,
-        };
-
-        return {
-          device,
-          retries: node.payload.retries(config),
-          actions: node.payload.act(createActor(), config).__toMeta(),
-        };
-      }),
+      cases: manager.devices.map((device) => ({
+        device,
+        retries: node.payload.retries(device),
+        actions: node.payload.act(createActor(), device).__toMeta(),
+      })),
     },
   ];
 }

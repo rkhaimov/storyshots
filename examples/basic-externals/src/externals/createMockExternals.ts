@@ -1,4 +1,4 @@
-import { JournalStoryConfig } from '@storyshots/core';
+import { StoryConfig } from '@storyshots/core';
 import { IExternals } from './types';
 
 export function createMockExternals(): IExternals {
@@ -19,7 +19,7 @@ export function createMockExternals(): IExternals {
 
 export function createJournalExternals(
   externals: IExternals,
-  { journal }: JournalStoryConfig,
+  { journal }: StoryConfig,
 ): IExternals {
   return {
     ...externals,

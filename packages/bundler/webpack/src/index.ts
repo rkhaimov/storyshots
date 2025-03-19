@@ -1,8 +1,8 @@
-import { PreviewServe } from '@storyshots/manager';
+import { PreviewServer } from '@storyshots/manager';
 import { Configuration, webpack } from 'webpack';
 import dev from 'webpack-dev-middleware';
 
-export function createWebpackBundler(config: Configuration): PreviewServe {
+export function createWebpackBundler(config: Configuration): PreviewServer {
   const compiler = webpack(config);
 
   const middleware = dev(compiler);

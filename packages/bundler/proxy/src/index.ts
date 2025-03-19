@@ -1,7 +1,7 @@
-import { PreviewServe } from '@storyshots/manager';
+import { PreviewServer } from '@storyshots/manager';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
-export function createProxyBundler(to: string): PreviewServe {
+export function createProxyBundler(to: string): PreviewServer {
   return {
     handler: createProxyMiddleware({
       target: to,

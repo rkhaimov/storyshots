@@ -1,4 +1,4 @@
-import { JournalStoryConfig } from '@storyshots/core';
+import { StoryConfig } from '@storyshots/core';
 import { Endpoints } from '@storyshots/msw-externals';
 
 export function createMockExternals(): Externals {
@@ -15,7 +15,7 @@ export type Externals = {
 
 export type Arranger = (
   externals: Externals,
-  config: JournalStoryConfig,
+  config: StoryConfig,
 ) => Externals;
 
 export function arrange(...arrangers: Arranger[]): Arranger {
