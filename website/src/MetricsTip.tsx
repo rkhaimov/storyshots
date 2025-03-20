@@ -26,10 +26,10 @@ export const MetricsTip: React.FC<{
   return (
     <div>
       {_improves.length > 0 && (
-        <div style={{ color: 'green' }}>{improves} Улучшает</div>
+        <div style={{ color: 'green' }}>{_improves} Улучшает</div>
       )}
       {_degrades.length > 0 && (
-        <div style={{ color: 'red' }}>{degrades} Ухудшает</div>
+        <div style={{ color: 'red' }}>{_degrades} Ухудшает</div>
       )}
       <br />
     </div>
