@@ -7,7 +7,7 @@ export enum Metric {
   Speed = 'Speed',
 }
 
-type Props = { improves: Metric[] };
+type Props = { improves: Metric[]; positive?: boolean };
 
 export const MetricsTip: React.FC<Props> = (props) => {
   const improves = props.improves.map((metric) => METRIC_TO_ICON[metric]);
@@ -19,7 +19,9 @@ export const MetricsTip: React.FC<Props> = (props) => {
   return (
     <div>
       <div style={{ color: 'green' }}>{improves} Улучшает</div>
-      <div style={{ color: 'red' }}>{degrades} Ухудшает</div>
+      {props.positive ? null : (
+        <div style={{ color: 'red' }}>{degrades} Ухудшает</div>
+      )}
       <br />
     </div>
   );
