@@ -336,19 +336,27 @@ type User = {
 
 <MetricsTip improves={[Metric.Maintainability]} />
 
-`storyshots` предоставляет возможность описывать функцию `render` у каждой истории по отдельности:
+`storyshots` предоставляет возможность описывать функцию `render` у каждой истории по отдельности, что может подойти для
+тестирования UI библиотеки:
 
 ```tsx
-it('...', {
-  render: () => <Component />,
-});
+const renders = it;
+
+const buttonStories = [
+  renders('primary button', {
+    render: () => <Button type="primary" />,
+  }),
+  renders('primary disabled button', {
+    render: () => <Button type="primary" disabled />,
+  }),
+];
 ```
 
 Однако, для тестирования целого проекта данный вариант является мало практичным. Вместо этого рекомендуется описывать
-поведение по умолчанию:
+`render` по умолчанию:
 
 ```tsx title="preview.tsx"
-const { run, it } = createPreviewApp(/* ... */);
+const {run, it} = createPreviewApp(/* ... */);
 
 const stories = [
   it('...', {
@@ -360,9 +368,9 @@ const stories = [
 
 run(
   map(stories, (story) => ({
-    // По умолчанию будет отрисовываться корневой компонент приложения 
-    render: (externals) => <App externals={externals} />,
-    ...story,
-  })
-));
-```
+      // По умолчанию будет отрисовываться корневой компонент приложения 
+      render: (externals) => <App externals={externals} />,
+      ...story,
+    })
+  ));
+``` 
