@@ -215,39 +215,44 @@ it('allows user to change name', {
 расширяемой единицей в случае репозиториев был метод, то в случае с заглушками это будут её свойства:
 
 <p style={{ color: 'red' }}>Вместо этого:</p>
+
 ```ts
 function createUserStub(): User {
-    return {
-        name: 'Vasiliy',
-        position: 'developer',
-        living: {
-            city: 'Moscow',
-        };
-        /* И ещё 20+ свойств */
-    };
+  return {
+    name: 'Vasiliy',
+    position: 'developer',
+    living: {
+      city: 'Moscow',
+    },
+    /* И ещё 20+ свойств */
+  };
 }
 ```
 
 <p style={{ color: 'green' }}>Делать это:</p>
+
 ```ts
-// Описать минимальный набор полей для всех историй или оставить пустым
+/**
+ * Описать минимальный набор полей для всех историй или оставить пустым
+ */
 function createMinimalUserStub(): User {
-    return {
-        name: 'Vasiliy',
-        position: 'developer',
-    } as User;
+  return {
+    name: 'Vasiliy',
+    position: 'developer',
+  } as User;
 }
 
 it('displays living address', {
-    arrange: (user) => ({
-        getUser: async () => ({
-            ...createMinimalUserStub(),
-            living: { city: 'Moscow' } // История устанавливает только нужные ей поля 
-        })
+  arrange: (user) => ({
+    getUser: async () => ({
+      ...createMinimalUserStub(),
+      living: {city: 'Moscow'} // История устанавливает только нужные ей поля 
     })
+  })
 });
 ```
 
 :::note
-
+Заглушки также наследуют от репозиториев проблемы связанные с отвественностью, которые были описаны подробно в
+разделе [модульная внешняя среда](#).
 :::
