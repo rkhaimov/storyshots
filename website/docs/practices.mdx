@@ -238,5 +238,13 @@ function createMinimalUserStub(): User {
     } as User;
 }
 
-it('displays ');
+it('displays living address', {
+    arrange: (user) => ({
+        getUser: async () => ({
+            ...createMinimalUserStub(),
+            living: { city: 'Moscow' } // История устанавливает только нужные ей поля 
+        })
+    })
+});
+
 ```
