@@ -333,3 +333,36 @@ type User = {
 :::
 
 ## Универсальный render
+
+<MetricsTip improves={[Metric.Maintainability]} />
+
+`storyshots` предоставляет возможность описывать функцию `render` у каждой истории по отдельности:
+
+```tsx
+it('...', {
+  render: () => <Component />,
+});
+```
+
+Однако, для тестирования целого проекта данный вариант является мало практичным. Вместо этого рекомендуется описывать
+поведение по умолчанию:
+
+```tsx title="preview.tsx"
+const { run, it } = createPreviewApp(/* ... */);
+
+const stories = [
+  it('...', {
+    /**
+     * Описывать render в истории не обязательно.
+     */
+  }),
+];
+
+run(
+  map(stories, (story) => ({
+    // По умолчанию будет отрисовываться корневой компонент приложения 
+    render: (externals) => <App externals={externals} />,
+    ...story,
+  })
+));
+```
