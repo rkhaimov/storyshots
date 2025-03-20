@@ -1,4 +1,4 @@
-import { BalancedMetricsTip, Metric } from '@site/src/MetricsTip';
+import { MetricsTip, MetricsTip, Metric } from '@site/src/MetricsTip';
 
 # Рекомендации
 
@@ -6,7 +6,7 @@ import { BalancedMetricsTip, Metric } from '@site/src/MetricsTip';
 
 ## Декомпозиция историй
 
-<BalancedMetricsTip improves={[Metric.Maintainability, Metric.Speed]} positive />
+<MetricsTip improves={[Metric.Maintainability, Metric.Speed]} />
 
 `storyshots` реализует множество инструментов направленных на разделение тестовых сценариев. Один из них - это
 использование семантических групп `describe`.
@@ -43,7 +43,7 @@ const stories = [
 
 ## Дислокация тестов
 
-<BalancedMetricsTip improves={[Metric.RefactoringAllowance]} positive />
+<MetricsTip improves={[Metric.RefactoringAllowance]} />
 
 Истории и всю связанную с ними инфраструктуру лучше располагать подальше от основного кода. Это будет служить явной
 границей между приложением и тестами.
