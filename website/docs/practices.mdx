@@ -210,3 +210,33 @@ it('allows user to change name', {
 :::note
 Заглушки занимают наибольший суммарный объём кода в тестах написанных с использованием `storyshots`.
 :::
+
+Одним из вариантов их упрощения является использование модульной структуры схожей с [модульной внешней средой](#). Если
+расширяемой единицей в случае репозиториев был метод, то в случае с заглушками это будут её свойства:
+
+<p style={{ color: 'red' }}>Вместо этого:</p>
+```ts
+function createUserStub(): User {
+    return {
+        name: 'Vasiliy',
+        position: 'developer',
+        living: {
+            city: 'Moscow',
+        };
+        /* И ещё 20+ свойств */
+    };
+}
+```
+
+<p style={{ color: 'green' }}>Делать это:</p>
+```ts
+// Описать минимальный набор полей для всех историй или оставить пустым
+function createMinimalUserStub(): User {
+    return {
+        name: 'Vasiliy',
+        position: 'developer',
+    } as User;
+}
+
+it('displays ');
+```
