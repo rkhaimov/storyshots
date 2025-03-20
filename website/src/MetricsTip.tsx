@@ -7,19 +7,28 @@ export enum Metric {
   Speed = 'Speed',
 }
 
-type Props = { improves: Metric[]; positive?: boolean };
+export const BalancedMetricsTip: React.FC<{ improves: Metric[] }> = ({ improves }) => (
+  <MetricsTip
+    improves={improves}
+    degrades={Object.values(Metric).filter(
+      (metric) => !improves.includes(metric),
+    )}
+  />
+);
 
-export const MetricsTip: React.FC<Props> = (props) => {
-  const improves = props.improves.map((metric) => METRIC_TO_ICON[metric]);
-
-  const degrades = Object.values(Metric)
-    .filter((metric) => !props.improves.includes(metric))
-    .map((metric) => METRIC_TO_ICON[metric]);
+export const MetricsTip: React.FC<{
+  improves?: Metric[];
+  degrades?: Metric[];
+}> = ({ improves = [], degrades = [] }) => {
+  const _improves = improves.map((metric) => METRIC_TO_ICON[metric]);
+  const _degrades = degrades.map((metric) => METRIC_TO_ICON[metric]);
 
   return (
     <div>
-      <div style={{ color: 'green' }}>{improves} Улучшает</div>
-      {props.positive ? null : (
+      {_improves.length > 0 && (
+        <div style={{ color: 'green' }}>{improves} Улучшает</div>
+      )}
+      {_degrades.length > 0 && (
         <div style={{ color: 'red' }}>{degrades} Ухудшает</div>
       )}
       <br />

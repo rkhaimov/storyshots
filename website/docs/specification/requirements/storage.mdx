@@ -2,12 +2,12 @@
 sidebar_position: 4
 ---
 
-import { MetricsTip, Metric } from '@site/src/MetricsTip';
+import { BalancedMetricsTip, Metric } from '@site/src/MetricsTip';
 import { Diagram } from '@site/src/Diagram';
 
 # Хранилище
 
-<MetricsTip improves={[Metric.RegressionProtection, Metric.Maintainability, Metric.Speed]} />
+<BalancedMetricsTip improves={[Metric.RegressionProtection, Metric.Maintainability, Metric.Speed]} />
 
 Хранилище включает функции, которые выполняют *сайд-эффекты*. Эти эффекты делают другие функции в приложении
 *неидемпотентными*. Относится к секции [*результата*](/specification/requirements/borders#определение-границ).
