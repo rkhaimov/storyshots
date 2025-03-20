@@ -116,7 +116,7 @@ project/
 Представим что в проекте реализован следующий репозиторий:
 
 ```ts
-interface UserRepository {
+type UserRepository = {
   getUser(): Promise<User>;
 
   setUser(user: User): Promise<void>;
@@ -456,3 +456,41 @@ const stories = [
 Общая рекомендация - начинать с самого простого, в большинстве случаев это написание одной крупной истории. Далее, при
 возникновении проблем с поддержкой её следует разбивать на более атомарные и независимые элементы.
 :::
+
+## Оптимизация arrange
+
+На проектах структура `externals` (внешней среды и хранилища) очень часто является вложенной:
+
+```ts
+type Externals = {
+  repositories: {
+    userRepository: UserRepository;
+    /* ... */
+  };
+  /* ... */
+};
+```
+
+Это делает не тривиальным процесс её обновления. Для того чтобы исправить данную проблему достаточно использовать
+композируемые фабрики:
+
+<p style={{ color: 'red' }}>Вместо этого:</p>
+
+```ts
+it('...', {
+  arrange: (externals) => ({ // Вложенность высокая из-за чего читаемость сильно страдает
+    ...externals,
+    repositories: {
+      ...externals.repositories,
+      UserRepository: {
+        ...externals.repositories.UserRepository,
+        getUser: (data) =>
+          externals.repositories.UserRepository.getUser(data).then((user) => ({
+            ...user,
+            login: 'test-user',
+          })),
+      },
+    },
+  }),
+});
+```
