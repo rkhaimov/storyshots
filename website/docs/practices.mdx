@@ -6,7 +6,7 @@ import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
 ## Декомпозиция историй
 
-<MetricsTip improves={[Metric.Maintainability]} positive />
+<MetricsTip improves={[Metric.Maintainability, Metric.Speed]} positive />
 
 `storyshots` реализует множество инструментов направленных на разделение тестовых сценариев. Один из них - это
 использование семантических групп `describe`.
@@ -15,5 +15,28 @@ import { MetricsTip, Metric } from '@site/src/MetricsTip';
 разности их ответсвенностей.
 
 :::note
-Ответственность - это причина по которой код может быть измененён. 
+Ответственность - это причина по которой код может быть измененён. Если две разные функции меняются в одно и тоже время,
+по одной и той же причине, то в таком случае их отвественности считаются равными.
 :::
+
+<p style={{ color: 'red' }}>Вместо этого:</p>
+```ts
+const stories = [
+    it('shows list of products', /* ... */),
+    it('allows to add a product', /* ... */),
+    it('rejects unauthorized access to a store', /* ... */),
+];
+```
+
+<p style={{ color: 'green' }}>Делать это:</p>
+```ts
+const stories = [
+    describe('Products', [
+        it('shows list of products', /* ... */),
+        it('allows to add a product', /* ... */),
+    ]),
+    describe('Auth', [
+        it('rejects unauthorized access to a store', /* ... */),
+    ]),
+];
+```
