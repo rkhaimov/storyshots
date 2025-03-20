@@ -494,3 +494,18 @@ it('...', {
   }),
 });
 ```
+
+<p style={{ color: 'green' }}>Делать это:</p>
+
+```ts
+it('...', { // Код делает тоже самое, но читается лучше
+  arrange: extend(
+    'UserRepository',
+    transform('getUser', (user) => ({...user, login: 'test-user'})),
+  ),
+});
+```
+
+:::note
+Методы `extend` и `transform` не являются частью `storyshots`. Примеры функций можно посмотреть [здесь](#).
+:::
