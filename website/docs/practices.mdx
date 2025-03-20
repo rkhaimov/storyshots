@@ -101,7 +101,7 @@ interface UserRepository {
 Для того чтобы реализовать подмену, нужно будет определить все методы `UserRepository`:
 
 ```ts
-function createMockUserRepository(): UserRepository {
+const createMockUserRepository = (): UserRepository => {
   return {
     getUser: async () => createUserStub(),
     setUser: async () => {
@@ -138,3 +138,46 @@ const stories = [
   изменения.
 
 Это создаёт замкнутый круг где `createMockUserRepository` с каждым разом становится всё больше и сложнее.
+
+Для того чтобы решить данную проблему, достаточно воспользоваться одним из доступных паттернов для расширений, например,
+композицией:
+
+```ts
+/**
+ * По умолчанию реализация либо отстуствует полностью, либо описывает абсолютный минимум методов
+ */
+const createMockUserRepository = (): UserRepository => {
+    return {} as UserRepository;
+  }
+
+/**
+ * Далee описываются функции которые примешивают поведения репозиторию. Это может быть один или несколько методов.
+ */
+const withUser = (repository: UserRepository): UserRepository => ({
+  ...repository,
+  getUser: async () => createUserStub(),
+})
+
+/**
+ * Функции легко могут быть параметризированы. Керрирование не обязательно
+ */
+const withGivenRoles = (roles: string[]) => (repository: UserRepository): UserRepository => ({
+  ...repository,
+  getRoles: async () => roles,
+})
+
+/**
+ * И закреплены за определённым контекстом
+ */
+const withAdminRoles = withGivenRoles(['admin']);
+
+/**
+ * В данном случае используется функция compose. Но подойдёт любой метод композиции, даже ручной
+ */
+declare function compose(...fs: Array<(repository: UserRepository) => UserRepositor>): UserRepository;
+```
+
+:::note
+Данный метод несколько увеличивает скорость работы так как не устанавливает лишних поведений, но взамен усиливает
+связанность историй с деталями реализации.
+:::
