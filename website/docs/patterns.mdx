@@ -899,7 +899,8 @@ const stories = [
 ];
 ```
 
-Из-за того что одинаковые для пользователя элементы реализованы по-разному, сами инструкции в историях также отличаются.
+Из-за того что одинаковые для пользователя элементы реализованы по-разному, сами инструкции взаимодействия в историях
+также отличаются.
 
 <p style={{ color: 'green' }}>Делать это:</p>
 
@@ -910,14 +911,14 @@ const stories = [
 const button = (name: string): FinderTransformer => (finder) => finder.getByRole('button', { name });
 
 const stories = [
-  it('allows to delete user', {
-    act: (actor) => actor.click(finder.get(button('Удалить'))),
-    render: () => <UserPage />,
-  }),
-  it('allows to delete product', {
-    act: (actor) => actor.click(finder.get(button('Удалить'))),
-    render: () => <ProductsPage />,
-  }),
+    it('allows to delete user', {
+        act: (actor) => actor.click(finder.get(button('Удалить'))),
+        render: () => <UserPage />,
+    }),
+    it('allows to delete product', {
+        act: (actor) => actor.click(finder.get(button('Удалить'))),
+        render: () => <ProductsPage />,
+    }),
 ];
 ```
 
