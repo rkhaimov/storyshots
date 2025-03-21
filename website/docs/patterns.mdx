@@ -922,6 +922,38 @@ const stories = [
 ];
 ```
 
+Можно пойти дальше и реализовать отдельный объект с селекторами, основываясь на компонентной системе используемой в
+приложении:
+
+```ts title="selectors.ts"
+declare const button: FinderTransformer;
+
+declare const modal: FinderTransformer;
+
+/* и другие */
+```
+
+Расширять можно не только сами селекторы, но и целые действия:
+
+```ts title="actions.ts"
+declare const upload: ActorTransformer;
+
+declare const dismiss: ActorTransformer;
+
+/* и другие */
+```
+
+При следовании компонентному подходу и использовании методов расширения, можно существенным образом упростить истории:
+
+```ts
+it('allows to remove a user from list', {
+    act: (actor) => actor
+        .do(trash('Vasiliy'))
+        .screenshot('ConfirmationWindow')
+        .do(confirm())
+});
+```
+
 ## Семантические селекторы
 
 ## Отслеживание query
