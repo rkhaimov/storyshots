@@ -1172,6 +1172,8 @@ it('shows read notification', {
 
 ## Таймеры
 
+<MetricsTip improves={[Metric.Maintainability, Metric.Speed]} />
+
 UI интерфейсы полны асинхронных взаимодействий, частью которых являются таймеры.
 
 Рассмотрим следующий пример:
@@ -1218,6 +1220,13 @@ it('shows message to a user', {
 отличаться.
 :::
 
+## Сокращение устройств
+
+<MetricsTip improves={[Metric.Maintainability, Metric.Speed]} degrades={[Metric.RegressionProtection]} />
+
+Требования для UI интерфейсов растут, ровно также растет и разнообразие устройств на которых этот интерфейс может
+отображаться.
+
 ## Подмена через инверсию
 
 ## Подмена через сайд-эффекты
@@ -1227,5 +1236,3 @@ it('shows message to a user', {
 ## Работа в команде
 
 ## Приоритеты историй
-
-## Сокращение устройств
