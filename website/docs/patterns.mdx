@@ -117,13 +117,13 @@ project/
 
 ```ts
 type UserRepository = {
-  getUser(): Promise<User>;
+    getUser(): Promise<User>;
 
-  setUser(user: User): Promise<void>;
+    setUser(user: User): Promise<void>;
 
-  getRoles(): Promise<string[]>;
+    getRoles(): Promise<string[]>;
 
-  /* И ещё 20+ методов */
+    /* И ещё 20+ методов */
 }
 ```
 
@@ -131,13 +131,13 @@ type UserRepository = {
 
 ```ts
 const createMockUserRepository = (): UserRepository => {
-  return {
-    getUser: async () => createUserStub(),
-    setUser: async () => {
-    },
-    getRoles: async () => ['admin', 'user'],
-    /* И ещё 20+ методов */
-  }
+    return {
+        getUser: async () => createUserStub(),
+        setUser: async () => {
+        },
+        getRoles: async () => ['admin', 'user'],
+        /* И ещё 20+ методов */
+    }
 }
 ```
 
@@ -147,12 +147,12 @@ const createMockUserRepository = (): UserRepository => {
 
 ```ts
 const stories = [
-  describe('Roles', [
-    it('allows admin to access panel'), // Использует UserRepository.getRoles внутри
-  ]),
-  describe('UserSettings', [
-    it('allows user to change name'), // Использует UserRepository.setUser внутри
-  ]),
+    describe('Roles', [
+        it('allows admin to access panel'), // Использует UserRepository.getRoles внутри
+    ]),
+    describe('UserSettings', [
+        it('allows user to change name'), // Использует UserRepository.setUser внутри
+    ]),
 ];
 ```
 
@@ -176,23 +176,23 @@ const stories = [
  * По умолчанию реализация либо отстуствует полностью, либо описывает абсолютный минимум методов
  */
 const createMockUserRepository = (): UserRepository => {
-    return {} as UserRepository;
-  }
+        return {} as UserRepository;
+    }
 
 /**
  * Далee описываются функции которые примешивают поведения репозиторию. Это может быть один или несколько методов.
  */
 const withUser = (repository: UserRepository): UserRepository => ({
-  ...repository,
-  getUser: async () => createUserStub(),
+    ...repository,
+    getUser: async () => createUserStub(),
 })
 
 /**
  * Функции легко могут быть параметризированы. Керрирование не обязательно
  */
 const withGivenRoles = (roles: string[]) => (repository: UserRepository): UserRepository => ({
-  ...repository,
-  getRoles: async () => roles,
+    ...repository,
+    getRoles: async () => roles,
 })
 
 /**
@@ -210,11 +210,11 @@ declare function compose(...fs: Array<(repository: UserRepository) => UserReposi
 
 ```ts
 it('allows admin to access panel', {
-  arrange: withAdminRoles, // Необходим только эндпоинт для ролей
+    arrange: withAdminRoles, // Необходим только эндпоинт для ролей
 });
 
 it('allows user to change name', {
-  arrange: compose(withUser, withSetUser), // Здесь нужны только эти эндпоинты
+    arrange: compose(withUser, withSetUser), // Здесь нужны только эти эндпоинты
 });
 ```
 
@@ -247,14 +247,14 @@ it('allows user to change name', {
 
 ```ts
 function createUserStub(): User {
-  return {
-    name: 'Vasiliy',
-    position: 'developer',
-    living: {
-      city: 'Moscow',
-    },
-    /* И ещё 20+ свойств */
-  };
+    return {
+        name: 'Vasiliy',
+        position: 'developer',
+        living: {
+            city: 'Moscow',
+        },
+        /* И ещё 20+ свойств */
+    };
 }
 ```
 
@@ -265,19 +265,19 @@ function createUserStub(): User {
  * Описать минимальный набор полей для всех историй или оставить пустым
  */
 function createMinimalUserStub(): User {
-  return {
-    name: 'Vasiliy',
-    position: 'developer',
-  } as User;
+    return {
+        name: 'Vasiliy',
+        position: 'developer',
+    } as User;
 }
 
 it('displays living address', {
-  arrange: (user) => ({
-    getUser: async () => ({
-      ...createMinimalUserStub(),
-      living: {city: 'Moscow'} // История устанавливает только нужные ей поля 
+    arrange: (user) => ({
+        getUser: async () => ({
+            ...createMinimalUserStub(),
+            living: { city: 'Moscow' } // История устанавливает только нужные ей поля 
+        })
     })
-  })
 });
 ```
 
@@ -311,12 +311,12 @@ it('displays living address', {
 ```ts
 // Все поля в модели обязательные и при этом их достаточно много
 type User = {
-  name: string,
-  position: string,
-  living: {
-    city: string,
-  },
-  /* И ещё 20+ свойств */
+    name: string,
+    position: string,
+    living: {
+        city: string,
+    },
+    /* И ещё 20+ свойств */
 }
 ```
 
@@ -333,11 +333,11 @@ type User = {
 
 ```ts
 type User = {
-  name: string,
-  position: string,
-  living: {
-    city: string,
-  },
+    name: string,
+    position: string,
+    living: {
+        city: string,
+    },
 }
 ```
 
@@ -348,8 +348,8 @@ type User = {
  * Делать модель более точной и избавляться от неиспользуемых полей
  */
 type User = {
-  name: string,
-  position?: string,
+    name: string,
+    position?: string,
 }
 ```
 
@@ -370,12 +370,12 @@ type User = {
 const renders = it;
 
 const buttonStories = [
-  renders('primary button', {
-    render: () => <Button type="primary" />,
-  }),
-  renders('primary disabled button', {
-    render: () => <Button type="primary" disabled />,
-  }),
+    renders('primary button', {
+        render: () => <Button type="primary" />,
+    }),
+    renders('primary disabled button', {
+        render: () => <Button type="primary" disabled />,
+    }),
 ];
 ```
 
@@ -383,23 +383,23 @@ const buttonStories = [
 `render` по умолчанию:
 
 ```tsx title="preview.tsx"
-const {run, it} = createPreviewApp(/* ... */);
+const { run, it } = createPreviewApp(/* ... */);
 
 const stories = [
-  it('...', {
-    /**
-     * Описывать render в истории не обязательно.
-     */
-  }),
+    it('...', {
+        /**
+         * Описывать render в истории не обязательно.
+         */
+    }),
 ];
 
 run(
-  map(stories, (story) => ({
-      // По умолчанию будет отрисовываться корневой компонент приложения 
-      render: (externals) => <App externals={externals} />,
-      ...story,
-    })
-  )
+    map(stories, (story) => ({
+            // По умолчанию будет отрисовываться корневой компонент приложения 
+            render: (externals) => <App externals={externals} />,
+            ...story,
+        })
+    )
 );
 ```
 
@@ -413,15 +413,15 @@ run(
 
 ```ts
 const stories = [
-  it('shows disabled password initially'), // Тест просто делает снимок изначального состояния страницы
-  it('allows to enter password after login filled', { // Проверяет активность пароля после ввода
-    act: (actor) => actor.fill(finder.getByPlaceholder('Login'), 'Логин'),
-  }),
-  it('allows to enter credentials', { // Проверяет возможность заполнения формы
-    act: (actor) => actor
-      .fill(finder.getByPlaceholder('Login'), 'Логин')
-      .fill(finder.getByPlaceholder('Password'), '1235'),
-  })
+    it('shows disabled password initially'), // Тест просто делает снимок изначального состояния страницы
+    it('allows to enter password after login filled', { // Проверяет активность пароля после ввода
+        act: (actor) => actor.fill(finder.getByPlaceholder('Login'), 'Логин'),
+    }),
+    it('allows to enter credentials', { // Проверяет возможность заполнения формы
+        act: (actor) => actor
+            .fill(finder.getByPlaceholder('Login'), 'Логин')
+            .fill(finder.getByPlaceholder('Password'), '1235'),
+    })
 ];
 ```
 
@@ -429,13 +429,13 @@ const stories = [
 
 ```ts
 const stories = [
-  it('allows to enter credentials', { // История проверяет все состояния сразу
-    act: (actor) => actor
-      .screenshot('Initial')
-      .fill(finder.getByPlaceholder('Login'), 'Логин')
-      .screenshot('PasswordEnabled')
-      .fill(finder.getByPlaceholder('Password'), '1235'),
-  })
+    it('allows to enter credentials', { // История проверяет все состояния сразу
+        act: (actor) => actor
+            .screenshot('Initial')
+            .fill(finder.getByPlaceholder('Login'), 'Логин')
+            .screenshot('PasswordEnabled')
+            .fill(finder.getByPlaceholder('Password'), '1235'),
+    })
 ];
 ```
 
@@ -463,11 +463,11 @@ const stories = [
 
 ```ts
 type Externals = {
-  repositories: {
-    userRepository: UserRepository;
+    repositories: {
+        userRepository: UserRepository;
+        /* ... */
+    };
     /* ... */
-  };
-  /* ... */
 };
 ```
 
@@ -478,20 +478,20 @@ type Externals = {
 
 ```ts
 it('...', {
-  arrange: (externals) => ({ // Вложенность высокая из-за чего читаемость сильно страдает
-    ...externals,
-    repositories: {
-      ...externals.repositories,
-      UserRepository: {
-        ...externals.repositories.UserRepository,
-        getUser: (data) =>
-          externals.repositories.UserRepository.getUser(data).then((user) => ({
-            ...user,
-            login: 'test-user',
-          })),
-      },
-    },
-  }),
+    arrange: (externals) => ({ // Вложенность высокая из-за чего читаемость сильно страдает
+        ...externals,
+        repositories: {
+            ...externals.repositories,
+            UserRepository: {
+                ...externals.repositories.UserRepository,
+                getUser: (data) =>
+                    externals.repositories.UserRepository.getUser(data).then((user) => ({
+                        ...user,
+                        login: 'test-user',
+                    })),
+            },
+        },
+    }),
 });
 ```
 
@@ -499,10 +499,10 @@ it('...', {
 
 ```ts
 it('...', { // Код делает тоже самое, но читается лучше
-  arrange: extend(
-    'UserRepository',
-    transform('getUser', (user) => ({...user, login: 'test-user'})),
-  ),
+    arrange: extend(
+        'UserRepository',
+        transform('getUser', (user) => ({ ...user, login: 'test-user' })),
+    ),
 });
 ```
 
@@ -515,3 +515,37 @@ it('...', { // Код делает тоже самое, но читается л
 :::
 
 ## Релевантные заглушки
+
+<MetricsTip improves={[Metric.RegressionProtection, Metric.Maintainability]} />
+
+Тестовые данные (или другими словами стабы), являются критически важным элементом тестового сценария. Важно, чтобы
+содержание заглушек соответствовало доменным требованиям и условиям диктуемым моделью:
+
+<p style={{ color: 'red' }}>Вместо этого:</p>
+
+```ts
+function createUserStub(): User {
+    return {
+        name: 'UserName',
+        roles: [],
+    };
+}
+```
+
+<p style={{ color: 'green' }}>Делать это:</p>
+
+```ts
+function createUserStub(): User {
+    return {
+        name: 'Васильев Василий Васильевич', // Имя пользователя содержит ФИО
+        roles: ['admin'], // Роли по модели не могут быть пустыми
+    };
+}
+```
+
+Релевантные по отношению к предметной области и модели заглушки приносят следующие преимущества в тесты:
+
+* Защита от регресса - заглушки обладают ровно теми свойствами, что и реальные данные на сервере. Это увеличивает
+  эффективность тестирования, ведь система верифицируется в идентичном реальному окружении.
+* Документация - за счёт использования более репрезентативных данных сами истории и снимки в эталоне больше
+  напоминают реальное приложение и могут использоваться в качестве дополнительного источника документации.
