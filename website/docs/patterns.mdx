@@ -958,19 +958,35 @@ it('allows to remove a user from list', {
 
 ## Семантические селекторы
 
+<MetricsTip improves={[Metric.RefactoringAllowance, Metric.Maintainability]} />
+
 Вторым узким местом после заглушек является функция `act`. Описывая инструкции взаимодействия с интерфейсом можно легко
 увеличить связанность историй с деталями реализации программы, сделав тесты при этом более хрупкими:
 
+<p style={{ color: 'red' }}>Вместо этого:</p>
+
 ```tsx
 it('allows to delete product', {
-  /**
-   * В ProductsPage используется та же кнопка, но разработчики реализовали её иначе,
-   * по какой-то причине: <div className="button">Удалить</div>
-   */
-  act: (actor) => actor.click(finder.locator('div.button').getByText('Удалить')),
-  render: () => <ProductsPage />,
+    act: (actor) => actor.click(finder.locator('div.user-card div.button').getByText('Удалить')),
 });
 ```
+
+Тест в данном случае "знает" каким образом реализована кнопка удаления.
+
+<p style={{ color: 'green' }}>Делать это:</p>
+
+```tsx
+it('allows to delete product', {
+    act: (actor) => actor.click(finder.getByRole('button', { name: 'Удалить' })),
+});
+```
+
+Семантическая маркировка интерфейса помогает инкапсулировать детали реализации интерфейса от историй. Можно легко
+присвоить роль и дополнительные атрибуты к ней любому из заданных компонентов.
+
+:::note
+Исключение составляют компоненты из сторонних библиотек, которые не всегда поддаются достаточному расширению.
+:::
 
 ## Отслеживание query
 
