@@ -692,3 +692,38 @@ it('allows admin to continue', {
 Вне зависимости от выбранного метода решения, основной задачей функции `arrange` является создание такой `externals`
 которая является валидным подтипом ожидаемого AUT интерфейса внешних данных.
 :::
+
+## Эмуляция externals
+
+<MetricsTip degrades={[Metric.Maintainability]} />
+
+`externals` в `storyshots` заключает в себе как методы мутирующие [хранилище](#), так и функции работающие
+с [внешней средой](#). Очень часто, данные компоненты формируют пару из *команды* (command) и *запроса* (query):
+
+```ts
+function createUserRepository(): UserRepository {
+    return {
+        // Метод query считывающий список пользователей из БД
+        getUsers: async () => [createVasiliyStub(), createIvanStub()],
+        // Метод command удаляющий пользователя из БД
+        removeUserById: async () => {
+        },
+    };
+}
+```
+
+:::note
+Метод `removeUserById` относится к компоненту хранилища, в то время как `getUsers` является частью внешней среды.
+:::
+
+В большинстве случаев рекомендуется просто фиксировать вызов `removeUserById` в журнале, делая при этом его
+реализацию тривиальной:
+
+```ts
+it('removes user from a list', {
+    arrange: (externals, { journal }) => ({
+      ...externals,
+      removeUserById: journal.asRecordable('removeUserById', externals.removeUserById)
+  })
+});
+```
