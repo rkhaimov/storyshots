@@ -740,21 +740,31 @@ it('removes user from a list', {
 
 ```ts
 it('removes user from a list', {
-  arrange: (externals) => {
-    // Arrange держит в замыкании состояние истории. В данном случае это список пользователей 
-    let users = [createVasiliyStub(), createIvanStub()];
+    arrange: (externals) => {
+        // Arrange держит в замыкании состояние истории. В данном случае это список пользователей 
+        let users = [createVasiliyStub(), createIvanStub()];
 
-    return {
-      ...externals,
-      getUsers: async () => users,
-      // Удаляем пользователя из списка
-      removeUserById: async (id) => users = without(users, { id }),
-    };
-  },
-  // Удаляем пользователя в списке по имени
-  act: (actor) => actor.click(finder.get(removeActionByName('Ivan')))
+        return {
+            ...externals,
+            getUsers: async () => users,
+            // Удаляем пользователя из списка
+            removeUserById: async (id) => users = without(users, { id }),
+        };
+    },
+    // Удаляем пользователя в списке по имени
+    act: (actor) => actor.click(finder.get(removeActionByName('Ivan')))
 });
 ```
 
+Несмотря на то что эмуляция поведения может увеличить покрытие теста, её стоит использовать как можно реже. Это связанно
+с сильным ухудшением поддерживаемости:
+
+- Это дублирование поведение сервера.
+- Это дополнительная логика в тестах, а значит и пространство для потенциальных дефектов в них.
+
+:::tip
+Эмуляция выгодна в том случае если поведение является тривиальным на сервере, но в то же самое время комплексным на
+клиенте.
+:::
 
 ## Отслеживание query
