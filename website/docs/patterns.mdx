@@ -1008,6 +1008,24 @@ const createMockUserRepository = (): UserRepository => {
 детерминированным. Вследствие этого он относится к компоненту [внешней среды](#), что означает что взаимодействия с
 данной функцией не должны отслеживаться ведь она не является частью секции *результата*.
 
+<p style={{ color: 'red' }}>Вместо этого:</p>
+
+```ts
+it('shows user', {
+  arrange: (externals, { journal }) => ({
+    ...externals,
+    getUser: journal.asRecordable('getUser', externals.getUser)
+  }),
+})
+```
+
+<p style={{ color: 'green' }}>Делать это:</p>
+
+```ts
+// Не маркировать метод getUser
+it('shows user');
+```
+
 ## Расположение компонентов
 
 ## Тривиальные репозитории
