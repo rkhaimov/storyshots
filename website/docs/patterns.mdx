@@ -695,7 +695,7 @@ it('allows admin to continue', {
 
 ## Эмуляция externals
 
-<MetricsTip degrades={[Metric.Maintainability]} />
+<MetricsTip improves={[Metric.RegressionProtection]} degrades={[Metric.Maintainability]} />
 
 `externals` в `storyshots` заключает в себе как методы мутирующие [хранилище](#), так и функции работающие
 с [внешней средой](#). Очень часто, данные компоненты формируют пару из *команды* (command) и *запроса* (query):
@@ -722,8 +722,39 @@ function createUserRepository(): UserRepository {
 ```ts
 it('removes user from a list', {
     arrange: (externals, { journal }) => ({
-      ...externals,
-      removeUserById: journal.asRecordable('removeUserById', externals.removeUserById)
-  })
+        ...externals,
+        removeUserById: journal.asRecordable('removeUserById', externals.removeUserById)
+    }),
+    // Удаляем пользователя в списке по имени
+    act: (actor) => actor.click(finder.get(removeActionByName('Ivan')))
 });
 ```
+
+:::note
+Таким образом, поведение будет верифицировано косвенным образом, через слепок взаимодействия с сервером под видом
+журнала вызовов.
+:::
+
+Однако, этого не всегда бывает достаточно. Что если мы хотим убедиться в том что список обновился и теперь не отображает
+удалённого пользователя? Для этого можно воспользоваться эмуляцией:
+
+```ts
+it('removes user from a list', {
+  arrange: (externals) => {
+    // Arrange держит в замыкании состояние истории. В данном случае это список пользователей 
+    let users = [createVasiliyStub(), createIvanStub()];
+
+    return {
+      ...externals,
+      getUsers: async () => users,
+      // Удаляем пользователя из списка
+      removeUserById: async (id) => users = without(users, { id }),
+    };
+  },
+  // Удаляем пользователя в списке по имени
+  act: (actor) => actor.click(finder.get(removeActionByName('Ivan')))
+});
+```
+
+
+## Отслеживание query
