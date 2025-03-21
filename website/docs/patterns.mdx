@@ -795,6 +795,21 @@ only(
 );
 ```
 
-Но бывает и так, то сам сценарий имеет место:
+Но бывает и так, что сам сценарий имеет место, но с некоторыми различиями:
+
+```ts
+it('shows dismissible user removal notice', {
+  arrange: externals => {},
+  act: (actor, config) =>
+    actor.screenshot('Notice').click(
+      /**
+       * config содержит информацию об устройстве на котором сейчас исполняется тест
+       */
+      config.device.name === 'desktop'
+        ? finder.getByRole('image', { name: 'close-note' })
+        : finder.getByRole('button', { name: 'Закрыть' }),
+    ),
+});
+```
 
 ## Отслеживание query
