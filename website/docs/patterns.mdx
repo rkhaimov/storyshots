@@ -827,16 +827,16 @@ it('shows dismissible user removal notice', {
  * что истории разделены на несколько разных наборов:
  */
 const desktopUsersStories = only(
-    ['desktop'],
-    describe('Users', [
-        it('shows nothing when there is no users', {
-            /* ... */
-        }),
-        it('shows users', {
-            /* ... */
-        }),
-    ]),
-);
+        ['desktop'],
+        describe('Users', [
+            it('shows nothing when there is no users', {
+                /* ... */
+            }),
+            it('shows users', {
+                /* ... */
+            }),
+        ]),
+    );
 
 const mobileUsersStories = only(
     ['mobile'],
@@ -851,5 +851,10 @@ const mobileUsersStories = only(
     ]),
 );
 ```
+
+:::tip
+Метод [`only`](#) может также использоваться для полного исключения сценариев. Это может быть полезно во время активной
+разработки, когда функционал был разработан только для одной версии устройств.
+:::
 
 ## Отслеживание query
