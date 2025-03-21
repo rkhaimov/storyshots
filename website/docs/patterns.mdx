@@ -991,7 +991,9 @@ it('allows to delete product', {
 Рекомендуется предпочитать селекторы, оперирующие видимыми пользователем атрибутами. В основном это отображаемый
 текст и роли.
 
-## Отслеживание query
+## Игнорирование query
+
+<MetricsTip improves={[Metric.RefactoringAllowance, Metric.Maintainability]} degrades={[Metric.RegressionProtection]} />
 
 `storyshots` предоставляет методы для отслеживания вызовов функций, а именно [журнал](#). Записывать можно абсолютно
 любой метод и тут зачастую возникает путаница. Рассмотрим пример:
@@ -1012,10 +1014,10 @@ const createMockUserRepository = (): UserRepository => {
 
 ```ts
 it('shows user', {
-  arrange: (externals, { journal }) => ({
-    ...externals,
-    getUser: journal.asRecordable('getUser', externals.getUser)
-  }),
+    arrange: (externals, { journal }) => ({
+        ...externals,
+        getUser: journal.asRecordable('getUser', externals.getUser)
+    }),
 })
 ```
 
@@ -1025,6 +1027,16 @@ it('shows user', {
 // Не маркировать метод getUser
 it('shows user');
 ```
+
+Отслеживание `getUser` является бессмысленным так как метод не выполняет сайд-эффект.
+
+:::tip
+[Cайд-эффект](#) - это не просто результат работы выходящий за пределы функции, в рамках спецификации это ещё и
+*видимые* сторонними клиентами данные:
+
+* Для сервера - это команды модифицирующие БД
+* Для пользователя - это функции рисующие интерфейс на экране
+:::
 
 ## Расположение компонентов
 
