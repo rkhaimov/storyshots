@@ -23,9 +23,9 @@ import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
 ```ts
 const stories = [
-    it('shows list of products', /* ... */),
-    it('allows to add a product', /* ... */),
-    it('rejects unauthorized access to a store', /* ... */),
+  it('shows list of products', /* ... */),
+  it('allows to add a product', /* ... */),
+  it('rejects unauthorized access to a store', /* ... */),
 ];
 ```
 
@@ -33,13 +33,13 @@ const stories = [
 
 ```ts
 const stories = [
-    describe('Products', [
-        it('shows list of products', /* ... */),
-        it('allows to add a product', /* ... */),
-    ]),
-    describe('Auth', [
-        it('rejects unauthorized access to a store', /* ... */),
-    ]),
+  describe('Products', [
+    it('shows list of products', /* ... */),
+    it('allows to add a product', /* ... */),
+  ]),
+  describe('Auth', [
+    it('rejects unauthorized access to a store', /* ... */),
+  ]),
 ];
 ```
 
@@ -121,13 +121,13 @@ project/
 
 ```ts
 type UserRepository = {
-    getUser(): Promise<User>;
+  getUser(): Promise<User>;
 
-    setUser(user: User): Promise<void>;
+  setUser(user: User): Promise<void>;
 
-    getRoles(): Promise<string[]>;
+  getRoles(): Promise<string[]>;
 
-    /* И ещё 20+ методов */
+  /* И ещё 20+ методов */
 }
 ```
 
@@ -135,13 +135,13 @@ type UserRepository = {
 
 ```ts
 const createMockUserRepository = (): UserRepository => {
-    return {
-        getUser: async () => createUserStub(),
-        setUser: async () => {
-        },
-        getRoles: async () => ['admin', 'user'],
-        /* И ещё 20+ методов */
-    }
+  return {
+    getUser: async () => createUserStub(),
+    setUser: async () => {
+    },
+    getRoles: async () => ['admin', 'user'],
+    /* И ещё 20+ методов */
+  }
 }
 ```
 
@@ -151,12 +151,12 @@ const createMockUserRepository = (): UserRepository => {
 
 ```ts
 const stories = [
-    describe('Roles', [
-        it('allows admin to access panel'), // Использует UserRepository.getRoles внутри
-    ]),
-    describe('UserSettings', [
-        it('allows user to change name'), // Использует UserRepository.setUser внутри
-    ]),
+  describe('Roles', [
+    it('allows admin to access panel'), // Использует UserRepository.getRoles внутри
+  ]),
+  describe('UserSettings', [
+    it('allows user to change name'), // Использует UserRepository.setUser внутри
+  ]),
 ];
 ```
 
@@ -180,23 +180,23 @@ const stories = [
  * По умолчанию реализация либо отстуствует полностью, либо описывает абсолютный минимум методов
  */
 const createMockUserRepository = (): UserRepository => {
-        return {} as UserRepository;
-    }
+    return {} as UserRepository;
+  }
 
 /**
  * Далee описываются функции которые примешивают поведения репозиторию. Это может быть один или несколько методов.
  */
 const withUser = (repository: UserRepository): UserRepository => ({
-    ...repository,
-    getUser: async () => createUserStub(),
+  ...repository,
+  getUser: async () => createUserStub(),
 })
 
 /**
  * Функции легко могут быть параметризированы. Керрирование не обязательно
  */
 const withGivenRoles = (roles: string[]) => (repository: UserRepository): UserRepository => ({
-    ...repository,
-    getRoles: async () => roles,
+  ...repository,
+  getRoles: async () => roles,
 })
 
 /**
@@ -214,11 +214,11 @@ declare function compose(...fs: Array<(repository: UserRepository) => UserReposi
 
 ```ts
 it('allows admin to access panel', {
-    arrange: withAdminRoles, // Необходим только эндпоинт для ролей
+  arrange: withAdminRoles, // Необходим только эндпоинт для ролей
 });
 
 it('allows user to change name', {
-    arrange: compose(withUser, withSetUser), // Здесь нужны только эти эндпоинты
+  arrange: compose(withUser, withSetUser), // Здесь нужны только эти эндпоинты
 });
 ```
 
@@ -251,14 +251,14 @@ it('allows user to change name', {
 
 ```ts
 function createUserStub(): User {
-    return {
-        name: 'Vasiliy',
-        position: 'developer',
-        living: {
-            city: 'Moscow',
-        },
-        /* И ещё 20+ свойств */
-    };
+  return {
+    name: 'Vasiliy',
+    position: 'developer',
+    living: {
+      city: 'Moscow',
+    },
+    /* И ещё 20+ свойств */
+  };
 }
 ```
 
@@ -269,19 +269,19 @@ function createUserStub(): User {
  * Описать минимальный набор полей для всех историй или оставить пустым
  */
 function createMinimalUserStub(): User {
-    return {
-        name: 'Vasiliy',
-        position: 'developer',
-    } as User;
+  return {
+    name: 'Vasiliy',
+    position: 'developer',
+  } as User;
 }
 
 it('displays living address', {
-    arrange: (user) => ({
-        getUser: async () => ({
-            ...createMinimalUserStub(),
-            living: { city: 'Moscow' } // История устанавливает только нужные ей поля 
-        })
+  arrange: (user) => ({
+    getUser: async () => ({
+      ...createMinimalUserStub(),
+      living: {city: 'Moscow'} // История устанавливает только нужные ей поля 
     })
+  })
 });
 ```
 
@@ -315,12 +315,12 @@ it('displays living address', {
 ```ts
 // Все поля в модели обязательные и при этом их достаточно много
 type User = {
-    name: string,
-    position: string,
-    living: {
-        city: string,
-    },
-    /* И ещё 20+ свойств */
+  name: string,
+  position: string,
+  living: {
+    city: string,
+  },
+  /* И ещё 20+ свойств */
 }
 ```
 
@@ -337,11 +337,11 @@ type User = {
 
 ```ts
 type User = {
-    name: string,
-    position: string,
-    living: {
-        city: string,
-    },
+  name: string,
+  position: string,
+  living: {
+    city: string,
+  },
 }
 ```
 
@@ -352,8 +352,8 @@ type User = {
  * Делать модель более точной и избавляться от неиспользуемых полей
  */
 type User = {
-    name: string,
-    position?: string,
+  name: string,
+  position?: string,
 }
 ```
 
@@ -374,12 +374,12 @@ type User = {
 const renders = it;
 
 const buttonStories = [
-    renders('primary button', {
-        render: () => <Button type="primary" />,
-    }),
-    renders('primary disabled button', {
-        render: () => <Button type="primary" disabled />,
-    }),
+  renders('primary button', {
+    render: () => <Button type="primary" />,
+  }),
+  renders('primary disabled button', {
+    render: () => <Button type="primary" disabled />,
+  }),
 ];
 ```
 
@@ -387,23 +387,23 @@ const buttonStories = [
 `render` по умолчанию:
 
 ```tsx title="preview.tsx"
-const { run, it } = createPreviewApp(/* ... */);
+const {run, it} = createPreviewApp(/* ... */);
 
 const stories = [
-    it('...', {
-        /**
-         * Описывать render в истории не обязательно.
-         */
-    }),
+  it('...', {
+    /**
+     * Описывать render в истории не обязательно.
+     */
+  }),
 ];
 
 run(
-    map(stories, (story) => ({
-            // По умолчанию будет отрисовываться корневой компонент приложения 
-            render: (externals) => <App externals={externals} />,
-            ...story,
-        })
-    )
+  map(stories, (story) => ({
+      // По умолчанию будет отрисовываться корневой компонент приложения 
+      render: (externals) => <App externals={externals} />,
+      ...story,
+    })
+  )
 );
 ```
 
@@ -417,15 +417,15 @@ run(
 
 ```ts
 const stories = [
-    it('shows disabled password initially'), // Тест просто делает снимок изначального состояния страницы
-    it('allows to enter password after login filled', { // Проверяет активность пароля после ввода
-        act: (actor) => actor.fill(finder.getByPlaceholder('Login'), 'Логин'),
-    }),
-    it('allows to enter credentials', { // Проверяет возможность заполнения формы
-        act: (actor) => actor
-            .fill(finder.getByPlaceholder('Login'), 'Логин')
-            .fill(finder.getByPlaceholder('Password'), '1235'),
-    })
+  it('shows disabled password initially'), // Тест просто делает снимок изначального состояния страницы
+  it('allows to enter password after login filled', { // Проверяет активность пароля после ввода
+    act: (actor) => actor.fill(finder.getByPlaceholder('Login'), 'Логин'),
+  }),
+  it('allows to enter credentials', { // Проверяет возможность заполнения формы
+    act: (actor) => actor
+      .fill(finder.getByPlaceholder('Login'), 'Логин')
+      .fill(finder.getByPlaceholder('Password'), '1235'),
+  })
 ];
 ```
 
@@ -433,13 +433,13 @@ const stories = [
 
 ```ts
 const stories = [
-    it('allows to enter credentials', { // История проверяет все состояния сразу
-        act: (actor) => actor
-            .screenshot('Initial')
-            .fill(finder.getByPlaceholder('Login'), 'Логин')
-            .screenshot('PasswordEnabled')
-            .fill(finder.getByPlaceholder('Password'), '1235'),
-    })
+  it('allows to enter credentials', { // История проверяет все состояния сразу
+    act: (actor) => actor
+      .screenshot('Initial')
+      .fill(finder.getByPlaceholder('Login'), 'Логин')
+      .screenshot('PasswordEnabled')
+      .fill(finder.getByPlaceholder('Password'), '1235'),
+  })
 ];
 ```
 
@@ -467,11 +467,11 @@ const stories = [
 
 ```ts
 type Externals = {
-    repositories: {
-        userRepository: UserRepository;
-        /* ... */
-    };
+  repositories: {
+    userRepository: UserRepository;
     /* ... */
+  };
+  /* ... */
 };
 ```
 
@@ -482,20 +482,20 @@ type Externals = {
 
 ```ts
 it('...', {
-    arrange: (externals) => ({ // Вложенность высокая из-за чего читаемость сильно страдает
-        ...externals,
-        repositories: {
-            ...externals.repositories,
-            UserRepository: {
-                ...externals.repositories.UserRepository,
-                getUser: (data) =>
-                    externals.repositories.UserRepository.getUser(data).then((user) => ({
-                        ...user,
-                        login: 'test-user',
-                    })),
-            },
-        },
-    }),
+  arrange: (externals) => ({ // Вложенность высокая из-за чего читаемость сильно страдает
+    ...externals,
+    repositories: {
+      ...externals.repositories,
+      UserRepository: {
+        ...externals.repositories.UserRepository,
+        getUser: (data) =>
+          externals.repositories.UserRepository.getUser(data).then((user) => ({
+            ...user,
+            login: 'test-user',
+          })),
+      },
+    },
+  }),
 });
 ```
 
@@ -503,10 +503,10 @@ it('...', {
 
 ```ts
 it('...', { // Код делает тоже самое, но читается лучше
-    arrange: extend(
-        'UserRepository',
-        transform('getUser', (user) => ({ ...user, login: 'test-user' })),
-    ),
+  arrange: extend(
+    'UserRepository',
+    transform('getUser', (user) => ({...user, login: 'test-user'})),
+  ),
 });
 ```
 
@@ -529,10 +529,10 @@ it('...', { // Код делает тоже самое, но читается л
 
 ```ts
 function createUserStub(): User {
-    return {
-        name: 'UserName',
-        roles: [],
-    };
+  return {
+    name: 'UserName',
+    roles: [],
+  };
 }
 ```
 
@@ -540,10 +540,10 @@ function createUserStub(): User {
 
 ```ts
 function createUserStub(): User {
-    return {
-        name: 'Васильев Василий Васильевич', // Имя пользователя содержит ФИО
-        roles: ['admin'], // Роли по модели не могут быть пустыми
-    };
+  return {
+    name: 'Васильев Василий Васильевич', // Имя пользователя содержит ФИО
+    roles: ['admin'], // Роли по модели не могут быть пустыми
+  };
 }
 ```
 
@@ -571,10 +571,10 @@ function createUserStub(): User {
 
 ```ts
 function createUserStub(): User {
-    return {
-        name: 'Vasiliy',
-        address: 'Moscow'
-    };
+  return {
+    name: 'Vasiliy',
+    address: 'Moscow'
+  };
 }
 ```
 
@@ -582,13 +582,13 @@ function createUserStub(): User {
 
 ```ts
 function createUserStub(): User {
-    return {
-        name: 'Vasiliy',
-        /**
-         * Поле с адресом убрано так как оно не используется в приложении
-         * и как следствие не требуется для покрытия всех его сценариев.
-         */
-    };
+  return {
+    name: 'Vasiliy',
+    /**
+     * Поле с адресом убрано так как оно не используется в приложении
+     * и как следствие не требуется для покрытия всех его сценариев.
+     */
+  };
 }
 ```
 
@@ -611,11 +611,11 @@ function createUserStub(): User {
 
 ```ts
 function createUserStub(): User {
-    return {
-        id: 5142,
-        name: 'Vasiliy',
-        updatedAt: '2024-06-28T15:00:00.000Z',
-    };
+  return {
+    id: 5142,
+    name: 'Vasiliy',
+    updatedAt: '2024-06-28T15:00:00.000Z',
+  };
 }
 ```
 
@@ -623,11 +623,11 @@ function createUserStub(): User {
 
 ```ts
 function createUserStub(): User {
-    return {
-        id: 1,
-        name: 'Vasiliy',
-        updatedAt: createConstDate().toJSON(),
-    };
+  return {
+    id: 1,
+    name: 'Vasiliy',
+    updatedAt: createConstDate().toJSON(),
+  };
 }
 
 /**
@@ -644,15 +644,15 @@ declare function createConstDate(): Date;
 
 ```ts
 it('allows admin to continue', {
-    arrange: (externals) => ({
-        ...externals,
-        // Добавляем роль администратора
-        getUser: async () => {
-            const user = await externals.getUser();
+  arrange: (externals) => ({
+    ...externals,
+    // Добавляем роль администратора
+    getUser: async () => {
+      const user = await externals.getUser();
 
-            return { ...user, roles: [...user.roles, 'admin'], };
-        }
-    }),
+      return {...user, roles: [...user.roles, 'admin'],};
+    }
+  }),
 });
 ```
 
@@ -674,13 +674,13 @@ it('allows admin to continue', {
 
 ```ts
 it('allows admin to continue', {
-    arrange: (externals) => ({
-        ...externals,
-        // Добавляем роль администратора
-        getUser: async () => {
-            return { ...createUserStub(), roles: [...user.roles, 'admin'], };
-        }
-    }),
+  arrange: (externals) => ({
+    ...externals,
+    // Добавляем роль администратора
+    getUser: async () => {
+      return {...createUserStub(), roles: [...user.roles, 'admin'],};
+    }
+  }),
 });
 ```
 
@@ -706,13 +706,13 @@ it('allows admin to continue', {
 
 ```ts
 function createUserRepository(): UserRepository {
-    return {
-        // Метод query считывающий список пользователей из БД
-        getUsers: async () => [createVasiliyStub(), createIvanStub()],
-        // Метод command удаляющий пользователя из БД
-        removeUserById: async () => {
-        },
-    };
+  return {
+    // Метод query считывающий список пользователей из БД
+    getUsers: async () => [createVasiliyStub(), createIvanStub()],
+    // Метод command удаляющий пользователя из БД
+    removeUserById: async () => {
+    },
+  };
 }
 ```
 
@@ -725,12 +725,12 @@ function createUserRepository(): UserRepository {
 
 ```ts
 it('removes user from a list', {
-    arrange: (externals, { journal }) => ({
-        ...externals,
-        removeUserById: journal.asRecordable('removeUserById', externals.removeUserById)
-    }),
-    // Удаляем пользователя в списке по имени
-    act: (actor) => actor.click(finder.get(removeActionByName('Ivan')))
+  arrange: (externals, {journal}) => ({
+    ...externals,
+    removeUserById: journal.asRecordable('removeUserById', externals.removeUserById)
+  }),
+  // Удаляем пользователя в списке по имени
+  act: (actor) => actor.click(finder.get(removeActionByName('Ivan')))
 });
 ```
 
@@ -744,19 +744,19 @@ it('removes user from a list', {
 
 ```ts
 it('removes user from a list', {
-    arrange: (externals) => {
-        // Arrange держит в замыкании состояние истории. В данном случае это список пользователей 
-        let users = [createVasiliyStub(), createIvanStub()];
+  arrange: (externals) => {
+    // Arrange держит в замыкании состояние истории. В данном случае это список пользователей 
+    let users = [createVasiliyStub(), createIvanStub()];
 
-        return {
-            ...externals,
-            getUsers: async () => users,
-            // Удаляем пользователя из списка
-            removeUserById: async (id) => users = without(users, { id }),
-        };
-    },
-    // Удаляем пользователя в списке по имени
-    act: (actor) => actor.click(finder.get(removeActionByName('Ivan')))
+    return {
+      ...externals,
+      getUsers: async () => users,
+      // Удаляем пользователя из списка
+      removeUserById: async (id) => users = without(users, {id}),
+    };
+  },
+  // Удаляем пользователя в списке по имени
+  act: (actor) => actor.click(finder.get(removeActionByName('Ivan')))
 });
 ```
 
@@ -785,17 +785,17 @@ degrades={[Metric.Speed]} />
 
 ```ts
 it('shows dismissible user removal notice', {
-    act: (actor, config) =>
-        actor.screenshot('Notice').click(
-            /**
-             * config содержит информацию об устройстве на котором сейчас исполняется тест
-             */
-            config.device.name === 'desktop'
-                // На десктоп это иконка крестика
-                ? finder.getByRole('image', { name: 'close-note' })
-                // На мобилке это просто текст "Закрыть"
-                : finder.getByRole('button', { name: 'Закрыть' }),
-        ),
+  act: (actor, config) =>
+    actor.screenshot('Notice').click(
+      /**
+       * config содержит информацию об устройстве на котором сейчас исполняется тест
+       */
+      config.device.name === 'desktop'
+        // На десктоп это иконка крестика
+        ? finder.getByRole('image', {name: 'close-note'})
+        // На мобилке это просто текст "Закрыть"
+        : finder.getByRole('button', {name: 'Закрыть'}),
+    ),
 });
 ```
 
@@ -808,10 +808,10 @@ it('shows dismissible user removal notice', {
 
 ```ts
 it('shows dismissible user removal notice', {
-    act: (actor) =>
-        actor
-            .screenshot('Notice')
-            .click(finder.getByRole('button', { name: 'Закрыть уведомление' })),
+  act: (actor) =>
+    actor
+      .screenshot('Notice')
+      .click(finder.getByRole('button', {name: 'Закрыть уведомление'})),
 });
 ```
 
@@ -835,28 +835,28 @@ it('shows dismissible user removal notice', {
  * что истории разделены на несколько разных наборов:
  */
 const desktopUsersStories = only(
-        ['desktop'],
-        describe('Users', [
-            it('shows nothing when there is no users', {
-                /* ... */
-            }),
-            it('shows users', {
-                /* ... */
-            }),
-        ]),
-    );
+    ['desktop'],
+    describe('Users', [
+      it('shows nothing when there is no users', {
+        /* ... */
+      }),
+      it('shows users', {
+        /* ... */
+      }),
+    ]),
+  );
 
 const mobileUsersStories = only(
-    ['mobile'],
-    describe('Users', [
-        it('shows nothing when there is no users', {
-            /* ... */
-        }),
-        // В мобильной версии доступны новые действия
-        it('allows to swipe users to delete them', {
-            /* ... */
-        }),
-    ]),
+  ['mobile'],
+  describe('Users', [
+    it('shows nothing when there is no users', {
+      /* ... */
+    }),
+    // В мобильной версии доступны новые действия
+    it('allows to swipe users to delete them', {
+      /* ... */
+    }),
+  ]),
 );
 ```
 
@@ -883,21 +883,21 @@ const mobileUsersStories = only(
 
 ```tsx
 const stories = [
-    it('allows to delete user', {
-        /**
-         * В UserPage используется обычная кнопка удаления <button>Удалить</button>
-         */
-        act: (actor) => actor.click(finder.getByRole('button', { name: 'Удалить' })),
-        render: () => <UserPage />,
-    }),
-    it('allows to delete product', {
-        /**
-         * В ProductsPage используется та же кнопка, но разработчики реализовали её иначе,
-         * по какой-то причине: <div className="button">Удалить</div>
-         */
-        act: (actor) => actor.click(finder.locator('div.button').getByText('Удалить')),
-        render: () => <ProductsPage />,
-    }),
+  it('allows to delete user', {
+    /**
+     * В UserPage используется обычная кнопка удаления <button>Удалить</button>
+     */
+    act: (actor) => actor.click(finder.getByRole('button', {name: 'Удалить'})),
+    render: () => <UserPage />,
+  }),
+  it('allows to delete product', {
+    /**
+     * В ProductsPage используется та же кнопка, но разработчики реализовали её иначе,
+     * по какой-то причине: <div className="button">Удалить</div>
+     */
+    act: (actor) => actor.click(finder.locator('div.button').getByText('Удалить')),
+    render: () => <ProductsPage />,
+  }),
 ];
 ```
 
@@ -910,17 +910,17 @@ const stories = [
 /**
  * За счёт использования компонентного подхода, селекторы между тестами также могут быть унифицированы
  */
-const button = (name: string): FinderTransformer => (finder) => finder.getByRole('button', { name });
+const button = (name: string): FinderTransformer => (finder) => finder.getByRole('button', {name});
 
 const stories = [
-    it('allows to delete user', {
-        act: (actor) => actor.click(finder.get(button('Удалить'))),
-        render: () => <UserPage />,
-    }),
-    it('allows to delete product', {
-        act: (actor) => actor.click(finder.get(button('Удалить'))),
-        render: () => <ProductsPage />,
-    }),
+  it('allows to delete user', {
+    act: (actor) => actor.click(finder.get(button('Удалить'))),
+    render: () => <UserPage />,
+  }),
+  it('allows to delete product', {
+    act: (actor) => actor.click(finder.get(button('Удалить'))),
+    render: () => <ProductsPage />,
+  }),
 ];
 ```
 
@@ -949,10 +949,10 @@ declare const dismiss: ActorTransformer;
 
 ```ts
 it('allows to remove a user from list', {
-    act: (actor) => actor
-        .do(trash('Vasiliy'))
-        .screenshot('ConfirmationWindow')
-        .do(confirm())
+  act: (actor) => actor
+    .do(trash('Vasiliy'))
+    .screenshot('ConfirmationWindow')
+    .do(confirm())
 });
 ```
 
@@ -967,7 +967,7 @@ it('allows to remove a user from list', {
 
 ```tsx
 it('allows to delete product', {
-    act: (actor) => actor.click(finder.locator('div.user-card div.button').getByText('Удалить')),
+  act: (actor) => actor.click(finder.locator('div.user-card div.button').getByText('Удалить')),
 });
 ```
 
@@ -977,7 +977,7 @@ it('allows to delete product', {
 
 ```tsx
 it('allows to delete product', {
-    act: (actor) => actor.click(finder.getByRole('button', { name: 'Удалить' })),
+  act: (actor) => actor.click(finder.getByRole('button', {name: 'Удалить'})),
 });
 ```
 
@@ -1000,9 +1000,9 @@ it('allows to delete product', {
 
 ```ts
 const createMockUserRepository = (): UserRepository => {
-    return {
-        getUser: async () => createUserStub(),
-    }
+  return {
+    getUser: async () => createUserStub(),
+  }
 }
 ```
 
@@ -1014,10 +1014,10 @@ const createMockUserRepository = (): UserRepository => {
 
 ```ts
 it('shows user', {
-    arrange: (externals, { journal }) => ({
-        ...externals,
-        getUser: journal.asRecordable('getUser', externals.getUser)
-    }),
+  arrange: (externals, {journal}) => ({
+    ...externals,
+    getUser: journal.asRecordable('getUser', externals.getUser)
+  }),
 })
 ```
 
@@ -1045,13 +1045,13 @@ it('shows user');
 
 ```tsx
 const User: React.FC = () => {
-    const response = useQuery(userRepository.getUser);
+  const response = useQuery(userRepository.getUser);
 
-    if (response.loading) {
-        return <Preloader />;
-    }
+  if (response.loading) {
+    return <Preloader />;
+  }
 
-    return <UserInfo user={response.data} />
+  return <UserInfo user={response.data} />
 };
 ```
 
@@ -1113,18 +1113,18 @@ stories/
 
 ```ts
 const userRepository: UserRepository = {
-    getUser: (id) => {
-        return fetch(`/api/user/${id}`)
-            /* Обработка #1 */
-            .then(parse)
-            .then((user) => {
-                if (user.isAdmin) {
-                    /* Обработка #2 */
-                }
+  getUser: (id) => {
+    return fetch(`/api/user/${id}`)
+      /* Обработка #1 */
+      .then(parse)
+      .then((user) => {
+        if (user.isAdmin) {
+          /* Обработка #2 */
+        }
 
-                /* Обработка #3 */
-            });
-    },
+        /* Обработка #3 */
+      });
+  },
 };
 ```
 
@@ -1132,7 +1132,7 @@ const userRepository: UserRepository = {
 
 ```ts
 const userRepository: UserRepository = {
-    getUser: (id) => fetch(`/api/user/${id}`),
+  getUser: (id) => fetch(`/api/user/${id}`),
 };
 ```
 
@@ -1160,8 +1160,8 @@ const userRepository: UserRepository = {
 
 ```ts
 it('shows read notification', {
-    // У теста будет три попытки на успешное прохождение
-    retries: (config) => 3,
+  // У теста будет три попытки на успешное прохождение
+  retries: (config) => 3,
 });
 ```
 
@@ -1193,10 +1193,10 @@ setTimeout(() => notification.close(), 5_000);
 
 ```ts
 it('shows message to a user', {
-    act: (actor) => actor
-        .screenshot('Message')
-        .wait(5_000)
-        .screenshot('Hidden'),
+  act: (actor) => actor
+    .screenshot('Message')
+    .wait(5_000)
+    .screenshot('Hidden'),
 }); 
 ```
 
@@ -1204,10 +1204,10 @@ it('shows message to a user', {
 
 ```ts
 it('shows message to a user', {
-    act: (actor) => actor
-        .screenshot('Message')
-        .exec(({ env }) => env.clock.tick(5_000))
-        .screenshot('Hidden'),
+  act: (actor) => actor
+    .screenshot('Message')
+    .exec(({env}) => env.clock.tick(5_000))
+    .screenshot('Hidden'),
 });
 ```
 
@@ -1233,15 +1233,15 @@ it('shows message to a user', {
 
 ```ts
 const config = {
-    devices: [
-        { name: 'desktopXL', /* ... */ },
-        { name: 'desktopL', /* ... */ },
-        { name: 'desktopS', /* ... */ },
-        { name: 'mobileL', /* ... */ },
-        { name: 'mobileS', /* ... */ },
-        { name: 'tablet', /* ... */ },
-    ],
-    /* ... */
+  devices: [
+    {name: 'desktopXL', /* ... */},
+    {name: 'desktopL', /* ... */},
+    {name: 'desktopS', /* ... */},
+    {name: 'mobileL', /* ... */},
+    {name: 'mobileS', /* ... */},
+    {name: 'tablet', /* ... */},
+  ],
+  /* ... */
 };
 ```
 
@@ -1252,12 +1252,12 @@ const config = {
 
 ```ts
 const config = {
-    devices: [
-        { name: 'desktop', /* ... */ },
-        { name: 'mobile', /* ... */ },
-        { name: 'tablet', /* ... */ },
-    ],
-    /* ... */
+  devices: [
+    {name: 'desktop', /* ... */},
+    {name: 'mobile', /* ... */},
+    {name: 'tablet', /* ... */},
+  ],
+  /* ... */
 };
 ```
 
@@ -1373,6 +1373,23 @@ run(stories);
 5. Повторить шаги 3 и 4 пока вся работа не будет выполнена
 
 ## Работа в команде
+
+`storyshots` верифицирует поведение приложения с помощью сравнения слепков его поведений. По большей части это снимки
+экранов.
+
+Мночисленные достоинства визуального тестирования омрачаются и весомыми недостатками одним из которых является высокая
+чуствительность к окружению выполнения. Можно выделить две основные группы:
+
+- *Внешняя среда* - подменяется программными средствами
+- *Среда исполнения* - контролируется в ручную
+
+:::note
+Операционная система и даже определённое аппаратное обеспечение влияют на то, какой снимок получится в итоговом
+результате.
+:::
+
+При командной разработке используются разные машины, со своими операционными системами. Для таких
+обстоятельсв предлагается следующая схема работы:
 
 ## Приоритеты историй
 
