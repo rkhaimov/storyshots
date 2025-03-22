@@ -1373,7 +1373,9 @@ run(stories);
 4. После реализации шага и выполнения тестов выполнять коммит.
 5. Повторить шаги 3 и 4 пока вся работа не будет выполнена
 
-## Работа в команде
+## Разделение эталонов
+
+<MetricsTip improves={[Metric.RegressionProtection]} degrades={[Metric.Maintainability, Metric.Speed]} />
 
 `storyshots` верифицирует поведение приложения с помощью сравнения слепков его поведений. По большей части это снимки
 экранов.
@@ -1422,6 +1424,10 @@ run(stories);
 :::
 
 ## Приоритеты историй
+
+<MetricsTip improves={[Metric.Maintainability, Metric.Speed]} degrades={[Metric.RegressionProtection]} />
+
+Со временем количество историй в проекте будет расти, вместе с этим будет 
 
 ## Подмена через инверсию
 
