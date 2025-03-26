@@ -1,23 +1,10 @@
-import { finder, notImplemented } from '@storyshots/core';
-import {
-  body,
-  Endpoint,
-  endpoint,
-  handle,
-  map,
-  native,
-  override,
-  record,
-} from '@storyshots/msw-externals';
+import { body, native } from '@storyshots/msw-externals';
+import { finder } from '@storyshots/core';
 import { HttpResponse } from 'msw';
-import {
-  AddPetApiArg,
-  AddPetApiResponse,
-  FindPetsByStatusApiResponse,
-  Pet,
-} from '../../src/externals/pets-api';
-import { arrange } from '../externals';
+import { AddPetApiArg, Pet } from '../../src/externals/pets-api';
 import { it } from '../preview/config';
+import { arrange, handle, record } from './arrangers';
+import { setup } from './setup';
 
 export const stories = [
   it('renders empty list of pets', {
@@ -27,7 +14,7 @@ export const stories = [
     arrange: arrange(setup(), withFewPets()),
   }),
   it('is able to add new pet', {
-    arrange: arrange(setup(), withFewPets(), withAddingPetsEmulated()),
+    arrange: arrange(setup(), withAddingPetsEmulated()),
     act: (actor) =>
       actor.click(finder.getByRole('button', { name: 'Add a pet' })),
   }),
@@ -50,62 +37,37 @@ export const stories = [
 ];
 
 function withAddingError() {
-  return override({
-    addPet: handle(() => native(new HttpResponse(null, { status: 406 }))),
-  });
+  return handle('addPet', () =>
+    native(new HttpResponse(null, { status: 406 })),
+  );
 }
 
 function withRetrievalError() {
-  return override({
-    findPetsByStatus: handle(() =>
-      native(new HttpResponse(null, { status: 500 })),
-    ),
-  });
+  return handle('findPetsByStatus', () =>
+    native(new HttpResponse(null, { status: 500 })),
+  );
 }
 
 function withAddingPetsEmulated() {
-  let transform = (pets: Pet[]) => pets;
+  let pets: Pet[] = [];
 
-  return override({
-    findPetsByStatus: map((it) => transform(it)),
-    addPet: handle(async (arg) => {
+  return arrange(
+    handle('findPetsByStatus', () => pets),
+    handle('addPet', async (arg) => {
       const added: AddPetApiArg = await body(arg);
 
-      transform = (pets) => [...pets, added];
-    }),
-  });
-}
-
-function withNoPets() {
-  return override({ findPetsByStatus: handle(() => []) });
-}
-
-function withFewPets() {
-  return override({
-    findPetsByStatus: handle(() => [
-      { name: 'Izi', tags: [{ name: 'smart' }], photoUrls: [] },
-      { name: 'Izya', tags: [{ name: 'cutie' }], photoUrls: [] },
-    ]),
-  });
-}
-
-function setup() {
-  return arrange(
-    endpoint('findPetsByStatus', {
-      url: '/api/pet/findByStatus',
-      handle: () => notImplemented('findPetsByStatus'),
-    }),
-    endpoint('addPet', {
-      url: '/api/pet',
-      method: 'POST',
-      handle: () => notImplemented('addPet'),
+      pets = [...pets, added];
     }),
   );
 }
 
-declare module '@storyshots/msw-externals' {
-  interface Endpoints {
-    findPetsByStatus: Endpoint<FindPetsByStatusApiResponse>;
-    addPet: Endpoint<AddPetApiResponse>;
-  }
+function withNoPets() {
+  return handle('findPetsByStatus', () => []);
+}
+
+function withFewPets() {
+  return handle('findPetsByStatus', () => [
+    { name: 'Izi', tags: [{ name: 'smart' }], photoUrls: [] },
+    { name: 'Izya', tags: [{ name: 'cutie' }], photoUrls: [] },
+  ]);
 }

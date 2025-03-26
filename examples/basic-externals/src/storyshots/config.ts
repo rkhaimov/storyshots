@@ -1,24 +1,20 @@
+import { ManagerConfig, RUNNER } from '@storyshots/core/manager';
 import path from 'path';
-import { RUNNER, runUI } from '../../../../packages/manager/src';
-import { createPreviewServe } from './createPreviewServe';
+import { createPreviewServer } from './createPreviewServer';
 
-export const config: Parameters<typeof runUI>[0] = {
+export const config: ManagerConfig = {
   devices: [
     {
-      type: 'size-only',
       name: 'desktop',
-      config: { width: 1480, height: 920 },
+      width: 1480,
+      height: 920,
     },
     {
-      type: 'emulated',
       name: 'mobile',
-      config: {
-        userAgent:
-          'Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1',
-        width: 414,
-        height: 896,
-        deviceScaleFactor: 3,
-      },
+      userAgent:
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1',
+      width: 414,
+      height: 896,
     },
   ],
   paths: {
@@ -26,6 +22,6 @@ export const config: Parameters<typeof runUI>[0] = {
     records: path.join(process.cwd(), 'records'),
     temp: path.join(process.cwd(), '..', '..', 'temp'),
   },
-  preview: createPreviewServe(),
+  preview: createPreviewServer(),
   runner: RUNNER.pool({ agentsCount: 4 }),
 };

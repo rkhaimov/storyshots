@@ -1,0 +1,36 @@
+# Ниже приведён пример джобы для github окружения.
+# Используются следующие переменные:
+# VISUAL_REGRESSION_BOT_TOKEN = PAC (project access token), создаётся отдельно для данного бота. Права на запись в репозиторий являются обязательными.
+stage: storyshots
+# Используется официальный образ playwright
+image: mcr.microsoft.com/playwright
+script:
+  - echo "Installing dependencies"
+  # В примере используется npm. Можно заменить на тот менеджер, что используется в проекте
+  - npm i
+  - echo "Running tests"
+  # Запуск тестов в фоновом режиме. На данном этапе формируются изменения в эталоне.
+  - npm run storyshots:ci
+  - echo "Installing git"
+  - apt-get install -y git
+  - git config --global user.name "Storyshots Bot"
+  - git config --global user.email "storyshots@bot.com"
+  # Аутентификация в репозитории
+  - git remote set-url origin "https://oauth2:${VISUAL_REGRESSION_BOT_TOKEN}@gitlab.host.com/project.git"
+  # Коммит изменений в эталоне. Если изменений не обнаружено - коммит не выполняется и функция завершается с успехом
+  - git add .
+  - |
+    if git status --porcelain | grep -q .; then
+      echo "Baseline changes detected"
+      git commit --no-verify -m "baseline update [ci skip]"
+      git push --no-verify origin HEAD:$CI_COMMIT_REF_NAME
+    else
+      echo "No baseline changes has been detected"
+    fi
+# Рекомендуется также предоставлять возможность ручного запуска для заданной ветки
+when: manual
+rules:
+  - if: '$CI_COMMIT_BRANCH'
+    # Запускать можно автоматически, либо в ручном режиме
+    when: manual
+allow_failure: false

@@ -1,24 +1,25 @@
 /* eslint-disable react/react-in-jsx-scope */
-import { expect } from '@playwright/test';
 import { Background, background } from '../reusables/background';
 import { describe, test } from '../reusables/test';
 import {
-  concat,
-  createEmptyDescription,
-  TestDescription,
-} from '../reusables/test/description';
+  concatDescriptions,
+  withManagerThrowing,
+} from '../reusables/test/test-description';
 import { UI, ui } from '../reusables/ui';
 import { desktop } from './reusables/device';
 
 describe('using background run', () => {
   test(
     'allows to run all',
-    concat(setup(background), setup(ui).run('is a story').screenshot()),
+    concatDescriptions(
+      setup(background),
+      setup(ui).run('is a story').screenshot(),
+    ),
   );
 
   test(
     'accepts any changes automatically',
-    concat(
+    concatDescriptions(
       setup(background),
       desktop(background)
         .story(() => ({
@@ -31,7 +32,7 @@ describe('using background run', () => {
 
   test(
     'does not do anything when there is no diff',
-    concat(
+    concatDescriptions(
       setup(ui).run('is a story').accept('is a story'),
       setup(background),
       setup(ui).run('is a story').screenshot(),
@@ -40,7 +41,7 @@ describe('using background run', () => {
 
   test(
     'throws when error has occurred',
-    throwing(
+    withManagerThrowing(
       desktop(background)
         .story(({ finder }) => ({
           act: (actor) => actor.click(finder.getByText('Submit')),
@@ -55,23 +56,6 @@ describe('using background run', () => {
     ),
   );
 });
-
-function throwing(description: TestDescription): TestDescription {
-  return {
-    __description: () => ({
-      ...description.__description(),
-      onRun: async (...args) => {
-        const { run } = await description.__description().onRun(...args);
-
-        await expect(run()).rejects.toThrow(Error);
-
-        return createEmptyDescription()
-          .__description()
-          .onRun(...args);
-      },
-    }),
-  };
-}
 
 function setup(on: UI | Background) {
   return desktop(on)

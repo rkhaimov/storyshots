@@ -1,5 +1,5 @@
-import { Action } from '../reusables/factories';
 import { describe, test } from '../reusables/test';
+import { ActionStep } from '../reusables/test/test-description';
 import { devices } from './reusables/device';
 
 describe('devices preview run', () => {
@@ -43,7 +43,7 @@ function setup() {
     .actor();
 }
 
-function selectMobileDevice(): Action {
+function selectMobileDevice(): ActionStep {
   return async (page) => {
     await page.getByLabel('Toggle config pane').click();
 

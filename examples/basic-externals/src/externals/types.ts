@@ -6,9 +6,4 @@ export interface IExternals {
     getBalanceAt(date: number): Promise<number>;
     applyCV(form: unknown): Promise<void>;
   };
-  environment: {
-    now(): Date;
-  };
 }
-
-export type ThemeName = 'light' | 'dark';

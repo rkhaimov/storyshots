@@ -79,6 +79,8 @@ function setup() {
     .actor();
 }
 
-function render(_render: StoryConfig<unknown>['render']): CreateStory<unknown> {
+function render(
+  _render: NonNullable<StoryConfig<unknown>['render']>,
+): CreateStory<unknown> {
   return callback(_render, ([, render]) => ({ render }));
 }

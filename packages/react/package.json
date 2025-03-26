@@ -1,0 +1,25 @@
+{
+  "name": "@storyshots/react",
+  "version": "0.0.10",
+  "description": "React storyshots facade",
+  "main": "./lib/index.mjs",
+  "types": "./lib/index.d.mts",
+  "repository": "https://github.com/rkhaimov/storyshots.git",
+  "license": "MIT",
+  "files": [
+    "lib",
+    "manager"
+  ],
+  "scripts": {
+    "build": "rimraf ./lib && tsc --noEmit && ts-node build.ts"
+  },
+  "dependencies": {
+    "@storyshots/core": "0.0.10",
+    "react": "*",
+    "react-dom": "*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.38",
+    "@types/react-dom": "^18.2.17"
+  }
+}

@@ -1,13 +1,14 @@
 {
   "extends": "../../tsconfig",
-  "include": [
-    "./src/index.ts"
-  ],
   "compilerOptions": {
-    "target": "ES5",
-    "module": "CommonJS",
-    "outDir": "./lib",
-    "declaration": true,
-    "declarationMap": true
+    "baseUrl": ".",
+    "paths": {
+      "@core": [
+        "./src/core/index.ts"
+      ],
+      "@lib": [
+        "../../lib/utils.ts"
+      ]
+    }
   }
 }

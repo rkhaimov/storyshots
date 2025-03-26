@@ -1,6 +1,8 @@
-import { ManagerConfig } from '@storyshots/manager';
-import { createCITestsFactory } from './factories';
+import { runInBackground } from '@packages/core/src/server/modes/runInBackground';
+import { ManagerConfig } from '@packages/core/src/server/types';
+import { createManagerConfig } from './createManagerConfig';
 import { createPreview, Preview } from './preview';
+import { defineManagerStep } from './test/test-description';
 
 export type Background = {
   devices(devices: ManagerConfig['devices']): Background;
@@ -10,7 +12,12 @@ export type Background = {
 function createBackground(devices: ManagerConfig['devices']): Background {
   return {
     devices: (devices) => createBackground(devices),
-    preview: () => createPreview(createCITestsFactory(devices)),
+    preview: () =>
+      createPreview(
+        defineManagerStep((_, tf) =>
+          runInBackground(createManagerConfig(devices, tf)),
+        ),
+      ),
   };
 }
 

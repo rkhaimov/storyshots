@@ -4,8 +4,8 @@
   "description": "Direct fetch middleware",
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
-  "main": "lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "lib/index.mjs",
+  "types": "./lib/index.d.mts",
   "files": [
     "lib",
     "createWorkerSupplier.d.ts",
@@ -13,12 +13,12 @@
     "mockServiceWorker.js"
   ],
   "scripts": {
-    "build": "rimraf lib && tsc -b tsconfig.json && tsc -b tsconfig.worker.json"
+    "build": "rimraf lib && ts-node build.ts && tsc -b tsconfig.worker.json"
   },
-  "devDependencies": {
+  "dependencies": {
+    "react": "*",
+    "@storyshots/core": "0.0.10",
+    "@storyshots/arrangers": "0.0.10",
     "msw": "^2.6.8"
-  },
-  "peerDependencies": {
-    "@storyshots/manager": "0.0.10"
   }
 }

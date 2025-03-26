@@ -2,8 +2,6 @@ import type { HttpResponseResolver } from 'msw';
 
 export interface Endpoints {}
 
-export type EndpointsLike = Record<string, UnknownEndpoint>;
-
 export type Endpoint<TResponse> = {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   url: string;

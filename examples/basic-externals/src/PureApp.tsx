@@ -5,6 +5,7 @@ import { Route, Switch } from 'wouter';
 import { ExternalsProvider } from './externals/Context';
 import { IExternals } from './externals/types';
 import { Balance } from './pages/balance';
+import { Clock } from './pages/clock';
 import { CV } from './pages/cv';
 import { Main } from './pages/main';
 
@@ -20,6 +21,7 @@ export const PureApp: React.FC<Props> = (props) => {
             <Route path="/" component={Main} />
             <Route path="/balance" component={Balance} />
             <Route path="/cv" component={CV} />
+            <Route path="/clock" component={Clock} />
           </Switch>
         </ExternalsProvider>
       </ConfigProvider>
