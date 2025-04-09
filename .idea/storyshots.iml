@@ -8,12 +8,8 @@
       <excludeFolder url="file://$MODULE_DIR$/compiled" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
       <excludeFolder url="file://$MODULE_DIR$/packages/manager/lib" />
-      <excludeFolder url="file://$MODULE_DIR$/packages/preview/react/lib" />
       <excludeFolder url="file://$MODULE_DIR$/packages/core/lib" />
-      <excludeFolder url="file://$MODULE_DIR$/packages/bundler/webpack/lib" />
       <excludeFolder url="file://$MODULE_DIR$/packages/manager/react-devtools" />
-      <excludeFolder url="file://$MODULE_DIR$/packages/preview/react/react-devtools" />
-      <excludeFolder url="file://$MODULE_DIR$/packages/bundler/proxy/lib" />
       <excludeFolder url="file://$MODULE_DIR$/examples/tests/playwright-report" />
       <excludeFolder url="file://$MODULE_DIR$/examples/tests/test-results" />
       <excludeFolder url="file://$MODULE_DIR$/examples/tests/temp" />
@@ -23,6 +19,13 @@
       <excludeFolder url="file://$MODULE_DIR$/tests/playwright-report" />
       <excludeFolder url="file://$MODULE_DIR$/tests/temp" />
       <excludeFolder url="file://$MODULE_DIR$/tests/test-results" />
+      <excludeFolder url="file://$MODULE_DIR$/website/.docusaurus" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/react/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/react/react-devtools" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/servers/proxy/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/servers/webpack/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/externals/web-api/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/arrangers/lib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

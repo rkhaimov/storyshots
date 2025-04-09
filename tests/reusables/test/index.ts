@@ -1,36 +1,47 @@
+import { isNil } from '@lib';
 import { test as _test } from '@playwright/test';
-import { TestDescription } from './description';
-import { cleanups, setup, teardown } from './env';
+import { ManagerMeta, TestDescription } from './test-description';
+import { createTempFolder } from './temp-folder';
 
 export function describe(title: string, tests: () => unknown) {
   _test.describe(title, tests);
 }
 
 export function test(title: string, { __description }: TestDescription) {
+  const cleanups: ManagerMeta['cleanup'][] = [];
+
   _test(title, async ({ page }) => {
-    try {
-      const createTP = await setup();
-      const description = __description();
+    const tf = createTempFolder();
+    const steps = __description();
 
-      await description.onSetup?.(createTP, page);
+    for (const step of steps) {
+      await clean();
 
-      const meta = await description.onRun?.(createTP, page);
+      await step.preview(page, tf);
 
-      cleanups.push(meta.cleanup);
+      const { run, cleanup } = await step.manager(page, tf);
 
-      await meta.run();
+      cleanups.push(cleanup);
 
-      for (const arrange of description.actions) {
-        const { cleanup, run } = await arrange(createTP, page);
+      await run();
 
-        cleanups.push(cleanup);
-
-        await run();
+      for (const action of step.actions) {
+        await action(page, tf);
       }
-    } finally {
-      await teardown();
     }
   });
-}
 
-_test.afterEach(teardown);
+  _test.afterEach(clean);
+
+  async function clean() {
+    while (true) {
+      const clean = cleanups.shift();
+
+      if (isNil(clean)) {
+        break;
+      }
+
+      await clean();
+    }
+  }
+}

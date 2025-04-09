@@ -1,0 +1,15 @@
+{
+  "name": "@storyshots/arrangers",
+  "version": "0.0.10",
+  "description": "Composable external arrangers",
+  "repository": "https://github.com/rkhaimov/storyshots.git",
+  "license": "MIT",
+  "main": "lib/index.mjs",
+  "types": "./lib/index.d.mts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "rimraf lib && ts-node build.ts"
+  }
+}

@@ -1,4 +1,4 @@
-import { runUI } from '@storyshots/manager';
-import { config } from './config';
+import { runUI } from '@storyshots/core/manager';
+import { createConfig } from './config';
 
-void runUI(config);
+void createConfig().then(runUI);

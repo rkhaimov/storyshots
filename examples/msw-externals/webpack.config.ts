@@ -39,20 +39,10 @@ const config: Configuration = {
             exclude: /node_modules/,
             options: {
               presets: [
-                [
-                  '@babel/preset-env',
-                  {
-                    useBuiltIns: 'entry',
-                    corejs: 3,
-                  },
-                ],
-                [
-                  '@babel/preset-react',
-                  { runtime: 'automatic', development: true },
-                ],
+                '@babel/preset-env',
+                '@babel/preset-react',
                 '@babel/preset-typescript',
               ],
-              plugins: ['babel-plugin-styled-components'],
             },
           },
         ],

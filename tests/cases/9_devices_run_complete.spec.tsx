@@ -1,6 +1,6 @@
 /* eslint-disable react/react-in-jsx-scope */
-import { Action } from '../reusables/factories';
 import { describe, test } from '../reusables/test';
+import { ActionStep } from '../reusables/test/test-description';
 import { devices } from './reusables/device';
 
 describe('devices run complete', () => {
@@ -62,7 +62,7 @@ describe('devices run complete', () => {
     'displays errors independently',
     devices()
       .story(({ finder }) => ({
-        act: (actor, { device }) =>
+        act: (actor, device) =>
           device.name === 'desktop'
             ? actor
             : actor.click(finder.getByText('Submit')),
@@ -94,7 +94,7 @@ function setup() {
     .do(runComplete());
 }
 
-function runComplete(): Action {
+function runComplete(): ActionStep {
   return async (page) => {
     await page.getByText('is a story').hover();
 

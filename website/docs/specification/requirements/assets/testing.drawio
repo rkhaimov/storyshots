@@ -1,0 +1,52 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36" version="26.1.1">
+  <diagram name="Page-1" id="fZvR-FiHQmTredx2BwPE">
+    <mxGraphModel dx="1434" dy="746" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="_SnCmpSbxFfpvaKDgkAW-11" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="350" y="130" width="150" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="_SnCmpSbxFfpvaKDgkAW-1" value="Слепок" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="365" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_SnCmpSbxFfpvaKDgkAW-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="_SnCmpSbxFfpvaKDgkAW-2" target="_SnCmpSbxFfpvaKDgkAW-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_SnCmpSbxFfpvaKDgkAW-5" value="Генерирует" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="_SnCmpSbxFfpvaKDgkAW-4" vertex="1" connectable="0">
+          <mxGeometry x="0.0809" relative="1" as="geometry">
+            <mxPoint x="-11" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_SnCmpSbxFfpvaKDgkAW-2" value="AUT" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="150" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_SnCmpSbxFfpvaKDgkAW-3" value="Слепок&#39;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="365" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_SnCmpSbxFfpvaKDgkAW-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="_SnCmpSbxFfpvaKDgkAW-6" target="_SnCmpSbxFfpvaKDgkAW-11" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_SnCmpSbxFfpvaKDgkAW-13" value="Сравнивает" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="_SnCmpSbxFfpvaKDgkAW-12" vertex="1" connectable="0">
+          <mxGeometry x="-0.164" y="1" relative="1" as="geometry">
+            <mxPoint x="-2" y="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_SnCmpSbxFfpvaKDgkAW-6" value="Тест" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="590" y="215" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_SnCmpSbxFfpvaKDgkAW-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="_SnCmpSbxFfpvaKDgkAW-7" target="_SnCmpSbxFfpvaKDgkAW-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_SnCmpSbxFfpvaKDgkAW-9" value="Содержит" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="_SnCmpSbxFfpvaKDgkAW-8" vertex="1" connectable="0">
+          <mxGeometry x="-0.2966" relative="1" as="geometry">
+            <mxPoint x="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_SnCmpSbxFfpvaKDgkAW-7" value="Эталон" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="150" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

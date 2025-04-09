@@ -1,0 +1,14 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@lib": [
+        "../../../lib/utils.ts"
+      ],
+      "@sinonjs/fake-timers": [
+        "./faker"
+      ]
+    }
+  }
+}

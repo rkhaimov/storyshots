@@ -1,15 +1,18 @@
+import { wait } from '@lib';
 import { expect } from '@playwright/test';
-import { wait } from '@storyshots/core';
-import { Action, createActorTestsFactory } from './factories';
 import { createPreview, Preview } from './preview';
-import { TestDescription } from './test/description';
+import {
+  ActionStep,
+  TestDescription,
+  withActionStep,
+} from './test/test-description';
 
 export type Actor<TExternals> = TestDescription & {
   screenshot(): Actor<TExternals>;
   open(title: string, under?: string): Actor<TExternals>;
   run(title: string): Actor<TExternals>;
   accept(title: string): Actor<TExternals>;
-  do(action: Action): Actor<TExternals>;
+  do(action: ActionStep): Actor<TExternals>;
   preview(): Preview<TExternals>;
 };
 
@@ -42,7 +45,7 @@ export function createActor<TExternals>(description: TestDescription) {
             .waitFor({ state: 'visible' }),
         ),
     screenshot: () => actor.do((page) => expect(page).toHaveScreenshot()),
-    do: (action) => createActor(createActorTestsFactory(description, action)),
+    do: (action) => createActor(withActionStep(description, action)),
     preview: () => createPreview(actor) as never,
     ...description,
   };

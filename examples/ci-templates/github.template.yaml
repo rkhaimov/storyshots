@@ -1,0 +1,34 @@
+# Ниже приведён пример джобы для github окружения
+runs-on: ubuntu-latest
+steps:
+  # Запуск на ветке с которой запускается джоба
+  - name: Checkout repository
+    uses: actions/checkout@v3
+    with:
+      ref: ${{ github.head_ref }}
+
+  - name: Set up Node.js
+    uses: actions/setup-node@v3
+    with:
+      node-version: '22.12.0'
+
+  # В примере используется npm. Можно заменить на тот менеджер, что используется в проекте
+  - name: Install dependencies
+    run: npm install
+
+  # Запуск тестов в фоновом режиме. На данном этапе формируются изменения в эталоне.
+  - name: Run tests
+    run: npx storyshots /src/storyshots/manager/config.ts
+
+  # Коммит изменений в эталоне. Если изменений не обнаружено - коммит не выполняется и функция завершается с успехом
+  - name: Commit changes
+    run: |
+      git config --global user.name 'CI-bot'
+      git config --global user.email 'ci@bot.com'
+      git add .
+      if ! git diff-index --quiet HEAD; then
+        git commit -m "[skip ci] baseline"
+        git push origin ${{ github.head_ref }}
+      else
+        echo "No changes to commit."
+      fi

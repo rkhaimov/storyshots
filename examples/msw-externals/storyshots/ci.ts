@@ -1,4 +1,4 @@
-import { runInBackground } from '@storyshots/manager';
-import { config } from './config';
+import { runInBackground } from '@storyshots/core/manager';
+import { createConfig } from './config';
 
-void runInBackground(config);
+void createConfig().then(runInBackground);

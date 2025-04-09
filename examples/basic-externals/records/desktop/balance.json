@@ -26,7 +26,7 @@
   "balance__balance_can_be_different_by_default": [],
   "balance__provides_correct_date_when_retrieving_current_balance": [
     {
-      "method": "getInitialValue",
+      "method": "business.getBalanceAt",
       "args": [
         1705147200000
       ]

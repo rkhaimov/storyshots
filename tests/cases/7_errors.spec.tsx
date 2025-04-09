@@ -1,9 +1,9 @@
 /* eslint-disable react/react-in-jsx-scope */
-import { StoryTree } from '@storyshots/react-preview/lib/tree/types';
 import { callback } from '../reusables/preview/pure-function-factory';
 import { CreateStories } from '../reusables/preview/stories';
 import { describe, test } from '../reusables/test';
 import { desktop } from './reusables/device';
+import { StoryTree } from '@packages/core/src/core';
 
 describe('errors', () => {
   test(

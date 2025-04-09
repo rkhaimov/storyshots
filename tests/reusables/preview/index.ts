@@ -1,6 +1,7 @@
+import fs from 'fs';
 import { Actor, createActor } from '../actor';
-import { createPreviewTestsFactory } from '../factories';
-import { TestDescription } from '../test/description';
+import { TestDescription, withPreviewStep } from '../test/test-description';
+
 import { createCode } from './code';
 import {
   createDefaultExternalsFactory,
@@ -43,7 +44,9 @@ export function createPreview(description: TestDescription) {
     },
     actor: () =>
       createActor(
-        createPreviewTestsFactory(description, createCode(externals, stories)),
+        withPreviewStep(description, async (_, tf) =>
+          fs.writeFileSync(tf('index.tsx'), createCode(externals, stories)),
+        ),
       ),
   };
 

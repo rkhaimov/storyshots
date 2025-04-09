@@ -1,13 +1,11 @@
 {
   "extends": "../../../tsconfig.json",
-  "include": [
-    "./src/index.tsx"
-  ],
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "outDir": "./lib",
-    "declaration": true,
-    "jsx": "react"
+    "baseUrl": ".",
+    "paths": {
+      "@lib": [
+        "../../../lib/utils.ts"
+      ]
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { ExternalsFactory } from '@storyshots/react-preview/src/types';
+import { ExternalsFactory } from '@packages/react/src/types';
 
 export function createDefaultExternalsFactory(): CreateExternalsFactory<unknown> {
   return () => ({

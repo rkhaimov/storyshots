@@ -51,7 +51,7 @@ function setup() {
 }
 
 function render(
-  _render: StoryConfig<ReadWriteExternals>['render'],
+  _render: NonNullable<StoryConfig<ReadWriteExternals>['render']>,
 ): CreateStory<never> {
   return callback(_render, ([{ finder }, render]) => ({
     act: (actor) => actor.click(finder.getByText('Write')),

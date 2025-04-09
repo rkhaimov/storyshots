@@ -1,30 +1,24 @@
-import { isNil } from '@storyshots/core';
+import { isNil } from '@lib';
 import { http, HttpResponse, RequestHandler } from 'msw';
 import { setupWorker } from 'msw/browser';
 import React, { useEffect, useState } from 'react';
-import {
-  EndpointArgs,
-  Endpoints,
-  EndpointsLike,
-  UnknownEndpoint,
-} from './types';
+import { EndpointArgs, Endpoints, UnknownEndpoint } from './types';
+import { native } from './utils';
 
 type Props = {
   endpoints: Endpoints;
-  onUnknownEndpoint: UnknownEndpoint['handle'];
 };
 
 export const MSWReplacer: React.FC<React.PropsWithChildren<Props>> = ({
   endpoints,
-  onUnknownEndpoint,
   children,
 }) => {
   const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
     void setupWorker(
-      ...toRequestHandlers(endpoints as EndpointsLike),
-      createUnknownEndpointsFallback(onUnknownEndpoint),
+      ...toRequestHandlers(endpoints as UnknownEndpoints),
+      createUnknownEndpointsFallback(),
     )
       .start()
       .then(() => setInitializing(false));
@@ -37,7 +31,7 @@ export const MSWReplacer: React.FC<React.PropsWithChildren<Props>> = ({
   return children;
 };
 
-function toRequestHandlers(endpoints: EndpointsLike): RequestHandler[] {
+function toRequestHandlers(endpoints: UnknownEndpoints): RequestHandler[] {
   return Object.values(endpoints).map((endpoint) =>
     http[toHTTPMethod(endpoint.method)](
       endpoint.url,
@@ -46,10 +40,13 @@ function toRequestHandlers(endpoints: EndpointsLike): RequestHandler[] {
   );
 }
 
-function createUnknownEndpointsFallback(onUnknown: UnknownEndpoint['handle']) {
+function createUnknownEndpointsFallback() {
   const MATCH_NON_FILE_URL_ONLY = /^(?!.*\/[^/]+\.[^/]+(\?.*)?$).*/;
 
-  return http.all(MATCH_NON_FILE_URL_ONLY, toMSWResolver(onUnknown));
+  return http.all(
+    MATCH_NON_FILE_URL_ONLY,
+    toMSWResolver(() => native(new HttpResponse(null, { status: 404 }))),
+  );
 }
 
 function toMSWResolver(handle: UnknownEndpoint['handle']) {
@@ -75,3 +72,5 @@ function toHTTPMethod(method: UnknownEndpoint['method']): keyof typeof http {
 
   return method.toLowerCase() as never;
 }
+
+type UnknownEndpoints = Record<string, UnknownEndpoint>;

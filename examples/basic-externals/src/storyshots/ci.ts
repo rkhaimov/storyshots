@@ -1,4 +1,4 @@
-import { runInBackground, RUNNER } from '../../../../packages/manager/src';
+import { runInBackground } from '@storyshots/core/manager';
 import { config } from './config';
 
-void runInBackground({ ...config, runner: RUNNER.pool({ agentsCount: 1 }) });
+void runInBackground(config);

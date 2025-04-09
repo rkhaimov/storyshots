@@ -1,7 +1,7 @@
-import { createPreviewApp } from '@storyshots/react-preview';
-import { StoryTree } from '@storyshots/react-preview/src/tree/types';
 import { callback } from './pure-function-factory';
 import { ModuleArgs } from './module';
+import { StoryTree } from '@packages/core/src/core';
+import { createPreviewApp } from '@packages/react/src';
 
 export function createDefaultStoriesFactory(): CreateStories<unknown> {
   return () => [];
@@ -23,6 +23,6 @@ export function fromStoryFactory(
 
 export type StoryConfig<T> = Parameters<RunArgs<T>['it']>[1];
 export type CreateStory<T> = (args: ModuleArgs) => StoryConfig<T>;
-export type CreateStories<T> = (args: RunArgs<T>) => StoryTree[];
+export type CreateStories<T> = (args: RunArgs<T>) => StoryTree;
 
 export type RunArgs<T> = ModuleArgs & ReturnType<typeof createPreviewApp<T>>;

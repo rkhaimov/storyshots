@@ -5,9 +5,24 @@
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
   "scripts": {
-    "start": "webpack serve --open",
-    "test": "ts-node storyshots/ui.ts",
+    "start": "ts-node storyshots/ui.ts",
     "ci": "ts-node storyshots/ci.ts",
-    "codegen": "ts-node codegen/generator.ts"
+    "codegen": "ts-node codegen/generator.ts",
+    "compile": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.6.1",
+    "@rtk-query/codegen-openapi": "^2.0.0",
+    "react-redux": "^9.2.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.26.9",
+    "@babel/preset-react": "^7.26.3",
+    "@babel/preset-typescript": "^7.27.0",
+    "babel-loader": "^10.0.0",
+    "html-webpack-plugin": "^5.6.3",
+    "webpack": "^5.98.0",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.1"
   }
 }

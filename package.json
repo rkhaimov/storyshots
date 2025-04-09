@@ -6,7 +6,7 @@
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
   "scripts": {
-    "build": "npm run build --workspaces",
+    "build": "npm run build --workspaces --if-present",
     "pack": "npm pack --workspaces"
   },
   "devDependencies": {
@@ -19,17 +19,21 @@
     "prettier": "3.1.0",
     "rimraf": "^5.0.5",
     "ts-node": "^10.9.1",
-    "typescript": "^5.3.2",
-    "webpack-dev-server": "^5.0.4"
+    "tsup": "^8.4.0",
+    "typescript": "^5.3.2"
   },
   "workspaces": [
     "packages/core",
     "packages/manager",
-    "packages/bundler/webpack",
-    "packages/bundler/proxy",
-    "packages/preview/react",
+    "packages/arrangers",
+    "packages/react",
+    "packages/servers/webpack",
+    "packages/servers/proxy",
     "packages/externals/msw",
-    "packages/externals/rtk"
+    "packages/externals/web-api",
+    "tests",
+    "examples/msw-externals",
+    "examples/basic-externals"
   ],
   "engines": {
     "node": ">=22.12.0"
