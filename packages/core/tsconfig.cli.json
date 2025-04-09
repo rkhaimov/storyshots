@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "./cli.ts"
+  ],
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "CommonJS"
+  }
+}

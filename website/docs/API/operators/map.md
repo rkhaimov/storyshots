@@ -15,7 +15,7 @@ map(stories, (story) => ({
 ```ts
 map(stories, (story) => ({
     ...story,
-    // Донастроить [внешнюю среду](/specification/requirements/env)
+    // Донастроить внешнюю среду
     arrange: (externals, config) => withDarkTheme(story.arrange(externals, config)),
 }));
 ```
@@ -23,8 +23,3 @@ map(stories, (story) => ({
 :::tip
 `map` также используется для установки [render функции по умолчанию](/patterns/stories#универсальный-render).
 :::
-
-:::note
-На самом деле, `createPreviewApp` использует `map` внутри для установки `externals` по умолчанию.
-:::
-

@@ -14,7 +14,7 @@
 :::
 
 ```ts
-runUI({
+{
     devices: [
         {
             name: 'desktop',
@@ -31,18 +31,18 @@ runUI({
         },
     ],
     /* ... */
-})
+}
 ```
 
 ## preview
 
-Принимает [IPreviewServer](/architecture/scheme#ipreviewserver).
+Принимает [IPreviewServer](/modules/scheme#ipreviewserver).
 
 ```ts
-runUI({
-    preview: createWebpackMiddleware(/* конфигурация */),
+{
+    preview: createWebpackServer(/* конфигурация */),
     /* ... */
-})
+}
 ```
 
 ## paths
@@ -50,7 +50,7 @@ runUI({
 Содержит описание путей для артефактов `storyshots`.
 
 ```ts
-runUI({
+{
     paths: {
         // Путь до папки с журналами
         records: path.join(process.cwd(), 'records'),
@@ -60,7 +60,7 @@ runUI({
         temp: path.join(process.cwd(), 'temp'),
     },
     /* ... */
-})
+}
 ```
 
 ## runner
@@ -69,10 +69,10 @@ runUI({
 по умолчанию позволяет контролировать их количество:
 
 ```ts
-runUI({
+{
     runner: RUNNER.pool({ agentsCount: 4 }),
     /* ... */
-})
+}
 ```
 
 :::tip
@@ -91,11 +91,11 @@ runUI({
 По умолчанию используются оптимальные настройки для алгоритма стабилизации, но их можно изменить:
 
 ```ts
-runUI({
+{
     // Выполняет мнговенный снимок экрана, минуя стадию стабилизации. (Не рекомендуется для большинства сценариев)
     capture: CAPTURE.instantly,
     /* ... */
-})
+}
 ```
 
 ## compare
@@ -108,9 +108,9 @@ runUI({
 :::
 
 ```ts
-runUI({
+{
     // Сравнивает буферы напрямую, без использования продвинутых алгоритмов. (Не рекомендуется для большинства сценариев)
     compare: (actual, expected) => actual.equals(expected),
     /* ... */
-})
+}
 ```

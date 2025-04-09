@@ -1,4 +1,4 @@
-import { Arrangers, UnknownArrangers } from '../../../../arrangers';
+import { Arrangers, UnknownArrangers } from '@storyshots/arrangers';
 import { Endpoints, UnknownEndpoint } from '../types';
 import { MSWArrangers, UnknownMSWArrangers } from './types';
 import { body, params, query } from '../utils';

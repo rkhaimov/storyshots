@@ -1,10 +1,19 @@
+---
+sidebar_position: 1
+---
+
 import { Diagram } from '@site/src/Diagram';
 
-# Общая схема
+# Архитектура
 
 Общая архитектура решения через призму взаимодействия модулей выглядит следующим образом:
 
 <Diagram src={require('./assets/scheme.drawio.png')} />
+
+:::note
+На диаграмме представлены все основные слои на которых располагаются лишь некоторые из существующих модулей. Полный
+перечень привёдён в отдельном разделе.
+:::
 
 ## AUT
 
@@ -20,7 +29,7 @@ AUT - это тестируемая часть приложения. Чем он
 
 ## Менеджер историй
 
-Основной слой `storyshots`, состоит из единственного пакета `@storyshots/manager`. В его ответственности входит:
+Основной слой `storyshots`, состоит из единственного пакета `@storyshots/core`. В его ответственности входит:
 
 - **Базовые примитивы** - описывает основные сущности проекта: истории, трансформации, конфигурации.
 - **UI режим** - реализует UI режим управления историями
@@ -51,15 +60,15 @@ AUT - это тестируемая часть приложения. Чем он
 
 ```ts
 {
-    // Пример простого обработчика, возвращающего предсобранный index.html
-    handler: (req, res, next) => {
-        if (req.url.includes('index.html')) {
-            res.sendFile(path.join('dist', 'index.html'));
-        } else {
-            next();
-        }
-    },
-    /* ... */
+  // Пример простого обработчика, возвращающего предсобранный index.html
+  handler: (req, res, next) => {
+    if (req.url.includes('index.html')) {
+      res.sendFile(path.join('dist', 'index.html'));
+    } else {
+      next();
+    }
+  },
+  /* ... */
 }
 ```
 
@@ -74,16 +83,16 @@ AUT - это тестируемая часть приложения. Чем он
 ```ts
 // Функция будет подменять все запросы к изображениям специальной заглушкой
 function createImageStubber(): PreviewServer {
-    return {
-        handler: (req, res, next) => {
-            if (isImageReq(req)) {
-                res.sendFile('stub.png');
-            } else {
-                next();
-            }
-        },
-        /* ... */
-    };
+  return {
+    handler: (req, res, next) => {
+      if (isImageReq(req)) {
+        res.sendFile('stub.png');
+      } else {
+        next();
+      }
+    },
+    /* ... */
+  };
 }
 
 // mergeServe комбинирует разные серверы превью в один
@@ -101,13 +110,13 @@ const server = mergeServe(createImageStubber(), createPreviewServer());
 
 ```ts
 {
-    onUpdate: (handler) =>
-        /**
-         * handler принимает текущий hash обозначающий содержимое превью, если хеш изменился,
-         * то storyshots будет считать что AUT обновился.
-         */
-        compiler.hooks.done.tap('PreviewUpdate', (stats) => handler(stats.hash)),
-    /* ... */
+  onUpdate: (handler) =>
+    /**
+     * handler принимает текущий hash обозначающий содержимое превью, если хеш изменился,
+     * то storyshots будет считать что AUT обновился.
+     */
+    compiler.hooks.done.tap('PreviewUpdate', (stats) => handler(stats.hash)),
+  /* ... */
 }
 ```
 
@@ -128,18 +137,21 @@ const server = mergeServe(createImageStubber(), createPreviewServer());
 
 Слой содержит адаптеры сборщиков и серверов AUT на интерфейс `IPreviewServer`.
 
-- `@storyshots/webpack-middleware` - адаптер для AUT использующих `webpack` в качестве сборщика.
-- `@storyshots/proxy-server` - fallback адаптер перенаправляющий обращения `storyshots` на сервер AUT.
+- [`@storyshots/webpack`](/modules/webpack) - адаптер для AUT использующих `webpack` в качестве сборщика.
+- [`@storyshots/proxy`](/modules/proxy) - fallback адаптер перенаправляющий обращения `storyshots` на сервер AUT.
 
 :::tip
-`@storyshots/proxy-server` рекомендуется использовать в случаях когда сложно интегрировать сборщик в сервер
+`@storyshots/proxy` рекомендуется использовать в случаях когда сложно интегрировать сборщик в сервер
 `storyshots` в качестве `middleware`.
 :::
 
 ## Адаптеры внешней среды
 
-Адаптируют [внешнюю среду](/specification/requirements/env) AUT на совместимые со `storyshots` [заглушки](/specification/requirements/env).
+Адаптируют [внешнюю среду](/specification/requirements/env) AUT на совместимые
+со `storyshots` [заглушки](/specification/requirements/env).
 
-- **Pure externals** - это условное обозначение компонента. Описывает [один из способов](/patterns/replace#подмена-через-инверсию) самостоятельной подмены
+- `pure` - это условное обозначение компонента. Описывает [один из способов](/patterns/replace#подмена-через-инверсию)
+  самостоятельной подмены
   [внешних зависимостей](/specification/requirements/env).
-- `@storyshots/msw-externals` - реализует [не инвазивный метод](/patterns/replace#подмена-через-сайд-эффекты) подмены с помощью библиотеки `msw`.
+- [`@storyshots/msw-externals`](/modules/msw) - реализует [не инвазивный метод](/patterns/replace#подмена-через-сайд-эффекты)
+  подмены с помощью библиотеки `msw`.

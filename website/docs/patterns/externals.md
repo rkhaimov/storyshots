@@ -52,7 +52,7 @@ const userRepository: UserRepository = {
 содержит особой логики и лишь выполняет простое делегирование серверу.
 
 :::note
-Вырезанная логика поднимается выше по стеку, перемещаясь в [тестируемый слой](/architecture/scheme#aut).
+Вырезанная логика поднимается выше по стеку, перемещаясь в [тестируемый слой](/modules/scheme#aut).
 :::
 
 ### Сборка
@@ -64,7 +64,7 @@ const userRepository: UserRepository = {
 
 ```ts title="manager.ts"
 runUI({
-  preview: createWebpackMiddleware({ /* собственная конфигурация тестирования */ }),
+  preview: createWebpackServer({ /* собственная конфигурация тестирования */ }),
 });
 ```
 
@@ -75,7 +75,7 @@ runUI({
 import config from './webpack.config.ts';
 
 runUI({
-  preview: createWebpackMiddleware(withPreviewEntry(config)),
+  preview: createWebpackServer(withPreviewEntry(config)),
 });
 ```
 
@@ -388,16 +388,23 @@ it('...', {
 <p style={{ color: 'green' }}>Делать это:</p>
 
 ```ts
-it('...', { // Код делает тоже самое, но читается лучше
-    arrange: extend(
-        'UserRepository',
-        transform('getUser', (user) => ({ ...user, login: 'test-user' })),
+import { createArrangers, transform } from '@storyshots/arrangers';
+
+const arrangers = createArrangers<Externals>();
+const { compose } = arrangers.focus('repositories');
+
+it('...', {
+  // Код делает тоже самое, но читается лучше
+  arrange: compose(
+      'UserRepository.getUser',
+      (getUser) => (data) => getUser(data).then((user) => ({ ...user, login: 'test-user' })
     ),
+  ),
 });
 ```
 
 :::note
-Методы `extend` и `transform` не являются частью `storyshots`. Примеры функций можно посмотреть [здесь](#).
+Для того чтобы узнать больше рекомендуется ознакомится с [`@storyshots/arrangers`](/modules/arrangers)
 :::
 
 :::tip

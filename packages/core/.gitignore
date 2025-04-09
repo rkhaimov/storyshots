@@ -1,1 +1,3 @@
 lib/
+cli.js
+tsconfig.cli.tsbuildinfo

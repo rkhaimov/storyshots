@@ -3,7 +3,7 @@ import { createWebpackServer } from '@storyshots/webpack';
 
 import config from '../webpack.config';
 
-export async function createPreviewServer(): Promise<IPreviewServer> {
+export function createPreviewServer(): IPreviewServer {
   config.entry = '/storyshots/preview/index.tsx';
 
   return createWebpackServer(config);
