@@ -25,12 +25,12 @@
   "workspaces": [
     "packages/core",
     "packages/manager",
+    "packages/arrangers",
+    "packages/react",
     "packages/servers/webpack",
     "packages/servers/proxy",
     "packages/externals/msw",
     "packages/externals/web-api",
-    "packages/externals/arrangers",
-    "packages/react",
     "tests",
     "examples/msw-externals",
     "examples/basic-externals"

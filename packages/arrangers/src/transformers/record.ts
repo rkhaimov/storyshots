@@ -1,6 +1,6 @@
 import { compose } from './compose';
 import { arrange } from './arrange';
-import { assert } from '@lib';
+import { assert } from '../../../../lib/utils';
 import { UnknownArrangers } from '../arrangers-types';
 
 export const record: UnknownArrangers['record'] = (...paths) =>

@@ -1,5 +1,5 @@
 import { createMSWArrangers, Endpoints } from '@storyshots/msw-externals';
-import { createArrangers } from '@storyshots/arrangers';
+import { createArrangers } from '../../../../packages/arrangers';
 
 const arrangers = createArrangers<Endpoints>();
 

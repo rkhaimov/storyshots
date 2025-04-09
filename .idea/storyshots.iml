@@ -25,7 +25,7 @@
       <excludeFolder url="file://$MODULE_DIR$/packages/servers/proxy/lib" />
       <excludeFolder url="file://$MODULE_DIR$/packages/servers/webpack/lib" />
       <excludeFolder url="file://$MODULE_DIR$/packages/externals/web-api/lib" />
-      <excludeFolder url="file://$MODULE_DIR$/packages/externals/arrangers/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/arrangers/lib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
