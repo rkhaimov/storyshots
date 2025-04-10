@@ -18,6 +18,8 @@ export function install(config: InstallConfig) {
   });
 
   window.tick = (ms) => clock.tick(ms);
+
+  return { set: (date: Date) => MockDate.set(date) };
 }
 
 declare global {

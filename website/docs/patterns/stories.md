@@ -138,9 +138,10 @@ const stories = [
 
 
 ```ts title="extend-module.ts"
-declare module '@storyshots/manager' {
-  interface StoryConfig {
-    priority?: 'high' | 'low';
+declare module '@storyshots/core' {
+  interface StoryAttributes<TExternals> {
+    // Можно использовать любые структуры, даже функции.
+    secondary?: true;
   }
 }
 ```
@@ -150,12 +151,10 @@ declare module '@storyshots/manager' {
 ```ts
 const authStories = [
     // Важно чтобы в приложении работал вход 
-    it('allows to login', {
-        priority: 'high',
-    }),
+    it('allows to login'),
     // При этом, сброс пароля относится к второстепенным сценариям 
     it('allows to reset password', {
-        priority: 'low',
+      secondary: true,
     }),
 ];
 ```
@@ -163,22 +162,12 @@ const authStories = [
 Далее, установить отдельный режим при котором будут запускаться только важные истории:
 
 ```ts
-run(filter(stories, (story) => story.priority === 'high'));
+run(filter(stories, (story) => not(story.secondary)));
 ```
 
 :::tip
-При использовании данного паттерна, рекомендуется по умолчанию рекомендуется устанавливать либо низкий, либо высокий
-приоритет у историй:
-
-```ts
-run(
-    map(stories, (story) => ({
-        // Все истории имеют высокий приоритет по умолчанию
-        priority: 'high',
-        ...story,
-    }))
-);
-```
+При использовании данного паттерна, рекомендуется по умолчанию устанавливать либо низкий, либо высокий
+приоритет у историй.
 :::
 
 ## Универсальный render
@@ -201,20 +190,14 @@ const buttonStories = [
 ];
 ```
 
-Однако, для тестирования целого проекта данный вариант является мало практичным. Вместо этого рекомендуется описывать
+Однако, для тестирования конечного приложения данный вариант является мало практичным. Вместо этого рекомендуется описывать
 `render` по умолчанию:
 
 ```tsx title="preview.tsx"
-const { run, it } = createPreviewApp(/* ... */);
+export const { run, it } = createPreviewApp(/* ... */);
+```
 
-const stories = [
-    it('...', {
-        /**
-         * Описывать render в истории не обязательно.
-         */
-    }),
-];
-
+```tsx title="index.tsx"
 run(
     map(stories, (story) => ({
             // По умолчанию будет отрисовываться корневой компонент приложения 
@@ -223,4 +206,14 @@ run(
         })
     )
 );
+```
+
+```tsx title="stories.tsx"
+export const stories = [
+    it('...', {
+        /**
+         * Описывать render в истории не обязательно.
+         */
+    }),
+];
 ```

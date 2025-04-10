@@ -5,8 +5,8 @@
   "repository": "https://github.com/rkhaimov/storyshots.git",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node storyshots/ui.ts",
-    "ci": "ts-node storyshots/ci.ts",
+    "start": "storyshots --ui storyshots/config.ts",
+    "ci": "storyshots storyshots/config.ts",
     "codegen": "ts-node codegen/generator.ts",
     "compile": "tsc --noEmit"
   },

@@ -143,7 +143,7 @@ it('shows message to a user', {
     act: (actor) => actor
         .screenshot('Message')
         // Отправить таймеры в будущее на 5 секунд вперёд
-        .exec(({ env }) => env.clock.tick(5_000))
+        .exec(() => window.tick(5_000))
         .screenshot('Hidden'),
 });
 ```
@@ -152,7 +152,7 @@ it('shows message to a user', {
 время выполнения теста - это крайне важная величина. Поэтому во втором примере используются ложные таймеры.
 
 :::note
-В данном примере используется библиотека `@storyshots/web-api-externals` которая
+В данном примере используется библиотека [`@storyshots/web-api-externals`](/modules/web-api) которая
 выполняет [подмену через сайд-эффекты](/patterns/replace#подмена-через-сайд-эффекты).
 :::
 

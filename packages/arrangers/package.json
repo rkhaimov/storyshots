@@ -11,5 +11,8 @@
   ],
   "scripts": {
     "build": "rimraf lib && ts-node build.ts"
+  },
+  "dependencies": {
+    "@storyshots/core": "0.0.10"
   }
 }

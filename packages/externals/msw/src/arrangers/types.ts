@@ -1,4 +1,4 @@
-import { Arranger, UnknownArranger } from '../../../../arrangers';
+import { Arranger, UnknownArranger } from '@storyshots/arrangers';
 import { Endpoints, UnknownEndpoint } from '../types';
 
 export type UnknownMSWArrangers = {

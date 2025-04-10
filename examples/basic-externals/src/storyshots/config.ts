@@ -2,7 +2,7 @@ import { ManagerConfig, RUNNER } from '@storyshots/core/manager';
 import path from 'path';
 import { createPreviewServer } from './createPreviewServer';
 
-export const config: ManagerConfig = {
+export default {
   devices: [
     {
       name: 'desktop',
@@ -24,4 +24,4 @@ export const config: ManagerConfig = {
   },
   preview: createPreviewServer(),
   runner: RUNNER.pool({ agentsCount: 4 }),
-};
+} satisfies ManagerConfig;

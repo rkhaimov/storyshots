@@ -3,11 +3,7 @@
 ## High priority
 
 * Clipboard copy for action picker
-* Improve package structure
-* Fulfill links in docs
-* Add packages descriptions
 * Integrate react-devtools
-* Write GitHub and GitLab templates
 * Add story search
     * Should work like live filter on groups and story contents
 * Accessibility checking https://github.com/abhinaba-ghosh/axe-playwright
@@ -22,7 +18,6 @@
 * Support HMR
 * Implement antd actor extensions package
 * Implement antd finder extensions package
-* Tests should ref on actual packages sources (not bundled)
 * Rename story or group utility
     * It is relatively hard to rename them manually
 * Write more tests
@@ -40,12 +35,6 @@
         * failure message
         * jump to story causing failure
         * display failure messages
-
-# Structural improvements
-
-* Obtain more control under public interface
-    * api extractor
-* Develop a general strategy of test writing that ensures there are no duplicated or missed tests
 
 ## Low priority
 

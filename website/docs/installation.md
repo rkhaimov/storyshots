@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Быстрый старт
 
-`storyshots` легко интегрируется даже в уже написанные приложения благодаря своей архитектуре.
+`storyshots` легко интегрируется даже в уже написанные приложения благодаря своей [архитектуре](/modules/scheme).
 
 ## Установка и сборка
 
@@ -28,14 +28,14 @@ npm run build && npm run pack
 ## Интеграция в проект
 
 По итогу в корне будут сформированы артефакты `.tar`. Описание данных компонентов можно найти в
-разделе [архитектуры](/architecture/scheme).
+разделе [архитектуры](/modules/scheme).
 
 :::tip
 Для проекта написанного на `react` с использованием `webpack` сборщика подойдёт следующий набор:
 
-* @storyshots/manager
+* @storyshots/core
 * @storyshots/react
-* @storyshots/webpack-middleware
+* @storyshots/webpack
   :::
 
 Данные модули необходимо разместить в папке проекта и поместить их под контроль VCS:
@@ -44,9 +44,9 @@ npm run build && npm run pack
 project/
 ├── src/
 ├── offline/
-│   ├── @storyshots-manager-0.0.10.tgz
+│   ├── @storyshots-core-0.0.10.tgz
 │   ├── @storyshots-react-0.0.10.tgz
-│   └── @storyshots-webpack-middleware-0.0.10.tgz
+│   └── @storyshots-webpack-0.0.10.tgz
 └── package.json
 ```
 
@@ -55,9 +55,9 @@ project/
 ```json title="package.json"
 {
   "devDependencies": {
-    "@storyshots/manager": "file:offline/storyshots-manager-0.0.10.tgz",
+    "@storyshots/core": "file:offline/storyshots-core-0.0.10.tgz",
     "@storyshots/react": "file:offline/storyshots-react-0.0.10.tgz",
-    "@storyshots/webpack-middleware": "file:offline/storyshots-webpack-middleware-0.0.10.tgz"
+    "@storyshots/webpack": "file:offline/storyshots-webpack-0.0.10.tgz"
   }
 }
 ```
@@ -87,7 +87,7 @@ export const { it, run } = createPreviewApp({
     }),
     // Маркировка методов для записи в журнал вызовов
     createJournalExternals: (externals, config) => ({
-        getUser: config.journal.asRecordable(externals.getUser),
+        getUser: config.journal.asRecordable('getUser', externals.getUser),
     }),
 });
 ```
@@ -95,7 +95,7 @@ export const { it, run } = createPreviewApp({
 После, опишем первые истории:
 
 ```tsx title="/src/storyshots/stories/index.tsx"
-import { finder } from '@storyshots/react';
+import { finder } from '@storyshots/core';
 
 import { it } from '../preview/config';
 
@@ -106,7 +106,7 @@ export const stories = [
     arrange: (externals) => ({ ...externals, getUser: async () => null }),
   }),
   it('allows to login', {
-    // Эмулируем действия на странице"
+    // Эмулируем действия на странице
     act: (actor) => actor.click(finder.getByRole('button', {name: 'Login'})),
   }),
 ];
@@ -119,7 +119,7 @@ export const stories = [
 После чего, запустим описанные истории реализовав [корневой render](/patterns/stories#универсальный-render) с [внедрением зависимостей](/patterns/replace#подмена-через-инверсию):
 
 ```tsx title="/src/storyshots/preview/index.tsx"
-import { map } from '@storyshots/react';
+import { map } from '@storyshots/core';
 
 import { run } from './config';
 import { stories } from '../stories';
@@ -138,10 +138,10 @@ run(
 
 ## Описание менеджера
 
-Далее необходимо описать [сервер превью](/architecture/scheme#ipreviewserver):
+Далее необходимо описать [сервер превью](/modules/scheme#ipreviewserver):
 
 ```ts title="/src/storyshots/manager/createAppServer.ts"
-import { createWebpackMiddleware } from '@storyshots/webpack-middleware';
+import { createWebpackServer } from '@storyshots/webpack';
 // Переиспользуем конфигурацию сборки
 import config from '../../../webpack.config.ts';
 
@@ -149,14 +149,14 @@ export function createAppServer() {
     // Меняем entry и указываем на preview файл
     config.entry = '/src/storyshots/preview/index.ts';
     
-    return createWebpackMiddleware(config);
+    return createWebpackServer(config);
 }
 ```
 
 После описания сервера, нужно определить общую конфигурацию тестирования:
 
 ```ts title="/src/storyshots/manager/config.ts"
-import { ManagerConfig } from '@storyshots/react/manager';
+import { ManagerConfig } from '@storyshots/core/manager';
 
 import { createAppServer } from './createAppServer';
 
@@ -198,5 +198,5 @@ storyshots /src/storyshots/manager/config.ts
 
 ## Примеры
 
-- [**React**](https://github.com/rkhaimov/storyshots/tree/master/examples/basic-externals) - проект использующий стандартные репозитории с инверсией зависимостей.
-- [**RTK**](https://github.com/rkhaimov/storyshots/tree/master/examples/msw-externals) - проект утилизирующий RTK запросы.
+- [**Пример #1**](https://github.com/rkhaimov/storyshots/tree/master/examples/basic-externals) - `react` + `webpack` + стандартные `fetch` запросы.
+- [**Пример #2**](https://github.com/rkhaimov/storyshots/tree/master/examples/msw-externals) - `react` + `webpack` + `rtk-query`.

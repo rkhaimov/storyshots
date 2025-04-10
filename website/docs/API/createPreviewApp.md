@@ -1,5 +1,9 @@
 # createPreviewApp
 
+:::note
+Часть модуля [`@storyshots/react`](/modules/react)
+:::
+
 Функция, инициализирующая [AUT](/specification/requirements/borders#функция) и
 создающая [фабрики тестов](/API/factories/). Принимает описание [внешних зависимостей](/specification/requirements/env)
 `ExternalsFactory`.
