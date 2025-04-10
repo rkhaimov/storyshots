@@ -198,5 +198,5 @@ storyshots /src/storyshots/manager/config.ts
 
 ## Примеры
 
-- [**Пример #1**](https://github.com/rkhaimov/storyshots/tree/master/examples/basic-externals) - `react` + `webpack` + стандартные `fetch` запросы.
-- [**Пример #2**](https://github.com/rkhaimov/storyshots/tree/master/examples/msw-externals) - `react` + `webpack` + `rtk-query`.
+- [**Пример #1**](https://github.com/storyshots/storyshots/tree/master/examples/basic-externals) - `react` + `webpack` + стандартные `fetch` запросы.
+- [**Пример #2**](https://github.com/storyshots/storyshots/tree/master/examples/msw-externals) - `react` + `webpack` + `rtk-query`.

@@ -2,7 +2,7 @@
   "name": "@storyshots/web-api-externals",
   "version": "0.0.10",
   "description": "Web API mocks",
-  "repository": "https://github.com/rkhaimov/storyshots.git",
+  "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "./lib/index.d.ts",

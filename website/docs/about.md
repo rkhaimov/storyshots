@@ -5,7 +5,7 @@ sidebar_position: 1
 
 # Об инструменте
 
-Семейство библиотек [`storyshots`](https://github.com/rkhaimov/storyshots) предоставляет инструмент для организации
+Семейство библиотек [`storyshots`](https://github.com/storyshots/storyshots) предоставляет инструмент для организации
 тестирования приложений методом [golden master](https://en.wikipedia.org/wiki/Characterization_test), используя
 возможности [Playwright](https://playwright.dev/) внутри.
 
