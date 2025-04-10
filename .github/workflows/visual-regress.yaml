@@ -30,6 +30,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Binding packages
+        run: npm install
+
       - name: Run basic-externals tests
         run: npm run ci
         working-directory: ./examples/basic-externals
