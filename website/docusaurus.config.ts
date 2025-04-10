@@ -3,8 +3,8 @@ import { themes as prismThemes } from 'prism-react-renderer';
 
 const config: Config = {
   title: 'storyshots',
-  url: 'https://storyshots.com',
-  baseUrl: '/',
+  url: 'https://storyshots.github.io',
+  baseUrl: '/storyshots',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   i18n: {
@@ -33,7 +33,7 @@ const config: Config = {
       title: 'storyshots',
       items: [
         {
-          href: 'https://github.com/rkhaimov/storyshots',
+          href: 'https://github.com/storyshots/storyshots',
           label: 'GitHub',
           position: 'right',
         },

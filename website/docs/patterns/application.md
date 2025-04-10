@@ -122,7 +122,7 @@ import { Diagram } from '@site/src/Diagram';
   едином сервере.
 
 :::note
-Создание глобального эталона выполняется в [фоновом режиме](/API/manager/runInBackground). Шаблоны реализации для CI/CD можно посмотреть [тут](https://github.com/rkhaimov/storyshots/tree/master/examples/ci-templates).
+Создание глобального эталона выполняется в [фоновом режиме](/API/manager/runInBackground). Шаблоны реализации для CI/CD можно посмотреть [тут](https://github.com/storyshots/storyshots/tree/master/examples/ci-templates).
 :::
 
 В такой схеме, при разработке, предлагается следующий порядок работ:

@@ -2,7 +2,7 @@
   "name": "@storyshots/webpack",
   "version": "0.0.10",
   "description": "Preview webpack middleware",
-  "repository": "https://github.com/rkhaimov/storyshots.git",
+  "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
