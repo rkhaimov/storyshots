@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # @storyshots/arrangers
 
-Функции для работы с `externals` в `arrange` фазе истории.
+Функции и утилиты для работы с `externals` в `arrange` фазе истории.
 
 ## createArrangers
 
