@@ -172,3 +172,36 @@ it('...', {
 Методы `arrange` и `iterated` являются общими. Arranger утилиты, такие как `set`, `focus`, `record` и так далее, зависят
 от контекста задаваемого `focus`.
 :::
+
+## transform
+
+Преобразует возвращаемое значение метода, используется в связке с `compose`:
+
+```ts
+it('...', {
+  arrange: compose(
+    'business.getBalanceAt',
+    transform(balance => balance * 2),
+  ),
+});
+```
+
+## resolves
+
+Создаёт функцию возвращающую `Promise.resolve` с переданным значением:
+
+```ts
+it('...', {
+  arrange: set('business.getBalanceAt', resolves(0)),
+});
+```
+
+## rejects
+
+Создаёт функцию возвращающую `Promise.reject` с переданным значением:
+
+```ts
+it('...', {
+  arrange: set('business.getBalanceAt', rejects('Balance not found')),
+});
+```

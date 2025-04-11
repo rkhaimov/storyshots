@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/proxy",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Preview proxy server",
   "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
@@ -14,6 +14,6 @@
   },
   "dependencies": {
     "http-proxy-middleware": "^3.0.0",
-    "@storyshots/core": "0.0.10"
+    "@storyshots/core": "0.0.11"
   }
 }

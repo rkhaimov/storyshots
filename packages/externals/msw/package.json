@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/msw-externals",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Direct fetch middleware",
   "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
@@ -9,16 +9,15 @@
   "files": [
     "lib",
     "createWorkerSupplier.d.ts",
-    "createWorkerSupplier.js",
-    "mockServiceWorker.js"
+    "createWorkerSupplier.js"
   ],
   "scripts": {
     "build": "rimraf lib && ts-node build.ts && tsc -b tsconfig.worker.json"
   },
   "dependencies": {
     "react": "*",
-    "@storyshots/core": "0.0.10",
-    "@storyshots/arrangers": "0.0.10",
+    "@storyshots/core": "0.0.11",
+    "@storyshots/arrangers": "0.0.11",
     "msw": "^2.6.8"
   }
 }

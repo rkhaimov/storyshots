@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/arrangers",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Composable external arrangers",
   "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
@@ -13,6 +13,6 @@
     "build": "rimraf lib && ts-node build.ts"
   },
   "dependencies": {
-    "@storyshots/core": "0.0.10"
+    "@storyshots/core": "0.0.11"
   }
 }
