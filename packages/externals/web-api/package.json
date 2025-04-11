@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/web-api-externals",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Web API mocks",
   "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",

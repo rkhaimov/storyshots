@@ -178,11 +178,6 @@ const withGivenRoles = (roles: string[]) => (repository: UserRepository): UserRe
  * И закреплены за определённым контекстом
  */
 const withAdminRoles = withGivenRoles(['admin']);
-
-/**
- * В данном случае используется функция compose. Но подойдёт любой метод композиции, даже ручной
- */
-declare function compose(...fs: Array<(repository: UserRepository) => UserRepositor>): (repository: UserRepository) => UserRepository;
 ```
 
 После чего, каждая из историй может установить только те поведения которые считает нужным.
@@ -396,9 +391,8 @@ const { compose } = arrangers.focus('repositories');
 it('...', {
   // Код делает тоже самое, но читается лучше
   arrange: compose(
-      'UserRepository.getUser',
-      (getUser) => (data) => getUser(data).then((user) => ({ ...user, login: 'test-user' })
-    ),
+    'UserRepository.getUser',
+    transform((user) => ({ ...user, login: 'test-user' })),
   ),
 });
 ```

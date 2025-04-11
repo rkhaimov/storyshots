@@ -11,3 +11,5 @@ export type {
   UnknownArrangers,
   UnknownArranger,
 } from './arrangers-types';
+
+export { rejects, transform, resolves } from './utils';

@@ -1,13 +1,14 @@
 {
   "name": "@storyshots/core",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Reusable entities across all projects",
   "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
-    "lib"
+    "lib",
+    "manager"
   ],
   "bin": {
     "storyshots": "./cli.js"
@@ -30,6 +31,7 @@
     "@types/express-ws": "^3.0.4",
     "@types/react": "^18.2.38",
     "@types/react-dom": "^18.2.17",
+    "@types/yargs": "^17.0.33",
     "ansi-to-html": "^0.7.2",
     "antd": "^5.11.4",
     "esbuild": "^0.25.1",

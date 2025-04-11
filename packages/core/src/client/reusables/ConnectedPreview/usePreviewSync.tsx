@@ -7,7 +7,7 @@ export function usePreviewSync(
 ): React.ComponentProps<typeof Preview> {
   useEffect(() => {
     window.onPreviewReady = (stories) => props.onPreviewLoaded(stories);
-  }, [props.identity]);
+  }, [props]);
 
   return props;
 }

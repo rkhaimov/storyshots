@@ -1,3 +1,4 @@
+import Link from '@docusaurus/Link';
 import React from 'react';
 
 export enum Metric {
@@ -7,7 +8,9 @@ export enum Metric {
   Speed = 'Speed',
 }
 
-export const BalancedMetricsTip: React.FC<{ improves: Metric[] }> = ({ improves }) => (
+export const BalancedMetricsTip: React.FC<{ improves: Metric[] }> = ({
+  improves,
+}) => (
   <MetricsTip
     improves={improves}
     degrades={Object.values(Metric).filter(
@@ -38,26 +41,32 @@ export const MetricsTip: React.FC<{
 
 const METRIC_TO_ICON: Record<Metric, React.ReactNode> = {
   [Metric.RegressionProtection]: (
-    <a href="/specification/metrics#%EF%B8%8F-защита-от-регресса" title="Защита от регресса">
+    <Link
+      to="/specification/metrics#%EF%B8%8F-защита-от-регресса"
+      title="Защита от регресса"
+    >
       🛡
-    </a>
+    </Link>
   ),
   [Metric.RefactoringAllowance]: (
-    <a
-      href="/specification/metrics#-независимость-от-рефакторинга"
+    <Link
+      to="/specification/metrics#-независимость-от-рефакторинга"
       title="Независимость от рефакторинга"
     >
       🔧
-    </a>
+    </Link>
   ),
   [Metric.Maintainability]: (
-    <a href="/specification/metrics#-поддерживаемость" title="Поддерживаемость">
+    <Link
+      to="/specification/metrics#-поддерживаемость"
+      title="Поддерживаемость"
+    >
       📈
-    </a>
+    </Link>
   ),
   [Metric.Speed]: (
-    <a href="/specification/metrics#-быстродействие" title="Быстродействие">
+    <Link to="/specification/metrics#-быстродействие" title="Быстродействие">
       ⚡
-    </a>
+    </Link>
   ),
 };
